@@ -6,97 +6,156 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>CryptoTerminal</title>
 	<link href="css/all.min.css" rel="stylesheet">
+
+	<!-- favicon -->
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="images/favicon/apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="images/favicon/apple-touch-icon-60x60.png">
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="images/favicon/apple-touch-icon-120x120.png">
+	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="images/favicon/apple-touch-icon-76x76.png">
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="images/favicon/apple-touch-icon-152x152.png">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-196x196.png" sizes="196x196">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-16x16.png" sizes="16x16">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-128.png" sizes="128x128">
+	<meta name="application-name" content="&nbsp;">
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+	<meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png">
+	<meta name="msapplication-square70x70logo" content="images/favicon/mstile-70x70.png">
+	<meta name="msapplication-square150x150logo" content="images/favicon/mstile-150x150.png">
+	<meta name="msapplication-wide310x150logo" content="images/favicon/mstile-310x150.png">
+	<meta name="msapplication-square310x310logo" content="images/favicon/mstile-310x310.png">
+
 </head>
 <body>
 
-	<div id="app">
-		<a id="menu-toggle"></a>
-		<div id="menu">
-			<a class="menu-item" href="#admin">Settings</a>
-		</div>
-		<div id="view"></div>
-	</div>
+	<div id="app"></div>
 
 	<noscript>
-		<p>CryptoTerminal requires JavaScript to function.</p>
+		<p class="page-description">CryptoTerminal requires JavaScript to function.</p>
 	</noscript>
 
-	<script type="text/html" id="template-admin-welcome">
-		<h2 class="page-title">Hi there!</h2>
-		<p>CryptoTerminal has not yet been configured.</p>
-		<a class="start button" href="#admin/choose-payment-methods">Start configuration</a>
-	</script>
-
-	<script type="text/html" id="template-admin-choose-payment-methods">
-		<h2 class="page-title">Payment Methods</h2>
-		<p>Select the payment methods that you want to accept.</p>
-		<div class="select-payment-methods">
-		{{#each paymentMethods}}
-			<a class="button select-payment-method {{key}}"></a>
-		{{/each}}
+	<script type="text/html" id="template-main">
+		<div id="header">
+			<a class="header-button menu"></a>
+			<a class="header-button home" href="#home"></a>
 		</div>
-		<a class="continue button" href="#admin/settings">Continue</a>
+		<div id="menu">
+			<a class="menu-item" href="#settings">Settings</a>
+		</div>
+		<div id="menu-cover"></div>
+		<div id="view">
+			<div id="view-content"></div>
+		</div>
+        <div id="message">
+            <div id="message-inner">
+                <div id="message-content"></div>
+            </div>
+        </div>
 	</script>
 
-	<script type="text/html" id="template-admin-settings">
+	<script type="text/html" id="template-settings">
 		<h2 class="page-title">Settings</h2>
-		{{#each paymentMethods}}
-		<fieldset class="form-group">
-			<legend class="form-group-title">{{title}}</legend>
-			{{#each settings}}
-			<div class="form-row">
-				<label for="admin-settings-{{../title}}-{{name}}" class="form-label">{{label}}</label>
-				<input id="admin-settings-{{../title}}-{{name}}" class="form-field" name="{{name}}" type="{{type}}" placeholder="{{placeholder}}">
+		<form>
+			<div class="form">
+				<div class="form-error error"></div>
+				<div class="form-group acceptCryptoCurrencies">
+					<div class="form-group-label">Which currencies do you want to accept?</div>
+					{{#each paymentMethods}}
+					<input id="settings-acceptCryptoCurrencies-{{key}}" type="checkbox" name="acceptCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
+					<label for="settings-acceptCryptoCurrencies-{{key}}" class="button payment-method {{key}}"></label>
+					{{/each}}
+				</div>
+				{{#each paymentMethods}}
+				<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
+					<div class="form-group-label">{{label}}</div>
+					{{#each settings}}
+					<div class="form-row">
+						<label for="settings-{{../key}}-{{name}}" class="form-label">{{label}}</label>
+						<input id="settings-{{../key}}-{{name}}" class="form-field" name="{{../key}}.{{name}}" type="text" value="{{value}}">
+					</div>
+					{{/each}}
+				</div>
+				{{/each}}
+				<div class="form-buttons">
+					<input class="button form-button save" type="submit" value="Save">
+					<div class="success"></div>
+				</div>
 			</div>
-			{{/each}}
-		</fieldset>
+		</form>
+	</script>
+
+	<script type="text/html" id="template-pay-enter-amount">
+		<p class="page-description">Enter amount to be paid</p>
+		{{> amount}}
+		<div class="error"></div>
+		{{> numpad}}
+		<a class="button continue">Continue</a>
+	</script>
+
+	<script type="text/html" id="template-pay-choose-method">
+		<p class="page-description">Select payment method</p>
+		<div class="select-payment-method">
+		{{#each paymentMethods}}
+			<a class="button payment-method {{key}}" data-payment-method="{{key}}"></a>
 		{{/each}}
-		<a class="save button">Save</a>
-	</script>
-
-	<script type="text/html" id="template-payment-enter-amount">
-		<!-- TODO -->
-	</script>
-
-	<script type="text/html" id="template-payment-choose-method">
-		<!-- TODO -->
-	</script>
-
-	<script type="text/html" id="template-payment-address">
-		<p>Please send the following amount to the address below.</p>
-		<div class="amount">
-			<div class="amount-value">{{value}}</div>
-			<div class="amount-currency">{{currency}}</div>
 		</div>
-		<div class="address">
-			<div class="address-qr-code"></div>
-			<div class="address-text"></div>
+		<div class="secondary-controls">
+			<a class="button cancel">Cancel</a>
 		</div>
-		<a class="change-payment-method">Change payment method</a>
 	</script>
 
-	<script type="text/html" id="template-payment-success">
+	<script type="text/html" id="template-pay-address">
+		{{> amount}}
+		<div class="address-qr-code"></div>
+		<p class="page-description">Scan the QR code to pay</p>
+		<div class="address-text"></div>
+		<div class="secondary-controls">
+			<a class="button cancel">Cancel</a>
+		</div>
+	</script>
+
+	<script type="text/html" id="template-pay-success">
 		<h2 class="page-title">Payment Received</h2>
-		<p>Thank you</p>
+		<p class="page-description">Thank you</p>
 	</script>
 
-	<script type="text/html" id="template-enter-pin">
-		<h2 class="page-title">Enter PIN</h2>
-		<p>{{instructions}}</p>
-		<input name="pin" type="password">
-		<div class="pin-keypad">
-			<a class="pin-key" data-value="1">1</a>
-			<a class="pin-key" data-value="2">2</a>
-			<a class="pin-key" data-value="3">3</a>
-			<a class="pin-key" data-value="4">4</a>
-			<a class="pin-key" data-value="5">5</a>
-			<a class="pin-key" data-value="6">6</a>
-			<a class="pin-key" data-value="7">7</a>
-			<a class="pin-key" data-value="8">8</a>
-			<a class="pin-key" data-value="9">9</a>
-			<a class="pin-key back"></a>
-			<a class="pin-key" data-value="0">0</a>
-			<a class="pin-key ok"></a>
+	<script type="text/html" id="template-amount">
+		<div class="amount-wrap">
+			<div class="amount display">
+				<div class="amount-value">{{amount.display.value}}</div>
+				<div class="amount-currency">
+					<select class="display-currency-change">
+					{{#each displayCurrencies}}
+						<option{{#if selected}} selected{{/if}}>{{code}}</option>
+					{{/each}}
+					</select>
+				</div>
+			</div>
+			<div class="amount crypto">
+				<div class="amount-value">{{amount.crypto.value}}</div>
+				<div class="amount-currency">{{amount.crypto.currency}}</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/html" id="template-numpad">
+		<div class="numpad">
+			<a class="numpad-key" data-value="1">1</a>
+			<a class="numpad-key" data-value="2">2</a>
+			<a class="numpad-key" data-value="3">3</a>
+			<a class="numpad-key" data-value="4">4</a>
+			<a class="numpad-key" data-value="5">5</a>
+			<a class="numpad-key" data-value="6">6</a>
+			<a class="numpad-key" data-value="7">7</a>
+			<a class="numpad-key" data-value="8">8</a>
+			<a class="numpad-key" data-value="9">9</a>
+			<a class="numpad-key" data-value=".">.</a>
+			<a class="numpad-key" data-value="0">0</a>
+			<a class="numpad-key backspace">&lt;</a>
 		</div>
 	</script>
 

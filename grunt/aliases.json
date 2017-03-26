@@ -4,6 +4,7 @@
 		"connect:static"
 	],
 	"build": [
+		"newer:browserify",
 		"newer:cssmin",
 		"newer:uglify",
 		"newer:concat",

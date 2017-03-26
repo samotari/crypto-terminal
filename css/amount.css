@@ -1,0 +1,53 @@
+.amount-wrap {
+	margin-bottom: 20px;
+}
+.amount {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+}
+.amount-value {
+	float: left;
+	width: 50%;
+	font-size: 1.2rem;
+	font-weight: 700;
+	text-align: right;
+	line-height: 32px;
+	box-sizing: border-box;
+	padding-right: 5px;
+}
+.amount.crypto {
+	display: none;
+}
+.amount.crypto.visible {
+	display: inline-block;
+}
+.amount.crypto .amount-value {
+	color: #aaa;
+	font-size: 0.9rem;
+	font-weight: 100;
+	line-height: 26px;
+}
+.amount-currency {
+	float: left;
+	width: 50%;
+	line-height: 32px;
+	box-sizing: border-box;
+	padding-left: 5px;
+}
+.change-display-currency {
+	line-height: 32px;
+}
+.amount.crypto .amount-currency {
+	color: #aaa;
+	font-size: 0.9rem;
+	font-weight: 500;
+	line-height: 26px;
+	text-align: left;
+}
+.amount-currency-change {
+	display: inline;
+	font-size: 0.8rem;
+	padding: 1px 3px;
+}

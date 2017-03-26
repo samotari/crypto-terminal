@@ -1,0 +1,31 @@
+.numpad {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+	background: #efefef;
+}
+.numpad-key {
+	float: left;
+	display: block;
+	width: 33.3%;
+	height: 40px;
+	line-height: 40px;
+	font-weight: 100;
+	text-align: center;
+	border: 1px solid #ccc;
+	border-left: none;
+	box-sizing: border-box;
+	cursor: pointer;
+	padding: 0 20px;
+}
+.numpad-key:active,
+.numpad-key:hover {
+	background: #e6e6e6;
+}
+.numpad-key:nth-child(3n+1) {
+	border-left: 1px solid #ccc;
+}
+.numpad-key:nth-child(n+4) {
+	border-top: none;
+}

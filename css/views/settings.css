@@ -1,0 +1,44 @@
+.view.settings .button.payment-method {
+	background-size: 32px;
+	padding: 24px;
+	opacity: 0.5;
+}
+.view.settings input[type="checkbox"] {
+	position: absolute;
+	top: 0;
+	left: -99999em;
+	visibility: hidden;
+}
+.view.settings input[type="checkbox"]:checked + .button.payment-method {
+	opacity: 1;
+	background-color: #e6e6e6;
+}
+.view.settings .form-group {
+	display: none;
+}
+.view.settings .form-group.accepted {
+	display: block;
+}
+.view.settings .form-group.acceptCryptoCurrencies {
+	display: block;
+	text-align: center;
+}
+.view.settings .form-group.acceptCryptoCurrencies .form-group-label {
+	color: #111;
+	text-align: center;
+	font-style: normal;
+	font-size: 0.9rem;
+}
+.view.settings .form-button.save {
+	float: right;
+}
+.view.settings .success {
+	float: right;
+	color: #45A823;
+	font-size: 0.9rem;
+	line-height: 33px;
+	margin-right: 10px;
+}
+.view.settings .success:empty {
+	display: none;
+}

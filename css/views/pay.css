@@ -1,0 +1,10 @@
+.view.pay .continue.button {
+	float: right;
+	text-align: center;
+	margin-top: 20px;
+}
+.view.pay .error {
+	font-size: 0.9rem;
+	text-align: center;
+	margin-bottom: 20px;
+}

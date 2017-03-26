@@ -2,47 +2,65 @@
 
 module.exports = {
 	all_min_css: {
+		nonull: true,
 		src: [
 			'build/css/fonts.min.css',
 			'build/css/reset.min.css',
-			'build/css/styles.min.css'
+			'build/css/base.min.css',
+			'build/css/buttons.min.css',
+			'build/css/forms.min.css',
+			'build/css/header.min.css',
+			'build/css/menu.min.css',
+			'build/css/amount.min.css',
+			'build/css/numpad.min.css',
+			'build/css/views/*.min.css'
 		],
 		dest: 'build/all.min.css'
 	},
 	all_js: {
+		nonull: true,
 		src: [
 			// Dependencies:
 			'node_modules/bignumber.js/bignumber.js',
 			'node_modules/jquery/dist/jquery.js',
 			'node_modules/underscore/underscore.js',
 			'node_modules/backbone/backbone.js',
-			'node_modules/backbone.localstorage/backbone.localStorage.js',
 			'node_modules/handlebars/dist/handlebars.js',
+			'node_modules/qrcode-generator/qrcode.js',
+			'build/bitcoin.js',
 			'node_modules/sjcl/sjcl.js',
 
 			// Application files:
+			'js/jquery.extend/*',
+			'js/config.js',
 			'js/router.js',
 			'js/models/*.js',
 			'js/views/*.js',
+			'js/payment-methods/*.js',
 			'js/init.js'
 		],
 		dest: 'build/all.js'
 	},
 	all_min_js: {
+		nonull: true,
 		src: [
 			// Dependencies:
 			'node_modules/bignumber.js/bignumber.min.js',
 			'node_modules/jquery/dist/jquery.min.js',
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/backbone/backbone-min.js',
-			'node_modules/backbone.localstorage/backbone.localStorage.min.js',
 			'node_modules/handlebars/dist/handlebars.min.js',
+			'build/qrcode-generator/qrcode.min.js',
+			'build/bitcoin.min.js',
 			'node_modules/sjcl/sjcl.js',
 
 			// Application files:
+			'build/js/jquery.extend/*',
+			'build/js/config.min.js',
 			'build/js/router.min.js',
 			'build/js/models/*.min.js',
 			'build/js/views/*.min.js',
+			'build/js/payment-methods/*.min.js',
 			'build/js/init.min.js'
 		],
 		dest: 'build/all.min.js'

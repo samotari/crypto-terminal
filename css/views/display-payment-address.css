@@ -1,0 +1,17 @@
+.view.display-payment-address .address-qr-code {
+	margin-bottom: 20px;
+}
+.view.display-payment-address .address-qr-code-img {
+	display: block;
+	margin: 0 auto;
+}
+.view.display-payment-address .address-text {
+	display: none;
+	font-size: 0.8rem;
+	font-family: 'Courier New';
+	text-align: center;
+	margin-top: 20px;
+}
+.view.display-payment-address .secondary-controls {
+	text-align: center;
+}

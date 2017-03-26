@@ -31,6 +31,20 @@ module.exports = {
 					'fonts/**/*.{ttf,eot,svg,woff,woff2}'
 				],
 				dest: 'public/fonts/OpenSans/'
+			},
+			{
+				expand: true,
+				flatten: false,
+				cwd: 'images/',
+				src: [
+					'**/*'
+				],
+				dest: 'public/images/'
+			},
+			{
+				nonull: true,
+				src: 'images/favicon/favicon.ico',
+				dest: 'public/favicon.ico'
 			}
 		]
 	}
