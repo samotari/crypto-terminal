@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>CryptoTerminal</title>
+	<link href="css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+	<div id="app">
+		<a id="menu-toggle"></a>
+		<div id="menu">
+			<a class="menu-item" href="#admin">Settings</a>
+		</div>
+		<div id="view"></div>
+	</div>
+
+	<noscript>
+		<p>CryptoTerminal requires JavaScript to function.</p>
+	</noscript>
+
+	<script type="text/html" id="template-admin-welcome">
+		<h2 class="page-title">Hi there!</h2>
+		<p>CryptoTerminal has not yet been configured.</p>
+		<a class="start button" href="#admin/choose-payment-methods">Start configuration</a>
+	</script>
+
+	<script type="text/html" id="template-admin-choose-payment-methods">
+		<h2 class="page-title">Payment Methods</h2>
+		<p>Select the payment methods that you want to accept.</p>
+		<div class="select-payment-methods">
+		{{#each paymentMethods}}
+			<a class="button select-payment-method {{key}}"></a>
+		{{/each}}
+		</div>
+		<a class="continue button" href="#admin/settings">Continue</a>
+	</script>
+
+	<script type="text/html" id="template-admin-settings">
+		<h2 class="page-title">Settings</h2>
+		{{#each paymentMethods}}
+		<fieldset class="form-group">
+			<legend class="form-group-title">{{title}}</legend>
+			{{#each settings}}
+			<div class="form-row">
+				<label for="admin-settings-{{../title}}-{{name}}" class="form-label">{{label}}</label>
+				<input id="admin-settings-{{../title}}-{{name}}" class="form-field" name="{{name}}" type="{{type}}" placeholder="{{placeholder}}">
+			</div>
+			{{/each}}
+		</fieldset>
+		{{/each}}
+		<a class="save button">Save</a>
+	</script>
+
+	<script type="text/html" id="template-payment-enter-amount">
+		<!-- TODO -->
+	</script>
+
+	<script type="text/html" id="template-payment-choose-method">
+		<!-- TODO -->
+	</script>
+
+	<script type="text/html" id="template-payment-address">
+		<p>Please send the following amount to the address below.</p>
+		<div class="amount">
+			<div class="amount-value">{{value}}</div>
+			<div class="amount-currency">{{currency}}</div>
+		</div>
+		<div class="address">
+			<div class="address-qr-code"></div>
+			<div class="address-text"></div>
+		</div>
+		<a class="change-payment-method">Change payment method</a>
+	</script>
+
+	<script type="text/html" id="template-payment-success">
+		<h2 class="page-title">Payment Received</h2>
+		<p>Thank you</p>
+	</script>
+
+	<script type="text/html" id="template-enter-pin">
+		<h2 class="page-title">Enter PIN</h2>
+		<p>{{instructions}}</p>
+		<input name="pin" type="password">
+		<div class="pin-keypad">
+			<a class="pin-key" data-value="1">1</a>
+			<a class="pin-key" data-value="2">2</a>
+			<a class="pin-key" data-value="3">3</a>
+			<a class="pin-key" data-value="4">4</a>
+			<a class="pin-key" data-value="5">5</a>
+			<a class="pin-key" data-value="6">6</a>
+			<a class="pin-key" data-value="7">7</a>
+			<a class="pin-key" data-value="8">8</a>
+			<a class="pin-key" data-value="9">9</a>
+			<a class="pin-key back"></a>
+			<a class="pin-key" data-value="0">0</a>
+			<a class="pin-key ok"></a>
+		</div>
+	</script>
+
+	<script src="js/all.js"></script>
+
+</body>
+</html>
