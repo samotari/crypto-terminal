@@ -9,5 +9,10 @@
 		"newer:uglify",
 		"newer:concat",
 		"newer:copy"
+	],
+	"test:e2e": [
+		"connect:test",
+		"selenium:start",
+		"mochaTest:e2e"
 	]
 }

@@ -8,5 +8,12 @@ module.exports = {
 			base: 'public',
 			keepalive: true
 		}
+	},
+	test: {
+		options: {
+			port: 3001,
+			hostname: 'localhost',
+			base: 'public'
+		}
 	}
 };
