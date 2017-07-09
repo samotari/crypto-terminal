@@ -29,14 +29,18 @@
     "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-cssmin": "2.0.0",
     "grunt-contrib-uglify": "2.2.0",
+    "grunt-mocha-test": "0.13.2",
     "grunt-newer": "1.2.0",
     "handlebars": "4.0.6",
     "jquery": "3.2.1",
     "load-grunt-config": "0.19.2",
+    "mocha": "3.4.2",
     "open-sans-fontface": "https://github.com/chill117/open-sans/archive/1.4.2.tar.gz",
     "qrcode-generator": "1.2.0",
+    "selenium-standalone": "6.5.0",
     "sjcl": "1.0.6",
     "time-grunt": "1.4.0",
-    "underscore": "1.8.3"
+    "underscore": "1.8.3",
+    "webdriverio": "4.8.0"
   }
 }

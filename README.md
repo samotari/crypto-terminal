@@ -49,3 +49,12 @@ It's a good idea to test your application without risking real money, which is w
 * [Bitcoin - How it works](https://bitcoin.org/en/how-it-works) - A decent starting point if you are totally new to bitcoin and cryptocurrency.
 * [Testnet Bitcoin Faucet](https://tpfaucet.appspot.com/) - Get testnet bitcoin that you can use for testing purposes.
 * [Mycelium Testnet Wallet](https://play.google.com/store/apps/details?id=com.mycelium.testnetwallet&hl=en) - The Mycelium bitcoin wallet for Android, but for Bitcoin's Testnet.
+
+
+## Tests
+
+End-to-end tests are included in the project which allow automated testing (in a real browser) of the application's user interface. The tests use [selenium](http://www.seleniumhq.org/) and [webdriverio](http://webdriver.io/). To run the tests:
+```bash
+grunt test:e2e
+```
+Note that selenium requires Java Run-time Environment (JRE).
