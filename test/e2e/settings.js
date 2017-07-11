@@ -1,6 +1,7 @@
 'use strict';
 
 var helpers = require('./util/helpers');
+var assert = require('assert');
 
 describe('Settings', function() {
 
@@ -30,4 +31,40 @@ describe('Settings', function() {
 			})
 			.catch(done);
 	});
+
+	it('doesn\'t allow to save empty settings', function(done) {
+		client.url(uri)
+			.waitForVisible('#view .settings.view')
+			.isExisting('input.button.form-button.save[type="submit"]')
+			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:not(:checked)')
+			// add other crypto currencies
+			.click('input.button.form-button.save[type="submit"]')
+			.isExisting('.error')
+			.waitForVisible('.error')
+			.then(function() {
+				done();
+			})
+			.catch(done);
+	});
+
+	it('shouldn\'t display a select payment method view without any payment method available', function(done) {
+		client.url(uri)
+			.waitForVisible('#view .settings.view')
+			.isExisting('a.header-button.home')
+			.click('a.header-button.home')
+			.waitForVisible('#view .pay.view')
+			.isExisting('.numpad .numpad-key[data-value="1"]')
+			.click('.numpad .numpad-key[data-value="1"]')
+			.isExisting('.button.continue')
+			.click('.button.continue')
+			.waitForVisible('#view .choose-payment-method.view')
+			.isExisting('.select-payment-method')
+			.getText('.select-payment-method')
+			.then(function(content) {
+				assert.fail(content,'', 'The content of div.select-payment-method should not be empty.');
+				done();
+			})
+			.catch(done);
+	});
+
 });
