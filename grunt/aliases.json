@@ -11,6 +11,7 @@
 		"newer:copy"
 	],
 	"test:e2e": [
+		"build",
 		"connect:test",
 		"selenium:start",
 		"mochaTest:e2e"
