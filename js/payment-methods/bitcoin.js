@@ -24,6 +24,15 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'text',
 				default: 'm/0/n',
 				required: true
+			},
+			{
+				name: 'network',
+				label: 'Network',
+				type: 'text',
+				default: 'bitcoin', 
+				// 'bitcoin' for the main net
+				// 'testnet' for the bitcoin testnet
+				required: true	
 			}
 		],
 
@@ -66,7 +75,8 @@ app.paymentMethods.bitcoin = (function() {
 			try {
 
 				var scheme = app.settings.get('bitcoin.scheme');
-				var node = bitcoin.HDNode.fromBase58(xpub);
+				var network = app.settings.get('bitcoin.network');
+				var node = bitcoin.HDNode.fromBase58(xpub, bitcoin.networks[network]);
 				var keyPair;
 
 				switch (scheme) {
