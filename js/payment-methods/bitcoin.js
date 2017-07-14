@@ -16,7 +16,12 @@ app.paymentMethods.bitcoin = (function() {
 				name: 'xpub',
 				label: 'Master Public Key',
 				type: 'text',
-				required: true
+				required: true,
+				validate: function(value) {
+					if (!bitcoin.address.fromBase58Check(value)) {
+							throw new Error('Must be between 0 and 100.');
+					}
+				}
 			},
 			{
 				name: 'scheme',
