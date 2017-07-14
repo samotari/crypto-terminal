@@ -67,4 +67,21 @@ describe('Settings', function() {
 			.catch(done);
 	});
 
+	it('show error when input MPK is empty', function(done) {
+		
+		client.url(uri)
+			.waitForVisible('#view .settings.view')
+			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:not(:checked)')
+			.click('label[for="settings-acceptCryptoCurrencies-bitcoin"]')
+			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:checked')
+			.waitForVisible('.form-group.bitcoin')
+			.addValue('#settings-bitcoin-xpub', '')
+			.click('.save')
+			.waitForVisible('.form-error')
+			.then(function() {
+				done();
+			})
+			.catch(done);
+	});
+
 });
