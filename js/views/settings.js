@@ -101,6 +101,10 @@ app.views.Settings = (function() {
 				});
 			});
 
+			if (!(this.$(':input[name="acceptCryptoCurrencies[]"]:checked').length > 0)) {
+				errors.push('Please configure at least one cryptocurrency');
+			}
+
 			if (!_.isEmpty(errors)) {
 				this.showErrors(errors);
 			} else {
