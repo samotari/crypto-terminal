@@ -98,6 +98,13 @@ app.views.Settings = (function() {
 					if (setting.required && !data[key + '.' + setting.name]) {
 						errors.push('[' + paymentMethod.label + '] ' + setting.label + ' is required');
 					}
+					if (setting.validate) {
+						try {
+							setting.validate(data[key + '.' + setting.name]);
+						} catch(err) {
+							errors.push('[' + paymentMethod.label + '] ' + setting.label + ' is wrong');
+						}
+					}
 				});
 			});
 
