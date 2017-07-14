@@ -9,6 +9,7 @@ app.Router = (function() {
 		routes: {
 			'settings': 'settings',
 			'pay': 'pay',
+			'confirmed': 'paymentConfirmation',
 			'pay/:amount': 'choosePaymentMethod',
 			'pay/:amount/:method': 'displayPaymentAddress',
 
@@ -42,6 +43,12 @@ app.Router = (function() {
 		pay: function() {
 
 			app.mainView.renderView('Pay');
+		},
+
+		paymentConfirmation: function(){
+
+			app.mainView.renderView('PaymentConfirmation');
+
 		},
 
 		choosePaymentMethod: function(amount) {
