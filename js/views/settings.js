@@ -101,8 +101,8 @@ app.views.Settings = (function() {
 					if (setting.validate) {
 						try {
 							setting.validate(data[key + '.' + setting.name]);
-						} catch(err) {
-							errors.push('[' + paymentMethod.label + '] ' + setting.label + ' is wrong');
+						} catch (error) {
+							errors.push('[' + paymentMethod.label + '] ' + error);
 						}
 					}
 				});

@@ -91,7 +91,8 @@ app.abstracts.PaymentMethod = (function() {
 		},
 
 		extend: function() {
-			return app.util.extend.apply(undefined, arguments);
+			var args = Array.prototype.slice.call(arguments);
+			return app.util.extend.apply(undefined, [this].concat(args));
 		}
 	};
 

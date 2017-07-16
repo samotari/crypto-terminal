@@ -18,8 +18,8 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'text',
 				required: true,
 				validate: function(value) {
-					if (!bitcoin.address.fromBase58Check(value)) {
-							throw new Error('Must be between 0 and 100.');
+					if (!app.paymentMethods.bitcoin.getHDNodeInstance(value)) {
+						throw new Error('Invalid master public key');
 					}
 				}
 			},
@@ -29,15 +29,6 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'text',
 				default: 'm/0/n',
 				required: true
-			},
-			{
-				name: 'network',
-				label: 'Network',
-				type: 'text',
-				default: 'bitcoin', 
-				// 'bitcoin' for the main net
-				// 'testnet' for the bitcoin testnet
-				required: true	
 			}
 		],
 
@@ -80,8 +71,12 @@ app.paymentMethods.bitcoin = (function() {
 			try {
 
 				var scheme = app.settings.get('bitcoin.scheme');
-				var network = app.settings.get('bitcoin.network');
-				var node = bitcoin.HDNode.fromBase58(xpub, bitcoin.networks[network]);
+				var node = this.getHDNodeInstance(xpub);
+
+				if (!node) {
+					throw new Error('Invalid bitcoin master public key.');
+				}
+
 				var keyPair;
 
 				switch (scheme) {
@@ -102,6 +97,23 @@ app.paymentMethods.bitcoin = (function() {
 			}
 
 			_.defer(cb, null, address);
+		},
+
+		getHDNodeInstance: function(xpub) {
+			var node;
+			_.some(['bitcoin', 'testnet'], function(network) {
+				// Try each network until we find one that works with the given master public key.
+				try {
+					node = bitcoin.HDNode.fromBase58(xpub, bitcoin.networks[network]);
+				} catch (error) {
+					// Do nothing with this error.
+					// But return FALSE so that the loop continues.
+					return false;
+				}
+				// Return TRUE to stop the loop.
+				return true;
+			});
+			return node || null;
 		},
 
 		getExchangeRates: function(cb) {
