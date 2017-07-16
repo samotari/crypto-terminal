@@ -6,7 +6,7 @@ app.paymentMethods.bitcoin = (function() {
 
 	'use strict';
 
-	return {
+	return app.abstracts.PaymentMethod.extend({
 
 		label: 'Bitcoin',
 		code: 'BTC',
@@ -104,38 +104,6 @@ app.paymentMethods.bitcoin = (function() {
 			_.defer(cb, null, address);
 		},
 
-		convertAmount: function(amount, fromCurrency, cb) {
-
-			try {
-				amount = new BigNumber(amount);
-			} catch (error) {
-				return _.defer(cb, new Error('Invalid "amount". Number expected.'));
-			}
-
-			if (!_.isString(fromCurrency)) {
-				return _.defer(cb, new Error('Invalid "fromCurrency". String expected.'));
-			}
-
-			fromCurrency = fromCurrency.toUpperCase();
-
-			this.getExchangeRates(function(error, rates) {
-
-				if (error) {
-					return cb(error);
-				}
-
-				if (_.isUndefined(rates[fromCurrency])) {
-					return cb(new Error('Conversion rate not found for given currency: "' + fromCurrency + '"'));
-				}
-
-				var rate = rates[fromCurrency];
-				amount = amount.dividedBy(rate);
-				// Maximum of 8 decimal places.
-				amount = amount.round(8);
-				cb(null, amount.toString());
-			});
-		},
-
 		getExchangeRates: function(cb) {
 
 			// Get exchange rate info from Coinbase's API.
@@ -154,7 +122,5 @@ app.paymentMethods.bitcoin = (function() {
 
 			}).fail(cb);
 		}
-
-	};
-
+	});
 })();
