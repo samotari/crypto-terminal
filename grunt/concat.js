@@ -30,7 +30,8 @@ module.exports = {
 			'node_modules/handlebars/dist/handlebars.js',
 			'node_modules/qrcode-generator/qrcode.js',
 			'build/bitcoin.js',
-			'node_modules/sjcl/sjcl.js',
+			'build/bs58check.js',
+			'build/ecurve.js',
 			'node_modules/moment/moment.js',
 
 			// Application files:
@@ -39,6 +40,7 @@ module.exports = {
 			'js/util.js',
 			'js/lang/*.js',
 			'js/abstracts/*.js',
+			'js/services/*.js',
 			'js/models/*.js',
 			'js/collections/*.js',
 			'js/views/*.js',
@@ -59,10 +61,12 @@ module.exports = {
 			'node_modules/jquery/dist/jquery.min.js',
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/backbone/backbone-min.js',
+			'node_modules/backbone.localstorage/build/backbone.localStorage.min.js',
 			'node_modules/handlebars/dist/handlebars.min.js',
 			'build/qrcode-generator/qrcode.min.js',
 			'build/bitcoin.min.js',
-			'node_modules/sjcl/sjcl.js',
+			'build/bs58check.min.js',
+			'build/ecurve.min.js',
 			'node_modules/moment/min/moment.min.js',
 
 			// Application files:
@@ -71,6 +75,7 @@ module.exports = {
 			'build/js/util.min.js',
 			'build/js/lang/*.min.js',
 			'build/js/abstracts/*.min.js',
+			'build/js/services/*.min.js',
 			'build/js/models/*.min.js',
 			'build/js/collections/*.min.js',
 			'build/js/views/*.min.js',

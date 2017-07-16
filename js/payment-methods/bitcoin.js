@@ -129,22 +129,7 @@ app.paymentMethods.bitcoin = (function() {
 		},
 
 		getExchangeRates: function(cb) {
-
-			// Get exchange rate info from Coinbase's API.
-			$.get('https://api.coinbase.com/v2/exchange-rates?currency=BTC').then(function(result) {
-
-				var rates = {};
-
-				_.each(result.data.rates, function(rate, code) {
-					code = code.toUpperCase();
-					if (_.contains(app.config.supportedDisplayCurrencies, code)) {
-						rates[code] = rate;
-					}
-				});
-
-				cb(null, rates);
-
-			}).fail(cb);
+			app.services.coinbase.getExchangeRates('BTC', cb);
 		},
 
 		checkPaymentReceived: function(paymentRequest, cb) {

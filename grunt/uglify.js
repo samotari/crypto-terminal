@@ -18,13 +18,26 @@ module.exports = {
 			}
 		]
 	},
-	bitcoinjs: {
+	bitcoin: {
 		options: {
 			mangle: {
-				except: ['Array', 'BigInteger', 'Boolean', 'ECPair', 'Function', 'Number', 'Point']
+				except: ['BigInteger', 'ECPair', 'Point']
 			}
 		},
 		src: 'build/bitcoin.js',
 		dest: 'build/bitcoin.min.js'
+	},
+	bs58check: {
+		src: 'build/bs58check.js',
+		dest: 'build/bs58check.min.js'
+	},
+	ecurve: {
+		options: {
+			mangle: {
+				except: ['Point']
+			}
+		},
+		src: 'build/ecurve.js',
+		dest: 'build/ecurve.min.js'
 	}
 };

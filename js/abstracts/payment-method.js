@@ -50,7 +50,7 @@ app.abstracts.PaymentMethod = (function() {
 		*/
 		getExchangeRates: function(cb) {
 			_.defer(function() {
-				cb(new Error('This payment method has not implemented the getExchangeRates(cb) method.'));
+				cb(new Error('This payment method has not implemented the `getExchangeRates` method.'));
 			});
 		},
 
@@ -62,7 +62,7 @@ app.abstracts.PaymentMethod = (function() {
 		*/
 		checkPaymentReceived: function(paymentRequest, cb) {
 			_.defer(function() {
-				cb(new Error('This payment method has not implemented the checkPaymentReceived(paymentRequest, cb) method.'));
+				cb(new Error('This payment method has not implemented the `checkPaymentReceived` method.'));
 			});
 		},
 

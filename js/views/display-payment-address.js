@@ -160,7 +160,7 @@ app.views.DisplayPaymentAddress = (function() {
 				}, function(error) {
 
 					if (error) {
-						app.mainView.showMessage(error);
+						return app.mainView.showMessage(error);
 					}
 
 					if (received) {
