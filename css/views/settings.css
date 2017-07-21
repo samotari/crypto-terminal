@@ -16,6 +16,9 @@
 .view.settings .form-group {
 	display: none;
 }
+.view.settings .form-group.settings {
+	display: block;
+}
 .view.settings .form-group.accepted {
 	display: block;
 }

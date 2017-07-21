@@ -62,6 +62,19 @@
 		<form>
 			<div class="form">
 				<div class="form-error error"></div>
+				<div class="form-group settings">
+					<div class="form-group-label">General settings</div>
+					{{#each settings}}
+							<div class="form-row">
+								<label for="settings-{{name}}" class="form-label">{{label}}</label>
+								<select  class="form-field" id="settings-{{key}}" name="{{name}}" >
+								{{#each options}}
+									  <option {{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
+								{{/each}}
+								</select>
+							</div>
+					{{/each}}
+				</div>
 				<div class="form-group acceptCryptoCurrencies">
 					<div class="form-group-label">Which currencies do you want to accept?</div>
 					{{#each paymentMethods}}
@@ -138,11 +151,7 @@
 			<div class="amount display">
 				<div class="amount-value">{{amount.display.value}}</div>
 				<div class="amount-currency">
-					<select class="display-currency-change">
-					{{#each displayCurrencies}}
-						<option{{#if selected}} selected{{/if}}>{{code}}</option>
-					{{/each}}
-					</select>
+						{{amount.display.currency}}
 				</div>
 			</div>
 			<div class="amount crypto">

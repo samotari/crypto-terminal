@@ -36,6 +36,20 @@ app.views.Settings = (function() {
 				paymentMethod.accepted = _.contains(acceptCryptoCurrencies, key);
 				return paymentMethod;
 			});
+
+			data.settings = _.map(app.config.settings, function(setting){
+				if (setting.type === 'select'){
+					setting.options = _.map(setting.options, function(option){
+						return {
+							key: option.key,
+							label: option.label,
+							selected: app.settings.get('displayCurrency') === option.key
+						}
+					});
+				}
+				return settings
+			});
+
 			this.$el.html(template(data));
 			this.onRender();
 			return this;
