@@ -4,17 +4,11 @@ app.config = (function() {
 
 	'use strict';
 
-	return {
+	var config = {
 		qrCodes: {
 			cellSize: 5,
 			margin: 0
 		},
-		supportedDisplayCurrencies: [
-			// Crypto:
-			'BTC', 'XMR',
-			// Fiat:
-			'CZK', 'EUR', 'USD'
-		],
 		settings: [
 			{
 				name: 'displayCurrency',
@@ -22,28 +16,35 @@ app.config = (function() {
 				type: 'select',
 				required: true,
 				options: [
-					// Crypto
 					{
 						key: 'BTC',
-						label: 'Bitcoin'
+						label: 'BTC'
 					},
-					// Fiat
 					{
 						key: 'EUR',
 						label: 'EUR'
-					}, {
+					},
+					{
 						key: 'CZK',
 						label: 'CZK'
-					}, {
+					},
+					{
 						key: 'USD',
 						label: 'USD'
 					}
 				]
-			},
-		/* {
-					// more settings
-			} */
-		],
+			}
+		]
 	};
+
+	// Build an array of display currency keys.
+	config.supportedDisplayCurrencies = _.map(
+		_.findWhere(config.settings, { name: 'displayCurrency' }).options,
+		function(option) {
+			return option.key;
+		}
+	);
+
+	return config;
 
 })();

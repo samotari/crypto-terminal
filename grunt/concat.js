@@ -32,6 +32,7 @@ module.exports = {
 
 			// Application files:
 			'js/jquery.extend/*',
+			'js/handlebars.extend/*',
 			'js/abstracts/*.js',
 			'js/util.js',
 			'js/config.js',
@@ -58,6 +59,7 @@ module.exports = {
 
 			// Application files:
 			'build/js/jquery.extend/*',
+			'build/js/handlebars.extend/*',
 			'build/js/abstracts/*.min.js',
 			'build/js/util.min.js',
 			'build/js/config.min.js',
