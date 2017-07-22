@@ -47,7 +47,7 @@ app.views.Settings = (function() {
 						}
 					});
 				}
-				return settings
+				return setting
 			});
 
 			this.$el.html(template(data));
