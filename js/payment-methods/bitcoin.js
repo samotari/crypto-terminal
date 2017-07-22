@@ -116,6 +116,18 @@ app.paymentMethods.bitcoin = (function() {
 			return node || null;
 		},
 
+		getNetwork: function() {
+			var xpub = app.settings.get('bitcoin.xpub');
+			return _.find(['bitcoin', 'testnet'], function(network) {
+				try {
+					bitcoin.HDNode.fromBase58(xpub, bitcoin.networks[network]);
+				} catch (error) {
+					return false;
+				}
+				return true;
+			});
+		},
+
 		getExchangeRates: function(cb) {
 
 			// Get exchange rate info from Coinbase's API.
@@ -131,6 +143,46 @@ app.paymentMethods.bitcoin = (function() {
 				});
 
 				cb(null, rates);
+
+			}).fail(cb);
+		},
+
+		checkPaymentReceived: function(paymentRequest, cb) {
+
+			var matches = paymentRequest.match(/bitcoin:([a-zA-Z0-9]+)\?amount=([0-9\.]+)/);
+
+			if (!matches) {
+				return _.defer(cb, new Error('Invalid payment request'));
+			}
+
+			var address = matches[1];
+			var amount = matches[2];
+			var network = this.getNetwork();
+			var uri;
+
+			switch (network) {
+				case 'testnet':
+					uri = 'https://testnet.blockexplorer.com';
+					break;
+				default:
+					uri = 'https://blockexplorer.com';
+					break;
+			}
+
+			uri += '/api/addr/' + encodeURIComponent(address) + '/unconfirmedBalance';
+
+			$.get(uri).then(function(result) {
+
+				try {
+					var amountReceived = new BigNumber(result);
+					// Convert to BTC from satoshis.
+					amountReceived = amountReceived.dividedBy('100000000');
+				} catch (error) {
+					return cb(error);
+				}
+
+				var wasReceived = amountReceived.greaterThanOrEqualTo(amount);
+				cb(null, wasReceived);
 
 			}).fail(cb);
 		}

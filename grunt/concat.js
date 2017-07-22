@@ -21,6 +21,7 @@ module.exports = {
 		nonull: true,
 		src: [
 			// Dependencies:
+			'node_modules/async/dist/async.js',
 			'node_modules/bignumber.js/bignumber.js',
 			'node_modules/jquery/dist/jquery.js',
 			'node_modules/underscore/underscore.js',
@@ -47,6 +48,7 @@ module.exports = {
 		nonull: true,
 		src: [
 			// Dependencies:
+			'node_modules/async/dist/async.min.js',
 			'node_modules/bignumber.js/bignumber.min.js',
 			'node_modules/jquery/dist/jquery.min.js',
 			'node_modules/underscore/underscore-min.js',

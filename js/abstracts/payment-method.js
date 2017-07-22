@@ -54,6 +54,18 @@ app.abstracts.PaymentMethod = (function() {
 			});
 		},
 
+		/*
+			`paymentRequest` .. A cryptocurrency payment request (e.g "bitcoin:ADDRESS?amount=AMOUNT")
+			`cb(error, wasReceived)`:
+				`error` .. An error object or NULL
+				`wasReceived` .. TRUE or FALSE
+		*/
+		checkPaymentReceived: function(paymentRequest, cb) {
+			_.defer(function() {
+				cb(new Error('This payment method has not implemented the checkPaymentReceived(paymentRequest, cb) method.'));
+			});
+		},
+
 		convertAmount: function(amount, fromCurrency, cb) {
 
 			_.defer(_.bind(function() {
