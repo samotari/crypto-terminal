@@ -13,7 +13,6 @@ app.views.DisplayPaymentAddress = (function() {
 		template: '#template-pay-address',
 
 		events: {
-			'change .display-currency-change': 'updateCryptoAmount',
 			'click .cancel': 'cancel'
 		},
 
@@ -60,7 +59,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		updateCryptoAmount: function() {
 
-			var displayCurrency = this.$('.display-currency-change').val();
+			var displayCurrency = app.settings.get('displayCurrency');
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var displayAmount = this.options.amount;
 
@@ -100,7 +99,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		renderCryptoAmount: function(amount) {
 
-			var displayCurrency = this.$('.display-currency-change').val();
+			var displayCurrency = app.settings.get('displayCurrency');
 			var paymentMethod = app.paymentMethods[this.options.method];
 			this.$cryptoAmount.find('.amount-value').text(amount);
 			this.$cryptoAmount.toggleClass('visible', displayCurrency !== paymentMethod.code);
