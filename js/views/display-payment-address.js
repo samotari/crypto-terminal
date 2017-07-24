@@ -124,8 +124,56 @@ app.views.DisplayPaymentAddress = (function() {
 
 				this.renderQrCode(paymentRequest);
 				this.renderAddress(address);
+				this.listenForPayment(paymentRequest);
 
 			}, this));
+		},
+
+		listenForPayment: function(paymentRequest) {
+
+			var paymentMethod = app.paymentMethods[this.options.method];
+			var received;
+
+			// Delay times in milliseconds:
+			var delays = {
+				// Wait time before the first check:
+				first: 10000,
+				// Wait time between checks:
+				between: 5000,
+				// When to stop performing checks:
+				timeout: 180000
+			};
+
+			setTimeout(function() {
+				var startTime = (new Date).getTime();
+				async.until(function() {
+					// If the following returns RETURN, the loop will stop.
+					return received || ((new Date).getTime() - startTime) >= delays.timeout;
+				}, function(next) {
+					paymentMethod.checkPaymentReceived(paymentRequest, function(error, wasReceived) {
+						if (error) return next(error);
+						if (wasReceived) {
+							received = true;
+							return next();
+						}
+						// Wait before checking again.
+						setTimeout(next, delays.between);
+					});
+				}, function(error) {
+
+					if (error) {
+						app.mainView.showMessage(error);
+					}
+
+					if (received) {
+						// Show success screen.
+						app.router.navigate('confirmed', { trigger: true });
+					} else {
+						app.mainView.showMessage(new Error('Timed out while waiting for payment'));
+					}
+
+				});
+			}, delays.first);
 		},
 
 		cancel: function() {
