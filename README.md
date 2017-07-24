@@ -50,6 +50,11 @@ It's a good idea to test your application without risking real money, which is w
 * [Testnet Bitcoin Faucet](https://tpfaucet.appspot.com/) - Get testnet bitcoin that you can use for testing purposes.
 * [Mycelium Testnet Wallet](https://play.google.com/store/apps/details?id=com.mycelium.testnetwallet&hl=en) - The Mycelium bitcoin wallet for Android, but for Bitcoin's Testnet.
 
+Valid testnet master public key that you can use while developing:
+```
+tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs
+```
+
 
 ## Tests
 
