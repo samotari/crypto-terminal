@@ -26,6 +26,7 @@ module.exports = {
 			'node_modules/jquery/dist/jquery.js',
 			'node_modules/underscore/underscore.js',
 			'node_modules/backbone/backbone.js',
+			'node_modules/backbone.localstorage/build/backbone.localStorage.js',
 			'node_modules/handlebars/dist/handlebars.js',
 			'node_modules/qrcode-generator/qrcode.js',
 			'build/bitcoin.js',
@@ -38,6 +39,7 @@ module.exports = {
 			'js/config.js',
 			'js/router.js',
 			'js/models/*.js',
+			'js/collections/*.js',
 			'js/views/*.js',
 			'js/payment-methods/*.js',
 			'js/init.js'
@@ -65,6 +67,7 @@ module.exports = {
 			'build/js/config.min.js',
 			'build/js/router.min.js',
 			'build/js/models/*.min.js',
+			'build/js/collections/*.min.js',
 			'build/js/views/*.min.js',
 			'build/js/payment-methods/*.min.js',
 			'build/js/init.min.js'
