@@ -37,13 +37,6 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 			};
 
-			data.displayCurrencies = _.map(app.config.supportedDisplayCurrencies, function(code) {
-				return {
-					code: code,
-					selected: code === app.settings.get('displayCurrency')
-				};
-			});
-
 			this.$el.html(template(data));
 			this.onRender();
 			return this;

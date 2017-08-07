@@ -65,14 +65,24 @@
 				<div class="form-group settings">
 					<div class="form-group-label">General settings</div>
 					{{#each settings}}
-							<div class="form-row">
-								<label for="settings-{{name}}" class="form-label">{{label}}</label>
-								<select  class="form-field" id="settings-{{key}}" name="{{name}}" >
-								{{#each options}}
-									  <option {{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
-								{{/each}}
-								</select>
-							</div>
+						<div class="form-row">
+							<label for="settings-{{name}}" class="form-label">{{label}}</label>
+							{{#switch type}}
+								{{#case "select" break=true}}
+							<select class="form-field" id="settings-{{key}}" name="{{name}}">
+							{{#each options}}
+								<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
+							{{/each}}
+							</select>
+								{{/case}}
+								{{#case "password" break=true}}
+							<input type="password" name="{{name}}" value="{{value}}">
+								{{/case}}
+								{{#default}}
+							<input type="text" name="{{name}}" value="{{value}}">
+								{{/default}}
+							{{/switch}}
+						</div>
 					{{/each}}
 				</div>
 				<div class="form-group acceptCryptoCurrencies">
@@ -88,7 +98,21 @@
 					{{#each settings}}
 					<div class="form-row">
 						<label for="settings-{{../key}}-{{name}}" class="form-label">{{label}}</label>
+						{{#switch type}}
+							{{#case "select" break=true}}
+						<select id="settings-{{../key}}-{{name}}" name="{{../key}}.{{name}}">
+						{{#each options}}
+							<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
+						{{/each}}
+						</select>
+							{{/case}}
+							{{#case "password" break=true}}
+						<input id="settings-{{../key}}-{{name}}" class="form-field" name="{{../key}}.{{name}}" type="password" value="{{value}}">
+							{{/case}}
+							{{#default}}
 						<input id="settings-{{../key}}-{{name}}" class="form-field" name="{{../key}}.{{name}}" type="text" value="{{value}}">
+							{{/default}}
+						{{/switch}}
 					</div>
 					{{/each}}
 				</div>
@@ -150,9 +174,7 @@
 		<div class="amount-wrap">
 			<div class="amount display">
 				<div class="amount-value">{{amount.display.value}}</div>
-				<div class="amount-currency">
-						{{amount.display.currency}}
-				</div>
+				<div class="amount-currency">{{amount.display.currency}}</div>
 			</div>
 			<div class="amount crypto">
 				<div class="amount-value">{{amount.crypto.value}}</div>

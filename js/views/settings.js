@@ -37,17 +37,24 @@ app.views.Settings = (function() {
 				return paymentMethod;
 			});
 
-			data.settings = _.map(app.config.settings, function(setting){
-				if (setting.type === 'select'){
-					setting.options = _.map(setting.options, function(option){
-						return {
-							key: option.key,
-							label: option.label,
-							selected: app.settings.get('displayCurrency') === option.key
-						}
-					});
+			// Prepare general settings for the template.
+			data.settings = _.map(app.config.settings, function(setting) {
+				switch (setting.type) {
+					case 'select':
+						setting.options = _.map(setting.options || [], function(option) {
+							return {
+								key: option.key,
+								label: option.label,
+								selected: app.settings.get(setting.name) === option.key
+							}
+						});
+						break;
+
+					default:
+						setting.value = app.settings.get(setting.name);
+						break;
 				}
-				return setting
+				return setting;
 			});
 
 			this.$el.html(template(data));
@@ -103,9 +110,38 @@ app.views.Settings = (function() {
 			evt.preventDefault();
 			this.clearErrors();
 			var data = this.$('form').serializeJSON();
+			var errors = this.validate(data);
+
+			if (!_.isEmpty(errors)) {
+				this.showErrors(errors);
+			} else {
+				// No errors.
+				// Try saving the settings.
+				data.configured = '1';
+				app.settings.set(data).save();
+				this.showSuccess('Saved!');
+			}
+		},
+
+		validate: function(data) {
+
 			var errors = [];
 
-			// Check required fields.
+			// Check general settings.
+			_.each(app.config.settings, function(setting) {
+				if (setting.required && !data[setting.name]) {
+					errors.push(setting.label + ' is required');
+				}
+				if (setting.validate) {
+					try {
+						setting.validate(data[setting.name]);
+					} catch (error) {
+						errors.push(error);
+					}
+				}
+			});
+
+			// Check required fields for each accepted cryptocurrency.
 			_.each(data.acceptCryptoCurrencies, function(key) {
 				var paymentMethod = app.paymentMethods[key];
 				_.each(paymentMethod.settings, function(setting) {
@@ -122,19 +158,12 @@ app.views.Settings = (function() {
 				});
 			});
 
-			if (!(this.$(':input[name="acceptCryptoCurrencies[]"]:checked').length > 0)) {
+			// Make sure at least one cryptocurrency is accepted.
+			if (_.isEmpty(data.acceptCryptoCurrencies)) {
 				errors.push('Please configure at least one cryptocurrency');
 			}
 
-			if (!_.isEmpty(errors)) {
-				this.showErrors(errors);
-			} else {
-				// No errors.
-				// Try saving the settings.
-				data.configured = '1';
-				app.settings.set(data).save();
-				this.showSuccess('Saved!');
-			}
+			return errors;
 		}
 
 	});
