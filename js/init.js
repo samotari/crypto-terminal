@@ -14,6 +14,9 @@ $(function() {
 	app.settings = new app.models.Settings();
 	app.settings.fetch();
 
+	// Initialize collections
+	app.paymentRequests = new app.collections.PaymentRequests();
+
 	// Initialize the main view.
 	app.mainView = new app.views.Main();
 	app.mainView.render();
