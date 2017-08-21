@@ -17,14 +17,15 @@ app.paymentMethods.monero = (function() {
 		getExchangeRates: function(cb) {
 
 			// Get exchange rate info from Coinbase's API.
-			$.get('https://api.coinbase.com/v2/exchange-rates?currency=BTC').then(function(result) {
+			// Monero is NOT on Coinbase
+			$.get('http://moneropric.es/fiat.json').then(function(result) {
 
 				var rates = {};
 
-				_.each(result.data.rates, function(rate, code) {
-					code = code.toUpperCase();
-					if (_.contains(app.config.supportedDisplayCurrencies, code)) {
-						rates[code] = rate;
+				_.each(result.rates, function(rate) {
+					rate[code] = rate[code].toUpperCase();
+					if (_.contains(app.config.supportedDisplayCurrencies, rate[code])) {
+						rates[rate[code]] = rate["fiat-rate"];
 					}
 				});
 
