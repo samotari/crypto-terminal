@@ -15,7 +15,6 @@ The technology stack will include:
 ## Requirements
 
 * [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm). For Windows, use an [installer](https://nodejs.org/en/download/) from the nodejs website.
-* [cordova](https://cordova.apache.org/) - `npm install -g cordova`
 * [grunt-cli](https://gruntjs.com/getting-started) - `npm install -g grunt-cli`
 
 
