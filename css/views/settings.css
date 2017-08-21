@@ -3,6 +3,11 @@
 	padding: 24px;
 	opacity: 0.5;
 }
+
+.view.settings input {
+	border: 1px solid #ddd;
+}
+
 .view.settings input[type="checkbox"] {
 	position: absolute;
 	top: 0;

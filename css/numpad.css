@@ -29,3 +29,10 @@
 .numpad-key:nth-child(n+4) {
 	border-top: none;
 }
+
+@media (min-width: 1024px) {
+	.numpad-key {
+		height: 80px;
+		padding: 20px;
+	}
+}
