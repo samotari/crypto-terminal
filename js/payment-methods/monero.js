@@ -14,6 +14,32 @@ app.paymentMethods.monero = (function() {
 		settings: [
 		],
 
+		generatePaymentRequest: function(amount, cb) {
+
+			this.getPaymentId(function(error, paymentId) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				var paymentRequest = 'monero:' + address;
+				paymentRequest += '?amount=' + amount;
+				paymentRequest += '&payment_id=' + paymentId;
+				cb(null, paymentRequest, address);
+			});
+		},
+
+		generatePaymentId: function(cb) {
+
+			var randomString = app.util.generateRandomString(32);
+			var paymentId = '';
+			for (var index = 0; index < randomString.length; index++ ) {
+				paymentId += randomString.charCodeAt(index).toString(16);
+			}
+
+			_.defer(cb, null, paymentId);
+		},
+
 		getExchangeRates: function(cb) {
 
 			// Get exchange rate info from Coinbase's API.
