@@ -126,6 +126,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var received;
+			var savePaymentInPaymentHistory = _.bind(this.savePaymentInPaymentHistory, this);
 
 			// Delay times in milliseconds:
 			var delays = {
@@ -143,10 +144,11 @@ app.views.DisplayPaymentAddress = (function() {
 					// If the following returns RETURN, the loop will stop.
 					return received || ((new Date).getTime() - startTime) >= delays.timeout;
 				}, function(next) {
-					paymentMethod.checkPaymentReceived(paymentRequest, function(error, wasReceived) {
+					paymentMethod.checkPaymentReceived(paymentRequest, function(error, wasReceived, amountReceived) {
 						if (error) return next(error);
 						if (wasReceived) {
 							received = true;
+							savePaymentInPaymentHistory(paymentMethod.code, 'address', received, amountReceived);
 							return next();
 						}
 						// Wait before checking again.
@@ -173,6 +175,17 @@ app.views.DisplayPaymentAddress = (function() {
 
 			// Navigate back to the amount screen.
 			app.router.navigate('pay', { trigger: true });
+		},
+
+		savePaymentInPaymentHistory : function(currency, address, confirmed, amountReceived) {
+			var paymentTransaction = new app.models.PaymentRequest({
+				currency: currency,
+				address: address,
+				confirmed: confirmed,
+				amount: amountReceived
+			})
+			app.paymentRequests.add(paymentTransaction)
+			paymentTransaction.save()
 		}
 
 	});

@@ -45,6 +45,7 @@
 		</div>
 		<div id="menu">
 			<a class="menu-item" href="#settings">Settings</a>
+			<a class="menu-item" href="#payment-history">Payments History</a>
 		</div>
 		<div id="menu-cover"></div>
 		<div id="view">
@@ -198,6 +199,14 @@
 			<a class="numpad-key" data-value="0">0</a>
 			<a class="numpad-key backspace">&lt;</a>
 		</div>
+	</script>
+
+	<script type="text/html" id="template-payment-history">
+		<h2 class="page-title">Payments History</h2>
+		{{#each payments}}
+			<label>{{formatDate timestamp "l"}}</label> - <label>{{amount}} {{currency}}</label>
+			<hr>
+		{{/each}}
 	</script>
 
 	<script src="js/all.js"></script>

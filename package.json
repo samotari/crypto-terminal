@@ -36,6 +36,7 @@
     "jquery": "3.2.1",
     "load-grunt-config": "0.19.2",
     "mocha": "3.4.2",
+    "moment": "2.18.1",
     "open-sans-fontface": "https://github.com/chill117/open-sans/archive/1.4.2.tar.gz",
     "qrcode-generator": "1.2.0",
     "selenium-standalone": "6.5.0",

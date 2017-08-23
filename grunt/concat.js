@@ -31,6 +31,7 @@ module.exports = {
 			'node_modules/qrcode-generator/qrcode.js',
 			'build/bitcoin.js',
 			'node_modules/sjcl/sjcl.js',
+			'node_modules/moment/moment.js',
 
 			// Application files:
 			'js/jquery.extend/*',
@@ -60,6 +61,7 @@ module.exports = {
 			'build/qrcode-generator/qrcode.min.js',
 			'build/bitcoin.min.js',
 			'node_modules/sjcl/sjcl.js',
+			'node_modules/moment/min/moment.min.js',
 
 			// Application files:
 			'build/js/jquery.extend/*',
