@@ -13,6 +13,7 @@ app.Router = (function() {
 			'pay/:amount': 'choosePaymentMethod',
 			'pay/:amount/:method': 'displayPaymentAddress',
 			'payment-history': 'paymentHistory',
+			'payment-details/:paymentId': 'paymentDetails',
 
 			// For un-matched route, default to:
 			'*notFound': 'notFound'
@@ -68,6 +69,13 @@ app.Router = (function() {
 		paymentHistory: function() {
 
 			app.mainView.renderView('PaymentHistory')
+		},
+
+		paymentDetails: function(paymentId) {
+
+			app.mainView.renderView('PaymentDetails', {
+				paymentId: paymentId
+			});
 		}
 
 	});

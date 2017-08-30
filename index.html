@@ -204,9 +204,18 @@
 	<script type="text/html" id="template-payment-history">
 		<h2 class="page-title">Payments History</h2>
 		{{#each payments}}
-			<label>{{formatDate timestamp "l"}}</label> - <label>{{amount}} {{currency}}</label>
+			<a class="payment" id="{{id}}">
+				<label>{{formatDate timestamp "l"}}</label> | <label>{{amount}} {{currency}}</label>
+			</a>
 			<hr>
 		{{/each}}
+	</script>
+
+	<script type="text/html" id="template-payment-details">
+		<h2 class="page-title">Payment Details</h2>
+		<p>{{amount}} {{currency}}</p>
+		<p>{{formatDate timestamp "l"}}</p>
+
 	</script>
 
 	<script src="js/all.js"></script>

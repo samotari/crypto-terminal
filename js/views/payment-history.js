@@ -14,6 +14,7 @@ app.views.PaymentHistory = (function() {
 		template: '#template-payment-history',
 
 		events: {
+			'click .payment': 'gotoPaymentDetails'
 		},
 
 		render: function() {
@@ -35,5 +36,11 @@ app.views.PaymentHistory = (function() {
 			this.$el.html(template(data));
 			return this;
 		},
+
+		gotoPaymentDetails: function(ev) {
+
+			var paymentId = $(ev.currentTarget).attr('id');
+			app.router.navigate('payment-details/' + paymentId, { trigger: true });
+		}
 	});
 })();
