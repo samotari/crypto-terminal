@@ -22,5 +22,11 @@ module.exports = {
 		},
 		src: 'node_modules/ecurve/lib/index.js',
 		dest: 'build/ecurve.js'
+	monero: {
+		options: {
+			standalone: 'monero'
+		},
+		src: 'exports/monero.js',
+		dest: 'build/monero.js'
 	}
 };
