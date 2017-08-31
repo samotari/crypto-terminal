@@ -40,4 +40,13 @@ module.exports = {
 		src: 'build/ecurve.js',
 		dest: 'build/ecurve.min.js'
 	}
+	monerojs: {
+		options: {
+			mangle: {
+				except: ['Array', 'BigInteger', 'Boolean', 'ECPair', 'Function', 'Number', 'Point']
+			}
+		},
+		src: 'build/monero.js',
+		dest: 'build/monero.min.js'
+	},
 };
