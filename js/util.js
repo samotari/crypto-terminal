@@ -19,7 +19,21 @@ app.util = (function() {
 		extend: function() {
 			var args = Array.prototype.slice.call(arguments);
 			return _.extend.apply(_, [{}].concat(args));
-		}
+		},
+
+
+
+		// Monero Address Validation
+		// https://xmr.llcoins.net/addresstests.html (site.js)
+		hextobin: function (hex){
+		    if (hex.length % 2 !== 0) throw "Hex string has invalid length!";
+		        var res = new Uint8Array(hex.length / 2);
+		    for (var i = 0; i < hex.length / 2; ++i) {
+		        res[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+		    }
+		    return res;
+		},
+
 	};
 
 })();
