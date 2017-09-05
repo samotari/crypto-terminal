@@ -203,18 +203,40 @@
 
 	<script type="text/html" id="template-payment-history">
 		<h2 class="page-title">Payments History</h2>
-		{{#each payments}}
-			<a class="payment" id="{{id}}">
-				<label>{{formatDate timestamp "l"}}</label> | <label>{{amount}} {{currency}}</label>
-			</a>
-			<hr>
-		{{/each}}
+		<div class="payment-history-list">
+			{{#each payments}}
+				<div class="payment-history-item" data-payment-id={{id}}>
+					{{#if confirmed}}
+						<span class="payment-history-confirmation-circle payment-history-confirmed"></span>
+					{{else}}
+						<span class="payment-history-confirmation-circle payment-history-unconfirmed"></span>
+					{{/if}}
+					<div class="payment-history-item-body">
+						<p>{{formatDate timestamp "lll"}}</p>
+						<P class="payment-history-item-amount">{{amount}} {{currency}}</P>
+					</div>
+				</div>
+			{{/each}}
+		</div>
 	</script>
 
 	<script type="text/html" id="template-payment-details">
 		<h2 class="page-title">Payment Details</h2>
-		<p>{{amount}} {{currency}}</p>
-		<p>{{formatDate timestamp "l"}}</p>
+		{{#if confirmed}}
+			<div class="payment-details-confirmation-circle payment-details-confirmed">
+				<span>&#10003;</span><span>Confirmed</span>
+			</div>
+		{{else}}
+			<div class="payment-details-confirmation-circle payment-details-unconfirmed">
+				<span>Unconfrimed</span>
+			</div>
+		{{/if}}
+		<div class="payment-details-elements">
+			<span>Date</span>
+			<p>{{formatDate timestamp "llll"}}</p>
+			<span>Amount</span>
+			<p>{{amount}} {{currency}}</p>
+		</div>
 
 	</script>
 

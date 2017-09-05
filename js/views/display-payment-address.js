@@ -16,6 +16,8 @@ app.views.DisplayPaymentAddress = (function() {
 			'click .cancel': 'cancel'
 		},
 
+		paymentId: '',
+
 		initialize: function(options) {
 
 			this.options = options || {};
@@ -107,14 +109,15 @@ app.views.DisplayPaymentAddress = (function() {
 		updateQrCode: function(amount) {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
+			var savePaymentInPaymentHistory = _.bind(this.savePaymentInPaymentHistory, this);
 
 			paymentMethod.generatePaymentRequest(amount, _.bind(function(error, paymentRequest, address) {
-
 				if (error) {
 					this.resetQrCode();
 					return app.mainView.showMessage(error);
 				}
-
+				var amountFromPaymentRequest = paymentRequest.split('=')[1];
+				savePaymentInPaymentHistory(paymentMethod.code, address, false, amountFromPaymentRequest);
 				this.renderQrCode(paymentRequest);
 				this.renderAddress(address);
 				this.listenForPayment(paymentRequest);
@@ -126,7 +129,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var received;
-			var savePaymentInPaymentHistory = _.bind(this.savePaymentInPaymentHistory, this);
+			var updateToConfirmedPaymentInPaymentHistroy = _.bind(this.updateToConfirmedPaymentInPaymentHistroy, this);
 
 			// Delay times in milliseconds:
 			var delays = {
@@ -148,7 +151,7 @@ app.views.DisplayPaymentAddress = (function() {
 						if (error) return next(error);
 						if (wasReceived) {
 							received = true;
-							savePaymentInPaymentHistory(paymentMethod.code, 'address', received, amountReceived);
+							updateToConfirmedPaymentInPaymentHistroy();
 							return next();
 						}
 						// Wait before checking again.
@@ -184,8 +187,18 @@ app.views.DisplayPaymentAddress = (function() {
 				confirmed: confirmed,
 				amount: amountReceived
 			})
-			app.paymentRequests.add(paymentTransaction)
-			paymentTransaction.save()
+			app.paymentRequests.add(paymentTransaction);
+			paymentTransaction.save().then(_.bind(function() {
+				this.paymentId = paymentTransaction.id;
+			}, this));
+		},
+
+		updateToConfirmedPaymentInPaymentHistroy: function() {
+			if (!this.paymentId) {
+				app.mainView.showMessage(new Error('There is no payment id'));
+			}
+			var paymentTransaction = app.paymentRequests.get(this.paymentId);
+			paymentTransaction.save({confirmed: true});
 		}
 
 	});
