@@ -182,7 +182,7 @@ app.paymentMethods.bitcoin = (function() {
 				}
 
 				var wasReceived = amountReceived.greaterThanOrEqualTo(amount);
-				cb(null, wasReceived);
+				cb(null, wasReceived, amountReceived);
 
 			}).fail(cb);
 		}

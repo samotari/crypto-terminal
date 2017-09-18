@@ -16,6 +16,8 @@ app.views.DisplayPaymentAddress = (function() {
 			'click .cancel': 'cancel'
 		},
 
+		paymentId: '',
+
 		initialize: function(options) {
 
 			this.options = options || {};
@@ -107,14 +109,15 @@ app.views.DisplayPaymentAddress = (function() {
 		updateQrCode: function(amount) {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
+			var savePaymentInPaymentHistory = _.bind(this.savePaymentInPaymentHistory, this);
 
 			paymentMethod.generatePaymentRequest(amount, _.bind(function(error, paymentRequest, address) {
-
 				if (error) {
 					this.resetQrCode();
 					return app.mainView.showMessage(error);
 				}
-
+				var amountFromPaymentRequest = paymentRequest.split('=')[1];
+				savePaymentInPaymentHistory(paymentMethod.code, address, false, amountFromPaymentRequest);
 				this.renderQrCode(paymentRequest);
 				this.renderAddress(address);
 				this.listenForPayment(paymentRequest);
@@ -126,6 +129,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var received;
+			var updateToConfirmedPaymentInPaymentHistroy = _.bind(this.updateToConfirmedPaymentInPaymentHistroy, this);
 
 			// Delay times in milliseconds:
 			var delays = {
@@ -143,10 +147,11 @@ app.views.DisplayPaymentAddress = (function() {
 					// If the following returns RETURN, the loop will stop.
 					return received || ((new Date).getTime() - startTime) >= delays.timeout;
 				}, function(next) {
-					paymentMethod.checkPaymentReceived(paymentRequest, function(error, wasReceived) {
+					paymentMethod.checkPaymentReceived(paymentRequest, function(error, wasReceived, amountReceived) {
 						if (error) return next(error);
 						if (wasReceived) {
 							received = true;
+							updateToConfirmedPaymentInPaymentHistroy();
 							return next();
 						}
 						// Wait before checking again.
@@ -173,6 +178,27 @@ app.views.DisplayPaymentAddress = (function() {
 
 			// Navigate back to the amount screen.
 			app.router.navigate('pay', { trigger: true });
+		},
+
+		savePaymentInPaymentHistory : function(currency, address, confirmed, amountReceived) {
+			var paymentTransaction = new app.models.PaymentRequest({
+				currency: currency,
+				address: address,
+				confirmed: confirmed,
+				amount: amountReceived
+			})
+			app.paymentRequests.add(paymentTransaction);
+			paymentTransaction.save().then(_.bind(function() {
+				this.paymentId = paymentTransaction.id;
+			}, this));
+		},
+
+		updateToConfirmedPaymentInPaymentHistroy: function() {
+			if (!this.paymentId) {
+				app.mainView.showMessage(new Error('There is no payment id'));
+			}
+			var paymentTransaction = app.paymentRequests.get(this.paymentId);
+			paymentTransaction.save({confirmed: true});
 		}
 
 	});
