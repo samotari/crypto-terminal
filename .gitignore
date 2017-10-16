@@ -5,3 +5,4 @@ hooks/
 platforms/
 plugins/
 www/
+package-lock.json
