@@ -4,4 +4,5 @@
     <description>
         Terminal for receiving cryto currency transactions
     </description>
+    <engine name="browser" spec="^4.1.0" />
 </widget>

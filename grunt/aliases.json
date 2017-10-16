@@ -1,7 +1,6 @@
 {
 	"default": [
-		"build",
-		"connect:static"
+		"build"
 	],
 	"build": [
 		"newer:browserify",
@@ -9,11 +8,5 @@
 		"newer:uglify",
 		"newer:concat",
 		"newer:copy"
-	],
-	"test:e2e": [
-		"build",
-		"connect:test",
-		"selenium:start",
-		"mochaTest:e2e"
 	]
 }

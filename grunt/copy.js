@@ -6,22 +6,22 @@ module.exports = {
 			{
 				nonull: true,
 				src: 'index.html',
-				dest: 'public/index.html'
+				dest: 'www/index.html'
 			},
 			{
 				nonull: true,
 				src: 'build/all.min.css',
-				dest: 'public/css/all.min.css'
+				dest: 'www/css/all.min.css'
 			},
 			{
 				nonull: true,
 				src: 'build/all.js',
-				dest: 'public/js/all.js'
+				dest: 'www/js/all.js'
 			},
 			{
 				nonull: true,
 				src: 'build/all.min.js',
-				dest: 'public/js/all.min.js'
+				dest: 'www/js/all.min.js'
 			},
 			{
 				expand: true,
@@ -30,7 +30,7 @@ module.exports = {
 				src: [
 					'fonts/**/*.{ttf,eot,svg,woff,woff2}'
 				],
-				dest: 'public/fonts/OpenSans/'
+				dest: 'www/fonts/OpenSans/'
 			},
 			{
 				expand: true,
@@ -39,12 +39,12 @@ module.exports = {
 				src: [
 					'**/*'
 				],
-				dest: 'public/images/'
+				dest: 'www/images/'
 			},
 			{
 				nonull: true,
 				src: 'images/favicon/favicon.ico',
-				dest: 'public/favicon.ico'
+				dest: 'www/favicon.ico'
 			}
 		]
 	}
