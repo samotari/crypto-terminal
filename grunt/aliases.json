@@ -1,12 +1,19 @@
 {
-	"default": [
-		"build"
-	],
-	"build": [
-		"newer:browserify",
-		"newer:cssmin",
-		"newer:uglify",
-		"newer:concat",
-		"newer:copy"
-	]
+    "default": [
+        "build",
+        "connect:static"
+    ],
+    "build": [
+        "newer:browserify",
+        "newer:cssmin",
+        "newer:uglify",
+        "newer:concat",
+        "newer:copy"
+    ],
+    "test:e2e": [
+        "build",
+        "connect:test",
+        "selenium:start",
+        "mochaTest:e2e"
+    ]
 }
