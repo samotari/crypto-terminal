@@ -1,4 +1,3 @@
-.DS_Store
 build/
 node_modules/
 public/
@@ -7,3 +6,4 @@ platforms/
 plugins/
 www/
 package-lock.json
+.DS_Store
