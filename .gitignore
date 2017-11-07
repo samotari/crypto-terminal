@@ -1,3 +1,9 @@
 build/
 node_modules/
 public/
+hooks/
+platforms/
+plugins/
+www/
+package-lock.json
+.DS_Store

@@ -24,6 +24,8 @@
     "bignumber.js": "4.0.0",
     "bitcoinjs-lib": "3.0.2",
     "browserify": "14.3.0",
+    "cordova-android": "^6.3.0",
+    "cordova-browser": "^5.0.1",
     "grunt": "1.0.1",
     "grunt-contrib-concat": "1.0.1",
     "grunt-contrib-connect": "1.0.2",
@@ -36,7 +38,7 @@
     "jquery": "3.2.1",
     "load-grunt-config": "0.19.2",
     "mocha": "3.4.2",
-    "moment": "2.18.1",
+    "moment": "^2.19.1",
     "open-sans-fontface": "https://github.com/chill117/open-sans/archive/1.4.2.tar.gz",
     "qrcode-generator": "1.2.0",
     "selenium-standalone": "6.5.0",
@@ -44,5 +46,11 @@
     "time-grunt": "1.4.0",
     "underscore": "1.8.3",
     "webdriverio": "4.8.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android",
+      "browser"
+    ]
   }
 }

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.github.learnbydoing.cryptoterminal" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>CryptoTerminal</name>
+    <description>
+        Terminal for receiving cryto currency transactions
+    </description>
+    <engine name="android" spec="^6.3.0" />
+    <engine name="browser" spec="^5.0.1" />
+</widget>
