@@ -5,7 +5,7 @@ module.exports = {
 		options: {
 			port: 3000,
 			hostname: 'localhost',
-			base: 'public',
+			base: 'www',
 			keepalive: true
 		}
 	},
@@ -13,7 +13,7 @@ module.exports = {
 		options: {
 			port: 3001,
 			hostname: 'localhost',
-			base: 'public'
+			base: 'www'
 		}
 	}
 };
