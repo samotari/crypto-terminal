@@ -4,6 +4,6 @@
     <description>
         Terminal for receiving cryto currency transactions
     </description>
-    <engine name="android" spec="^6.3.0" />
-    <engine name="browser" spec="^5.0.1" />
+    <engine name="browser" spec="5.0.1" />
+    <engine name="android" spec="6.3.0" />
 </widget>

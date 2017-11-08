@@ -4,6 +4,7 @@
   "description": "Accept payments with Bitcoin, Litecoin, Monero, and more!",
   "main": "index.js",
   "scripts": {
+    "cordova-browser": "grunt build && cordova platform remove browser && cordova platform add browser && cordova run browser",
     "start": "grunt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,8 +25,8 @@
     "bignumber.js": "4.0.0",
     "bitcoinjs-lib": "3.0.2",
     "browserify": "14.3.0",
-    "cordova-android": "^6.3.0",
-    "cordova-browser": "^5.0.1",
+    "cordova-android": "6.3.0",
+    "cordova-browser": "5.0.1",
     "grunt": "1.0.1",
     "grunt-contrib-concat": "1.0.1",
     "grunt-contrib-connect": "1.0.2",
@@ -49,8 +50,8 @@
   },
   "cordova": {
     "platforms": [
-      "android",
-      "browser"
+      "browser",
+      "android"
     ]
   }
 }
