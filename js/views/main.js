@@ -90,7 +90,12 @@ app.views.Main = (function() {
 
 		showMessage: function(message) {
 
-			this.$messageContent.text(message);
+			if (message.status === 0) {
+				this.$messageContent.text('Error: Network seems to be down');
+			} else {
+				this.$messageContent.text(message);
+			}
+
 			this.$message.addClass('visible');
 		},
 
