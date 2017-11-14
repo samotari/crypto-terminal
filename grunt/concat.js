@@ -36,14 +36,14 @@ module.exports = {
 			// Application files:
 			'js/jquery.extend/*',
 			'js/handlebars.extend/*',
-			'js/abstracts/*.js',
 			'js/util.js',
-			'js/config.js',
-			'js/router.js',
+			'js/abstracts/*.js',
 			'js/models/*.js',
 			'js/collections/*.js',
 			'js/views/*.js',
 			'js/payment-methods/*.js',
+			'js/config.js',
+			'js/router.js',
 			'js/init.js'
 		],
 		dest: 'build/all.js'
