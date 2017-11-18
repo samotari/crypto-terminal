@@ -9,6 +9,7 @@ $(function() {
 	// Register partial templates with handlebars.
 	Handlebars.registerPartial('numpad', $('#template-numpad').html());
 	Handlebars.registerPartial('amount', $('#template-amount').html());
+	Handlebars.registerPartial('formField', $('#template-form-field').html());
 
 	// Initialize models.
 	app.settings = new app.models.Settings();

@@ -58,6 +58,24 @@
         </div>
 	</script>
 
+	<script type="text/html" id="template-form-field">
+		{{#switch type}}
+			{{#case "select" break=true}}
+			<select class="form-input" id="{{id}}" name="{{name}}">
+				{{#each options}}
+				<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
+				{{/each}}
+			</select>
+			{{/case}}
+			{{#case "password" break=true}}
+			<input class="form-input" type="password" name="{{name}}" value="{{value}}">
+			{{/case}}
+			{{#default}}
+			<input class="form-input" type="text" name="{{name}}" value="{{value}}">
+			{{/default}}
+		{{/switch}}
+	</script>
+
 	<script type="text/html" id="template-settings">
 		<h2 class="page-title">Settings</h2>
 		<form>
@@ -66,23 +84,13 @@
 				<div class="form-group settings">
 					<div class="form-group-label">General settings</div>
 					{{#each settings}}
-						<div class="form-row">
-							<label for="settings-{{name}}" class="form-label">{{label}}</label>
-							{{#switch type}}
-								{{#case "select" break=true}}
-							<select class="form-field" id="settings-{{key}}" name="{{name}}">
-							{{#each options}}
-								<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
-							{{/each}}
-							</select>
-								{{/case}}
-								{{#case "password" break=true}}
-							<input type="password" name="{{name}}" value="{{value}}">
-								{{/case}}
-								{{#default}}
-							<input type="text" name="{{name}}" value="{{value}}">
-								{{/default}}
-							{{/switch}}
+						<div class="form-row form-row-type--{{type}}">
+							<div class="form-label">
+								<label for="{{id}}">{{label}}</label>
+							</div>
+							<div class="form-field">
+								{{> formField .}}
+							</div>
 						</div>
 					{{/each}}
 				</div>
@@ -98,22 +106,14 @@
 					<div class="form-group-label">{{label}}</div>
 					{{#each settings}}
 					<div class="form-row">
-						<label for="settings-{{../key}}-{{name}}" class="form-label">{{label}}</label>
-						{{#switch type}}
-							{{#case "select" break=true}}
-						<select id="settings-{{../key}}-{{name}}" name="{{../key}}.{{name}}">
-						{{#each options}}
-							<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
-						{{/each}}
-						</select>
-							{{/case}}
-							{{#case "password" break=true}}
-						<input id="settings-{{../key}}-{{name}}" class="form-field" name="{{../key}}.{{name}}" type="password" value="{{value}}">
-							{{/case}}
-							{{#default}}
-						<input id="settings-{{../key}}-{{name}}" class="form-field" name="{{../key}}.{{name}}" type="text" value="{{value}}">
-							{{/default}}
-						{{/switch}}
+						<div class="form-row form-row-type--{{type}}">
+							<div class="form-label">
+								<label for="{{id}}">{{label}}</label>
+							</div>
+							<div class="form-field">
+								{{> formField .}}
+							</div>
+						</div>
 					</div>
 					{{/each}}
 				</div>

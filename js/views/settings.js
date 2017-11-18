@@ -27,11 +27,21 @@ app.views.Settings = (function() {
 			var data = {};
 			var acceptCryptoCurrencies = app.settings.get('acceptCryptoCurrencies');
 			data.paymentMethods = _.map(_.keys(app.paymentMethods), function(key) {
-				var paymentMethod = _.extend({}, _.pick(app.paymentMethods[key], 'label', 'settings'), { key: key });
+				var paymentMethod = _.extend(
+					{},
+					_.pick(app.paymentMethods[key], 'label', 'settings'),
+					{ key: key }
+				);
 				paymentMethod.settings = _.map(paymentMethod.settings, function(setting) {
-					return _.extend(setting, {
-						value: app.settings.get(key + '.' + setting.name) || setting.default
-					});
+					return _.extend(
+						{},
+						setting,
+						{
+							id: ['settings', key, setting.name].join('-'),
+							name: [key, setting.name].join('.'),
+							value: app.settings.get(key + '.' + setting.name) || setting.default,
+						}
+					);
 				});
 				paymentMethod.accepted = _.contains(acceptCryptoCurrencies, key);
 				return paymentMethod;
@@ -54,6 +64,7 @@ app.views.Settings = (function() {
 						setting.value = app.settings.get(setting.name);
 						break;
 				}
+				setting.id = ['settings', setting.name].join('-');
 				return setting;
 			});
 
