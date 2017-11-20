@@ -36,12 +36,12 @@ grunt
 
 Open your browser and navigate to [localhost:3000](http://localhost:3000). You should see the settings screen the first time you open the app.
 
-## Project folder structure
+## Project Folder Structure
 
 Introduction to some of the less obvious folders:
 * /tasks - custom Grunt tasks live here
-* /js - Javascript you should be modifying. Get's processed during the Grunt build
-* /css - CSS you should be modifying. Get's processed during the Grunt build
+* /js - Javascript you should be modifying. Gets processed during the Grunt build
+* /css - CSS you should be modifying. Gets processed during the Grunt build
 * /build - temporary files used during the build process by Grunt
 * /www - output from the build process. Minified and uglified, this is served in the app once you run it
 
