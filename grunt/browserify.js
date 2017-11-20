@@ -22,9 +22,11 @@ module.exports = {
 		},
 		src: 'node_modules/ecurve/lib/index.js',
 		dest: 'build/ecurve.js'
+	},
 	monero: {
 		options: {
-			standalone: 'monero'
+			standalone: 'monero',
+			transform: [['babelify', { presets: ['es2015'] }]]
 		},
 		src: 'exports/monero.js',
 		dest: 'build/monero.js'
