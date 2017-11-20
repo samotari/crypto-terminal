@@ -41,7 +41,7 @@ app.paymentMethods.monero = (function() {
 		generatePaymentRequest: function(amount, cb) {
 
 			//Robin: I'd rather generatePaymentRequest returned the object paymentRequest with the properties amount and payment id
-			
+
 			var address = app.settings.get('monero.address');
 
 			this.getPaymentId(function(error, paymentId) {
@@ -79,18 +79,17 @@ app.paymentMethods.monero = (function() {
 		},
 
 		getExchangeRates: function(cb) {
-
 			// Get exchange rate info from Coinbase's API.
 			// Monero is NOT on Coinbase, so get rate from poloniex
-			$.get('https://api.coinbase.com/v2/exchange-rates?currency=BTC').then(function(result) {
-
+			app.services.coinbase.getExchangeRates('BTC', function(error, results) {
+				if (error) return cb(error, null);
 				$.get('https://poloniex.com/public?command=returnTicker').then(function(poloniex) {
-					
+
 					var XMR_to_BTC_rate = +poloniex.BTC_XMR.last;
 
 					var rates = {};
 
-					_.each(result.data.rates, function(rate, code) {
+					_.each(results, function(rate, code) {
 						code = code.toUpperCase();
 						if (_.contains(app.config.supportedDisplayCurrencies, code)) {
 							rates[code] = (+rate * XMR_to_BTC_rate).toString();
@@ -100,7 +99,7 @@ app.paymentMethods.monero = (function() {
 					cb(null, rates);
 
 				}).fail(cb);
-			}).fail(cb);
+			});
 		},
 
 		validateAddress: function(addr) {
@@ -110,7 +109,7 @@ app.paymentMethods.monero = (function() {
 				return false;
 			}
 
-			
+
 			// convert it 11 characters at a time to hexadecimal value to get hexAddr
 
 			var hexAddr = '';
@@ -136,7 +135,7 @@ app.paymentMethods.monero = (function() {
 			if (hash.slice(0,8) !== hexAddr.slice(-8)) {
 				// throw new Error('Address: Invalid Address');
 				return false;
-				
+
 			}
 
 			return true;
@@ -147,7 +146,7 @@ app.paymentMethods.monero = (function() {
 		},
 
 		// validateViewPK: function(viewpk) {
-			
+
 		// 	// should be a string of length 64
 		// 	if (viewpk.length !== 64)
 		// 		return false;
