@@ -67,13 +67,10 @@ module.exports = {
 			'node_modules/handlebars/dist/handlebars.min.js',
 			'build/qrcode-generator/qrcode.min.js',
 			'build/bitcoin.min.js',
-<<<<<<< 5bfca21e68e07f3247bbd212b5e290a899cc9ca6
 			'build/bs58check.min.js',
 			'build/ecurve.min.js',
-=======
 			'build/monero.min.js',
 			'node_modules/sjcl/sjcl.js',
->>>>>>> Added the build of a file for monero in the grunt tasks.
 			'node_modules/moment/min/moment.min.js',
 
 			// Application files:

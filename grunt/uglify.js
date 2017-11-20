@@ -15,6 +15,11 @@ module.exports = {
 				nonull: true,
 				src: 'node_modules/qrcode-generator/qrcode.js',
 				dest: 'build/qrcode-generator/qrcode.min.js'
+			},
+			{
+				nonull: true,
+				src: 'node_modules/sjcl/sjcl.js',
+				dest: 'build/sjcl/sjcl.min.js'
 			}
 		]
 	},
@@ -39,7 +44,7 @@ module.exports = {
 		},
 		src: 'build/ecurve.js',
 		dest: 'build/ecurve.min.js'
-	}
+	},
 	monerojs: {
 		options: {
 			mangle: {
