@@ -10,6 +10,9 @@
 		"newer:concat",
 		"newer:copy"
 	],
+	"test:code-style": [
+		"eslint"
+	],
 	"test:e2e": [
 		"build",
 		"connect:test",
