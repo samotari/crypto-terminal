@@ -32,6 +32,9 @@
 .button.payment-method.bitcoin {
 	background-image: url('../images/bitcoin.svg');
 }
+.button.payment-method.litecoin {
+	background-image: url('../images/litecoin.svg');
+}
 .button.payment-method.monero {
 	background-image: url('../images/monero.svg');
 }
