@@ -31,6 +31,10 @@ module.exports = {
 		src: 'build/bs58check.js',
 		dest: 'build/bs58check.min.js'
 	},
+	buffer: {
+		src: 'build/buffer.js',
+		dest: 'build/buffer.min.js'
+	},
 	ecurve: {
 		options: {
 			mangle: {

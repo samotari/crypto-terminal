@@ -31,6 +31,7 @@ module.exports = {
 			'node_modules/qrcode-generator/qrcode.js',
 			'build/bitcoin.js',
 			'build/bs58check.js',
+			'build/buffer.js',
 			'build/ecurve.js',
 			'node_modules/moment/moment.js',
 
@@ -66,6 +67,7 @@ module.exports = {
 			'build/qrcode-generator/qrcode.min.js',
 			'build/bitcoin.min.js',
 			'build/bs58check.min.js',
+			'build/buffer.min.js',
 			'build/ecurve.min.js',
 			'node_modules/moment/min/moment.min.js',
 
