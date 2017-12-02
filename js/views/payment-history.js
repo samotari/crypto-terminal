@@ -1,5 +1,3 @@
-// PaymentHistory
-
 var app = app || {};
 
 app.views = app.views || {};
@@ -8,7 +6,7 @@ app.views.PaymentHistory = (function() {
 
 	'use strict';
 
-	return Backbone.View.extend({
+	return app.abstracts.BaseView.extend({
 
 		className: 'payment-history',
 		template: '#template-payment-history',
@@ -17,7 +15,8 @@ app.views.PaymentHistory = (function() {
 			'click .payment-history-item': 'gotoPaymentDetails'
 		},
 
-		render: function() {
+		serializeData: function() {
+
 			var data = {};
 
 			app.paymentRequests.fetch({
@@ -29,17 +28,14 @@ app.views.PaymentHistory = (function() {
 				error: function() {
 					throw new Error('Fail to get Payments!');
 				}
-			})
+			});
 
-			var html = $(this.template).html();
-			var template = Handlebars.compile(html);
-			this.$el.html(template(data));
-			return this;
+			return data;
 		},
 
-		gotoPaymentDetails: function(ev) {
+		gotoPaymentDetails: function(evt) {
 
-			var paymentId = $(ev.currentTarget).attr('data-payment-id');
+			var paymentId = $(evt.currentTarget).attr('data-payment-id');
 			app.router.navigate('payment-details/' + paymentId, { trigger: true });
 		}
 	});

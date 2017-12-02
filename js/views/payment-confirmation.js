@@ -6,7 +6,7 @@ app.views.PaymentConfirmation = (function() {
 
 	'use strict';
 
-	return Backbone.View.extend({
+	return app.abstracts.BaseView.extend({
 
 		className: 'payment-confirmation',
 
@@ -16,24 +16,11 @@ app.views.PaymentConfirmation = (function() {
 			'click .done': 'done'
 		},
 
-		initialize: function(options) {
-
-			this.options = options || {};
-		},
-
-		render: function() {
-
-			var html = $(this.template).html();
-			var template = Handlebars.compile(html);
-			this.$el.html(template());
-			return this;
-		},
-
 		done: function() {
 
 			// Navigate back to the homescreen
 			app.router.navigate('main', { trigger: true });
-		},
+		}
 
 	});
 

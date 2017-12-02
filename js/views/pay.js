@@ -6,7 +6,7 @@ app.views.Pay = (function() {
 
 	'use strict';
 
-	return Backbone.View.extend({
+	return app.abstracts.BaseView.extend({
 
 		className: 'pay',
 
@@ -19,11 +19,9 @@ app.views.Pay = (function() {
 
 		amount: '0',
 
-		render: function() {
+		serializeData: function() {
 
-			var html = $(this.template).html();
-			var template = Handlebars.compile(html);
-			var data = {
+			return {
 				amount: {
 					display: {
 						value: this.amount,
@@ -31,12 +29,13 @@ app.views.Pay = (function() {
 					}
 				}
 			};
+		},
 
-			this.$el.html(template(data));
+		onRender: function() {
+
 			this.$amount = this.$('.amount-value');
 			this.$error = this.$('.error');
 			this.updateAmount();
-			return this;
 		},
 
 		onNumberPadKeyPressed: function(evt) {
