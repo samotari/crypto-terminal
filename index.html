@@ -44,8 +44,8 @@
 			<a class="header-button home" href="#home"></a>
 		</div>
 		<div id="menu">
-			<a class="menu-item" href="#settings">Settings</a>
-			<a class="menu-item" href="#payment-history">Payments History</a>
+			<a class="menu-item" href="#settings">{{i18n "menu.settings"}}</a>
+			<a class="menu-item" href="#payment-history">{{i18n "menu.payment-history"}}</a>
 		</div>
 		<div id="menu-cover"></div>
 		<div id="view">
@@ -77,12 +77,12 @@
 	</script>
 
 	<script type="text/html" id="template-settings">
-		<h2 class="page-title">Settings</h2>
+		<h2 class="page-title">{{i18n "settings.title"}}</h2>
 		<form>
 			<div class="form">
 				<div class="form-error error"></div>
 				<div class="form-group settings">
-					<div class="form-group-label">General settings</div>
+					<div class="form-group-label">{{i18n "settings.general.label"}}</div>
 					{{#each settings}}
 						<div class="form-row form-row-type--{{type}}">
 							<div class="form-label">
@@ -95,7 +95,7 @@
 					{{/each}}
 				</div>
 				<div class="form-group acceptCryptoCurrencies">
-					<div class="form-group-label">Which currencies do you want to accept?</div>
+					<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
 					{{#each paymentMethods}}
 					<input id="settings-acceptCryptoCurrencies-{{key}}" type="checkbox" name="acceptCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
 					<label for="settings-acceptCryptoCurrencies-{{key}}" class="button payment-method {{key}}"></label>
@@ -119,7 +119,7 @@
 				</div>
 				{{/each}}
 				<div class="form-buttons">
-					<input class="button form-button save" type="submit" value="Save">
+					<input class="button form-button save" type="submit" value="{{i18n 'settings.save'}}">
 					<div class="success"></div>
 				</div>
 			</div>
@@ -127,22 +127,22 @@
 	</script>
 
 	<script type="text/html" id="template-pay-enter-amount">
-		<p class="page-description">Enter amount to be paid</p>
+		<p class="page-description">{{i18n "pay-enter-amount.description"}}</p>
 		{{> amount}}
 		<div class="error"></div>
 		{{> numpad}}
-		<a class="button continue">Continue</a>
+		<a class="button continue">{{i18n "pay-enter-amount.continue"}}</a>
 	</script>
 
 	<script type="text/html" id="template-pay-choose-method">
-		<p class="page-description">Select payment method</p>
+		<p class="page-description">{{i18n "pay-choose-method.description"}}</p>
 		<div class="select-payment-method">
 		{{#each paymentMethods}}
 			<a class="button payment-method {{key}}" data-payment-method="{{key}}"></a>
 		{{/each}}
 		</div>
 		<div class="secondary-controls">
-			<a class="button cancel">Cancel</a>
+			<a class="button cancel">{{i18n "pay-choose-method.cancel"}}</a>
 		</div>
 	</script>
 
@@ -156,16 +156,11 @@
 	<script type="text/html" id="template-pay-address">
 		{{> amount}}
 		<div class="address-qr-code"></div>
-		<p class="page-description">Scan the QR code to pay</p>
+		<p class="page-description">{{i18n "pay-address.description"}}</p>
 		<div class="address-text"></div>
 		<div class="secondary-controls">
-			<a class="button cancel">Cancel</a>
+			<a class="button cancel">{{i18n "pay-address.cancel"}}</a>
 		</div>
-	</script>
-
-	<script type="text/html" id="template-pay-success">
-		<h2 class="page-title">Payment Received</h2>
-		<p class="page-description">Thank you</p>
 	</script>
 
 	<script type="text/html" id="template-amount">
@@ -199,7 +194,7 @@
 	</script>
 
 	<script type="text/html" id="template-payment-history">
-		<h2 class="page-title">Payments History</h2>
+		<h2 class="page-title">{{i18n "payment-history.title"}}</h2>
 		<div class="payment-history-list">
 			{{#each payments}}
 				<div class="payment-history-item" data-payment-id={{id}}>
@@ -218,20 +213,20 @@
 	</script>
 
 	<script type="text/html" id="template-payment-details">
-		<h2 class="page-title">Payment Details</h2>
+		<h2 class="page-title">{{i18n "payment-details.title"}}</h2>
 		{{#if confirmed}}
 			<div class="payment-details-confirmation-circle payment-details-confirmed">
-				<span>&#10003;</span><span>Confirmed</span>
+				<span>&#10003;</span><span>{{i18n "payment-details.confirmed"}}</span>
 			</div>
 		{{else}}
 			<div class="payment-details-confirmation-circle payment-details-unconfirmed">
-				<span>Unconfrimed</span>
+				<span>{{i18n "payment-details.unconfirmed"}}</span>
 			</div>
 		{{/if}}
 		<div class="payment-details-elements">
-			<span>Date</span>
+			<span>{{i18n "payment-details.date"}}</span>
 			<p>{{formatDate timestamp "llll"}}</p>
-			<span>Amount</span>
+			<span>{{i18n "payment-details.amount"}}</span>
 			<p>{{amount}} {{currency}}</p>
 		</div>
 

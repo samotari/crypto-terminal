@@ -82,7 +82,7 @@ app.views.Main = (function() {
 		showMessage: function(message) {
 
 			if (message.status === 0) {
-				this.$messageContent.text('Error: Network seems to be down');
+				this.$messageContent.text(app.i18n.t('main.message.status.0'));
 			} else {
 				this.$messageContent.text(message);
 			}

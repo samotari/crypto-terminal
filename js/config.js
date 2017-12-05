@@ -24,7 +24,9 @@ app.config = (function() {
 		settings: [
 			{
 				name: 'displayCurrency',
-				label: 'Display Currency',
+				label: function() {
+					return app.i18n.t('settings.display-currency.label');
+				},
 				type: 'select',
 				required: true,
 				options: [].concat(

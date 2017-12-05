@@ -175,7 +175,7 @@ app.views.DisplayPaymentAddress = (function() {
 					// Show success screen.
 					app.router.navigate('confirmed', { trigger: true });
 				} else {
-					app.mainView.showMessage(new Error('Timed out while waiting for payment'));
+					app.mainView.showMessage(new Error(app.i18n.t('pay-address.timeout')));
 				}
 
 			}, this);
@@ -211,7 +211,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		updatePaymentHistory: function() {
 			if (!this.paymentId) {
-				app.mainView.showMessage(new Error('There is no payment id'));
+				app.mainView.showMessage(new Error(app.i18n.t('pay-address.missing-payment-id')));
 			}
 			var paymentTransaction = app.paymentRequests.get(this.paymentId);
 			paymentTransaction.save({confirmed: true});

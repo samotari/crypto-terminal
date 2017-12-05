@@ -11,10 +11,26 @@ app.paymentMethods.litecoin = (function() {
 		label: 'Litecoin',
 		code: 'LTC',
 
+		lang: {
+			'en': {
+				'settings.xpub.label': 'Master Public Key',
+				'settings.xpub.invalid': 'Invalid master public key',
+				'settings.scheme.label': 'Address Path',
+				'invalid-payment-request': 'Invalid payment request',
+				'xpub-required-to-get-address': 'xpub required to get litecoin payment address',
+				'xpub-required': '"xpub" is required',
+				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
+				'invalid-network-version': 'Invalid network version',
+				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
+			}
+		},
+
 		settings: [
 			{
 				name: 'xpub',
-				label: 'Master Public Key',
+				label: function() {
+					return app.i18n.t('litecoin.settings.xpub.label');
+				},
 				type: 'text',
 				required: true,
 				validate: function(value) {
@@ -24,13 +40,15 @@ app.paymentMethods.litecoin = (function() {
 						console.log(error);
 					}
 					if (!node) {
-						throw new Error('Invalid master public key');
+						throw new Error(app.i18n.t('litecoin.settings.xpub.invalid'));
 					}
 				}
 			},
 			{
 				name: 'scheme',
-				label: 'Address Path',
+				label: function() {
+					return app.i18n.t('litecoin.settings.scheme.label');
+				},
 				type: 'text',
 				default: 'm/0/n',
 				required: true
@@ -102,7 +120,7 @@ app.paymentMethods.litecoin = (function() {
 				var matches = paymentRequest.match(/litecoin:([a-zA-Z0-9]+)\?amount=([0-9\.]+)/);
 
 				if (!matches) {
-					return cb(new Error('Invalid payment request'));
+					return cb(new Error(app.i18n.t('litecoin.invalid-payment-request')));
 				}
 
 				var address = matches[1];
@@ -165,7 +183,7 @@ app.paymentMethods.litecoin = (function() {
 					var xpub = app.settings.get('litecoin.xpub');
 
 					if (!xpub) {
-						throw new Error('xpub required to get litecoin payment address');
+						throw new Error(app.i18n.t('litecoin.xpub-required-to-get-address'));
 					}
 
 					var scheme = app.settings.get('litecoin.scheme');
@@ -177,7 +195,7 @@ app.paymentMethods.litecoin = (function() {
 					}
 
 					if (!node) {
-						throw new Error('Invalid litecoin master public key');
+						throw new Error(app.i18n.t('litecoin.settings.xpub.invalid'));
 					}
 
 					switch (scheme) {
@@ -203,7 +221,7 @@ app.paymentMethods.litecoin = (function() {
 		getHDNodeInstance: function(xpub) {
 
 			if (!xpub) {
-				throw new Error('"xpub" is required');
+				throw new Error(app.i18n.t('litecoin.xpub-required'));
 			}
 
 			var buffer = base58check.decode(xpub);
@@ -217,13 +235,13 @@ app.paymentMethods.litecoin = (function() {
 
 			var network = _.find(this.networks, function(_network) {
 				if (version === _network.bip32.private) {
-					throw new Error('Private keys not supported');
+					throw new Error(app.i18n.t('litecoin.private-keys-warning'));
 				}
 				return version === _network.bip32.public;
 			});
 
-			if (!network) {
-				throw new Error('Invalid network version');
+			if (version !== network.bip32.public) {
+				throw new Error(app.i18n.t('litecoin.invalid-network-version'));
 			}
 
 			var curve = ecurve.getCurveByName('secp256k1');
@@ -234,7 +252,7 @@ app.paymentMethods.litecoin = (function() {
 			// 4 bytes: the fingerprint of the parent's key (0x00000000 if master key)
 			var parentFingerprint = buffer.readUInt32BE(5)
 			if (depth === 0 && parentFingerprint !== 0x00000000) {
-				throw new Error('Invalid parent fingerprint');
+				throw new Error(app.i18n.t('litecoin.invalid-parent-fingerprint'));
 			}
 
 			// 32 bytes: the chain code

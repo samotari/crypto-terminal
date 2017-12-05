@@ -28,7 +28,7 @@ app.models.PaymentRequest = (function() {
         validate: function(attributes, options) {
 
             if (!_.isObject(attributes.data)) {
-                return '"data" must be an object.';
+                return app.i18n.t('payment-request.data.must-be-object');
             }
         }
     });
