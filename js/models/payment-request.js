@@ -14,6 +14,10 @@ app.models.PaymentRequest = (function() {
                 address: '',
                 confirmed: '',
                 amount: '',
+                displayCurrency: {
+                    code: '',
+                    rate: ''
+                },
                 timestamp: (new Date).getTime(),
                 // Arbitrary data field.
                 // So that each payment method can store custom data with a payment request.

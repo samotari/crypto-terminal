@@ -64,7 +64,7 @@ app.views.DisplayPaymentAddress = (function() {
 				this.updateQrCode(displayAmount);
 			} else {
 				// Convert the display amount to the real amount in the desired cryptocurrency.
-				paymentMethod.convertAmount(displayAmount, displayCurrency, _.bind(function(error, amount) {
+				paymentMethod.convertAmount(displayAmount, displayCurrency, _.bind(function(error, amount, displayCurrencyExchangeRate, displayCurrency) {
 
 					if (error) {
 						this.resetQrCode();
@@ -72,7 +72,7 @@ app.views.DisplayPaymentAddress = (function() {
 					}
 
 					this.renderCryptoAmount(amount);
-					this.updateQrCode(amount);
+					this.updateQrCode(amount, displayCurrencyExchangeRate, displayCurrency);
 
 				}, this));
 			}
@@ -106,7 +106,7 @@ app.views.DisplayPaymentAddress = (function() {
 			this.$addressText.empty();
 		},
 
-		updateQrCode: function(amount) {
+		updateQrCode: function(amount, displayCurrencyExchangeRate, displayCurrency) {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var savePaymentInPaymentHistory = _.bind(this.savePaymentInPaymentHistory, this);
@@ -117,7 +117,7 @@ app.views.DisplayPaymentAddress = (function() {
 					return app.mainView.showMessage(error);
 				}
 				var amountFromPaymentRequest = paymentRequest.split('=')[1];
-				savePaymentInPaymentHistory(paymentMethod.code, address, false, amountFromPaymentRequest);
+				savePaymentInPaymentHistory(paymentMethod.code, address, false, amountFromPaymentRequest, displayCurrencyExchangeRate, displayCurrency);
 				this.renderQrCode(paymentRequest);
 				this.renderAddress(address);
 				this.listenForPayment(paymentRequest);
@@ -180,12 +180,16 @@ app.views.DisplayPaymentAddress = (function() {
 			app.router.navigate('pay', { trigger: true });
 		},
 
-		savePaymentInPaymentHistory : function(currency, address, confirmed, amountReceived) {
+		savePaymentInPaymentHistory : function(currency, address, confirmed, amountReceived, displayCurrencyExchangeRate, displayCurrency) {
 			var paymentTransaction = new app.models.PaymentRequest({
 				currency: currency,
 				address: address,
 				confirmed: confirmed,
-				amount: amountReceived
+				amount: amountReceived,
+				displayCurrency: {
+					code: displayCurrency,
+					rate: displayCurrencyExchangeRate
+				}
 			})
 			app.paymentRequests.add(paymentTransaction);
 			paymentTransaction.save().then(_.bind(function() {
