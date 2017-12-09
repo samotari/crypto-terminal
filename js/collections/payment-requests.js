@@ -10,7 +10,11 @@ app.collections.PaymentRequests = (function() {
 		
 		model: app.models.PaymentRequest,
 
-		localStorage: new Backbone.LocalStorage('PR')
+		localStorage: new Backbone.LocalStorage('PR'),
+
+		comparator: function(model) {
+			return -model.attributes.timestamp;
+		}
 
 	});
 
