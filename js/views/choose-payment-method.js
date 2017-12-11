@@ -6,7 +6,7 @@ app.views.ChoosePaymentMethod = (function() {
 
 	'use strict';
 
-	return Backbone.View.extend({
+	return app.abstracts.BaseView.extend({
 
 		className: 'choose-payment-method',
 
@@ -17,22 +17,18 @@ app.views.ChoosePaymentMethod = (function() {
 			'click .cancel': 'cancel'
 		},
 
-		initialize: function(options) {
+		serializeData: function() {
 
-			this.options = options || {};
-		},
-
-		render: function() {
-
-			var html = $(this.template).html();
-			var template = Handlebars.compile(html);
 			var data = {};
 			data.paymentMethods = _.map(app.settings.get('acceptCryptoCurrencies'), function(key) {
 				return { key: key };
 			});
-			this.$el.html(template(data));
+			return data;
+		},
+
+		onRender: function() {
+
 			this.$error = this.$('.error');
-			return this;
 		},
 
 		cancel: function() {

@@ -6,7 +6,7 @@ app.views.Settings = (function() {
 
 	'use strict';
 
-	return Backbone.View.extend({
+	return app.abstracts.BaseView.extend({
 
 		className: 'settings',
 		template: '#template-settings',
@@ -21,9 +21,8 @@ app.views.Settings = (function() {
 			_.bindAll(this, 'clearSuccess');
 		},
 
-		render: function() {
-			var html = $(this.template).html();
-			var template = Handlebars.compile(html);
+		serializeData: function() {
+
 			var data = {};
 			var acceptCryptoCurrencies = app.settings.get('acceptCryptoCurrencies');
 			data.paymentMethods = _.map(_.keys(app.paymentMethods), function(key) {
@@ -68,9 +67,7 @@ app.views.Settings = (function() {
 				return setting;
 			});
 
-			this.$el.html(template(data));
-			this.onRender();
-			return this;
+			return data;
 		},
 
 		onRender: function() {

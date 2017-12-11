@@ -9,6 +9,18 @@ app.config = (function() {
 			cellSize: 5,
 			margin: 0
 		},
+		displayPaymentAddress: {
+			listener: {
+				// When to stop performing checks (milliseconds):
+				timeout: 180000,
+				delays: {
+					// Wait time before the first check (milliseconds):
+					first: 10000,
+					// Wait time between checks (milliseconds):
+					between: 5000
+				}
+			}
+		},
 		settings: [
 			{
 				name: 'displayCurrency',

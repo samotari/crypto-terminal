@@ -6,7 +6,7 @@ app.views.Main = (function() {
 
 	'use strict';
 
-	return Backbone.View.extend({
+	return app.abstracts.BaseView.extend({
 
 		el: '#app',
 		template: '#template-main',
@@ -24,15 +24,6 @@ app.views.Main = (function() {
 			$(document).on('click', this.onDocumentClick);
 		},
 
-		render: function() {
-
-			var html = $(this.template).html();
-			var template = Handlebars.compile(html);
-			this.$el.html(template());
-			this.onRender();
-			return this;
-		},
-
 		renderView: function(name, options) {
 
 			var view = new app.views[name](options || {});
@@ -43,7 +34,7 @@ app.views.Main = (function() {
 
 			if (this.currentView) {
 
-				this.currentView.remove();
+				this.currentView.close();
 
 				if (this.currentView.className) {
 					$('body').removeClass('view-' + this.currentView.className);
@@ -106,8 +97,12 @@ app.views.Main = (function() {
 
 		changeDisplayCurrency: function(evt) {
 
-			console.log('changeDisplayCurrency');
 			app.settings.set('displayCurrency', $(evt.target).val()).save();
+		},
+
+		onClose: function() {
+
+			$(document).off('click', this.onDocumentClick);
 		}
 
 	});
