@@ -9,6 +9,7 @@ app.config = (function() {
 			cellSize: 5,
 			margin: 0
 		},
+		defaultLocale: 'en',
 		displayPaymentAddress: {
 			listener: {
 				// When to stop performing checks (milliseconds):
