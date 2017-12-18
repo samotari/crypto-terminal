@@ -82,11 +82,11 @@ app.views.Pay = (function() {
 			try {
 				amount = new BigNumber(this.amount);
 			} catch (error) {
-				return this.showError('Amount must be a valid number');
+				return this.showError(app.i18n.t('pay-enter-amount.valid-number'));
 			}
 
 			if (!amount.greaterThan(0)) {
-				return this.showError('Amount must be greater than zero.');
+				return this.showError(app.i18n.t('pay-enter-amount.greater-than-zero'));
 			}
 
 			// Navigate to the next screen with the amount in the URI.

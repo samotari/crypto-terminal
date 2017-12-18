@@ -16,10 +16,10 @@ app.models.Settings = (function() {
 				configured: '0'
 			};
 
-			_.each(app.paymentMethods, function(paymentMethod, key) {
+			_.each(app.paymentMethods, function(paymentMethod, name) {
 				if (!_.isEmpty(paymentMethod.settings)) {
 					_.each(paymentMethod.settings, function(setting) {
-						defaults[key + '.' + setting.name] = !_.isUndefined(setting.default) ? setting.default : '';
+						defaults[name + '.' + setting.name] = !_.isUndefined(setting.default) ? setting.default : '';
 					});
 				}
 			});

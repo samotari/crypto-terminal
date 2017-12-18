@@ -4,6 +4,14 @@ app.i18n = (function() {
 
 	'use strict';
 
+	_.each(app.paymentMethods, function(paymentMethod, name) {
+		_.each(paymentMethod.lang, function(object, locale) {
+			_.each(object, function(text, key) {
+				app.lang[locale][name + '.' + key] = text;
+			});
+		});
+	});
+
 	return {
 		// Returns a localized language string for the given language string key.
 		// `data` object is optional and allows find-and-replace in the language string.

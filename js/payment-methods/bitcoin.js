@@ -11,21 +11,35 @@ app.paymentMethods.bitcoin = (function() {
 		label: 'Bitcoin',
 		code: 'BTC',
 
+		lang: {
+			'en': {
+				'settings.xpub.label': 'Master Public Key',
+				'settings.xpub.invalid': 'Invalid master public key',
+				'settings.scheme.label': 'Address Path',
+				'invalid-payment-request': 'Invalid payment request',
+				'xpub-required-to-get-address': 'xpub required to get bitcoin payment address',
+			}
+		},
+
 		settings: [
 			{
 				name: 'xpub',
-				label: 'Master Public Key',
+				label: function() {
+					return app.i18n.t('bitcoin.settings.xpub.label');
+				},
 				type: 'text',
 				required: true,
 				validate: function(value) {
 					if (!app.paymentMethods.bitcoin.getHDNodeInstance(value)) {
-						throw new Error('Invalid master public key');
+						throw new Error(app.i18n.t('bitcoin.settings.xpub.invalid'));
 					}
 				}
 			},
 			{
 				name: 'scheme',
-				label: 'Address Path',
+				label: function() {
+					return app.i18n.t('bitcoin.settings.scheme.label');
+				},
 				type: 'text',
 				default: 'm/0/n',
 				required: true
@@ -65,7 +79,7 @@ app.paymentMethods.bitcoin = (function() {
 			var xpub = app.settings.get('bitcoin.xpub');
 
 			if (!xpub) {
-				return _.defer(cb, new Error('xpub required to get bitcoin payment address'));
+				return _.defer(cb, new Error(app.i18n.t('bitcoin.xpub-required-to-get-address')));
 			}
 
 			try {
@@ -74,7 +88,7 @@ app.paymentMethods.bitcoin = (function() {
 				var node = this.getHDNodeInstance(xpub);
 
 				if (!node) {
-					throw new Error('Invalid bitcoin master public key.');
+					throw new Error(app.i18n.t('bitcoin.settings.xpub.invalid'));
 				}
 
 				var keyPair;
@@ -137,7 +151,7 @@ app.paymentMethods.bitcoin = (function() {
 			var matches = paymentRequest.match(/bitcoin:([a-zA-Z0-9]+)\?amount=([0-9\.]+)/);
 
 			if (!matches) {
-				return _.defer(cb, new Error('Invalid payment request'));
+				return _.defer(cb, new Error(app.i18n.t('bitcoin.invalid-payment-request')));
 			}
 
 			var address = matches[1];

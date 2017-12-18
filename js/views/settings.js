@@ -53,7 +53,7 @@ app.views.Settings = (function() {
 						setting.options = _.map(setting.options || [], function(option) {
 							return {
 								key: option.key,
-								label: option.label,
+								label: _.result(option, 'label'),
 								selected: app.settings.get(setting.name) === option.key
 							}
 						});
@@ -127,7 +127,7 @@ app.views.Settings = (function() {
 				// Try saving the settings.
 				data.configured = '1';
 				app.settings.set(data).save();
-				this.showSuccess('Saved!');
+				this.showSuccess(app.i18n.t('settings.save-success'));
 			}
 		},
 
@@ -138,7 +138,9 @@ app.views.Settings = (function() {
 			// Check general settings.
 			_.each(app.config.settings, function(setting) {
 				if (setting.required && !data[setting.name]) {
-					errors.push(setting.label + ' is required');
+					errors.push(app.i18n.t('settings.field-required', {
+						label: _.result(setting, 'label')
+					}));
 				}
 				if (setting.validate) {
 					try {
@@ -152,15 +154,18 @@ app.views.Settings = (function() {
 			// Check required fields for each accepted cryptocurrency.
 			_.each(data.acceptCryptoCurrencies, function(key) {
 				var paymentMethod = app.paymentMethods[key];
+				var errorMessagePrefix = '[' + _.result(paymentMethod, 'label') + '] ';
 				_.each(paymentMethod.settings, function(setting) {
 					if (setting.required && !data[key + '.' + setting.name]) {
-						errors.push('[' + paymentMethod.label + '] ' + setting.label + ' is required');
+						errors.push(errorMessagePrefix + app.i18n.t('settings.field-required', {
+							label: _.result(setting, 'label')
+						}));
 					}
 					if (setting.validate) {
 						try {
 							setting.validate(data[key + '.' + setting.name]);
 						} catch (error) {
-							errors.push('[' + paymentMethod.label + '] ' + error);
+							errors.push(errorMessagePrefix + error);
 						}
 					}
 				});
@@ -168,7 +173,7 @@ app.views.Settings = (function() {
 
 			// Make sure at least one cryptocurrency is accepted.
 			if (_.isEmpty(data.acceptCryptoCurrencies)) {
-				errors.push('Please configure at least one cryptocurrency');
+				errors.push(app.i18n.t('settings.at-least-one-crypto-currency-required'));
 			}
 
 			return errors;

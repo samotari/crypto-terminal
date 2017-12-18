@@ -15,21 +15,23 @@ app.views.PaymentHistory = (function() {
 			'click .payment-history-item': 'gotoPaymentDetails'
 		},
 
+		initialize: function() {
+
+			this.collection = app.paymentRequests;
+
+			this.collection.fetch({
+				error: function() {
+					app.main.showMessage(app.i18n.t('payment-history.failed-to-get-payment-data'));
+				}
+			});
+		},
+
 		serializeData: function() {
 
 			var data = {};
-
-			app.paymentRequests.fetch({
-				success: function(response) {
-					data.payments = _.map(response.models, function(model) {
-						return model.attributes;
-					})
-				},
-				error: function() {
-					throw new Error('Fail to get Payments!');
-				}
-			});
-
+			data.payments = _.map(this.collection.models, function(model) {
+				return model.attributes;
+			})
 			return data;
 		},
 
