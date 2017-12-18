@@ -37,6 +37,51 @@ app.paymentMethods.litecoin = (function() {
 			}
 		],
 
+		/*
+			Litecoin mainnet and testnet network constants.
+
+				- Public key hash:
+					Used in the generation of addresses from public keys.
+					(mainnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L132
+					(testnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L158
+
+				- Script hash:
+					Used in the generation of scripting addresses from public keys.
+					(mainnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L134
+					(testnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L160
+
+				- WIF:
+					"Wallet Import Format"
+					Used to encode private keys in a way to be more easily copied.
+					(mainnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L133
+					(testnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L159
+
+				- BIP32 public/private key constants:
+					Used in the generation of child addresses from master public/private keys.
+					(mainnet) https://github.com/litecoin-project/litecoin/blob/ba8ed3a93be7e7a97db6bc00dd7280fa2f1548bc/src/chainparams.cpp#L137-L138
+					(testnet)https://github.com/litecoin-project/litecoin/blob/ba8ed3a93be7e7a97db6bc00dd7280fa2f1548bc/src/chainparams.cpp#L239-L240
+		*/
+		networks: {
+			mainnet: _.extend({}, bitcoin.networks.litecoin, {
+				bip32: {
+					public: (new Buffer([0x04, 0x88, 0xB2, 0x1E])).readUInt32BE(0),
+					private: (new Buffer([0x04, 0x88, 0xAD, 0xE4])).readUInt32BE(0)
+				},
+				pubKeyHash: 0x30,
+				scriptHash: 0x32,
+				wif: 0xB0
+			}),
+			testnet: _.extend({}, bitcoin.networks.litecoin, {
+				bip32: {
+					public: (new Buffer([0x04, 0x35, 0x87, 0xCF])).readUInt32BE(0),
+					private: (new Buffer([0x04, 0x35, 0x83, 0x94])).readUInt32BE(0)
+				},
+				pubKeyHash: 0x6F,
+				scriptHash: 0x3A,
+				wif: 0xEF
+			})
+		},
+
 		generatePaymentRequest: function(amount, cb) {
 
 			this.getPaymentAddress(function(error, address) {
@@ -62,14 +107,16 @@ app.paymentMethods.litecoin = (function() {
 
 				var address = matches[1];
 				var amount = matches[2];
+				var network = this.getNetwork();
 
 				/*
 					For API details:
 					https://chain.so/api#get-balance
 				*/
 				var uri = 'https://chain.so/api/v2/get_address_balance';
+
 				// Network (e.g LTC or LTCTEST):
-				uri += '/LTC';
+				uri += '/' + (network === 'mainnet' ? 'LTC' : 'LTCTEST');
 				// Address:
 				uri += '/' + encodeURIComponent(address);
 				// Minimum number of confirmations:
@@ -165,24 +212,21 @@ app.paymentMethods.litecoin = (function() {
 				throw new Error('Invalid buffer length');
 			}
 
-			var curve = ecurve.getCurveByName('secp256k1');
-
 			// 4 bytes: version bytes
 			var version = buffer.readUInt32BE(0);
 
-			// Use the litecoin network constants.
-			// But use the BIP32 constants from bitcoin.
-			var network = _.extend({}, bitcoin.networks.litecoin, {
-				bip32: bitcoin.networks.bitcoin.bip32
+			var network = _.find(this.networks, function(_network) {
+				if (version === _network.bip32.private) {
+					throw new Error('Private keys not supported');
+				}
+				return version === _network.bip32.public;
 			});
 
-			if (version === network.bip32.private) {
-				throw new Error('Private keys not supported');
-			}
-
-			if (version !== network.bip32.public) {
+			if (!network) {
 				throw new Error('Invalid network version');
 			}
+
+			var curve = ecurve.getCurveByName('secp256k1');
 
 			// 1 byte: depth: 0x00 for master nodes, 0x01 for level-1 descendants, ...
 			var depth = buffer[4];
@@ -208,6 +252,25 @@ app.paymentMethods.litecoin = (function() {
 			node.index = 0;
 			node.parentFingerprint = parentFingerprint;
 			return node;
+		},
+
+		getNetwork: function() {
+			var xpub = app.settings.get('litecoin.xpub');
+			var buffer = base58check.decode(xpub);
+			if (buffer.length !== 78) {
+				throw new Error('Invalid buffer length');
+			}
+			var version = buffer.readUInt32BE(0);
+			var networkName;
+			_.each(this.networks, function(network, name) {
+				if (version === network.bip32.private) {
+					throw new Error('Private keys not supported');
+				}
+				if (version === network.bip32.public) {
+					networkName = name;
+				}
+			});
+			return networkName || null;
 		},
 
 		getExchangeRates: function(cb) {

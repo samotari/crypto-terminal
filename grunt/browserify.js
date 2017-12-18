@@ -16,6 +16,13 @@ module.exports = {
 		src: 'node_modules/bs58check/index.js',
 		dest: 'build/bs58check.js'
 	},
+	buffer: {
+		options: {
+			standalone: 'Buffer'
+		},
+		src: 'exports/buffer.js',
+		dest: 'build/buffer.js'
+	},
 	ecurve: {
 		options: {
 			standalone: 'ecurve'
