@@ -30,15 +30,6 @@ app.paymentMethods.litecoin = (function() {
 						throw new Error(app.i18n.t('litecoin.settings.xpub.invalid'));
 					}
 				}
-			},
-			{
-				name: 'scheme',
-				label: function() {
-					return app.i18n.t('litecoin.settings.scheme.label');
-				},
-				type: 'text',
-				default: 'm/0/n',
-				required: true
 			}
 		],
 
@@ -131,7 +122,6 @@ app.paymentMethods.litecoin = (function() {
 
 				}).fail(cb);
 			}, this));
-		},
-
+		}
 	});
 })();
