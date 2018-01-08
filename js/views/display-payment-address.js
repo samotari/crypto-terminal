@@ -13,7 +13,8 @@ app.views.DisplayPaymentAddress = (function() {
 		template: '#template-pay-address',
 
 		events: {
-			'click .cancel': 'cancel'
+			'click .cancel': 'cancel',
+			'click .back': 'back'
 		},
 
 		paymentId: '',
@@ -190,6 +191,13 @@ app.views.DisplayPaymentAddress = (function() {
 
 			// Navigate back to the amount screen.
 			app.router.navigate('pay', { trigger: true });
+		},
+
+		back: function() {
+			var amount = this.options.amount.toString();
+
+			// Navigate back to the payment method screen.
+			app.router.navigate('pay/' + encodeURIComponent(amount), { trigger: true });
 		},
 
 		savePaymentInPaymentHistory : function(currency, address, confirmed, amountReceived, displayCurrencyExchangeRate, displayCurrency) {
