@@ -21,7 +21,7 @@ a:hover {
 	max-height: 100%;
 	border: 1px solid #ddd;
 	box-sizing: border-box;
-	overflow: hidden;
+	overflow: auto;
 	margin: 0;
 	padding: 0;
 }
