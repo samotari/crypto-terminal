@@ -63,6 +63,14 @@ tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB
 ```
 
 
+### Litecoin
+
+Valid testnet master public key that you can use while developing:
+```
+tpubD6NzVbkrYhZ4YLXXEvJuNSnv3duP7VvCVG2ybxbbfcdJrgfvyfqjLdS2mntHXAr5YVLQvGqSdwa5j62bJhPCGTxX6xXeJp4CtRw494UKG96
+```
+
+
 ## Tests
 
 End-to-end tests are included in the project which allow automated testing (in a real browser) of the application's user interface. The tests use [selenium](http://www.seleniumhq.org/) and [webdriverio](http://webdriver.io/). To run the tests:
