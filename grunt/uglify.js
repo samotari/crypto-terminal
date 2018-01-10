@@ -38,5 +38,15 @@ module.exports = {
 		},
 		src: 'build/ecurve.js',
 		dest: 'build/ecurve.min.js'
+	},
+	querystring: {
+		nonull: true,
+		src: 'build/querystring.js',
+		dest: 'build/querystring.min.js'
+	},
+	sjcl: {
+		nonull: true,
+		src: 'node_modules/sjcl/sjcl.js',
+		dest: 'build/sjcl.min.js'
 	}
 };
