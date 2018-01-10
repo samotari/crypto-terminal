@@ -26,6 +26,7 @@ app.lang['en'] = (function() {
 		'pay-address.timeout': 'Timed out while waiting for payment',
 		'pay-address.missing-payment-id': 'Missing payment ID',
 		'pay-address.cancel': 'Cancel',
+		'pay-address.back': 'Change payment method',
 		'payment-history.title': 'Payments History',
 		'payment-history.failed-to-get-payment-data': 'Failed to load payment data',
 		'payment-details.title': 'Payment Details',
