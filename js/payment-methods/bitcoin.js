@@ -21,7 +21,6 @@ app.paymentMethods.bitcoin = (function() {
 			'en': {
 				'settings.xpub.label': 'Master Public Key',
 				'settings.xpub.invalid': 'Invalid master public key',
-				'settings.scheme.label': 'Address Path',
 				'invalid-payment-request': 'Invalid payment request',
 				'xpub-required': 'Master public key is required',
 				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
@@ -43,15 +42,6 @@ app.paymentMethods.bitcoin = (function() {
 						throw new Error(app.i18n.t('bitcoin.settings.xpub.invalid'));
 					}
 				}
-			},
-			{
-				name: 'scheme',
-				label: function() {
-					return app.i18n.t('bitcoin.settings.scheme.label');
-				},
-				type: 'text',
-				default: 'm/0/n',
-				required: true
 			}
 		],
 
