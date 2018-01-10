@@ -27,6 +27,16 @@ app.paymentMethods.bitcoin = (function() {
 				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
 				'invalid-network-version': 'Invalid network version',
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
+			},
+			'es': {
+				'settings.xpub.label': 'Clave Pública Maestra',
+				'settings.xpub.invalid': 'La clave pública maestra no es valida',
+				'settings.scheme.label': 'Ruta de dirección',
+				'invalid-payment-request': 'Solicitud de pago',
+				'xpub-required': 'Falta la clave pública maestra ',
+				'invalid-parent-fingerprint': 'La huella paterna no es válida',
+				'invalid-network-version': 'La versión de la red no es válida',
+				'private-keys-warning': '¡ADVERTENCIA: NO utilice claves privadas en esta aplicación!',
 			}
 		},
 
