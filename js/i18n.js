@@ -18,13 +18,14 @@ app.i18n = (function() {
 		t: function(key, data) {
 			// Get the current locale from the settings.
 			var locale = app.settings.get('locale');
+			var defaultLocale = app.config.defaultLocale;
 			var text;
 			if (!!app.lang[locale] && app.lang[locale][key]) {
 				// Try the configured language first.
 				text = app.lang[locale][key];
-			} else if (!!app.lang['en'] && !!app.lang['en'][key]) {
-				// Try english if missing the preferred language.
-				text = app.lang['en'][key];
+			} else if (!!app.lang[defaultLocale] && !!app.lang[defaultLocale][key]) {
+				// Try the default locale if missing the preferred language.
+				text = app.lang[defaultLocale][key];
 			} else {
 				// Fallback to the language string key.
 				text = key;

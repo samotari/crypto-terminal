@@ -5,7 +5,11 @@ app.lang = app.lang || {};
 app.lang['en'] = (function() {
 
 	return {
+		'language.cs': 'Czech',
+		'language.en': 'English',
+		'language.es': 'Spanish',
 		'main.message.status.0': 'Error: Network seems to be down',
+		'menu.new-payment': 'New Payment',
 		'menu.settings': 'Settings',
 		'menu.payment-history': 'Payment History',
 		'settings.title': 'Settings',
