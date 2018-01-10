@@ -55,6 +55,7 @@
     "open-sans-fontface": "https://github.com/Learn-by-doing/open-sans/archive/1.4.2.tar.gz",
     "qrcode": "1.2.0",
     "selenium-standalone": "6.12.0",
+    "sjcl": "1.0.7",
     "time-grunt": "1.4.0",
     "underscore": "1.8.3",
     "webdriverio": "4.10.2"
