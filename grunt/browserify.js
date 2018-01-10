@@ -29,5 +29,12 @@ module.exports = {
 		},
 		src: 'node_modules/ecurve/lib/index.js',
 		dest: 'build/ecurve.js'
+	},
+	querystring: {
+		options: {
+			standalone: 'querystring'
+		},
+		src: 'exports/querystring.js',
+		dest: 'build/querystring.js'
 	}
 };
