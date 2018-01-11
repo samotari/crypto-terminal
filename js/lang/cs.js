@@ -5,6 +5,9 @@ app.lang = app.lang || {};
 app.lang['cs'] = (function() {
 
 	return {
+		'language.cs': 'Čeština',
+		'language.en': 'Angličtina',
+		'language.es': 'Španělština',
 		'main.message.status.0': 'Chyba: Síťové spojení bylo zřejmě přerušeno',
 		'menu.settings': 'Nastavení',
 		'menu.payment-history': 'Historie plateb',
