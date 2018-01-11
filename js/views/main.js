@@ -22,8 +22,9 @@ app.views.Main = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'onDocumentClick', 'updateLanguageToggle', 'reRenderView');
+			_.bindAll(this, 'onDocumentClick');
 			$(document).on('click', this.onDocumentClick);
+			app.settings.on('change:locale', this.render);
 		},
 
 		renderView: function(name, options) {
@@ -53,8 +54,10 @@ app.views.Main = (function() {
 
 		reRenderView: function() {
 
-			// Re-render the view with the same arguments as it was originally rendered.
-			this.renderView.apply(this, this.renderViewArguments);
+			if (this.renderViewArguments) {
+				// Re-render the view with the same arguments as it was originally rendered.
+				this.renderView.apply(this, this.renderViewArguments);
+			}
 		},
 
 		onRender: function() {
@@ -67,8 +70,7 @@ app.views.Main = (function() {
 			this.$message = this.$('#message');
 			this.$messageContent = this.$('#message-content');
 			this.updateLanguageToggle();
-			app.settings.on('change:locale', this.updateLanguageToggle);
-			app.settings.on('change:locale', this.reRenderView);
+			this.reRenderView();
 			return this;
 		},
 
@@ -150,6 +152,7 @@ app.views.Main = (function() {
 		onClose: function() {
 
 			$(document).off('click', this.onDocumentClick);
+			app.settings.off('change:locale', this.render);
 		},
 
 		serializeData: function() {
