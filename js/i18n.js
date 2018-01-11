@@ -34,6 +34,18 @@ app.i18n = (function() {
 			var template = Handlebars.compile(text);
 			// Parse the template with the given data object.
 			return template(data);
+		},
+		getMissingAll: function() {
+			var locales = _.keys(app.lang);
+			var nonDefaultLocales = _.filter(locales, function(locale) {
+				return locale !== app.config.defaultLocale;
+			});
+			return _.object(_.map(nonDefaultLocales, function(locale) {
+				var missingKeys = _.filter(_.keys(app.lang[app.config.defaultLocale]), function(key) {
+					return !app.lang[locale][key];
+				});
+				return [locale, missingKeys];
+			}));
 		}
 	};
 
