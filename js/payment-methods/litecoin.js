@@ -68,6 +68,19 @@ app.paymentMethods.litecoin = (function() {
 				scriptHash: 0x32,
 				wif: 0xB0
 			}),
+			/*
+				Yes, two "mainnet" networks.
+				There are two different sets of bip32 public/private values for litecoin.
+
+				See:
+				https://www.reddit.com/r/litecoin/comments/48wd2e/why_arent_the_litecoin_bip32_serialization_values/
+			*/
+			_.extend({}, bitcoin.networks.litecoin, {
+				name: 'mainnet',
+				pubKeyHash: 0x30,
+				scriptHash: 0x32,
+				wif: 0xB0
+			}),
 			_.extend({}, bitcoin.networks.litecoin, {
 				name: 'testnet',
 				bip32: {
