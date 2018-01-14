@@ -114,7 +114,7 @@ app.views.Main = (function() {
 			if (message.status === 0) {
 				this.$messageContent.text(app.i18n.t('main.message.status.0'));
 			} else {
-				this.$messageContent.text(message);
+				this.$messageContent.text(message.message || message);
 			}
 
 			this.$message.addClass('visible');
