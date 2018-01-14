@@ -30,6 +30,15 @@ app.paymentMethods.litecoin = (function() {
 						throw new Error(app.i18n.t('litecoin.settings.xpub.invalid'));
 					}
 				}
+			},
+			{
+				name: 'lastIndex',
+				label: function() {
+					return app.i18n.t('litecoin.settings.lastIndex');
+				},
+				type: 'text',
+				attributes: 'readonly',
+				readonly: true
 			}
 		],
 

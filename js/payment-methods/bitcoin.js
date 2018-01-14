@@ -17,6 +17,9 @@ app.paymentMethods.bitcoin = (function() {
 		// Used internally to reference itself:
 		ref: 'bitcoin',
 
+		// Used for checking gap limit
+		minimumAmount: '0.00000001',
+
 		lang: {
 			'en': {
 				'settings.xpub.label': 'Master Public Key',
@@ -26,6 +29,7 @@ app.paymentMethods.bitcoin = (function() {
 				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
 				'invalid-network-version': 'Invalid network version',
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
+				'settings.lastIndex': 'Last index'
 			}
 		},
 
@@ -42,6 +46,15 @@ app.paymentMethods.bitcoin = (function() {
 						throw new Error(app.i18n.t('bitcoin.settings.xpub.invalid'));
 					}
 				}
+			},
+			{
+				name: 'lastIndex',
+				label: function() {
+					return app.i18n.t('bitcoin.settings.lastIndex');
+				},
+				type: 'text',
+				attributes: 'readonly',
+				readonly: true
 			}
 		],
 
@@ -236,6 +249,24 @@ app.paymentMethods.bitcoin = (function() {
 				}).fail(cb);
 
 			}, this));
+		},
+
+		checkIfAddressIsEmpty: function(xpub, index, cb) {
+			var paymentRequest;
+
+			this.getAddress(index, _.bind(function(error, address) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				paymentRequest = this.ref + ':' + address + '?amount=' + this.minimumAmount;
+
+				this.checkPaymentReceived(paymentRequest, function(error, wasReceived, amountReceived) {
+					cb(null, wasReceived, amountReceived)
+				});
+
+			}, this))
 		}
 	});
 })();

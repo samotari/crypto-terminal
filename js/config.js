@@ -22,6 +22,7 @@ app.config = (function() {
 				}
 			}
 		},
+		gapLImit: 2,
 		settings: [
 			{
 				name: 'displayCurrency',

@@ -127,6 +127,16 @@ app.views.Settings = (function() {
 				// Try saving the settings.
 				data.configured = '1';
 				app.settings.set(data).save();
+				
+				// getting the right index for each payment method
+				_.each(data.acceptCryptoCurrencies, _.bind(function(currency) {
+
+					if (data[currency + '.xpub']) {
+						this.getGapLimit(currency, data[currency + '.xpub'], 1, 0)
+					}
+
+				}, this))
+				
 				this.showSuccess(app.i18n.t('settings.save-success'));
 			}
 		},
@@ -177,6 +187,38 @@ app.views.Settings = (function() {
 			}
 
 			return errors;
+		},
+
+		getGapLimit: function(currency, xpub, index, gapLimit, firstIndexOfGap) {
+			var gapLimitRequired = app.config.gapLImit;
+
+			if (!firstIndexOfGap) {
+				firstIndexOfGap = index;
+			}
+
+			app.paymentMethods[currency].checkIfAddressIsEmpty(xpub, index, _.bind(function(error, wasReceived, amountReceived) {
+
+				if (error) {
+					console.log('error', error);
+				}
+
+				if (!wasReceived && gapLimit >= gapLimitRequired) {
+					var settingsUpdatObj = {};
+					settingsUpdatObj[currency + '.lastIndex'] = firstIndexOfGap
+
+					// saving in settings localstorage
+					app.settings.set(settingsUpdatObj).save()
+
+					// applying changes in UI
+					$('input[name="'+ currency + '.lastIndex"]').val(firstIndexOfGap);
+				} else if (!wasReceived) {
+					this.getGapLimit(currency, xpub, index + 1, gapLimit + 1, firstIndexOfGap);
+				} else {
+					firstIndexOfGap = index + 1
+					this.getGapLimit(currency, xpub, index + 1, gapLimit + 1, index + 1);
+				}
+
+			}, this))
 		}
 
 	});

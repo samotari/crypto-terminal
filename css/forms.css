@@ -41,3 +41,12 @@
 	font-style: italic;
 	margin-bottom: 10px;
 }
+input:read-only {
+    background-color: #eee;
+}
+input[name='bitcoin.lastIndex'] {
+	width: 15%;
+}
+input[name='litecoin.lastIndex'] {
+	width: 15%;
+}
