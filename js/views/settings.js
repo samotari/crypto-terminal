@@ -13,12 +13,23 @@ app.views.Settings = (function() {
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'toggleCryptoCurrencySettingsVisibility',
+			'keyup input[name$=".xpub"]': 'onKeyUpMasterPublicKeyField',
 		},
+
+		sampleAddressesViews: {},
 
 		initialize: function() {
 
 			_.bindAll(this, 'onSliderChangeActive');
 			this.options.page = this.options.page || 'general';
+		},
+
+		onKeyUpMasterPublicKeyField: function(evt) {
+
+			// To prevent the sample addresses from being updated too quickly (ie. while the user is typing).
+			clearTimeout(this.updateSampleAddressesTimeout);
+			var updateSampleAddresses = _.bind(this.updateSampleAddresses, this, evt);
+			this.updateSampleAddressesTimeout = setTimeout(updateSampleAddresses, 400);
 		},
 
 		serializeData: function() {
@@ -111,6 +122,41 @@ app.views.Settings = (function() {
 			if (this.slider) {
 				this.slider.close();
 			}
+		},
+
+		updateSampleAddresses: function(evt) {
+
+			var $target = $(evt.target);
+			var fieldName = $target.attr('name');
+			var view = this.sampleAddressesViews[fieldName];
+
+			if (!view) {
+				view = new app.views.SampleAddresses();
+				this.sampleAddressesViews[fieldName] = view;
+				$target.after(view.el);
+			}
+
+			try {
+				var paymentMethodName = fieldName.split('.')[0];
+				var paymentMethod = app.paymentMethods[paymentMethodName];
+				var xpub = $target.val();
+				var node = paymentMethod.prepareHDNodeInstance(xpub);
+				var addresses = [];
+				var index = 0;
+				while (addresses.length < app.config.numberOfSampleAddressesToShow) {
+					addresses.push({
+						index: index,
+						address: node.derive(0).derive(index++).getAddress().toString()
+					});
+				}
+				view.options.addresses = addresses;
+				view.options.error = null;
+			} catch (error) {
+				view.options.addresses = [];
+				view.options.error = error;
+			}
+
+			view.render();
 		}
 
 	});

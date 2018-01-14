@@ -1,0 +1,13 @@
+<h3 class="sample-addresses-label">{{i18n "sample-addresses.label"}}</h3>
+<div class="sample-addresses-content">
+	{{#if error}}
+		<p>{{error}}</p>
+	{{else}}
+		{{#each addresses}}
+		<div class="sample-addresses-content-address">
+			<span class="sample-addresses-content-address-index">{{index}}</span>
+			{{address}}
+		</div>
+		{{/each}}
+	{{/if}}
+</div>

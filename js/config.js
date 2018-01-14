@@ -37,6 +37,7 @@ app.config = (function() {
 		sliders: {
 			speedThreshold: 0.4,// pixels / millisecond
 		},
+		numberOfSampleAddressesToShow: 5,
 		settings: [
 			{
 				name: 'displayCurrency',
