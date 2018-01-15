@@ -69,3 +69,6 @@
 	font-weight: 700;
 	text-align: center;
 }
+.button.payment-method.lightning {
+	background-image: url('../images/lightning.svg');
+}
