@@ -54,8 +54,13 @@ This project is focused on working with cryptocurrencies as a payment method. As
 It's a good idea to test your application without risking real money, which is why the [bitcoin testnet](https://en.bitcoin.it/wiki/Testnet) exists.
 
 * [Bitcoin - How it works](https://bitcoin.org/en/how-it-works) - A decent starting point if you are totally new to bitcoin and cryptocurrency.
-* [Testnet Bitcoin Faucet](https://tpfaucet.appspot.com/) - Get testnet bitcoin that you can use for testing purposes.
-* [Mycelium Testnet Wallet](https://play.google.com/store/apps/details?id=com.mycelium.testnetwallet&hl=en) - The Mycelium bitcoin wallet for Android, but for Bitcoin's Testnet.
+* Testnet wallet applications:
+  * [Mycelium Testnet Wallet](https://play.google.com/store/apps/details?id=com.mycelium.testnetwallet&hl=en) - A mobile testnet wallet application for Android.
+  * [Electrum](https://electrum.org/) - A desktop wallet application which can be run in testnet mode from the command line like this: `electrum --testnet`
+* "Faucets" can be used to obtain testnet bitcoin:
+  * https://faucet.thonguyen.net/btc
+  * https://kuttler.eu/en/bitcoin/btc/faucet/
+  * https://tpfaucet.appspot.com/
 
 Valid testnet master public key that you can use while developing:
 ```
@@ -64,6 +69,12 @@ tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB
 
 
 ### Litecoin
+
+* Testnet wallet applications:
+  * [Electrum-LTC](https://electrum-ltc.org/) - A desktop wallet application which can be run in testnet mode from the command line like this: `electrum-ltc --testnet`
+* "Faucets" can be used to obtain testnet litecoin:
+  * https://faucet.thonguyen.net/ltc
+  * https://kuttler.eu/en/bitcoin/ltc/faucet/
 
 Valid testnet master public key that you can use while developing:
 ```
