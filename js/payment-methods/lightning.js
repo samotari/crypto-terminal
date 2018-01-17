@@ -4,114 +4,118 @@ app.paymentMethods = app.paymentMethods || {};
 
 app.paymentMethods.lightning = (function() {
 
-    'use strict';
+	'use strict';
 
-    return app.abstracts.PaymentMethod.extend({
-	// The name of the cryptocurrency shown in the UI:
-	label: 'Lightning',
+	return app.abstracts.PaymentMethod.extend({
 
-	// The exchange symbol:
-	code: 'BTC',
+		// The name of the cryptocurrency shown in the UI:
+		label: 'Lightning',
 
-	// Used internally to reference itself:
-	ref: 'lightning',
+		// The exchange symbol:
+		code: 'BTC',
 
-	lang: {
-	    'en' : {
-		'settings.memo.label': 'Invoice Memo',
-	    	'invalid-payment-request': 'Invalid payment request',
-	    }
-	},
+		// Used internally to reference itself:
+		ref: 'lightning',
 
-	settings: [
-	    {
-	    	name: 'memo',
-	    	label: function() {
-	    		return app.i18n.t('lightning.settings.memo.label');
-	    	},
-	    	type: 'text',
-	    	required: false,
-	    } 
-	],
-
-
-	generatePaymentRequest: function(amount, cb) {
-
-	    var satoshi = parseInt(amount*1e8); // convert to satoshi
-
-	    this.addInvoice(satoshi,_.bind(function(error,res){
-		if (error){
-		    cb(error);
-		}
-
-		var req = res.payment_request
-		var paymentRequest = this.ref + ":" + req
-
-		console.log(paymentRequest)
-
-		cb(null,paymentRequest,paymentRequest,satoshi);
-	    },this));
-
-
-	},
-
-	// addInvoice
-	addInvoice: function(value,cb) {
-
-	    // addInvoice
-	    var memo = app.settings.get(this.ref + '.memo');
-	    var expiry = 3600;
-
-	    var uri = "http://localhost:8280";
-	    uri += "/api/lnd/addinvoice";
-
-	    var data = {"memo": memo, "value": value, "expiry":expiry};
-
-	    $.post(uri, data).then( function(result,err) {
-		cb(null,result);
-	    }).fail(cb);
-	},
-
-
-	getExchangeRates: function(cb) {
-
-	    app.services.coinbase.getExchangeRates(this.code, cb);
-
-	},
-
-	checkPaymentReceived: function(paymentRequest, cb) {
-
-	    _.defer(_.bind(function() {
-		var matches = paymentRequest.match(/lightning:([a-zA-Z0-9]+)/);
-
-		if (!matches) {
-		    return cb(new Error(app.i18n.t('lightning.invalid-payment-request')));
-		}
-
-		var payreq = matches[1];
-
-		var uri = "http://localhost:8280";
-		uri += "/api/lnd/listinvoices";
-
-		var wasReceived = false;
-		var amountReceived = 0;
-
-		$.get(uri).then(function(result) {
-
-		    _.each(result.invoices, function(invoice) {
-			if (invoice.payment_request == payreq ){
-
-			    wasReceived = invoice.settled;
-			    amountReceived = invoice.value;
-			    return false; // break from the .each function
+		lang: {
+			'en': {
+				'settings.api-url.label': 'API URL',
+				'settings.invoice-max-age.label': 'Invoice maximum age (seconds)',
+				'invalid-payment-request': 'Invalid payment request',
 			}
-		    });
+		},
 
-		    cb(null,wasReceived,amountReceived);
+		settings: [
+			{
+				name: 'api-url',
+				default: 'http://localhost:8280',
+				label: function() {
+					return app.i18n.t('lightning.settings.api-url.label');
+				},
+				type: 'text',
+				required: true
+			},
+			{
+				name: 'invoice-max-age',
+				default: 3600,
+				label: function() {
+					return app.i18n.t('lightning.settings.invoice-max-age.label');
+				},
+				type: 'integer',
+				required: true
+			}
+		],
 
-		}).fail(cb);
+		getExchangeRates: function(cb) {
 
-	    }, this));
-	}
-    });
+			app.services.coinbase.getExchangeRates(this.code, cb);
+		},
+
+		generatePaymentRequest: function(amount, cb) {
+
+			this.addInvoice(amount, _.bind(function(error, response) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				var paymentRequest = this.ref + ':' + response.payment_request;
+				cb(null, paymentRequest, paymentRequest/* address */, amount);
+
+			},this));
+		},
+
+		addInvoice: function(amount, cb) {
+
+			// Convert the amount to satoshis.
+			var value = (new BigNumber(amount)).dividedBy('100000000').toString();
+			var apiUrl = app.settings.get(this.ref + '.api-url');
+			var expiry = parseInt(app.settings.get(this.ref + '.invoice-max-age'));
+			var uri = apiUrl + '/api/lnd/addinvoice';
+
+			var data = {
+				memo: '',
+				value: value,
+				expiry: expiry
+			};
+
+			$.post(uri, data).then(function(result, error) {
+				cb(null, result);
+			}).fail(cb);
+		},
+
+		checkPaymentReceived: function(paymentRequest, cb) {
+
+			_.defer(_.bind(function() {
+
+				var matches = paymentRequest.match(/lightning:([a-zA-Z0-9]+)/);
+
+				if (!matches) {
+					return cb(new Error(app.i18n.t('lightning.invalid-payment-request')));
+				}
+
+				var payreq = matches[1];
+				var apiUrl = app.settings.get(this.ref + '.api-url');
+				var uri = apiUrl + '/api/lnd/listinvoices';
+				var wasReceived = false;
+				var amountReceived = 0;
+
+				$.get(uri).then(function(result) {
+
+					_.each(result.invoices, function(invoice) {
+						if (invoice.payment_request === payreq) {
+							wasReceived = invoice.settled;
+							amountReceived = invoice.value;
+							return false;// break from the .each function
+						}
+					});
+
+					cb(null, wasReceived, amountReceived);
+
+				}).fail(cb);
+
+			}, this));
+		}
+	});
+
 })();
