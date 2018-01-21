@@ -48,7 +48,8 @@
 	padding: 1rem;
 }
 .button.payment-method.bitcoin,
-.button.payment-method.bitcoinTestnet {
+.button.payment-method.bitcoinTestnet,
+.button.payment-method.bitcoinLightning {
 	background-image: url('../images/bitcoin.svg');
 }
 .button.payment-method.litecoin,
@@ -69,6 +70,18 @@
 	font-weight: 700;
 	text-align: center;
 }
-.button.payment-method.lightning {
-	background-image: url('../images/lightning.svg');
+.button.payment-method.bitcoinLightning:after {
+	position: absolute;
+	right: -0.7rem;
+	bottom: -0.7rem;
+	z-index: 20;
+	content: ' ';
+	display: block;
+	width: 3.2rem;
+	height: 3.2rem;
+	background-color: transparent;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 3.2rem;
+	background-image: url(../images/lightning.svg);
 }

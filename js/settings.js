@@ -95,7 +95,7 @@ app.settings = (function() {
 				if (!paymentMethod) return false;
 				// A cryptocurrency is "accepted" if it has all its required settings set.
 				return _.every(paymentMethod.settings, function(setting) {
-					return setting.required !== true || !_.isEmpty(data[setting.path]);
+					return setting.required !== true || !!data[setting.path];
 				});
 			});
 		},
