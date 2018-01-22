@@ -120,3 +120,25 @@
 #language-menu.visible {
 	right: 0;
 }
+.secondary-menu {
+	position: relative;
+	z-index: 20;
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+	height: 40px;
+	background: #efefef;
+}
+.secondary-menu-item {
+	float: left;
+	height: 40px;
+	line-height: 40px;
+	font-size: 0.8rem;
+	text-align: center;
+	padding: 0 10px;
+}
+.secondary-menu-item.active,
+.secondary-menu-item:active,
+.secondary-menu-item:hover {
+	background-color: #e6e6e6;
+}

@@ -22,9 +22,9 @@ describe('Settings', function() {
 	it('accepted currencies', function(done) {
 		client.url(uri)
 			.waitForVisible('#view .settings.view')
-			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:not(:checked)')
-			.click('label[for="settings-acceptCryptoCurrencies-bitcoin"]')
-			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:checked')
+			.isExisting('#settings-configurableCryptoCurrencies-bitcoin:not(:checked)')
+			.click('label[for="settings-configurableCryptoCurrencies-bitcoin"]')
+			.isExisting('#settings-configurableCryptoCurrencies-bitcoin:checked')
 			.waitForVisible('.form-group.bitcoin')
 			.then(function() {
 				done();
@@ -36,7 +36,7 @@ describe('Settings', function() {
 		client.url(uri)
 			.waitForVisible('#view .settings.view')
 			.isExisting('input.button.form-button.save[type="submit"]')
-			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:not(:checked)')
+			.isExisting('#settings-configurableCryptoCurrencies-bitcoin:not(:checked)')
 			// add other crypto currencies
 			.click('input.button.form-button.save[type="submit"]')
 			.isExisting('.error')
@@ -71,9 +71,9 @@ describe('Settings', function() {
 		
 		client.url(uri)
 			.waitForVisible('#view .settings.view')
-			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:not(:checked)')
-			.click('label[for="settings-acceptCryptoCurrencies-bitcoin"]')
-			.isExisting('#settings-acceptCryptoCurrencies-bitcoin:checked')
+			.isExisting('#settings-configurableCryptoCurrencies-bitcoin:not(:checked)')
+			.click('label[for="settings-configurableCryptoCurrencies-bitcoin"]')
+			.isExisting('#settings-configurableCryptoCurrencies-bitcoin:checked')
 			.waitForVisible('.form-group.bitcoin')
 			.addValue('#settings-bitcoin-xpub', '')
 			.click('.save')

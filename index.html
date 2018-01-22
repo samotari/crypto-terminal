@@ -85,7 +85,17 @@
 	</script>
 
 	<script type="text/html" id="template-settings">
-		<h2 class="page-title">{{i18n "settings.title"}}</h2>
+		<div class="secondary-menu">
+			{{#each menuItems}}
+			<a class="secondary-menu-item{{#if active}} active{{/if}}" href="#settings/{{key}}" data-key="{{key}}">{{label}}</a>
+			{{/each}}
+		</div>
+		<div class="slider">
+			{{> slider}}
+		</div>
+	</script>
+
+	<script type="text/html" id="template-settings-general">
 		<form>
 			<div class="form">
 				<div class="form-error error"></div>
@@ -102,14 +112,25 @@
 						</div>
 					{{/each}}
 				</div>
-				<div class="form-group acceptCryptoCurrencies">
+				<div class="form-group configurableCryptoCurrencies">
 					<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
 					{{#each paymentMethods}}
-					<input id="settings-acceptCryptoCurrencies-{{key}}" type="checkbox" name="acceptCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
-					<label for="settings-acceptCryptoCurrencies-{{key}}" class="button payment-method {{key}}"></label>
+					<input id="settings-configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
+					<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}"></label>
 					{{/each}}
 				</div>
-				{{#each paymentMethods}}
+				<div class="form-buttons">
+					<input class="button form-button save" type="submit" value="{{i18n 'form.save'}}">
+					<div class="success"></div>
+				</div>
+			</div>
+		</form>
+	</script>
+
+	<script type="text/html" id="template-settings-payment-method">
+		<form>
+			<div class="form">
+				<div class="form-error error"></div>
 				<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
 					<div class="form-group-label">{{label}}</div>
 					{{#each settings}}
@@ -125,9 +146,8 @@
 					</div>
 					{{/each}}
 				</div>
-				{{/each}}
 				<div class="form-buttons">
-					<input class="button form-button save" type="submit" value="{{i18n 'settings.save'}}">
+					<input class="button form-button save" type="submit" value="{{i18n 'form.save'}}">
 					<div class="success"></div>
 				</div>
 			</div>
@@ -241,7 +261,17 @@
 
 	</script>
 
-	<script src="js/all.min.js"></script>
+	<script type="text/html" id="template-slider">
+		<div class="slider-inner">
+			<div class="slider-items"></div>
+		</div>
+	</script>
+
+	<script type="text/html" id="template-slider-item">
+		<div class="slider-item-content" data-slide="{{key}}"></div>
+	</script>
+
+	<script src="js/all.js"></script>
 
 </body>
 </html>

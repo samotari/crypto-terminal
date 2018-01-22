@@ -7,13 +7,14 @@ app.Router = (function() {
 	return Backbone.Router.extend({
 
 		routes: {
-			'settings': 'settings',
 			'pay': 'pay',
 			'confirmed': 'paymentConfirmation',
 			'pay/:amount': 'choosePaymentMethod',
 			'pay/:amount/:method': 'displayPaymentAddress',
 			'payment-history': 'paymentHistory',
 			'payment-details/:paymentId': 'paymentDetails',
+			'settings': 'settings',
+			'settings/:page': 'settings',
 
 			// For un-matched route, default to:
 			'*notFound': 'notFound'
@@ -37,9 +38,16 @@ app.Router = (function() {
 			this.navigate('pay', { trigger: true });
 		},
 
-		settings: function() {
+		settings: function(page) {
 
-			app.mainView.renderView('Settings');
+			if (page) {
+				// Don't allow navigation to disabled cryptocurrency settings pages.
+				if (page !== 'general' && !_.contains(app.settings.get('configurableCryptoCurrencies'), page)) {
+					return this.navigate('settings/general', { trigger: true });
+				}
+			}
+
+			app.mainView.renderView('Settings', { page: page });
 		},
 
 		pay: function() {

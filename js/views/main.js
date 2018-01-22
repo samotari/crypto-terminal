@@ -29,19 +29,18 @@ app.views.Main = (function() {
 
 		renderView: function(name, options) {
 
-			var view = new app.views[name](options || {});
+			this.closeCurrentView();
 
-			view.$el.addClass('view');
+			var $el = $('<div/>', {
+				class: 'view'
+			});
 
-			this.$viewContent.html(view.render().el);
+			this.$viewContent.empty().append($el);
+			var view = new app.views[name](options);
+			view.setElement($el).render();
 
-			if (this.currentView) {
-
-				this.currentView.close();
-
-				if (this.currentView.className) {
-					$('body').removeClass('view-' + this.currentView.className);
-				}
+			if (view.className) {
+				$el.addClass(view.className);
 			}
 
 			this.currentView = view;
@@ -49,6 +48,16 @@ app.views.Main = (function() {
 
 			if (view.className) {
 				$('body').addClass('view-' + view.className);
+			}
+		},
+
+		closeCurrentView: function() {
+
+			if (this.currentView) {
+				this.currentView.close();
+				if (this.currentView.className) {
+					$('body').removeClass('view-' + this.currentView.className);
+				}
 			}
 		},
 

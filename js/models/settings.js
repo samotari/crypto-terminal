@@ -12,8 +12,7 @@ app.models.Settings = (function() {
 
 			var defaults = {
 				displayCurrency: 'CZK',
-				acceptCryptoCurrencies: [],
-				configured: '0'
+				configurableCryptoCurrencies: [],
 			};
 
 			_.each(app.paymentMethods, function(paymentMethod, name) {
@@ -31,7 +30,17 @@ app.models.Settings = (function() {
 
 		isConfigured: function() {
 
-			return this.get('configured') === '1';
+			return !_.isEmpty(this.getAcceptedCryptoCurrencies());
+		},
+
+		getAcceptedCryptoCurrencies: function() {
+			var settings = this.toJSON();
+			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];
+			return _.filter(configurableCryptoCurrencies, function(key) {
+				var settingsView = new app.views.SettingsPaymentMethod({ key: key });
+				// A cryptocurrency is "accepted" if it is configured without validation errors.
+				return _.isEmpty(settingsView.validate(settings));
+			});
 		},
 
 		fetch: function() {
