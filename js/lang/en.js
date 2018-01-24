@@ -39,6 +39,7 @@ app.lang['en'] = (function() {
 		'payment-details.date': 'Date',
 		'payment-details.amount': 'Amount',
 		'payment-request.data.must-be-object': '"data" must be an object.',
+		'payment-confirmation.done': 'Done'
 	};
 
 })();
