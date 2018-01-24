@@ -37,6 +37,7 @@ app.lang['cs'] = (function() {
 		'payment-details.date': 'Datum',
 		'payment-details.amount': 'Částka',
 		'payment-request.data.must-be-object': '"data" musí být objekt',
+		'payment-confirmation.done': 'Hotovo'
 	};
 
 })();

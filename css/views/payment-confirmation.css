@@ -47,3 +47,8 @@
     box-shadow: inset 0px 0px 0px 30px #7ac142;
   }
 }
+
+.view.payment-confirmation.view .secondary-controls {
+  text-align: center;
+  margin-top: 50%;
+}
