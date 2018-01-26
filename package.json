@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "cordova-browser": "grunt build && cordova platform remove browser && cordova platform add browser && cordova run browser",
+    "android-device": "grunt build && cordova run android --device",
     "start": "grunt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,8 +30,8 @@
     "bitcoinjs-lib": "3.3.0",
     "browserify": "14.3.0",
     "bs58check": "2.0.2",
-    "cordova-android": "6.3.0",
-    "cordova-browser": "5.0.1",
+    "cordova-android": "7.0.0",
+    "cordova-browser": "5.0.3",
     "ecurve": "1.0.5",
     "grunt": "1.0.1",
     "grunt-contrib-concat": "1.0.1",
