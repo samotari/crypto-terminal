@@ -44,7 +44,7 @@
     "handlebars": "4.0.6",
     "jquery": "3.2.1",
     "load-grunt-config": "0.19.2",
-    "mocha": "3.4.2",
+    "mocha": "^4.*.*",
     "moment": "^2.19.1",
     "open-sans-fontface": "https://github.com/chill117/open-sans/archive/1.4.2.tar.gz",
     "qrcode-generator": "1.2.0",
