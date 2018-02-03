@@ -4,6 +4,9 @@
     <description>
         Terminal for receiving cryto currency transactions
     </description>
-    <engine name="browser" spec="5.0.1" />
+    <icon density="mdpi" height="57" src="www/favicon.ico" width="57" />
+    <access origin="https://*/*" />
+    <engine name="browser" spec="5.0.3" />
     <engine name="android" spec="6.3.0" />
+    <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
 </widget>
