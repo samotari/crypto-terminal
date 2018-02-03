@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.github.learnbydoing.cryptoterminal" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>CryptoTerminal</name>
-    <description>
-        Terminal for receiving cryto currency transactions
-    </description>
+    <description>A merchant terminal app which allows payments by customers via multiple cryptocurrencies.</description>
     <icon density="mdpi" height="57" src="www/favicon.ico" width="57" />
     <access origin="https://*/*" />
     <engine name="browser" spec="5.0.3" />

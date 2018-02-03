@@ -1,11 +1,20 @@
 # CryptoTerminal
 
+* [Requirements](#requirements)
+* [Getting Started](#getting-started)
+* [Folder Structure](#folder-structure)
+* [Developing with Cryptocurrencies](#developing-with-cryptocurrencies)
+  * [Bitcoin](#bitcoin)
+    * [Lightning Network](#lightning-network)
+  * [Litecoin](#litecoin)
+  * [Monero](#monero)
+
 The goal of this project is to create a mobile application that merchants can use to accept cryptocurrency payments in a variety of cryptocurrencies. The focus will be on ease-of-use, security, and privacy. In the beginning our goal is to support the following cryptocurrencies:
-* [Bitcoin](https://bitcoin.org/)
+* [Bitcoin](https://bitcoin.org/) with [Lightning Network](http://dev.lightning.community/overview/)
 * [Litecoin](https://litecoin.org/)
 * [Monero](https://getmonero.org/home)
 
-The technology stack will include:
+The technology stack includes:
 * Standard web technologies (HTML, CSS, JavaScript).
 * [Backbone.js](http://backbonejs.org/) - A JavaScript library for developing complex web applications.
 * [cordova](https://cordova.apache.org/) - To wrap the web application and create builds for Android, iOS, and other mobile platforms.
@@ -16,6 +25,10 @@ The technology stack will include:
 
 * [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm). For Windows, use an [installer](https://nodejs.org/en/download/) from the nodejs website.
 * [grunt-cli](https://gruntjs.com/getting-started) - `npm install -g grunt-cli`
+* For Android development:
+  * [cordova](https://cordova.apache.org/#getstarted)
+  * [Android SDK](https://developer.android.com/studio/index.html)
+  * [gradle](https://gradle.org/install/)
 
 
 ## Getting Started
@@ -36,14 +49,16 @@ grunt
 
 Open your browser and navigate to [localhost:3000](http://localhost:3000). You should see the settings screen the first time you open the app.
 
-## Project Folder Structure
+## Folder Structure
 
 Introduction to some of the less obvious folders:
-* /tasks - custom Grunt tasks live here
-* /js - Javascript you should be modifying. Gets processed during the Grunt build
-* /css - CSS you should be modifying. Gets processed during the Grunt build
-* /build - temporary files used during the build process by Grunt
-* /www - output from the build process. Minified and uglified, this is served in the app once you run it
+* `/build` - Temporary files used during the build process by Grunt.
+* `/css` - CSS you should be modifying. Gets processed during the Grunt build.
+* `/exports` - Files that are processed by browserify, which processes node.js modules so that they can be run in a browser.
+* `/tasks` - Custom Grunt tasks live here.
+* `/js` - JavaScript you should be modifying. Gets processed during the Grunt build.
+* `/www` - Final output from the build process. Minified and uglified, this is served in the app once you run it.
+
 
 ## Developing with Cryptocurrencies
 
@@ -82,10 +97,11 @@ tpubD6NzVbkrYhZ4YLXXEvJuNSnv3duP7VvCVG2ybxbbfcdJrgfvyfqjLdS2mntHXAr5YVLQvGqSdwa5
 ```
 
 
-## Tests
+### Monero
 
-End-to-end tests are included in the project which allow automated testing (in a real browser) of the application's user interface. The tests use [selenium](http://www.seleniumhq.org/) and [webdriverio](http://webdriver.io/). To run the tests:
-```bash
-grunt test:e2e
-```
-Note that selenium requires Java Run-time Environment (JRE).
+!! TODO !!
+
+
+### Lightning Network
+
+!! TODO !!

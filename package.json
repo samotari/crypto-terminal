@@ -1,7 +1,7 @@
 {
   "name": "crypto-terminal",
   "version": "1.0.0",
-  "description": "Accept payments with Bitcoin, Litecoin, Monero, and more!",
+  "description": "A merchant terminal app which allows payments by customers via multiple cryptocurrencies.",
   "main": "index.js",
   "scripts": {
     "cordova-browser": "grunt build && cordova platform remove browser && cordova platform add browser && cordova run browser",
