@@ -44,6 +44,7 @@ app.views.DisplayPaymentAddress = (function() {
 			this.$addressQrCode = this.$('.address-qr-code');
 			this.$addressText = this.$('.address-text');
 			this.$cryptoAmount = this.$('.crypto.amount');
+			this.$paymentId = this.$('.paymentId-value');
 			this.updateCryptoAmount();
 		},
 
@@ -75,11 +76,16 @@ app.views.DisplayPaymentAddress = (function() {
 
 		renderQrCode: function(data) {
 
-			var qr = qrcode(4, 'L');
+			// Robin: need bigger parameters than (4, 'L')
+			var qr = qrcode(5, 'L');
 			qr.addData(data);
 			qr.make();
 			var img = qr.createImgTag(app.config.qrCodes.cellSize, app.config.qrCodes.margin);
 			this.$addressQrCode.html($(img).addClass('address-qr-code-img'));
+		},
+
+		renderPaymentId: function(paymentId) {
+			this.$paymentId.text(paymentId);
 		},
 
 		renderAddress: function(address) {
@@ -106,7 +112,7 @@ app.views.DisplayPaymentAddress = (function() {
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var savePaymentInPaymentHistory = _.bind(this.savePaymentInPaymentHistory, this);
 
-			paymentMethod.generatePaymentRequest(amount, _.bind(function(error, paymentRequest, address) {
+			paymentMethod.generatePaymentRequest(amount, _.bind(function(error, paymentRequest, address, paymentId) {
 				if (error) {
 					this.resetQrCode();
 					return app.mainView.showMessage(error);

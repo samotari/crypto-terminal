@@ -33,6 +33,8 @@ module.exports = {
 			'build/bs58check.js',
 			'build/buffer.js',
 			'build/ecurve.js',
+			'build/monero.js',
+			'node_modules/sjcl/sjcl.js',
 			'node_modules/moment/moment.js',
 
 			// Application files:
@@ -69,6 +71,8 @@ module.exports = {
 			'build/bs58check.min.js',
 			'build/buffer.min.js',
 			'build/ecurve.min.js',
+			'build/monero.min.js',
+			'node_modules/sjcl/sjcl.js',
 			'node_modules/moment/min/moment.min.js',
 
 			// Application files:
