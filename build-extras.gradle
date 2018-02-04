@@ -1,0 +1,5 @@
+android {
+	aaptOptions {
+		cruncherEnabled = false
+	}
+}
