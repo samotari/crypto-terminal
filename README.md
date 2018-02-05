@@ -102,7 +102,17 @@ tpubD6NzVbkrYhZ4YLXXEvJuNSnv3duP7VvCVG2ybxbbfcdJrgfvyfqjLdS2mntHXAr5YVLQvGqSdwa5
 
 ### Monero
 
-!! TODO !!
+* Testnet wallet applications:
+  * [monerujo](https://play.google.com/store/apps/details?id=com.m2049r.xmrwallet&hl=en) - A mobile, light-weight wallet app for Monero. If you are running an older version of Android, you can install the app from an `.apk` that you can download from the project's [GitHub repo](https://github.com/m2049r/xmrwallet).
+* "Faucets" can be used to obtain testnet monero:
+  * https://dis.gratis/
+
+Sample testnet settings that you can use during development:
+
+Setting | Key | Value
+------- | --- | -----
+Public Address | `monero.publicAddress` | `9xmkWjzAB8JguD7JvkJxPHgMwkf7VP5v3Z5eSNmRMdoeCEnoVu6eGUbZT3FQ3Q8XrGihNEbb4qGhqHHGK5kWy9chU3URbaF`
+Private View Key | `monero.viewPrivateKey` | `136674e3e6868bb04d4ef2674f97c00166f5f7aa67185bdda97cde8ecfe4f609`
 
 
 ### Lightning Network
