@@ -32,6 +32,7 @@ app.views.PaymentHistory = (function() {
 			data.payments = _.map(this.collection.models, function(model) {
 				return model.attributes;
 			})
+			data.format = app.settings.get('dateFormat')
 			return data;
 		},
 

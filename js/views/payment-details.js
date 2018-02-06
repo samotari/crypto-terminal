@@ -16,10 +16,10 @@ app.views.PaymentDetails = (function() {
 			if (!app.paymentRequests.get(this.options.paymentId)) {
 				app.paymentRequests.fetch();
 			}
-
-			return app.paymentRequests.get(this.options.paymentId).attributes;
+			var data = {};
+			data = _.clone(app.paymentRequests.get(this.options.paymentId).attributes);
+			data.format = app.settings.get('dateFormat')
+			return data;
 		}
-
 	});
-
 })();

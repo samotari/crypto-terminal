@@ -103,6 +103,7 @@
 						</div>
 					{{/each}}
 				</div>
+				</div>
 				<div class="form-group acceptCryptoCurrencies">
 					<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
 					{{#each paymentMethods}}
@@ -218,10 +219,11 @@
 						<span class="payment-history-confirmation-circle payment-history-unconfirmed"></span>
 					{{/if}}
 					<div class="payment-history-item-body">
-						<p>{{formatDate timestamp "lll"}}</p>
+						<p>{{formatDate timestamp ../format}}</p>
 						<P class="payment-history-item-amount">{{amount}} {{currency}}</P>
 					</div>
 				</div>
+
 			{{/each}}
 		</div>
 	</script>
@@ -239,7 +241,7 @@
 		{{/if}}
 		<div class="payment-details-elements">
 			<span>{{i18n "payment-details.date"}}</span>
-			<p>{{formatDate timestamp "llll"}}</p>
+			<p>{{formatDate timestamp format}}</p>
 			<span>{{i18n "payment-details.amount"}}</span>
 			<p>{{amount}} {{currency}}</p>
 		</div>
