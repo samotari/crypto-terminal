@@ -9,23 +9,29 @@
 	float: left;
 	display: block;
 	width: 33.3%;
-	height: 40px;
-	line-height: 40px;
+	height: 4rem;
+	line-height: 4rem;
 	font-weight: 100;
 	text-align: center;
-	border: 1px solid #ccc;
+	border: .1rem solid #ccc;
 	border-left: none;
 	box-sizing: border-box;
 	cursor: pointer;
-	padding: 0 20px;
+	transform: translateZ(0);
+	-webkit-transform: translateZ(0);
+	padding: 0;
 }
-.numpad-key:active,
-.numpad-key:hover {
+.numpad-key:hover,
+.numpad-key.pressed {
 	background: #e6e6e6;
 }
 .numpad-key:nth-child(3n+1) {
-	border-left: 1px solid #ccc;
+	border-left: .1rem solid #ccc;
 }
 .numpad-key:nth-child(n+4) {
 	border-top: none;
+}
+.numpad-key[data-value="."],
+.numpad-key.backspace {
+	font-weight: 400;
 }

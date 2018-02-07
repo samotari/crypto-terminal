@@ -2,14 +2,15 @@
 	padding: 0;
 }
 .view.settings .button.payment-method {
-	background-size: 32px;
-	padding: 24px;
+	background-size: 3rem;
+	padding: 2rem;
 	opacity: 0.5;
+	margin-left: .4rem;
 }
 .view.settings input[type="checkbox"] {
 	position: absolute;
 	top: 0;
-	left: -99999em;
+	left: -99999rem;
 	visibility: hidden;
 }
 .view.settings input[type="checkbox"]:checked + .button.payment-method {
@@ -32,16 +33,16 @@
 	float: right;
 	color: #45A823;
 	font-size: 0.9rem;
-	line-height: 33px;
-	margin-right: 10px;
+	line-height: 3.3rem;
+	margin-right: 1rem;
 }
 .view.settings .success:empty {
 	display: none;
 }
 .view.settings .slider {
-	padding-top: 40px;
+	padding-top: 4rem;
 }
 .view.settings .slider-item {
 	box-sizing: border-box;
-	padding: 20px;
+	padding: 4rem;
 }

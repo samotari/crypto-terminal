@@ -4,14 +4,14 @@
 	font-size: 0.9rem;
 	font-weight: 100;
 	background: #efefef;
-	border: 1px solid #ccc;
-	border-radius: 5px;
+	border: .1rem solid #ccc;
+	border-radius: .5rem;
 	box-sizing: border-box;
 	outline: none;
 	cursor: pointer;
-	padding: 6px 14px;
+	padding: .6rem 1.4rem;
 }
-.button:active,
+.button.pressed,
 .button:hover {
 	background: #e6e6e6;
 }
@@ -19,15 +19,15 @@
 	opacity: 0.35;
 	cursor: not-allowed;
 }
-.button.disabled:active,
+.button.disabled.pressed,
 .button.disabled:hover {
 	background: #efefef;
 }
 .button.payment-method {
 	background-position: center center;
 	background-repeat: no-repeat;
-	background-size: 48px;
-	padding: 32px;
+	background-size: 4.8rem;
+	padding: 3.2rem;
 }
 .button.payment-method.bitcoin {
 	background-image: url('../images/bitcoin.svg');

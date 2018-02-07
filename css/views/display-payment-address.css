@@ -1,5 +1,5 @@
 .view.display-payment-address .address-qr-code {
-	margin-bottom: 20px;
+	margin-bottom: 2rem;
 }
 .view.display-payment-address .address-qr-code-img {
 	display: block;
@@ -10,7 +10,7 @@
 	font-size: 0.8rem;
 	font-family: 'Courier New';
 	text-align: center;
-	margin-top: 20px;
+	margin-top: 2rem;
 }
 .view.display-payment-address .secondary-controls {
 	text-align: center;

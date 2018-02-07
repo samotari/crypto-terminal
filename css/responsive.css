@@ -1,0 +1,8 @@
+/*
+	High resolution screens.
+*/
+@media screen and (min-resolution: 120dpi) {
+	#app {
+		font-size: 1.4rem;
+	}
+}

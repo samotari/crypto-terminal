@@ -1,9 +1,9 @@
 .payment-details-confirmation-circle {
-    border-radius: 18px;
-    height: 30px;
-    width: 145px;
-    margin-left: 8px;
-    font-size: 20px;
+    border-radius: 1.8rem;
+    height: 3rem;
+    width: 14.5rem;
+    margin-left: 1rem;
+    font-size: 1.2rem;
 }
 
 .payment-details-confirmed {
@@ -11,8 +11,8 @@
 }
 
 .payment-details-confirmed span {
-    color: white;
-    margin-left: 7px;
+    color: #fff;
+    margin-left: 1rem;
 }
 
 .payment-details-unconfirmed {
@@ -20,12 +20,12 @@
 }
 
 .payment-details-unconfirmed span {
-    color: #FF0000;
-    margin-left: 9px;
+    color: #ff0000;
+    margin-left: 1rem;
 }
 
 .payment-details-elements {
-    margin-top: 10px;
+    margin-top: 1rem;
 }
 
 .payment-details-elements p {
