@@ -4,6 +4,28 @@ app.Router = (function() {
 
 	'use strict';
 
+	var allowedWhenNotConfigured = [
+		// !! IMPORTANT !!
+		// These are router function names, not URI hashes.
+		'admin',
+	];
+
+	var pinProtected = [
+		// Same as above.
+		'admin',
+		'paymentDetails',
+	];
+
+	var isAllowedWhenNotConfigured = function(routerMethodName) {
+
+		return _.contains(allowedWhenNotConfigured, routerMethodName);
+	};
+
+	var isPinProtected = function(routerMethodName) {
+
+		return _.contains(pinProtected, routerMethodName);
+	};
+
 	return Backbone.Router.extend({
 
 		routes: {
@@ -11,10 +33,9 @@ app.Router = (function() {
 			'confirmed': 'paymentConfirmation',
 			'pay/:amount': 'choosePaymentMethod',
 			'pay/:amount/:method': 'displayPaymentAddress',
-			'payment-history': 'paymentHistory',
 			'payment-details/:paymentId': 'paymentDetails',
-			'settings': 'settings',
-			'settings/:page': 'settings',
+			'admin': 'admin',
+			'admin/:page': 'admin',
 
 			// For un-matched route, default to:
 			'*notFound': 'notFound'
@@ -22,8 +43,54 @@ app.Router = (function() {
 
 		execute: function(callback, args, name) {
 
-			if (name !== 'settings' && !app.settings.isConfigured()) {
-				this.navigate('settings', { trigger: true });
+			if (isPinProtected(name)) {
+				if (app.requirePin() && !app.isUnlocked()) {
+
+					// PIN required.
+
+					var enterPinView = new app.views.EnterPin({
+						title: app.i18n.t('pin-required.title'),
+						instructions: app.i18n.t('pin-required.instructions'),
+						showCancel: app.isConfigured(),
+						closable: false,
+					});
+
+					enterPinView.on('pin', function() {
+
+						// Get keys entered from number pad view.
+						var keys = enterPinView.numberPadView.getKeys();
+
+						if (!app.checkPin(keys)) {
+							enterPinView.numberPadView.resetKeys();
+							return app.mainView.showMessage(app.i18n.t('pin-required.incorrect'));
+						}
+
+						// Correct PIN entered.
+
+						// Close the enter PIN view.
+						enterPinView.close();
+
+						// Unlock the settings screen.
+						app.unlock();
+
+						if (callback) {
+							callback.apply(this, args);
+						}
+					});
+
+					enterPinView.on('cancel', function() {
+						if (app.isConfigured()) {
+							app.router.navigate('pay', { trigger: true });
+						}
+					});
+
+					// Stop the route from executing.
+					return false;
+				}
+			}
+
+			if (!app.isConfigured() && !isAllowedWhenNotConfigured(name)) {
+				this.navigate('admin', { trigger: true });
 				return false;
 			}
 
@@ -38,16 +105,21 @@ app.Router = (function() {
 			this.navigate('pay', { trigger: true });
 		},
 
-		settings: function(page) {
+		admin: function(page) {
 
 			if (page) {
 				// Don't allow navigation to disabled cryptocurrency settings pages.
-				if (page !== 'general' && !_.contains(app.settings.get('configurableCryptoCurrencies'), page)) {
-					return this.navigate('settings/general', { trigger: true });
+				for (var key in app.paymentMethods) {
+					if (page === key) {
+						if (!_.contains(app.settings.get('configurableCryptoCurrencies'), key)) {
+							return this.navigate('admin/general-settings', { trigger: true });
+						}
+						break;
+					}
 				}
 			}
 
-			app.mainView.renderView('Settings', { page: page });
+			app.mainView.renderView('Admin', { page: page });
 		},
 
 		pay: function() {
@@ -72,11 +144,6 @@ app.Router = (function() {
 				amount: amount,
 				method: method
 			});
-		},
-
-		paymentHistory: function() {
-
-			app.mainView.renderView('PaymentHistory')
 		},
 
 		paymentDetails: function(paymentId) {

@@ -5,12 +5,20 @@ html, body {
 	color: #111;
 	font-family: 'OpenSans', sans-serif, arial;
 	background: #fff;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
 }
-a,
+a {
+	color: #3f94c5;
+	text-decoration: none;
+	cursor: pointer;
+}
 a.pressed,
 a:hover {
-	color: #111;
-	text-decoration: none;
+	text-decoration: underline;
+}
+a:hover {
 	/* remove blue highlight from touched elements: */
 	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
@@ -18,9 +26,6 @@ body {
 	font-size: 1.2rem;
 	border: none;
 	box-sizing: border-box;
-	overflow: hidden;
-	margin: 0;
-	padding: 0;
 }
 .error {
 	color: red;

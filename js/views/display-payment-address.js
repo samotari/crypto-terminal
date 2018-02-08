@@ -21,8 +21,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'listenForPayment', 'onResize');
-			$(window).on('resize', this.onResize);
+			_.bindAll(this, 'listenForPayment');
 		},
 
 		serializeData: function() {
@@ -249,7 +248,6 @@ app.views.DisplayPaymentAddress = (function() {
 		onClose: function() {
 
 			this.stopListeningForPayment();
-			$(window).off('resize', this.onResize);
 		}
 
 	});

@@ -24,9 +24,10 @@
 	position: relative;
 	float: left;
 	height: 100%;
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 .slider-item-content {
-	height: 100%;
 	position: relative;
+	height: 100%;
 }

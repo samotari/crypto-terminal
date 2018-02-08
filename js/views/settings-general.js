@@ -13,7 +13,9 @@ app.views.SettingsGeneral = (function() {
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',
-			'submit form': 'onSubmit'
+			'submit form': 'onSubmit',
+			'click .set-pin': 'onSetPinClick',
+			'click .remove-pin': 'onRemovePinClick',
 		},
 
 		serializeData: function() {
@@ -62,6 +64,8 @@ app.views.SettingsGeneral = (function() {
 				return setting;
 			});
 
+			data.hasPin = app.requirePin();
+
 			return data;
 		},
 
@@ -107,6 +111,53 @@ app.views.SettingsGeneral = (function() {
 
 		save: function(data) {
 			app.settings.set(data).save();
+		},
+
+		onSetPinClick: function(evt) {
+
+			evt.preventDefault();
+
+			var enterPinView = new app.views.EnterPin({
+				title: app.requirePin() ? app.i18n.t('admin.pin.change-pin.title') : app.i18n.t('admin.pin.set-pin.title'),
+				closable: true,
+			});
+
+			this.listenTo(enterPinView, 'pin', function() {
+
+				// Get keys entered from number pad view.
+				var keys = enterPinView.numberPadView.getKeys();
+
+				if (!keys) {
+					return app.mainView.showMessage(
+						app.i18n.t('admin.pin.min-length'),
+						{ minLength: app.config.pin.minLength }
+					);
+				}
+
+				// Save the new PIN.
+				app.setPin(keys);
+
+				// Close the enter PIN view.
+				enterPinView.close();
+
+				// Unlock the settings screen.
+				app.unlock();
+
+				// Re-render the general settings screen.
+				this.render();
+			});
+
+			this.listenTo(enterPinView, 'close', function() {
+				this.stopListeningTo(enterPinView);
+			});
+		},
+
+		onRemovePinClick: function(evt) {
+
+			evt.preventDefault();
+			app.clearPin();
+			// Re-render the general settings screen.
+			this.render();
 		}
 
 	});

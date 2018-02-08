@@ -5,7 +5,7 @@
 	],
 	"build": [
 		"newer:browserify",
-		"newer:compileHtml",
+		"compileHtml",
 		"newer:cssmin",
 		"newer:uglify",
 		"newer:concat",

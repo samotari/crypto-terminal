@@ -1,6 +1,7 @@
 .button {
 	display: inline-block;
 	vertical-align: top;
+	color: #111;
 	font-size: 0.9rem;
 	font-weight: 100;
 	background: #efefef;
@@ -13,6 +14,7 @@
 }
 .button.pressed,
 .button:hover {
+	text-decoration: none;
 	background: #e6e6e6;
 }
 .button.disabled {

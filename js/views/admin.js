@@ -2,26 +2,33 @@ var app = app || {};
 
 app.views = app.views || {};
 
-app.views.Settings = (function() {
+app.views.Admin = (function() {
 
 	'use strict';
 
 	return app.abstracts.BaseView.extend({
 
-		className: 'settings',
-		template: '#template-settings',
+		className: 'admin',
+		template: '#template-admin',
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'toggleCryptoCurrencySettingsVisibility',
 			'keyup input[name$=".xpub"]': 'onKeyUpMasterPublicKeyField',
+			'click .lock': 'lock',
 		},
 
 		sampleAddressesViews: {},
 
 		initialize: function() {
 
-			_.bindAll(this, 'onSliderChangeActive');
-			this.options.page = this.options.page || 'general';
+			_.bindAll(this, 'setActiveMenuItem');
+			this.options.page = this.options.page || 'general-settings';
+		},
+
+		lock: function() {
+
+			app.lock();
+			app.router.navigate('pay', { trigger: true });
 		},
 
 		onKeyUpMasterPublicKeyField: function(evt) {
@@ -39,43 +46,70 @@ app.views.Settings = (function() {
 			data.paymentMethods = _.map(app.paymentMethods, function(paymentMethod, key) {
 				return {
 					key: key,
-					label: _.result(paymentMethod, 'label')
+					label: _.result(paymentMethod, 'label'),
 				};
 			});
 
 			data.menuItems = [
 				{
-					key: 'general',
-					label: app.i18n.t('settings.general.label'),
-					active: this.options.page === 'general'
+					key: 'general-settings',
+					label: app.i18n.t('admin.general-settings.label'),
 				}
-			];
-
-			_.each(data.paymentMethods, function(paymentMethod) {
-				data.menuItems.push(_.extend({}, paymentMethod, {
-					active: this.options.page === paymentMethod.key
-				}));
-			}, this);
+			].concat(_.map(data.paymentMethods, function(paymentMethod) {
+				return {
+					key: paymentMethod.key,
+					label: _.result(paymentMethod, 'label'),
+				};
+			}), [
+				{
+					key: 'payment-history',
+					label: app.i18n.t('admin.payment-history.label'),
+				}
+			]);
 
 			return data;
 		},
 
 		onRender: function() {
 
+			this.$menuItems = this.$('.secondary-menu-item');
 			this.initializeSlider();
 			this.toggleCryptoCurrencySettingsVisibility();
+
+			// Always show these admin pages.
+			this.$menuItems
+				.filter('.general-settings,.payment-history')
+				.addClass('visible');
 
 			if (this.options.page) {
 				this.slider.switchToItem(this.options.page);
 			}
+
+			this.updateSecondaryMenuWidth();
+		},
+
+		onResize: function() {
+
+			this.updateSecondaryMenuWidth();
+		},
+
+		updateSecondaryMenuWidth: function() {
+
+			var secondaryMenuItemsWidth = 0;
+			this.$('.secondary-menu-item').each(function() {
+				if ($(this).is(':visible')) {
+					secondaryMenuItemsWidth += $(this).outerWidth();
+				}
+			});
+			this.$('.secondary-menu-inner').width(secondaryMenuItemsWidth);
 		},
 
 		initializeSlider: function() {
 
 			var items = [
 				{
-					key: 'general',
-					contentView: new app.views.SettingsGeneral()
+					key: 'general-settings',
+					contentView: new app.views.SettingsGeneral(),
 				}
 			];
 
@@ -86,35 +120,48 @@ app.views.Settings = (function() {
 				});
 			}, this);
 
+			items = items.concat([
+				{
+					key: 'payment-history',
+					contentView: new app.views.PaymentHistory(),
+				}
+			]);
+
 			this.slider = new app.views.Slider({
 				el: this.$('.slider'),
 				items: items
 			});
 
-			this.slider.on('change:active', this.onSliderChangeActive);
+			this.listenTo(this.slider, 'change:active', this.setActiveMenuItem);
+
+			// Always show these admin pages.
+			this.slider.$('.slider-item')
+				.filter('.general-settings,.payment-history')
+				.addClass('visible');
 		},
 
-		onSliderChangeActive: function(key) {
+		setActiveMenuItem: function(key) {
 
 			this.options.page = key;
-			this.$('.secondary-menu-item').removeClass('active');
-			var $menuItem = this.$('.secondary-menu-item[data-key="' + key + '"]');
-			$menuItem.addClass('active');
-			var url = $menuItem.attr('href');
-			app.router.navigate(url);
+			this.$menuItems.removeClass('active');
+			var $activeMenuItem = this.$menuItems.filter('[data-key="' + key + '"]').addClass('active');
+			// Set the menu scroll position to the active menu item.
+			this.$('.secondary-menu')[0].scrollLeft = $activeMenuItem[0].offsetLeft;
+			app.router.navigate('#admin/' + encodeURIComponent(key));
 		},
 
 		toggleCryptoCurrencySettingsVisibility: function() {
 
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies') || [];
-			var $menuItems = this.$('.secondary-menu-item');
-			var $sliderItems = this.$('.slider-item');
 			_.each(_.keys(app.paymentMethods), function(key) {
 				var configurable = _.contains(configurableCryptoCurrencies, key);
-				var method = configurable ? 'show' : 'hide';
-				$menuItems.filter('[data-key="' + key + '"]')[method]();
-				$sliderItems.filter('[data-key="' + key + '"]')[method]();
-			});
+				this.$menuItems
+					.filter('[data-key="' + key + '"]')
+					.toggleClass('visible', configurable);
+				this.slider.$('.slider-item')
+					.filter('[data-key="' + key + '"]')
+					.toggleClass('visible', configurable);
+			}, this);
 		},
 
 		onClose: function() {

@@ -1,6 +1,8 @@
 #header {
 	position: absolute;
 	z-index: 100;
+	display: inline-block;
+	vertical-align: top;
 	width: 100%;
 	height: 3.3rem;
 	background: #f7f7f7;
@@ -8,19 +10,54 @@
 	padding: 0;
 }
 .header-button {
-	position: absolute;
-	top: 0;
+	position: relative;
+	float: left;
 	display: block;
 	width: 3.3rem;
 	height: 3.3rem;
 	background-color: transparent;
 	background-position: center center;
 	background-repeat: no-repeat;
-	background-size: 2rem;
+	background-size: 2rem 2rem;
 	box-sizing: border-box;
 	cursor: pointer;
 }
 .header-button.pressed,
 .header-button:hover {
 	background-color: #e6e6e6;
+}
+.header-button.admin {
+	background-image: url('../images/gear.svg');
+}
+.header-button.admin:after {
+	display: none;
+}
+.header-button.admin:after {
+	position: absolute;
+	right: 0.4rem;
+	bottom: 0.4rem;
+	content: ' ';
+	display: none;
+	width: 0.8rem;
+	height: 0.8rem;
+	background-color: transparent;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 0.8rem 0.8rem;
+	background-image: url('../images/lock-closed.svg');
+}
+html.is-unlocked .header-button.admin:after {
+	background-image: url('../images/lock-open.svg');
+}
+html.require-pin .header-button.admin:after {
+	display: block;
+}
+.header-button.pay {
+	background-image: url('../images/number-pad.svg');
+}
+.header-button.pay {
+	display: none;
+}
+html.configured .header-button.pay {
+	display: block;
 }
