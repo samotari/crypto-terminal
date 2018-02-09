@@ -12,7 +12,7 @@ app.views.Settings = (function() {
 		template: '#template-settings',
 
 		events: {
-			'change input[name="configurableCryptoCurrencies[]"]': 'toggleCryptoCurrencySettingsVisibility'
+			'change input[name="configurableCryptoCurrencies[]"]': 'toggleCryptoCurrencySettingsVisibility',
 		},
 
 		initialize: function() {

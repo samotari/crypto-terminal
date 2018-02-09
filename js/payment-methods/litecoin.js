@@ -29,6 +29,23 @@ app.paymentMethods.litecoin = (function() {
 					if (!app.paymentMethods.litecoin.prepareHDNodeInstance(value)) {
 						throw new Error(app.i18n.t('litecoin.settings.xpub.invalid'));
 					}
+				},
+				beforeSaving: function(data, cb) {
+
+					this.getFirstIndexOfGap(data[this.ref + '.xpub'], _.bind(function(error, firstIndexOfGap) {
+
+						if (error) {
+							console.log(app.i18n.t(currency + 'litecoin.settings.error-beforesaving'));
+							return cb(error);
+						}
+
+						var lastIndexObj = {};
+						lastIndexObj[this.ref + '.lastIndex'] = firstIndexOfGap;
+
+						var fixedData = _.extend({}, data, lastIndexObj);
+
+						cb(null, fixedData);
+					}, this));
 				}
 			}
 		],
@@ -107,34 +124,71 @@ app.paymentMethods.litecoin = (function() {
 				var amount = matches[2];
 				var network = this.getNetworkName();
 
-				/*
-					For API details:
-					https://chain.so/api#get-balance
-				*/
-				var uri = 'https://chain.so/api/v2/get_address_balance';
+				var requestArr = app.util.requestArrFactory(
+					[
+						app.services['chain.so'].checkPaymentReceived
+					],
+					{address: address, amount: amount, network: network}
+				)
 
-				// Network (e.g LTC or LTCTEST):
-				uri += '/' + (network === 'mainnet' ? 'LTC' : 'LTCTEST');
-				// Address:
-				uri += '/' + encodeURIComponent(address);
-				// Minimum number of confirmations:
-				uri += '/0';
+				async.tryEach(
+					requestArr,
+					function(error, results) {
 
-				$.get(uri).then(function(result) {
+						if (error) {
+							return cb(error);
+						}
 
-					try {
-						var amountReceived = (new BigNumber('0'))
-							.plus(result.data.confirmed_balance)
-							.plus(result.data.unconfirmed_balance);
-					} catch (error) {
-						return cb(error);
+						var wasReceived = results;
+
+						cb(null, wasReceived);
 					}
+				)
 
-					var wasReceived = amountReceived.greaterThanOrEqualTo(amount);
-					cb(null, wasReceived, amountReceived);
 
-				}).fail(cb);
 			}, this));
-		}
+		},
+
+		checkIfAddressWasUsed: function(index, xpub, cb) {
+
+			this.getAddress(index, xpub, _.bind(function(error, address) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				var networkName = this.getNetwork(xpub).name;
+
+				var requestArr = app.util.requestArrFactory(
+					[
+						app.services['chain.so'].getTotalReceiveByAddress
+					],
+					{address: address, networkName: networkName}
+				)
+
+				async.tryEach(
+					requestArr,
+					function(error, results) {
+
+						if (error) {
+							return cb(error);
+						}
+
+						var totalReceived = results;
+
+						try {
+							var indexWasUsed = totalReceived.greaterThan('0');
+						} catch (error) {
+							return cb(error);
+						}
+
+						cb(null, indexWasUsed);
+
+					}
+				)
+
+			}, this))
+		},
+
 	});
 })();
