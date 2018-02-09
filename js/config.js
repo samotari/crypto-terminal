@@ -22,6 +22,18 @@ app.config = (function() {
 				}
 			}
 		},
+		httpRequests: {
+			timeBetweenRequests: 100
+		},
+		retryRequest: {
+			// how many times it tries with an api when request fails (times):
+			times: 5,
+			// try calling apiMethod X times with exponential backoff (milliseconds):
+			// (i.e. intervals of 100, 200, 400, 800, 1600, ...)
+			interval: function(retryCount) {
+				return 200 * Math.pow(2, retryCount);
+			}
+		},
 		settings: [
 			{
 				name: 'displayCurrency',

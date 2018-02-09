@@ -17,6 +17,9 @@ app.paymentMethods.bitcoin = (function() {
 		// Used internally to reference itself:
 		ref: 'bitcoin',
 
+		// Used to get gap limit
+		gapLimit: 5,
+
 		lang: {
 			'en': {
 				'settings.xpub.label': 'Master Public Key',
@@ -26,6 +29,8 @@ app.paymentMethods.bitcoin = (function() {
 				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
 				'invalid-network-version': 'Invalid network version',
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
+				'error-beforesaving': 'Error before saving settings',
+				'settings.error-getting-gap-limit': 'Error in getting "gap limit".',
 			},
 			'es': {
 				'settings.xpub.label': 'Clave Pública Maestra',
@@ -36,7 +41,9 @@ app.paymentMethods.bitcoin = (function() {
 				'invalid-parent-fingerprint': 'La huella paterna no es válida',
 				'invalid-network-version': 'La versión de la red no es válida',
 				'private-keys-warning': '¡ADVERTENCIA: NO utilice claves privadas en esta aplicación!',
-			}
+				'error-beforesaving': 'Error antes de guardar settings',
+				'settings.error-getting-gap-limit': 'Error obteniendo "gap limit"'
+			},
 		},
 
 		settings: [
@@ -51,6 +58,23 @@ app.paymentMethods.bitcoin = (function() {
 					if (!app.paymentMethods.bitcoin.prepareHDNodeInstance(value)) {
 						throw new Error(app.i18n.t('bitcoin.settings.xpub.invalid'));
 					}
+				},
+				beforeSaving: function(data, cb) {
+
+					this.getFirstIndexOfGap(data[this.ref + '.xpub'], _.bind(function(error, firstIndexOfGap) {
+
+						if (error) {
+							console.log(app.i18n.t(this.ref + 'bitcoin.settings.error-beforesaving'));
+							return cb(error);
+						}
+
+						var lastIndexObj = {};
+						lastIndexObj[this.ref + '.lastIndex'] = firstIndexOfGap;
+
+						var fixedData = _.extend({}, data, lastIndexObj);
+
+						cb(null, fixedData);
+					}, this));
 				}
 			}
 		],
@@ -82,7 +106,9 @@ app.paymentMethods.bitcoin = (function() {
 
 			var index = parseInt(app.settings.get(this.ref + '.lastIndex') || 0) + 1;
 
-			this.getAddress(index, _.bind(function(error, address) {
+			var xpub = app.settings.get(this.ref + '.xpub');
+
+			this.getAddress(index, xpub, _.bind(function(error, address) {
 
 				if (error) {
 					return cb(error);
@@ -94,11 +120,9 @@ app.paymentMethods.bitcoin = (function() {
 			}, this));
 		},
 
-		getAddress: function(index, cb) {
+		getAddress: function(index, xpub, cb) {
 
 			_.defer(_.bind(function() {
-
-				var xpub = app.settings.get(this.ref + '.xpub');
 
 				try {
 					var node = this.prepareHDNodeInstance(xpub);
@@ -217,35 +241,113 @@ app.paymentMethods.bitcoin = (function() {
 				var address = matches[1];
 				var amount = matches[2];
 				var networkName = this.getNetworkName();
-				var uri;
 
-				switch (networkName) {
-					case 'testnet':
-						uri = 'https://testnet.blockexplorer.com';
-						break;
-					default:
-						uri = 'https://blockexplorer.com';
-						break;
+				var requestArr = app.util.requestArrFactory(
+					[
+						app.services.blockexplorer.getUnconfirmedBalance
+					],
+					{address: address, networkName: networkName, amount: amount}
+				)
+
+				async.tryEach(
+					requestArr,
+					function(error, results) {
+
+						if (error) {
+							return cb(error);
+						}
+
+						var wasReceived = results[0];
+						var amountReceived = results[1];
+
+						cb(null, wasReceived, amountReceived);
+					}
+				);
+
+			}, this));
+		},
+
+		checkIfAddressWasUsed: function(index, xpub, cb) {
+
+			this.getAddress(index, xpub, _.bind(function(error, address) {
+
+				if (error) {
+					return cb(error);
 				}
 
-				uri += '/api/addr/' + encodeURIComponent(address) + '/unconfirmedBalance';
+				var networkName = this.getNetwork(xpub).name;
 
-				$.get(uri).then(function(result) {
+				var requestArr = app.util.requestArrFactory(
+					[
+						app.services.blockexplorer.getTotalReceiveByAddressAndNetworkName
+					],
+					{address: address, networkName: networkName}
+				)
 
-					try {
-						var amountReceived = new BigNumber(result);
-						// Convert to BTC from satoshis.
-						amountReceived = amountReceived.dividedBy('100000000');
-					} catch (error) {
+				async.tryEach(
+					requestArr,
+					function(error, results) {
+
+						if (error) {
+							return cb(error);
+						}
+
+						var totalReceived = results;
+
+						try {
+							var indexWasUsed = totalReceived.greaterThan('0');
+						} catch (error) {
+							return cb(error);
+						}
+
+						cb(null, indexWasUsed);
+					}
+				)
+			}, this))
+		},
+
+		/**
+			finds the first index that contains gapLimit number of not used addresses
+		 */
+		getFirstIndexOfGap: function(xpub, cb) {
+			var gapLimit = this.gapLimit;
+			var gap = 0;
+			var index = 0;
+			var checkIfAddressWasUsed = _.bind(this.checkIfAddressWasUsed, this);
+			var ref = this.ref;
+			
+			async.whilst(
+				function() { return gap < gapLimit },
+				function(callback) {
+					checkIfAddressWasUsed(index, xpub, function(error, indexWasUsed) {
+
+						if (error) {
+							return callback(error);
+						}
+						if (indexWasUsed) {
+							gap = 0;
+						} else {
+							gap++;
+						}
+						
+						index++;
+						callback();
+					})
+
+				},
+				function(error) {
+
+					if (error) {
+						console.log(app.i18n.t(ref + 'settings.error-getting-gap-limit'));
 						return cb(error);
 					}
 
-					var wasReceived = amountReceived.greaterThanOrEqualTo(amount);
-					cb(null, wasReceived, amountReceived);
+					cb(null, index - gap);
 
-				}).fail(cb);
+				}
+			)
 
-			}, this));
-		}
+		},
+
 	});
 })();
