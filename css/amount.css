@@ -1,5 +1,5 @@
 .amount-wrap {
-	margin-bottom: 20px;
+	margin-bottom: 2rem;
 }
 .amount {
 	position: relative;
@@ -13,9 +13,9 @@
 	font-size: 1.2rem;
 	font-weight: 700;
 	text-align: right;
-	line-height: 32px;
+	line-height: 3.2rem;
 	box-sizing: border-box;
-	padding-right: 5px;
+	padding-right: .5rem;
 }
 .amount.crypto {
 	display: none;
@@ -27,27 +27,27 @@
 	color: #aaa;
 	font-size: 0.9rem;
 	font-weight: 100;
-	line-height: 26px;
+	line-height: 2.6rem;
 }
 .amount-currency {
 	float: left;
 	width: 50%;
-	line-height: 32px;
+	line-height: 3.2rem;
 	box-sizing: border-box;
-	padding-left: 5px;
+	padding-left: .5rem;
 }
 .change-display-currency {
-	line-height: 32px;
+	line-height: 3.2rem;
 }
 .amount.crypto .amount-currency {
 	color: #aaa;
 	font-size: 0.9rem;
 	font-weight: 500;
-	line-height: 26px;
+	line-height: 2.6rem;
 	text-align: left;
 }
 .amount-currency-change {
 	display: inline;
 	font-size: 0.8rem;
-	padding: 1px 3px;
+	padding: .1rem .3rem;
 }

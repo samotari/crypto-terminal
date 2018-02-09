@@ -14,7 +14,8 @@ module.exports = {
 			'build/css/amount.min.css',
 			'build/css/numpad.min.css',
 			'build/css/slider.min.css',
-			'build/css/views/*.min.css'
+			'build/css/views/*.min.css',
+			'build/css/responsive.min.css'
 		],
 		dest: 'build/all.min.css'
 	},

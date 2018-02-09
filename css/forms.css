@@ -1,9 +1,9 @@
 .form {
 }
 .form-error {
-	min-height: 25px;
+	min-height: 2.5rem;
 	text-align: center;
-	margin-bottom: 10px;
+	margin-bottom: 1rem;
 }
 .form-error:empty {
 	display: none;
@@ -14,30 +14,30 @@
 	width: 100%;
 }
 .form-row + .form-row {
-	margin-top: 10px;
+	margin-top: 1rem;
 }
 .form-label {
 	display: block;
-    font-size: 0.9em;
-    margin-bottom: 5px;
+    font-size: 0.9rem;
+    margin-bottom: .5rem;
 }
 .form-input {
 	width: 100%;
-	font-size: 0.9em;
+	font-size: 0.9rem;
 }
 .form-buttons {
 	text-align: right;
-	margin-top: 20px;
+	margin-top: 2rem;
 }
 .form-group {
 }
 .form-group + .form-group {
-	border-top: 1px solid #efefef;
-	padding-top: 10px;
-	margin-top: 10px;
+	border-top: .1rem solid #efefef;
+	padding-top: 1rem;
+	margin-top: 1rem;
 }
 .form-group-label {
 	color: #aaa;
 	font-style: italic;
-	margin-bottom: 10px;
+	margin-bottom: 1rem;
 }

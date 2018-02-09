@@ -13,11 +13,19 @@ app.views.Pay = (function() {
 		template: '#template-pay-enter-amount',
 
 		events: {
-			'click .numpad-key': 'onNumberPadKeyPressed',
+			'mousedown .numpad-key': 'onNumberPadKeyMouseDown',
+			'mouseup .numpad-key': 'onNumberPadKeyMouseUp',
+			'touchstart .numpad-key': 'onNumberPadKeyTouchStart',
+			'touchend .numpad-key': 'onNumberPadKeyTouchEnd',
 			'click .continue': 'continue'
 		},
 
 		amount: '0',
+
+		initialize: function() {
+
+			_.bindAll(this, 'onLongTouch');
+		},
 
 		serializeData: function() {
 
@@ -35,35 +43,111 @@ app.views.Pay = (function() {
 
 			this.$amount = this.$('.amount-value');
 			this.$error = this.$('.error');
-			this.updateAmount();
+			this.updateAmountElement();
 		},
 
-		onNumberPadKeyPressed: function(evt) {
+		onNumberPadKeyTouchStart: function(evt) {
 
+			evt.preventDefault();
 			var $target = $(evt.target);
+			// Give the target key the "pressed" class name temporarily.
+			// This gives the user some visual feedback.
+			$target.addClass('pressed');
 
-			if ($target.hasClass('backspace')) {
+			// When the user presses and holds a key.
+			// Wait a moment and then start executing the key press repeatedly.
+			this._longNumPadKeyTouch = false;
+			this._longNumPadKeyTouchTimeout = setTimeout(this.onLongTouch, 500);
+		},
 
-				if (this.amount.length > 0) {
-					// Remove the last character from the amount string.
-					this.amount = this.amount.substr(0, this.amount.length - 1);
+		onLongTouch: function() {
+
+			var $target = this.$('.numpad-key.pressed');
+
+			this._longNumPadKeyTouch = true;
+
+			var test = _.bind(function() {
+				return !this._longNumPadKeyTouch;
+			}, this);
+
+			var iteratee = _.bind(function(next) {
+
+				if ($target.hasClass('backspace')) {
+					this.removeLastCharacterFromAmount();
+				} else {
+					var value = $target.attr('data-value');
+					this.addToAmount(value);
 				}
 
-			} else {
+				_.delay(next, 75);
 
-				var value = $target.attr('data-value');
+			}, this);
 
-				if (value !== '.' || this.amount.indexOf('.') === -1) {
-					// In the case of a dot, only append if there isn't already a dot.
-					// Append the value to the end of the amount string.
-					this.amount += value;
+			async.until(test, iteratee);
+		},
+
+		onNumberPadKeyTouchEnd: function(evt) {
+
+			evt.preventDefault();
+			var $target = $(evt.target);
+			$target.removeClass('pressed');
+
+			if (!this._longNumPadKeyTouch) {
+				if ($target.hasClass('backspace')) {
+					this.removeLastCharacterFromAmount();
+				} else {
+					var value = $target.attr('data-value');
+					this.addToAmount(value);
 				}
 			}
 
-			this.updateAmount();
+			this._longNumPadKeyTouch = false;
+			if (this._longNumPadKeyTouchTimeout) {
+				clearTimeout(this._longNumPadKeyTouchTimeout);
+			}
 		},
 
-		updateAmount: function() {
+		onNumberPadKeyMouseUp: function(evt) {
+
+			evt.preventDefault();
+			var $target = $(evt.target);
+			if ($target.hasClass('backspace')) {
+				this.removeLastCharacterFromAmount();
+			} else {
+				var value = $target.attr('data-value');
+				this.addToAmount(value);
+			}
+		},
+
+		removeLastCharacterFromAmount: function() {
+
+			if (this.amount.length > 0) {
+				// Remove the last character from the amount string.
+				this.amount = this.amount.substr(0, this.amount.length - 1);
+			}
+
+			this.updateAmountElement();
+		},
+
+		addToAmount: function(value) {
+
+			if (
+				// Don't add if there is no value:
+				!value ||
+				// In the case of a dot, only add if there isn't already a dot:
+				(value === '.' && this.amount.indexOf('.') !== -1)
+			) {
+				return;
+			}
+
+			// Append the value to the end of the amount string.
+			this.amount += value;
+
+			// Update the amount shown in the UI.
+			this.updateAmountElement();
+		},
+
+		updateAmountElement: function() {
 
 			var amount = this.amount || '0';
 

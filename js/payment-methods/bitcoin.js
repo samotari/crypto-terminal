@@ -18,7 +18,7 @@ app.paymentMethods.bitcoin = (function() {
 		ref: 'bitcoin',
 
 		// Used to get gap limit
-		gapLimit: 5,
+		gapLimit: 1,
 
 		lang: {
 			'en': {
