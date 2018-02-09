@@ -10,6 +10,7 @@ $(function() {
 	Handlebars.registerPartial('numpad', $('#template-numpad').html());
 	Handlebars.registerPartial('amount', $('#template-amount').html());
 	Handlebars.registerPartial('formField', $('#template-form-field').html());
+	Handlebars.registerPartial('slider', $('#template-slider').html());
 
 	// Initialize models.
 	app.settings = new app.models.Settings();

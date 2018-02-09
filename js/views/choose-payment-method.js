@@ -20,7 +20,8 @@ app.views.ChoosePaymentMethod = (function() {
 		serializeData: function() {
 
 			var data = {};
-			data.paymentMethods = _.map(app.settings.get('acceptCryptoCurrencies'), function(key) {
+			var acceptedCryptoCurrencies = app.settings.getAcceptedCryptoCurrencies();
+			data.paymentMethods = _.map(acceptedCryptoCurrencies, function(key) {
 				return { key: key };
 			});
 			return data;

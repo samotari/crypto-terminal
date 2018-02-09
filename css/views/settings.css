@@ -1,3 +1,6 @@
+.view.settings {
+	padding: 0;
+}
 .view.settings .button.payment-method {
 	background-size: 32px;
 	padding: 24px;
@@ -13,20 +16,10 @@
 	opacity: 1;
 	background-color: #e6e6e6;
 }
-.view.settings .form-group {
-	display: none;
-}
-.view.settings .form-group.settings {
-	display: block;
-}
-.view.settings .form-group.accepted {
-	display: block;
-}
-.view.settings .form-group.acceptCryptoCurrencies {
-	display: block;
+.view.settings .form-group.configurableCryptoCurrencies {
 	text-align: center;
 }
-.view.settings .form-group.acceptCryptoCurrencies .form-group-label {
+.view.settings .form-group.configurableCryptoCurrencies .form-group-label {
 	color: #111;
 	text-align: center;
 	font-style: normal;
@@ -44,4 +37,11 @@
 }
 .view.settings .success:empty {
 	display: none;
+}
+.view.settings .slider {
+	padding-top: 40px;
+}
+.view.settings .slider-item {
+	box-sizing: border-box;
+	padding: 20px;
 }
