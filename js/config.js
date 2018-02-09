@@ -64,6 +64,32 @@ app.config = (function() {
 						}
 					]
 				)
+			},
+			{
+				name: 'dateFormat',
+				label: function() {
+					return app.i18n.t('settings.date-format.label');
+				},
+				type: 'select',
+				required: true,
+				options: [
+					{
+						key: 'MMMM Do YYYY, h:mm:ss A',
+						label: moment().format('MMMM Do YYYY, h:mm:ss A')
+					},
+					{
+						key: 'lll',
+						label: moment().format('lll')
+					},
+					{
+						key: 'LLLL',
+						label: moment().format('LLLL')
+					},
+					{
+						key: 'DD/MM/YYYY hh:mm:ss',
+						label: moment().format('DD/MM/YYYY hh:mm:ss')
+					}
+				]
 			}
 		]
 	};

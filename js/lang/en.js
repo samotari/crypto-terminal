@@ -15,6 +15,7 @@ app.lang['en'] = (function() {
 		'settings.title': 'Settings',
 		'settings.general.label': 'General settings',
 		'settings.display-currency.label': 'Display Currency',
+		'settings.date-format.label': 'Date Format',
 		'settings.accept-crypto-currencies.label': 'Which currencies do you want to accept?',
 		'settings.at-least-one-crypto-currency-required': 'Please configure at least one cryptocurrency',
 		'settings.field-required': '{{label}} is required',
