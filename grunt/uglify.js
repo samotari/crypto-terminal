@@ -10,11 +10,6 @@ module.exports = {
 				src: ['**/*.js'],
 				dest: 'build/js',
 				ext: '.min.js'
-			},
-			{
-				nonull: true,
-				src: 'node_modules/qrcode-generator/qrcode.js',
-				dest: 'build/qrcode-generator/qrcode.min.js'
 			}
 		]
 	},

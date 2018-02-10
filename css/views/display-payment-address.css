@@ -1,8 +1,33 @@
+.view.display-payment-address .amount-wrap {
+	position: absolute;
+	left: 0;
+	top: 2rem;/* padding of the .view element */
+}
+.view.display-payment-address .address {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding-top: 5.5rem;/* (height of the .amount-wrap element) + extra padding */
+	padding-bottom: 7.4rem;/* (height of the .amount-wrap element) + extra padding */
+}
+.view.display-payment-address .address-instructions {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 3rem;
+	line-height: 3rem;
+	text-align: center;
+	padding-bottom: 4rem;
+	margin: 0;
+}
 .view.display-payment-address .address-qr-code {
-	margin-bottom: 2rem;
+	margin: 0 auto;
 }
 .view.display-payment-address .address-qr-code-img {
 	display: block;
+	max-width: 100%;
 	margin: 0 auto;
 }
 .view.display-payment-address .address-text {
@@ -13,5 +38,17 @@
 	margin-top: 2rem;
 }
 .view.display-payment-address .secondary-controls {
+	position: absolute;
+	left: 0;
+	bottom: 2rem;/* padding of the .view element */
+	width: 100%;
+	height: 2.4rem;
 	text-align: center;
+	box-sizing: border-box;
+}
+.view.display-payment-address .secondary-controls .button {
+	height: 2.4rem;
+	line-height: 2.4rem;
+	box-sizing: border-box;
+	padding: 0 1.4rem;
 }
