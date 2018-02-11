@@ -31,10 +31,12 @@ app.abstracts.PaymentMethod = (function() {
 
 		/*
 			`amount` .. A valid number
-			`cb(error, paymentRequest, address)`:
-				`error`				.. An error object if some problem occurs while generating the payment request
-				`paymentRequest`	.. A cryptocurrency payment request (e.g "bitcoin:ADDRESS?amount=AMOUNT")
-				`address`			.. Just the address portion of the payment request
+			`cb(error, paymentRequest)`:
+				`error`          .. An error object if some problem occurs while generating the payment request
+				`paymentRequest` .. An object containing at least the following information:
+					`uri`        .. URI (e.g "bitcoin:ADDRESS?amount=AMOUNT")
+					`amount`     .. The amount requested.
+					`address`    .. The address to which to send the funds.
 		*/
 		generatePaymentRequest: function(amount, cb) {
 			_.defer(function() {

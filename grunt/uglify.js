@@ -22,9 +22,9 @@ module.exports = {
 		src: 'build/bitcoin.js',
 		dest: 'build/bitcoin.min.js'
 	},
-	bs58check: {
-		src: 'build/bs58check.js',
-		dest: 'build/bs58check.min.js'
+	bs58: {
+		src: 'build/bs58.js',
+		dest: 'build/bs58.min.js'
 	},
 	buffer: {
 		src: 'build/buffer.js',
