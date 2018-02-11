@@ -9,12 +9,12 @@ module.exports = {
 		src: 'node_modules/bitcoinjs-lib/src/index.js',
 		dest: 'build/bitcoin.js'
 	},
-	bs58check: {
+	bs58: {
 		options: {
-			standalone: 'base58check'
+			standalone: 'bs58'
 		},
-		src: 'node_modules/bs58check/index.js',
-		dest: 'build/bs58check.js'
+		src: 'node_modules/bs58/index.js',
+		dest: 'build/bs58.js'
 	},
 	buffer: {
 		options: {

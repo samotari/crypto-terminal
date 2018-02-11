@@ -114,16 +114,9 @@ app.paymentMethods.litecoin = (function() {
 
 			_.defer(_.bind(function() {
 
-				var matches = paymentRequest.match(/litecoin:([a-zA-Z0-9]+)\?amount=([0-9\\.]+)/);
-
-				if (!matches) {
-					return cb(new Error(app.i18n.t('litecoin.invalid-payment-request')));
-				}
-
-				var address = matches[1];
-				var amount = matches[2];
+				var address = paymentRequest.address;
+				var amount = paymentRequest.amount;
 				var network = this.getNetworkName();
-
 				var requestArr = app.util.requestArrFactory(
 					[
 						app.services['chain.so'].checkPaymentReceived
