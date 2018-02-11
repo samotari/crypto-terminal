@@ -2,10 +2,8 @@
 
 module.exports = function(grunt) {
 
-	var _ = require('underscore');
 	var async = require('async');
 	var browserify = require('browserify');
-	var babelify = require('babelify');
 
 	grunt.registerMultiTask('browserify', function() {
 

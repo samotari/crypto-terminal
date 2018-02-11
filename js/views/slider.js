@@ -122,7 +122,8 @@ app.views.Slider = (function() {
 					}
 				}
 
-				var offsetX = this.calculateItemOffsetX(this.index);
+				// Re-calculate the offset.
+				offsetX = this.calculateItemOffsetX(this.index);
 
 				// Move and animate the elements.
 				this.$items

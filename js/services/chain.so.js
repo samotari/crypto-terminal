@@ -28,8 +28,8 @@ app.services['chain.so'] = (function() {
 		getTotalReceiveByAddress: function(argObj, cb) {
 
 			/*
-			For API details:
-			https://chain.so/api#get-balance
+				For API details:
+				https://chain.so/api#get-balance
 			*/
 			var uri = 'https://chain.so/api/v2/get_address_balance';
 
@@ -42,15 +42,15 @@ app.services['chain.so'] = (function() {
 
 			$.get(uri).then(function(result) {
 
-			try {
-				var amountReceived = (new BigNumber('0'))
-				.plus(result.data.confirmed_balance)
-				.plus(result.data.unconfirmed_balance);
-			} catch (error) {
-				return cb(error);
-			}
+				try {
+					var amountReceived = (new BigNumber('0'))
+						.plus(result.data.confirmed_balance)
+						.plus(result.data.unconfirmed_balance);
+				} catch (error) {
+					return cb(error);
+				}
 
-			cb(null, amountReceived);
+				cb(null, amountReceived);
 
 			}).fail(cb);
 

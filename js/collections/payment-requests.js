@@ -4,7 +4,7 @@ app.collections = app.collections || {};
 
 app.collections.PaymentRequests = (function() {
 
-    'use strict';
+	'use strict';
 
 	return Backbone.Collection.extend({
 		

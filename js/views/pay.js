@@ -152,7 +152,7 @@ app.views.Pay = (function() {
 			var amount = this.amount || '0';
 
 			// Remove extra leading zeroes.
-			amount = amount.replace(/^0{2,}/, '0').replace(/^0([^\.])/, '$1');
+			amount = amount.replace(/^0{2,}/, '0').replace(/^0([^\\.])/, '$1');
 
 			this.$amount.text(amount);
 		},

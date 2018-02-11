@@ -1,15 +1,14 @@
 (function() {
 
-    'use strict';
+	'use strict';
 
-    Handlebars.registerHelper("formatDate", function(datetime, format) {
+	Handlebars.registerHelper('formatDate', function(datetime, format) {
 
-        if (moment) {
-            return moment(datetime).format(format);
-        }
-        else {
-            return datetime;
-        }
-    });
+		if (moment) {
+			return moment(datetime).format(format);
+		} else {
+			return datetime;
+		}
+	});
 
 })();

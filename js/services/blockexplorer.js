@@ -35,13 +35,12 @@ app.services.blockexplorer = (function() {
 				cb(null, totalReceived);
 
 			}).fail(cb);
-
-        },
+		},
 
 		// argObj as {address, networkName, amount}
-        getUnconfirmedBalance: function(argObj, cb) {
+		getUnconfirmedBalance: function(argObj, cb) {
 
-            var uri = app.services.blockexplorer.getUriBaseOnNetwork(argObj.networkName);
+			var uri = app.services.blockexplorer.getUriBaseOnNetwork(argObj.networkName);
 
 			uri += '/api/addr/' + encodeURIComponent(argObj.address) + '/unconfirmedBalance';
 
@@ -59,8 +58,7 @@ app.services.blockexplorer = (function() {
 				cb(null, wasReceived, amountReceived);
 
 			}).fail(cb);
-
-        }
+		}
 	};
 
 })();
