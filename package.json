@@ -4,7 +4,7 @@
   "description": "A merchant terminal app which allows payments by customers via multiple cryptocurrencies.",
   "main": "index.js",
   "scripts": {
-    "android-device": "grunt build && cordova platform remove android && cordova platform add android && cordova run android --device",
+    "android-device": "grunt build && cordova run android --device",
     "start": "grunt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
