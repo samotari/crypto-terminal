@@ -1,0 +1,9 @@
+<p class="page-description">{{i18n "pay-choose-method.description"}}</p>
+<div class="select-payment-method">
+{{#each paymentMethods}}
+	<a class="button payment-method {{key}}" data-payment-method="{{key}}"></a>
+{{/each}}
+</div>
+<div class="secondary-controls">
+	<a class="button cancel">{{i18n "pay-choose-method.cancel"}}</a>
+</div>

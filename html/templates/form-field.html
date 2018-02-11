@@ -1,0 +1,15 @@
+{{#switch type}}
+	{{#case "select" break=true}}
+	<select class="form-input" id="{{id}}" name="{{name}}">
+		{{#each options}}
+		<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
+		{{/each}}
+	</select>
+	{{/case}}
+	{{#case "password" break=true}}
+	<input class="form-input" type="password" name="{{name}}" value="{{value}}">
+	{{/case}}
+	{{#default}}
+	<input class="form-input" type="text" name="{{name}}" value="{{value}}">
+	{{/default}}
+{{/switch}}

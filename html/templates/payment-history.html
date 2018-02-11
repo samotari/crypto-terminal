@@ -1,0 +1,17 @@
+<h2 class="page-title">{{i18n "payment-history.title"}}</h2>
+<div class="payment-history-list">
+	{{#each payments}}
+		<div class="payment-history-item" data-payment-id={{id}}>
+			{{#if confirmed}}
+				<span class="payment-history-confirmation-circle payment-history-confirmed"></span>
+			{{else}}
+				<span class="payment-history-confirmation-circle payment-history-unconfirmed"></span>
+			{{/if}}
+			<div class="payment-history-item-body">
+				<p>{{formatDate timestamp ../format}}</p>
+				<P class="payment-history-item-amount">{{amount}} {{currency}}</P>
+			</div>
+		</div>
+
+	{{/each}}
+</div>

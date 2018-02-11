@@ -5,31 +5,9 @@
 	<meta http-equiv="x-ua-compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: https://ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-	<title>CryptoTerminal</title>
+	<title><%= name %></title>
 	<link href="css/all.min.css" rel="stylesheet">
-
-	<!-- favicon -->
-	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="images/favicon/apple-touch-icon-57x57.png">
-	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/apple-touch-icon-114x114.png">
-	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/apple-touch-icon-144x144.png">
-	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="images/favicon/apple-touch-icon-60x60.png">
-	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="images/favicon/apple-touch-icon-120x120.png">
-	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="images/favicon/apple-touch-icon-76x76.png">
-	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="images/favicon/apple-touch-icon-152x152.png">
-	<link rel="icon" type="image/png" href="images/favicon/favicon-196x196.png" sizes="196x196">
-	<link rel="icon" type="image/png" href="images/favicon/favicon-96x96.png" sizes="96x96">
-	<link rel="icon" type="image/png" href="images/favicon/favicon-32x32.png" sizes="32x32">
-	<link rel="icon" type="image/png" href="images/favicon/favicon-16x16.png" sizes="16x16">
-	<link rel="icon" type="image/png" href="images/favicon/favicon-128.png" sizes="128x128">
-	<meta name="application-name" content="&nbsp;">
-	<meta name="msapplication-TileColor" content="#FFFFFF">
-	<meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png">
-	<meta name="msapplication-square70x70logo" content="images/favicon/mstile-70x70.png">
-	<meta name="msapplication-square150x150logo" content="images/favicon/mstile-150x150.png">
-	<meta name="msapplication-wide310x150logo" content="images/favicon/mstile-310x150.png">
-	<meta name="msapplication-square310x310logo" content="images/favicon/mstile-310x310.png">
-
+<%= html.favicon.content %>
 </head>
 <body>
 
@@ -37,246 +15,19 @@
 
 	<noscript>
 		<!-- This language string is hard-coded because handlebars requires JavaScript. -->
-		<p class="page-description">CryptoTerminal requires JavaScript to function.</p>
+		<p class="page-description">This app requires JavaScript to function.</p>
 	</noscript>
-
-	<script type="text/html" id="template-main">
-		<div id="header">
-			<a id="main-menu-toggle" class="header-button"></a>
-			<a id="language-menu-toggle" class="header-button"></a>
-		</div>
-		<div id="main-menu" class="menu">
-			<a class="menu-item" href="#pay">{{i18n "menu.new-payment"}}</a>
-			<a class="menu-item" href="#settings">{{i18n "menu.settings"}}</a>
-			<a class="menu-item" href="#payment-history">{{i18n "menu.payment-history"}}</a>
-		</div>
-		<div id="menu-cover"></div>
-		<div id="language-menu" class="menu">
-			{{#each languages}}
-			<a class="menu-item {{key}}" href="#" data-locale="{{key}}">{{label}}</a>
-			{{/each}}
-		</div>
-		<div id="menu-cover"></div>
-		<div id="view">
-			<div id="view-content"></div>
-		</div>
-        <div id="message">
-            <div id="message-inner">
-                <div id="message-content"></div>
-            </div>
-        </div>
+<% _.each(_.values(html.templates), function(template) { %>
+	<script type="text/html" id="template-<%= template.key %>">
+<%= template.content %>
 	</script>
-
-	<script type="text/html" id="template-form-field">
-		{{#switch type}}
-			{{#case "select" break=true}}
-			<select class="form-input" id="{{id}}" name="{{name}}">
-				{{#each options}}
-				<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
-				{{/each}}
-			</select>
-			{{/case}}
-			{{#case "password" break=true}}
-			<input class="form-input" type="password" name="{{name}}" value="{{value}}">
-			{{/case}}
-			{{#default}}
-			<input class="form-input" type="text" name="{{name}}" value="{{value}}">
-			{{/default}}
-		{{/switch}}
+<% }); %>
+	<script>
+		var app = app || {};
+		app.name = '<%= name %>';
+		app.description = '<%= description %>';
+		app.version = '<%= version %>';
 	</script>
-
-	<script type="text/html" id="template-settings">
-		<div class="secondary-menu">
-			{{#each menuItems}}
-			<a class="secondary-menu-item{{#if active}} active{{/if}}" href="#settings/{{key}}" data-key="{{key}}">{{label}}</a>
-			{{/each}}
-		</div>
-		<div class="slider">
-			{{> slider}}
-		</div>
-	</script>
-
-	<script type="text/html" id="template-settings-general">
-		<form>
-			<div class="form">
-				<div class="form-error error"></div>
-				<div class="form-group settings">
-					<div class="form-group-label">{{i18n "settings.general.label"}}</div>
-					{{#each settings}}
-						<div class="form-row form-row-type--{{type}}">
-							<div class="form-label">
-								<label for="{{id}}">{{label}}</label>
-							</div>
-							<div class="form-field">
-								{{> formField .}}
-							</div>
-						</div>
-					{{/each}}
-				</div>
-				<div class="form-group configurableCryptoCurrencies">
-					<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
-					{{#each paymentMethods}}
-					<input id="settings-configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
-					<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}"></label>
-					{{/each}}
-				</div>
-				<div class="form-buttons">
-					<input class="button form-button save" type="submit" value="{{i18n 'form.save'}}">
-					<div class="success"></div>
-				</div>
-			</div>
-		</form>
-	</script>
-
-	<script type="text/html" id="template-settings-payment-method">
-		<form>
-			<div class="form">
-				<div class="form-error error"></div>
-				<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
-					<div class="form-group-label">{{label}}</div>
-					{{#each settings}}
-					<div class="form-row">
-						<div class="form-row form-row-type--{{type}}">
-							<div class="form-label">
-								<label for="{{id}}">{{label}}</label>
-							</div>
-							<div class="form-field">
-								{{> formField .}}
-							</div>
-						</div>
-					</div>
-					{{/each}}
-				</div>
-				<div class="form-buttons">
-					<input class="button form-button save" type="submit" value="{{i18n 'form.save'}}">
-					<div class="success"></div>
-				</div>
-			</div>
-		</form>
-	</script>
-
-	<script type="text/html" id="template-pay-enter-amount">
-		<p class="page-description">{{i18n "pay-enter-amount.description"}}</p>
-		{{> amount}}
-		<div class="error"></div>
-		{{> numpad}}
-		<a class="button continue">{{i18n "pay-enter-amount.continue"}}</a>
-	</script>
-
-	<script type="text/html" id="template-pay-choose-method">
-		<p class="page-description">{{i18n "pay-choose-method.description"}}</p>
-		<div class="select-payment-method">
-		{{#each paymentMethods}}
-			<a class="button payment-method {{key}}" data-payment-method="{{key}}"></a>
-		{{/each}}
-		</div>
-		<div class="secondary-controls">
-			<a class="button cancel">{{i18n "pay-choose-method.cancel"}}</a>
-		</div>
-	</script>
-
-	<script type="text/html" id="template-payment-confirmation">
-		<svg class="confirmation-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-			<circle class="confirmation-mark-circle" cx="26" cy="26" r="25" fill="none"/>
-			<path class="confirmation-mark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-		</svg>
-
-		<div class="secondary-controls">
-			<a class="button done">{{i18n "payment-confirmation.done"}}</a>
-		</div>
-	</script>
-
-	<script type="text/html" id="template-pay-address">
-		{{> amount}}
-		<div class="address-qr-code"></div>
-		<p class="page-description">{{i18n "pay-address.description"}}</p>
-		<div class="address-text"></div>
-		<div class="secondary-controls">
-			<a class="button back">{{i18n "pay-address.back"}}</a>
-			<a class="button cancel">{{i18n "pay-address.cancel"}}</a>
-		</div>
-	</script>
-
-	<script type="text/html" id="template-amount">
-		<div class="amount-wrap">
-			<div class="amount display">
-				<div class="amount-value">{{amount.display.value}}</div>
-				<div class="amount-currency">{{amount.display.currency}}</div>
-			</div>
-			<div class="amount crypto">
-				<div class="amount-value">{{amount.crypto.value}}</div>
-				<div class="amount-currency">{{amount.crypto.currency}}</div>
-			</div>
-		</div>
-	</script>
-
-	<script type="text/html" id="template-numpad">
-		<div class="numpad">
-			<a class="numpad-key" data-value="1">1</a>
-			<a class="numpad-key" data-value="2">2</a>
-			<a class="numpad-key" data-value="3">3</a>
-			<a class="numpad-key" data-value="4">4</a>
-			<a class="numpad-key" data-value="5">5</a>
-			<a class="numpad-key" data-value="6">6</a>
-			<a class="numpad-key" data-value="7">7</a>
-			<a class="numpad-key" data-value="8">8</a>
-			<a class="numpad-key" data-value="9">9</a>
-			<a class="numpad-key" data-value=".">.</a>
-			<a class="numpad-key" data-value="0">0</a>
-			<a class="numpad-key backspace">&lt;</a>
-		</div>
-	</script>
-
-	<script type="text/html" id="template-payment-history">
-		<h2 class="page-title">{{i18n "payment-history.title"}}</h2>
-		<div class="payment-history-list">
-			{{#each payments}}
-				<div class="payment-history-item" data-payment-id={{id}}>
-					{{#if confirmed}}
-						<span class="payment-history-confirmation-circle payment-history-confirmed"></span>
-					{{else}}
-						<span class="payment-history-confirmation-circle payment-history-unconfirmed"></span>
-					{{/if}}
-					<div class="payment-history-item-body">
-						<p>{{formatDate timestamp ../format}}</p>
-						<P class="payment-history-item-amount">{{amount}} {{currency}}</P>
-					</div>
-				</div>
-
-			{{/each}}
-		</div>
-	</script>
-
-	<script type="text/html" id="template-payment-details">
-		<h2 class="page-title">{{i18n "payment-details.title"}}</h2>
-		{{#if confirmed}}
-			<div class="payment-details-confirmation-circle payment-details-confirmed">
-				<span>&#10003;</span><span>{{i18n "payment-details.confirmed"}}</span>
-			</div>
-		{{else}}
-			<div class="payment-details-confirmation-circle payment-details-unconfirmed">
-				<span>{{i18n "payment-details.unconfirmed"}}</span>
-			</div>
-		{{/if}}
-		<div class="payment-details-elements">
-			<span>{{i18n "payment-details.date"}}</span>
-			<p>{{formatDate timestamp format}}</p>
-			<span>{{i18n "payment-details.amount"}}</span>
-			<p>{{amount}} {{currency}}</p>
-		</div>
-
-	</script>
-
-	<script type="text/html" id="template-slider">
-		<div class="slider-inner">
-			<div class="slider-items"></div>
-		</div>
-	</script>
-
-	<script type="text/html" id="template-slider-item">
-		<div class="slider-item-content" data-slide="{{key}}"></div>
-	</script>
-
 	<script src="js/all.js"></script>
 
 </body>

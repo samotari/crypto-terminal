@@ -1,0 +1,24 @@
+<div id="header">
+	<a id="main-menu-toggle" class="header-button"></a>
+	<a id="language-menu-toggle" class="header-button"></a>
+</div>
+<div id="main-menu" class="menu">
+	<a class="menu-item" href="#pay">{{i18n "menu.new-payment"}}</a>
+	<a class="menu-item" href="#settings">{{i18n "menu.settings"}}</a>
+	<a class="menu-item" href="#payment-history">{{i18n "menu.payment-history"}}</a>
+</div>
+<div id="menu-cover"></div>
+<div id="language-menu" class="menu">
+	{{#each languages}}
+	<a class="menu-item {{key}}" href="#" data-locale="{{key}}">{{label}}</a>
+	{{/each}}
+</div>
+<div id="menu-cover"></div>
+<div id="view">
+	<div id="view-content"></div>
+</div>
+<div id="message">
+	<div id="message-inner">
+		<div id="message-content"></div>
+	</div>
+</div>

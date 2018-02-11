@@ -1,0 +1,8 @@
+<div class="secondary-menu">
+	{{#each menuItems}}
+	<a class="secondary-menu-item{{#if active}} active{{/if}}" href="#settings/{{key}}" data-key="{{key}}">{{label}}</a>
+	{{/each}}
+</div>
+<div class="slider">
+	{{> slider}}
+</div>

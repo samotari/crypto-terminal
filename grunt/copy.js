@@ -5,7 +5,7 @@ module.exports = {
 		files: [
 			{
 				nonull: true,
-				src: 'index.html',
+				src: 'build/index.html',
 				dest: 'www/index.html'
 			},
 			{
