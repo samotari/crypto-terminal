@@ -2,6 +2,9 @@
   "name": "crypto-terminal",
   "version": "1.0.0",
   "description": "A merchant terminal app which allows payments by customers via multiple cryptocurrencies.",
+  "app": {
+    "name": "CryptoTerminal"
+  },
   "main": "index.js",
   "scripts": {
     "android-device": "grunt build && cordova run android --device",
