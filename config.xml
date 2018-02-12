@@ -2,10 +2,16 @@
 <widget id="com.github.learnbydoing.cryptoterminal" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>CryptoTerminal</name>
     <description>A merchant terminal app which allows payments by customers via multiple cryptocurrencies.</description>
-    <icon density="mdpi" height="57" src="www/favicon.ico" width="57" />
+    <icon src="images/favicon.png" />
     <access origin="https://*/*" />
     <platform name="android">
         <hook src="scripts/copy-build-extras-gradle-to-platform-dir.js" type="before_prepare" />
+        <icon density="ldpi" src="images/favicon/favicon-android-ldpi.png" />
+        <icon density="mdpi" src="images/favicon/favicon-android-mdpi.png" />
+        <icon density="hdpi" src="images/favicon/favicon-android-hdpi.png" />
+        <icon density="xhdpi" src="images/favicon/favicon-android-xhdpi.png" />
+        <icon density="xxhdpi" src="images/favicon/favicon-android-xxhdpi.png" />
+        <icon density="xxxhdpi" src="images/favicon/favicon-android-xxxhdpi.png" />
     </platform>
     <engine name="android" spec="6.3.0" />
     <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
