@@ -72,6 +72,8 @@ app.views.SettingsPaymentMethod = (function() {
 			} else {
 				// No errors.
 
+				app.mainView.busy();
+
 				async.eachSeries(paymentMethod.settings, function(setting, next) {
 					if (setting.beforeSaving) {
 						setting.beforeSaving.call(paymentMethod, data, function(error, fixedData) {
@@ -87,6 +89,8 @@ app.views.SettingsPaymentMethod = (function() {
 						next();
 					}
 				}, function(error) {
+
+					app.mainView.notBusy();
 
 					if (error) {
 						throw new Error(error);

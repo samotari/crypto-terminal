@@ -174,6 +174,14 @@ app.views.Main = (function() {
 				};
 			});
 			return data;
+		},
+
+		busy: function() {
+			$('#overlay').show();
+		},
+
+		notBusy: function() {
+			$('#overlay').hide();
 		}
 
 	});
