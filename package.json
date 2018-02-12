@@ -2,6 +2,7 @@
   "name": "crypto-terminal",
   "version": "1.0.0",
   "description": "A merchant terminal app which allows payments by customers via multiple cryptocurrencies.",
+  "private": true,
   "app": {
     "name": "CryptoTerminal"
   },
