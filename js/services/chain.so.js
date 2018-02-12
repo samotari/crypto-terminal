@@ -17,7 +17,7 @@ app.services['chain.so'] = (function() {
 					return cb(error);
 				}
 
-				var wasReceived = amountReceived.greaterThanOrEqualTo(argObj.amount);
+				var wasReceived = amountReceived.isGreaterThanOrEqualTo(argObj.amount);
 
 				cb(null, wasReceived);
 			})

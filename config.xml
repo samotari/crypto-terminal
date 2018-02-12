@@ -13,6 +13,6 @@
         <icon density="xxhdpi" src="images/favicon/favicon-android-xxhdpi.png" />
         <icon density="xxxhdpi" src="images/favicon/favicon-android-xxxhdpi.png" />
     </platform>
-    <engine name="android" spec="6.3.0" />
+    <engine name="android" spec="7.0.0" />
     <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
 </widget>

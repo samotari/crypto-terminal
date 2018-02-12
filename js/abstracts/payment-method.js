@@ -95,7 +95,7 @@ app.abstracts.PaymentMethod = (function() {
 					var rate = rates[fromCurrency];
 					amount = amount.dividedBy(rate);
 					// Maximum of 8 decimal places.
-					amount = amount.round(8);
+					amount = amount.decimalPlaces(8);
 					cb(null, amount.toString(), rate, fromCurrency);
 				});
 
