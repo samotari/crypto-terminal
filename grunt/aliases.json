@@ -11,6 +11,9 @@
 		"newer:concat",
 		"newer:copy"
 	],
+	"test": [
+		"test:code-style"
+	],
 	"test:code-style": [
 		"eslint"
 	],
