@@ -21,7 +21,8 @@ app.views.DisplayPaymentAddress = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'listenForPayment');
+			_.bindAll(this, 'listenForPayment', 'onResize');
+			$(window).on('resize', this.onResize);
 		},
 
 		serializeData: function() {
@@ -41,6 +42,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		onRender: function() {
 
+			this.$address = this.$('.address');
 			this.$addressQrCode = this.$('.address-qr-code');
 			this.$addressText = this.$('.address-text');
 			this.$cryptoAmount = this.$('.crypto.amount');
@@ -75,11 +77,27 @@ app.views.DisplayPaymentAddress = (function() {
 
 		renderQrCode: function(data) {
 
-			var qr = qrcode(4, 'L');
-			qr.addData(data);
-			qr.make();
-			var img = qr.createImgTag(app.config.qrCodes.cellSize, app.config.qrCodes.margin);
-			this.$addressQrCode.html($(img).addClass('address-qr-code-img'));
+			QRCode.toDataURL(data, {
+				errorCorrectionLevel: app.config.qrCodes.errorCorrectionLevel,
+				margin: app.config.qrCodes.margin,
+				width: Math.min(
+					this.$address.width(),
+					this.$address.height()
+				),
+			}, _.bind(function(error, dataUri) {
+
+				if (error) {
+					return app.mainView.showMessage(error);
+				}
+
+				var $img = $('<img/>', {
+					class: 'address-qr-code-img',
+					src: dataUri
+				});
+
+				this.$addressQrCode.empty().append($img);
+
+			}, this));
 		},
 
 		renderAddress: function(address) {
@@ -111,6 +129,7 @@ app.views.DisplayPaymentAddress = (function() {
 					this.resetQrCode();
 					return app.mainView.showMessage(error);
 				}
+				this.paymentRequest = paymentRequest;
 				var amountFromPaymentRequest = paymentRequest.split('=')[1];
 				savePaymentInPaymentHistory(paymentMethod.code, address, false, amountFromPaymentRequest, displayCurrencyExchangeRate, displayCurrency);
 				this.renderQrCode(paymentRequest);
@@ -225,9 +244,22 @@ app.views.DisplayPaymentAddress = (function() {
 			paymentTransaction.save({confirmed: true});
 		},
 
+		reRenderQrCode: function() {
+
+			if (this.paymentRequest) {
+				this.renderQrCode(this.paymentRequest);
+			}
+		},
+
+		onResize: function() {
+
+			this.reRenderQrCode();
+		},
+
 		onClose: function() {
 
 			this.stopListeningForPayment();
+			$(window).off('resize', this.onResize);
 		}
 
 	});

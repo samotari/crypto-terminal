@@ -6,8 +6,8 @@ app.config = (function() {
 
 	var config = {
 		qrCodes: {
-			cellSize: 5,
-			margin: 0
+			errorCorrectionLevel: 'M',
+			margin: 0,
 		},
 		defaultLocale: 'en',
 		displayPaymentAddress: {
