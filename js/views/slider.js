@@ -9,9 +9,10 @@ app.views.Slider = (function() {
 	return app.abstracts.BaseView.extend({
 
 		events: {
-			'touchstart .slider-items': 'start',
-			'touchmove .slider-items': 'move',
-			'touchend .slider-items': 'end',
+			'touchstart .slider-items': 'onTouchStart',
+			'touchmove .slider-items': 'onTouchMove',
+			'touchend .slider-items': 'onTouchEndOrCancel',
+			'touchcancel .slider-items': 'onTouchEndOrCancel',
 		},
 
 		ItemView: (function() {
@@ -31,13 +32,12 @@ app.views.Slider = (function() {
 		})(),
 
 		itemViews: [],
-		touchStartX: null,
-		touchMoveX: null,
-		moveX: null,
+		slidable: false,
 		index: 0,
-		isLongTouch: false,
 
 		initialize: function() {
+
+			_.bindAll(this, 'finalizeTouchMovement');
 
 			this.$items = this.$('.slider-items');
 			this.itemViews = _.map(this.options.items, this.addItem, this);
@@ -74,78 +74,105 @@ app.views.Slider = (function() {
 			return false;
 		},
 
-		start: function(evt) {
+		onTouchStart: function(evt) {
 
-			if (this.isLongTouchTimeout) {
-				clearTimeout(this.isLongTouchTimeout);
-			}
-
-			// Test for flick.
-			this.isLongTouch = false;
-			this.isLongTouchTimeout = setTimeout(_.bind(function() {
-				this.isLongTouch = true;
-			}, this), 250);
-
-			// Get the original touch position.
-			this.touchStartX = evt.originalEvent.touches[0].pageX;
-
-			// The movement gets all janky if there's a transition on the element.
-			this.$('.slider-animate').removeClass('slider-animate');
+			this.touchStartPosX = evt.originalEvent.touches[0].pageX;
+			this.touchStartTime = Date.now();
+			this.slidable = true;
 		},
 
-		move: function(evt) {
+		onTouchMove: function(evt) {
 
-			// Continuously return touch position.
-			this.touchMoveX = evt.originalEvent.touches[0].pageX;
-			// Calculate distance to translate inner.
+			if (!this.slidable) return;
+			clearTimeout(this.touchMoveTimeout);
+			/*
+				!! IMPORTANT !!
+
+				Calling preventDefault() prevents the premature touchcancel event in Android 4.4.x
+
+				See:
+				https://stackoverflow.com/questions/10367854/html5-android-touchcancel
+			*/
+			evt.preventDefault();
+			var posX = this.lastTouchPosX = evt.originalEvent.touches[0].pageX;
 			var offsetX = this.calculateItemOffsetX(this.index);
-			this.moveX = offsetX + (this.touchStartX - this.touchMoveX);
-			if (this.moveX < 600) {
-				// Makes the inner stop moving when there is no more content.
-				this.$items.css('transform', 'translate3d(-' + this.moveX + 'px, 0, 0)');
-			}
+			var tmpOffsetX = offsetX + (this.touchStartPosX - posX);
+			// Update the offset of the items container, but without an animation.
+			this.translateX(tmpOffsetX, { animate: false });
 		},
 
-		end: function(evt) {
+		onTouchEndOrCancel: function(evt) {
 
-			if (this.moveX) {
-				// Calculate the distance swiped.
-				var offsetX = this.calculateItemOffsetX(this.index);
-				var absoluteMoveX = Math.abs(offsetX - this.moveX);
-				var width = this.getWidth();
-				// Calculate the index. All other calculations are based on the index.
-				if (absoluteMoveX > width / 2 || !this.isLongTouch) {
-					if (this.moveX > offsetX && this.index < this.getNumberVisibleItems() - 1) {
-						this.setIndex(this.index + 1);
-					} else if (this.moveX < offsetX && this.index > 0) {
-						this.setIndex(this.index - 1);
-					}
+			if (!this.slidable) return;
+			clearTimeout(this.touchMoveTimeout);
+			this.finalizeTouchMovement();
+		},
+
+		calculateVelocity: function(endPosX, startPosX, startTime) {
+
+			return (startPosX - endPosX) / (Date.now() - startTime);
+		},
+
+		finalizeTouchMovement: function() {
+
+			// Prevent anymore sliding until a new touchstart event.
+			this.slidable = false;
+			// Calculate the distance swiped.
+			var offsetX = this.calculateItemOffsetX(this.index);
+			var moveX = offsetX + (this.touchStartPosX - this.lastTouchPosX);
+			var absoluteMoveX = Math.abs(offsetX - moveX);
+			var width = this.getSlideWidth();
+			var velocity = this.calculateVelocity(
+				this.lastTouchPosX,
+				this.touchStartPosX,
+				this.touchStartTime
+			);
+			var speed = Math.abs(velocity);
+			var speedThreshold = app.config.sliders.speedThreshold;// pixels/milliseconds
+			var index = this.index;
+			if (absoluteMoveX > (width / 2) || speed > speedThreshold) {
+				var numSlides = this.getNumberVisibleItems();
+				if (velocity > speedThreshold || moveX > offsetX && index < numSlides
+				) {
+					index++;
+				} else if (velocity < speedThreshold * -1 || moveX < offsetX) {
+					index--;
 				}
-
-				// Re-calculate the offset.
-				offsetX = this.calculateItemOffsetX(this.index);
-
-				// Move and animate the elements.
-				this.$items
-					.addClass('slider-animate')
-					.css('transform', 'translate3d(-' + offsetX + 'px, 0, 0)');
 			}
-
-			this.moveX = null;
-			this.touchMoveX = null;
-			this.isLongTouch = false;
-
-			if (this.isLongTouchTimeout) {
-				clearTimeout(this.isLongTouchTimeout);
-			}
+			this.setIndex(index, { animate: true });
 		},
 
-		getWidth: function() {
+		translateX: function(posX, options) {
+
+			options = _.defaults(options || {}, {
+				animate: false,
+			});
+
+			if (options.animate) {
+				this.$items.addClass('slider-animate');
+			} else {
+				this.$items.removeClass('slider-animate');
+			}
+
+			var maxPosX = (this.getSlideWidth() * (this.options.items.length - 0.8));
+			posX = Math.min(posX, maxPosX);
+			this.$items.css('transform', 'translate3d(-' + posX + 'px, 0, 0)');
+		},
+
+		getSlideWidth: function() {
 
 			return this.$el.width();
 		},
 
-		setIndex: function(index) {
+		setIndex: function(index, options) {
+
+			// Index cannot be less than zero.
+			// Nor can it better greater than the number of items minus one.
+			index = Math.max(0, Math.min(index, this.options.items.length - 1));
+
+			options = _.defaults(options || {}, {
+				animate: false,
+			});
 
 			this.index = index;
 
@@ -161,11 +188,17 @@ app.views.Slider = (function() {
 			if (key) {
 				this.trigger('change:active', key);
 			}
+
+			// Calculate the offset of the slide by its index.
+			var offsetX = this.calculateItemOffsetX(index);
+
+			// Move and animate the items element to bring the slide into view.
+			this.translateX(offsetX, options);
 		},
 
 		calculateItemOffsetX: function(index) {
 
-			var width = this.getWidth();
+			var width = this.getSlideWidth();
 			var offsetX = index * width;
 
 			// Adjust the offset to account for hidden items.

@@ -34,6 +34,9 @@ app.config = (function() {
 				return 200 * Math.pow(2, retryCount);
 			}
 		},
+		sliders: {
+			speedThreshold: 0.4,// pixels / millisecond
+		},
 		settings: [
 			{
 				name: 'displayCurrency',
