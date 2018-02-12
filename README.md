@@ -1,5 +1,7 @@
 # CryptoTerminal
 
+[![Build Status](https://travis-ci.org/Learn-by-doing/crypto-terminal.svg?branch=master)](https://travis-ci.org/Learn-by-doing/crypto-terminal) [![Status of Dependencies](https://david-dm.org/Learn-by-doing/crypto-terminal.svg)](https://david-dm.org/Learn-by-doing/crypto-terminal)
+
 * [Requirements](#requirements)
 * [Getting Started](#getting-started)
 * [Folder Structure](#folder-structure)
