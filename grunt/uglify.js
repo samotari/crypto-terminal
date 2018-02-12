@@ -16,7 +16,7 @@ module.exports = {
 	bitcoin: {
 		options: {
 			mangle: {
-				except: ['BigInteger', 'ECPair', 'Point']
+				reserved: ['BigInteger', 'ECPair', 'Point']
 			}
 		},
 		src: 'build/bitcoin.js',
@@ -33,7 +33,7 @@ module.exports = {
 	ecurve: {
 		options: {
 			mangle: {
-				except: ['Point']
+				reserved: ['Point']
 			}
 		},
 		src: 'build/ecurve.js',

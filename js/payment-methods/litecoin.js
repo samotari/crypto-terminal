@@ -177,7 +177,7 @@ app.paymentMethods.litecoin = (function() {
 						var totalReceived = results;
 
 						try {
-							var indexWasUsed = totalReceived.greaterThan('0');
+							var indexWasUsed = totalReceived.isGreaterThan('0');
 						} catch (error) {
 							return cb(error);
 						}

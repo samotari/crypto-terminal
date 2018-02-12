@@ -169,7 +169,7 @@ app.views.Pay = (function() {
 				return this.showError(app.i18n.t('pay-enter-amount.valid-number'));
 			}
 
-			if (!amount.greaterThan(0)) {
+			if (!amount.isGreaterThan(0)) {
 				return this.showError(app.i18n.t('pay-enter-amount.greater-than-zero'));
 			}
 
