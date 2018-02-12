@@ -1,0 +1,16 @@
+<h2 class="page-title">{{i18n "payment-details.title"}}</h2>
+{{#if confirmed}}
+	<div class="payment-details-confirmation-circle payment-details-confirmed">
+		<span>&#10003;</span><span>{{i18n "payment-details.confirmed"}}</span>
+	</div>
+{{else}}
+	<div class="payment-details-confirmation-circle payment-details-unconfirmed">
+		<span>{{i18n "payment-details.unconfirmed"}}</span>
+	</div>
+{{/if}}
+<div class="payment-details-elements">
+	<span>{{i18n "payment-details.date"}}</span>
+	<p>{{formatDate timestamp format}}</p>
+	<span>{{i18n "payment-details.amount"}}</span>
+	<p>{{amount}} {{currency}}</p>
+</div>
