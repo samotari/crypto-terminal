@@ -8,7 +8,6 @@ module.exports = function(grunt) {
 	var path = require('path');
 
 	var htmlDir = path.join(__dirname, '..', 'html');
-	var indexHtmlFilePath = path.join(__dirname, '..', 'index.html');
 	var pkg = require('../package.json');
 
 	grunt.registerMultiTask('compileHtml', function() {

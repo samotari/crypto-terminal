@@ -232,7 +232,7 @@ app.paymentMethods.bitcoin = (function() {
 
 			_.defer(_.bind(function() {
 
-				var matches = paymentRequest.match(/bitcoin:([a-zA-Z0-9]+)\?amount=([0-9\.]+)/);
+				var matches = paymentRequest.match(/bitcoin:([a-zA-Z0-9]+)\?amount=([0-9\\.]+)/);
 
 				if (!matches) {
 					return cb(new Error(app.i18n.t('bitcoin.invalid-payment-request')));

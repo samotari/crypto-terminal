@@ -114,7 +114,7 @@ app.paymentMethods.litecoin = (function() {
 
 			_.defer(_.bind(function() {
 
-				var matches = paymentRequest.match(/litecoin:([a-zA-Z0-9]+)\?amount=([0-9\.]+)/);
+				var matches = paymentRequest.match(/litecoin:([a-zA-Z0-9]+)\?amount=([0-9\\.]+)/);
 
 				if (!matches) {
 					return cb(new Error(app.i18n.t('litecoin.invalid-payment-request')));
