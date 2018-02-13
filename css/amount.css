@@ -17,6 +17,8 @@
 	text-align: right;
 	box-sizing: border-box;
 	padding-right: .5rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .amount-currency {
 	float: left;
