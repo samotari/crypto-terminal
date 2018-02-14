@@ -17,12 +17,6 @@ app.views.ChoosePaymentMethod = (function() {
 			'quicktouch .cancel': 'cancel',
 		},
 
-		initialize: function() {
-
-			_.bindAll(this, 'onBeforeUnload');
-			$(window).on('beforeunload', this.onBeforeUnload);
-		},
-
 		serializeData: function() {
 
 			var data = {};
@@ -39,11 +33,7 @@ app.views.ChoosePaymentMethod = (function() {
 				evt.preventDefault();
 			}
 
-			if (this.model.isSaved()) {
-				this.model.save({ status: 'canceled' });
-			} else {
-				app.paymentRequests.remove(this.model);
-			}
+			app.cleanUpPendingPaymentRequest();
 
 			// Navigate back to the amount screen.
 			app.router.navigate('pay', { trigger: true });
@@ -63,20 +53,8 @@ app.views.ChoosePaymentMethod = (function() {
 		},
 
 		onBackButton: function() {
+
 			this.cancel();
-		},
-
-		onClose: function() {
-			$(window).off('beforeunload', this.onBeforeUnload);
-		},
-
-		onBeforeUnload: function() {
-
-			if (this.model.isSaved()) {
-				this.model.save({ status: 'canceled' });
-			} else {
-				app.paymentRequests.remove(this.model);
-			}
 		},
 
 	});

@@ -12,13 +12,13 @@ app.views.PaymentHistory = (function() {
 		template: '#template-payment-history',
 
 		events: {
-			'quicktouch .payment-history-item': 'gotoPaymentDetails',
+			'quicktouch .payment-history-item': 'showPaymentDetails',
 		},
 
 		initialize: function() {
 
 			this.collection = app.paymentRequests;
-			this.collection.on('all', this.render);
+			this.listenTo(this.collection, 'all', this.render);
 			this.collection.fetch({
 				limit: 10,
 				error: function() {
@@ -30,12 +30,21 @@ app.views.PaymentHistory = (function() {
 		serializeData: function() {
 
 			var data = {};
-			data.payments = this.collection.toJSON();
-			data.format = app.settings.get('dateFormat');
+			data.payments = _.chain(this.collection.models).filter(function(payment) {
+				return payment.isComplete();
+			}).map(function(payment) {
+				var method = payment.get('method');
+				var paymentMethod = app.paymentMethods[method];
+				var cryptoAmount = payment.getCryptoAmount();
+				return _.extend({}, _.pick(payment.toJSON(), 'id', 'status', 'amount', 'currency', 'timestamp'), {
+					cryptoAmount: cryptoAmount,
+					paymentMethod: _.pick(paymentMethod, 'ref', 'code'),
+				});
+			}).value();
 			return data;
 		},
 
-		gotoPaymentDetails: function(evt) {
+		showPaymentDetails: function(evt) {
 
 			if (evt && evt.preventDefault) {
 				evt.preventDefault();

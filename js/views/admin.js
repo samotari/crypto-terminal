@@ -69,13 +69,9 @@ app.views.Admin = (function() {
 		onRender: function() {
 
 			this.$menuItems = this.$('.secondary-menu-item');
+			this.$menuItems.filter('.general-settings,.payment-history').addClass('visible');
 			this.initializeSlider();
 			this.updateCryptoCurrencySettingsVisibility();
-
-			// Always show these admin pages.
-			this.$menuItems
-				.filter('.general-settings,.payment-history')
-				.addClass('visible');
 
 			if (this.options.page) {
 				this.slider.switchToItem(this.options.page);
@@ -156,11 +152,7 @@ app.views.Admin = (function() {
 			});
 
 			this.listenTo(this.slider, 'change:active', this.setActiveMenuItem);
-
-			// Always show these admin pages.
-			this.slider.$('.slider-item')
-				.filter('.general-settings,.payment-history')
-				.addClass('visible');
+			this.slider.showItems('general-settings', 'payment-history');
 		},
 
 		setActiveMenuItem: function(key) {
@@ -202,7 +194,11 @@ app.views.Admin = (function() {
 
 			visible = visible === true;
 			this.$menuItems.filter('[data-key="' + key + '"]').toggleClass('visible', visible);
-			this.slider.$('.slider-item').filter('[data-key="' + key + '"]').toggleClass('visible', visible);
+			if (visible) {
+				this.slider.showItems(key);
+			} else {
+				this.slider.hideItems(key);
+			}
 		},
 
 		onClose: function() {

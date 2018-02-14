@@ -29,15 +29,16 @@ app.views.Slider = (function() {
 			});
 		})(),
 
+		visible: [],
 		itemViews: [],
 		index: 0,
 
 		initialize: function() {
 
+			this.items = this.options.items;
 			this.$items = this.$('.slider-items');
-			this.itemViews = _.map(this.options.items, this.addItem, this);
-			this.$items.css('width', (100 * this.itemViews.length) + '%');
-			this.$('.slider-item').css('width', (100 / this.itemViews.length) + '%');
+			this.$items.css('width', (100 * this.items.length) + '%');
+			_.each(this.items, this.addItem, this);
 		},
 
 		onSwipe: function(evt, velocity) {
@@ -61,12 +62,13 @@ app.views.Slider = (function() {
 			var maxVisibleIndex = this.getMaxVisibleIndex();
 			index = Math.max(0, Math.min(index, maxVisibleIndex));
 
-			if (this.index !== index) {
+			var item = this.getVisibleItemAtIndex(index);
+
+			this.renderItem(item);
+
+			if (this.index !== index && item) {
 				// Changed the slide.
-				var item = this.getVisibleItemAtIndex(index);
-				if (item) {
-					this.trigger('change:active', item.key);
-				}
+				this.trigger('change:active', item.key);
 			}
 
 			// Calculate the offset of the slide by its index.
@@ -98,10 +100,23 @@ app.views.Slider = (function() {
 
 		addItem: function(item) {
 
-			var itemView = (new this.ItemView(item)).render();
-			itemView.$el.attr('data-key', item.key);
-			this.$items.append(itemView.el);
-			return itemView;
+			if (item.$el) return;
+			item.$el = $('<div/>');
+			item.$el.toggleClass('visible', this.isVisible(item.key));
+			item.$el.addClass(this.ItemView.prototype.className);
+			item.$el.attr('data-key', item.key);
+			item.$el.css('width', (100 / this.items.length) + '%')
+			this.$items.append(item.$el);
+		},
+
+		renderItem: function(item) {
+
+			if (!item || item.rendered === true) return;
+			item.view = (new this.ItemView(item));
+			item.view.setElement(item.$el);
+			item.view.render();
+			item.rendered = true;
+			return item.view;
 		},
 
 		switchToItem: function(key) {
@@ -122,8 +137,8 @@ app.views.Slider = (function() {
 
 		getVisibleItems: function() {
 
-			return _.filter(this.options.items, function(item, index) {
-				return this.isVisible(index);
+			return _.filter(this.items, function(item, index) {
+				return this.isVisible(item.key);
 			}, this);
 		},
 
@@ -137,17 +152,42 @@ app.views.Slider = (function() {
 			return this.getNumberVisibleItems() - 1;
 		},
 
-		isVisible: function(index) {
+		isVisible: function(key) {
 
-			return this.$('.slider-item').eq(index).hasClass('visible');
+			return _.contains(this.visible, key);
+		},
+
+		showItems: function() {
+
+			var keys = Array.prototype.slice.call(arguments);
+			this.visible = _.uniq(this.visible.concat(keys));
+			this.updateItemElementsVisibility();
+		},
+
+		hideItems: function() {
+
+			var keys = Array.prototype.slice.call(arguments);
+			this.visible = _.without(this.visible, keys);
+			this.updateItemElementsVisibility();
+		},
+
+		updateItemElementsVisibility: function() {
+
+			_.each(this.items, function(item) {
+				if (item.$el) {
+					item.$el.toggleClass('visible', this.isVisible(item.key));
+				}
+			}, this);
 		},
 
 		onClose: function() {
 
-			_.each(this.itemViews, function(itemView) {
-				itemView.close();
+			_.each(this.items, function(item) {
+				if (item.view) {
+					item.view.close();
+				}
 			});
-		}
+		},
 
 	});
 

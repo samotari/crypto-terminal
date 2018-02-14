@@ -1,16 +1,18 @@
-<div class="payment-history-list">
+{{#if payments}}
+<div class="payment-history-items">
 	{{#each payments}}
-		<div class="payment-history-item" data-payment-id={{id}}>
-			{{#if confirmed}}
-				<span class="payment-history-confirmation-circle payment-history-confirmed"></span>
-			{{else}}
-				<span class="payment-history-confirmation-circle payment-history-unconfirmed"></span>
-			{{/if}}
-			<div class="payment-history-item-body">
-				<p>{{formatDate timestamp ../format}}</p>
-				<P class="payment-history-item-amount">{{amount}} {{currency}}</P>
-			</div>
+	<div class="payment-history-item status-{{status}}" data-payment-id="{{id}}">
+		<div class="payment-history-item-amount">
+			<div class="payment-history-item-amount-display">{{formatNumber amount}} {{currency}}</div>
+			<div class="payment-history-item-amount-crypto">{{formatNumber cryptoAmount paymentMethod.ref}} {{paymentMethod.code}}</div>
 		</div>
-
+		<div class="payment-history-status-and-timestamp">
+			<div class="payment-history-item-status">{{status}}</div>
+			<div class="payment-history-item-timestamp">{{formatDate timestamp}}</div>
+		</div>
+	</div>
 	{{/each}}
 </div>
+{{else}}
+<p class="payment-history-empty">{{i18n "payment-history.empty"}}</p>
+{{/if}}

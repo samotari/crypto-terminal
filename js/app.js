@@ -28,12 +28,28 @@ var app = app || {};
 		};
 	};
 
+	app.exit = function() {
+		app.cleanUpPendingPaymentRequest();
+		navigator.app.exitApp();
+	};
+
 	app.busy = function(isBusy) {
 		$('html').toggleClass('busy', isBusy !== false);
 	};
 
 	app.isCordova = function() {
 		return typeof cordova !== 'undefined';
+	};
+
+	app.cleanUpPendingPaymentRequest = function() {
+		var paymentRequest = app.paymentRequests.at(0);
+		if (paymentRequest && !paymentRequest.isComplete()) {
+			if (paymentRequest.isSaved()) {
+				paymentRequest.save({ status: 'canceled' });
+			} else {
+				app.paymentRequests.remove(paymentRequest);
+			}
+		}
 	};
 
 	app.isTest = function() {

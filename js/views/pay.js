@@ -88,8 +88,7 @@ app.views.Pay = (function() {
 
 		onBackButton: function() {
 
-			app.paymentRequests.remove(this.model);
-			navigator.app.exitApp();
+			app.exit();
 		},
 
 	});

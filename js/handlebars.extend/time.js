@@ -2,13 +2,12 @@
 
 	'use strict';
 
-	Handlebars.registerHelper('formatDate', function(datetime, format) {
-
-		if (moment) {
-			return moment(datetime).format(format);
-		} else {
-			return datetime;
+	Handlebars.registerHelper('formatDate', function(datetime, format, options) {
+		if (_.isUndefined(options)) {
+			options = format;
+			format = null;
 		}
+		return app.util.formatDate(datetime, format);
 	});
 
 })();
