@@ -21,7 +21,6 @@ $(function() {
 
 	// Initialize the main view.
 	app.mainView = new app.views.Main();
-	app.mainView.render();
 
 	// Initialize the router.
 	app.router = new app.Router();

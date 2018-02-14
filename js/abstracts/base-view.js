@@ -17,6 +17,8 @@ app.abstracts.BaseView = (function() {
 			_.bindAll(this, 'render', 'close');
 
 			Backbone.View.prototype.constructor.apply(this, arguments);
+
+			this.listenTo(app.settings, 'change:locale', this.render);
 		},
 
 		isRendered: function() {
