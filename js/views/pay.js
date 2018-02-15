@@ -135,7 +135,11 @@ app.views.Pay = (function() {
 				// Don't add if there is no value:
 				!value ||
 				// In the case of a dot, only add if there isn't already a dot:
-				(value === '.' && this.amount.indexOf('.') !== -1)
+				(value === '.' && this.amount.indexOf('.') !== -1) ||
+				// to keep this.amount var without leading zeroes.
+				(value == 0 && this.amount == 0) ||
+				// max length of amount so it does not overflow the UI.
+				(this.amount.length > 11)
 			) {
 				return;
 			}
