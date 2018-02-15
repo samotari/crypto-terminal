@@ -33,10 +33,13 @@ module.exports = {
 			'node_modules/handlebars/dist/handlebars.js',
 			'node_modules/qrcode/build/qrcode.js',
 			'node_modules/fastclick/lib/fastclick.js',
+			'node_modules/js-sha3/build/sha3.min.js',
 			'build/bitcoin.js',
-			'build/bs58check.js',
+			'build/bs58.js',
 			'build/buffer.js',
 			'build/ecurve.js',
+			'build/querystring.js',
+			'node_modules/sjcl/sjcl.js',
 			'node_modules/moment/moment.js',
 
 			// Application files:
@@ -71,10 +74,13 @@ module.exports = {
 			'node_modules/handlebars/dist/handlebars.min.js',
 			'node_modules/qrcode/build/qrcode.min.js',
 			'build/fastclick.min.js',
+			'node_modules/js-sha3/build/sha3.min.js',
 			'build/bitcoin.min.js',
-			'build/bs58check.min.js',
+			'build/bs58.min.js',
 			'build/buffer.min.js',
 			'build/ecurve.min.js',
+			'build/querystring.min.js',
+			'build/sjcl.min.js',
 			'node_modules/moment/min/moment.min.js',
 
 			// Application files:

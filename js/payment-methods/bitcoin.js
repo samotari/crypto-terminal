@@ -96,8 +96,13 @@ app.paymentMethods.bitcoin = (function() {
 					return cb(error);
 				}
 
-				var paymentRequest = this.ref + ':' + address + '?amount=' + amount;
-				cb(null, paymentRequest, address);
+				var paymentRequest = {
+					address: address,
+					amount: amount,
+					uri: this.ref + ':' + address + '?amount=' + amount,
+				};
+
+				cb(null, paymentRequest);
 
 			}, this));
 		},
@@ -186,7 +191,10 @@ app.paymentMethods.bitcoin = (function() {
 
 		xpubToBuffer: function(xpub) {
 
-			var buffer = base58check.decode(xpub);
+			var buffer = bs58.decode(xpub);
+
+			// Strip the last four bytes (checksum).
+			buffer = buffer.slice(0, -4);
 
 			if (buffer.length !== 78) {
 				throw new Error(this.ref + '.xpub-invalid');
@@ -232,16 +240,9 @@ app.paymentMethods.bitcoin = (function() {
 
 			_.defer(_.bind(function() {
 
-				var matches = paymentRequest.match(/bitcoin:([a-zA-Z0-9]+)\?amount=([0-9\\.]+)/);
-
-				if (!matches) {
-					return cb(new Error(app.i18n.t('bitcoin.invalid-payment-request')));
-				}
-
-				var address = matches[1];
-				var amount = matches[2];
+				var address = paymentRequest.address;
+				var amount = paymentRequest.amount;
 				var networkName = this.getNetworkName();
-
 				var requestArr = app.util.requestArrFactory(
 					[
 						app.services.blockexplorer.getUnconfirmedBalance
