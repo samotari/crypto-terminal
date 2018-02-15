@@ -1,0 +1,29 @@
+.sample-addresses {
+	text-align: left;
+	padding: 1rem 0;
+}
+.sample-addresses-label {
+	font-size: 0.85rem;
+	font-weight: bold;
+	margin-bottom: .5rem;
+}
+.sample-addresses-content {
+	width: 100%;
+	font-family: 'Courier';
+	font-size: 0.75rem;
+	line-height: 150%;
+	border: none;
+	background: transparent;
+	box-sizing: border-box;
+}
+.sample-addresses-content-address {
+	position: relative;
+	padding-left: 1rem;
+}
+.sample-addresses-content-address-index {
+	position: absolute;
+	left: 0;
+	top: 0;
+	font-size: 0.65rem;
+	color: #aaa;
+}
