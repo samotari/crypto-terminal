@@ -23,12 +23,9 @@
 	margin: 0;
 }
 .view.display-payment-address .address-qr-code {
-	margin: 0 auto;
-}
-.view.display-payment-address .address-qr-code-img {
 	display: block;
-	max-width: 100%;
-	margin: 0 auto;
+	width: 100%;
+	height: 100%;
 }
 .view.display-payment-address .address-text {
 	display: none;

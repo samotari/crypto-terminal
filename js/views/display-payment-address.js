@@ -77,27 +77,19 @@ app.views.DisplayPaymentAddress = (function() {
 
 		renderQrCode: function(data) {
 
-			QRCode.toDataURL(data, {
-				errorCorrectionLevel: app.config.qrCodes.errorCorrectionLevel,
-				margin: app.config.qrCodes.margin,
-				width: Math.min(
-					this.$address.width(),
-					this.$address.height()
-				),
-			}, _.bind(function(error, dataUri) {
+			var width = Math.min(
+				this.$address.width(),
+				this.$address.height()
+			);
+
+			app.util.renderQrCode(this.$addressQrCode/* $target */, data, {
+				width: width,
+			}, function(error) {
 
 				if (error) {
 					return app.mainView.showMessage(error);
 				}
-
-				var $img = $('<img/>', {
-					class: 'address-qr-code-img',
-					src: dataUri
-				});
-
-				this.$addressQrCode.empty().append($img);
-
-			}, this));
+			});
 		},
 
 		renderAddress: function(address) {

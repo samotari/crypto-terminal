@@ -38,5 +38,9 @@ module.exports = {
 		},
 		src: 'build/ecurve.js',
 		dest: 'build/ecurve.min.js'
+	},
+	fastclick: {
+		src: 'node_modules/fastclick/lib/fastclick.js',
+		dest: 'build/fastclick.min.js'
 	}
 };

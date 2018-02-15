@@ -8,14 +8,12 @@ app.views.Main = (function() {
 
 	return app.abstracts.BaseView.extend({
 
-		el: '#app',
-		template: '#template-main',
+		el: 'body',
 
 		events: {
 			'click #main-menu-toggle': 'toggleMainMenu',
 			'click #language-menu-toggle': 'toggleLanguageMenu',
 			'click #language-menu .menu-item': 'changeLanguage',
-			'change .display-currency-change': 'changeDisplayCurrency'
 		},
 
 		currentView: null,
@@ -24,7 +22,31 @@ app.views.Main = (function() {
 
 			_.bindAll(this, 'onDocumentClick');
 			$(document).on('click', this.onDocumentClick);
-			app.settings.on('change:locale', this.render);
+			this.$mainMenu = this.$('#main-menu');
+			this.$mainMenuToggle = this.$('#main-menu-toggle');
+			this.$languageMenu = this.$('#language-menu');
+			this.$languageMenuToggle = this.$('#language-menu-toggle');
+			this.$view = this.$('#view');
+			this.$message = this.$('#message');
+			this.$messageContent = this.$('#message-content');
+			this.initializeMainMenu();
+			this.initializeLanguageMenu();
+			this.updateLanguageToggle();
+			this.reRenderView();
+		},
+
+		initializeMainMenu: function() {
+
+			this.mainMenuView = (new app.views.MainMenu())
+				.setElement(this.$mainMenu)
+				.render();
+		},
+
+		initializeLanguageMenu: function() {
+
+			this.languageMenuView = (new app.views.LanguageMenu())
+				.setElement(this.$languageMenu)
+				.render();
 		},
 
 		renderView: function(name, options) {
@@ -35,7 +57,7 @@ app.views.Main = (function() {
 				class: 'view'
 			});
 
-			this.$viewContent.empty().append($el);
+			this.$view.empty().append($el);
 			var view = new app.views[name](options);
 			view.setElement($el).render();
 
@@ -67,20 +89,6 @@ app.views.Main = (function() {
 				// Re-render the view with the same arguments as it was originally rendered.
 				this.renderView.apply(this, this.renderViewArguments);
 			}
-		},
-
-		onRender: function() {
-
-			this.$mainMenu = this.$('#main-menu');
-			this.$mainMenuToggle = this.$('#main-menu-toggle');
-			this.$languageMenu = this.$('#language-menu');
-			this.$languageMenuToggle = this.$('#language-menu-toggle');
-			this.$viewContent = this.$('#view-content');
-			this.$message = this.$('#message');
-			this.$messageContent = this.$('#message-content');
-			this.updateLanguageToggle();
-			this.reRenderView();
-			return this;
 		},
 
 		toggleMainMenu: function() {
@@ -153,27 +161,12 @@ app.views.Main = (function() {
 			app.settings.set('locale', newLocale).save();
 		},
 
-		changeDisplayCurrency: function(evt) {
-
-			app.settings.set('displayCurrency', $(evt.target).val()).save();
+		render: function() {
+			// Do not render this view.
 		},
 
-		onClose: function() {
-
-			$(document).off('click', this.onDocumentClick);
-			app.settings.off('change:locale', this.render);
-		},
-
-		serializeData: function() {
-
-			var data = {};
-			data.languages = _.map(_.keys(app.lang), function(key) {
-				return {
-					key: key,
-					label: app.i18n.t('language.' + key)
-				};
-			});
-			return data;
+		close: function() {
+			// Do not close this view.
 		},
 
 		busy: function() {
