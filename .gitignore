@@ -11,3 +11,7 @@ android.keystore
 package-lock.json
 npm-debug.log
 .DS_Store
+.vscode
+test/unit/app/
+test/unit/lib/
+test/unit/runner.html

@@ -5,11 +5,11 @@
 	],
 	"build": [
 		"newer:browserify",
-		"compileHtml",
+		"compileHtml:app",
 		"newer:cssmin",
 		"newer:uglify",
 		"newer:concat",
-		"newer:copy"
+		"newer:copy:app"
 	],
 	"test": [
 		"test:code-style"
@@ -19,8 +19,14 @@
 	],
 	"test:e2e": [
 		"build",
-		"connect:test",
+		"connect:e2e",
 		"selenium:start",
 		"mochaTest:e2e"
+	],
+	"test:unit": [
+		"build",
+		"compileHtml:test",
+		"copy:test",
+		"connect:test:unit:keepalive"
 	]
 }
