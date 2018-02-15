@@ -1,0 +1,16 @@
+/*
+	SJCL Project Repository:
+	https://github.com/bitwiseshiftleft/sjcl
+
+	Build instructions:
+	https://github.com/bitwiseshiftleft/sjcl/wiki/Getting-Started
+
+	Build time:
+	2018-03-09T15:30:00
+
+	Commit hash:
+	4fc74ff92fd6b836cc596cc0ee940ef6cc8db7c6
+
+	Configured as follows:
+	./configure --with-codecHex --with-sha256 --with-sha512 --with-hmac --with-random --with-ripemd160
+*/

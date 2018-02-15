@@ -57,6 +57,7 @@ app.views.SettingsPaymentMethod = (function() {
 						id: ['settings', key, setting.name].join('-'),
 						name: [key, setting.name].join('.'),
 						value: app.settings.get(key + '.' + setting.name) || setting.default,
+						visible: setting.visible !== false,
 					}
 				);
 			});
@@ -81,7 +82,8 @@ app.views.SettingsPaymentMethod = (function() {
 				}
 				if (setting.validate) {
 					try {
-						setting.validate(data[key + '.' + setting.name]);
+						// Call the validate function with context of the payment method.
+						setting.validate.call(paymentMethod, data[key + '.' + setting.name]);
 					} catch (error) {
 						errors.push({
 							field: key + '.' + setting.name,

@@ -41,6 +41,10 @@ app.queues = (function() {
 		app.queues.onDeviceReady.push({ fn: fn });
 	};
 
+	app.onReady = function(fn) {
+		app.queues.onReady.push({ fn: fn });
+	};
+
 	$(function() {
 		if (!app.isCordova()) {
 			app.queues.onDeviceReady.resume();

@@ -1,13 +1,12 @@
 'use strict';
 
 module.exports = {
-	bitcoin: {
+	bigi: {
 		options: {
-			standalone: 'bitcoin',
-			transform: [['babelify', { presets: ['es2015'] }]]
+			standalone: 'BigInteger'
 		},
-		src: 'node_modules/bitcoinjs-lib/src/index.js',
-		dest: 'build/bitcoin.js'
+		src: 'node_modules/bigi/lib/index.js',
+		dest: 'build/bigi.js'
 	},
 	bs58: {
 		options: {

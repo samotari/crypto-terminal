@@ -73,6 +73,9 @@ app.paymentMethods.monero = (function() {
 			},
 		],
 
+		// Used to generate a payment request URI:
+		uriScheme: 'monero',
+
 		getNetwork: function(version) {
 
 			return _.find(this.networks, function(network) {
@@ -181,21 +184,20 @@ app.paymentMethods.monero = (function() {
 					}
 
 					var paymentId = this.generatePaymentId();
-					var parameters = {
+
+					var uri = this.uriScheme + ':' + address + '?' + querystring.stringify({
 						tx_payment_id: paymentId,
 						tx_amount: amount
-					};
+					});
 
 					var paymentRequest = {
 						address: address,
 						amount: amount,
-						uri: address + '?' + querystring.stringify(parameters),
+						uri: uri,
 						data: {
 							paymentId: paymentId
 						}
 					};
-
-					console.log(paymentRequest);
 
 				} catch (error) {
 					return cb(error);

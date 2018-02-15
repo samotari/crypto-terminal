@@ -5,7 +5,13 @@ var app = app || {};
 	'use strict';
 
 	app.isCordova = function() {
+
 		return typeof cordova !== 'undefined';
+	};
+
+	app.isTest = function() {
+
+		return typeof mocha !== 'undefined';
 	};
 
 	app.isConfigured = function() {
