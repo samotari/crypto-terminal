@@ -8,6 +8,7 @@ app.lang['en'] = (function() {
 		'language.cs': 'Czech',
 		'language.en': 'English',
 		'language.es': 'Spanish',
+		'language.fr': 'French',
 		'main.message.status.0': 'Error: Network seems to be down',
 		'menu.new-payment': 'New Payment',
 		'menu.settings': 'Settings',
