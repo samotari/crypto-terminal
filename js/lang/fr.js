@@ -2,13 +2,13 @@ var app = app || {};
 
 app.lang = app.lang || {};
 
-app.lang['en'] = (function() {
+app.lang['fr'] = (function() {
 
 	return {
 		'language.cs': 'Czech',
 		'language.en': 'English',
 		'language.es': 'Spanish',
-    'language.fr': 'French',
+                'language.fr': 'French',
 		'main.message.status.0': 'Error: Network seems to be down',
 		'menu.new-payment': 'Nouveau Paiement',
 		'menu.settings': 'Parametres',
@@ -29,11 +29,11 @@ app.lang['en'] = (function() {
 		'pay-choose-method.description': 'Choisissez votre method de paiement',
 		'pay-choose-method.cancel': 'Annuler',
 		'pay-address.description': 'Scanner the QR code pour payer',
-		'pay-address.timeout': 'Paiement n'a pas reussi',
+		'pay-address.timeout': 'Paiement n\'a pas reussi',
 		'pay-address.missing-payment-id': 'Le numero de paiement manque',
 		'pay-address.cancel': 'Annuler',
 		'pay-address.back': 'Change Le methode de paiement',
-		'payment-history.title': 'L'histoire des paiement effetcue',
+		'payment-history.title': 'L\'histoire des paiement effetcue',
 		'payment-history.failed-to-get-payment-data': 'Telechargement des donnees des paiement a echoue',
 		'payment-details.title': 'Details de paiement',
 		'payment-details.confirmed': 'Confirmer',
@@ -42,7 +42,7 @@ app.lang['en'] = (function() {
 		'payment-details.amount': 'Montant',
 		'payment-request.data.must-be-object': '"data" doit etre un objet.',
 		'payment-confirmation.done': 'Terminer',
-		'sample-addresses.label': 'Example d'addresse:',
+		'sample-addresses.label': 'Example d\'addresse:',
 	};
 
 })();
