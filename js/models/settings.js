@@ -37,6 +37,7 @@ app.models.Settings = (function() {
 			var settings = this.toJSON();
 			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];
 			return _.filter(configurableCryptoCurrencies, function(key) {
+				if (!app.paymentMethods[key]) return false;
 				var settingsView = new app.views.SettingsPaymentMethod({ key: key });
 				// A cryptocurrency is "accepted" if it is configured without validation errors.
 				return _.isEmpty(settingsView.validate(settings));
