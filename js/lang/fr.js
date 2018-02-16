@@ -3,7 +3,7 @@ var app = app || {};
 app.lang = app.lang || {};
 
 app.lang['fr'] = (function() {
-		return {
+	return {
 		'language.cs': 'Czech',
 		'language.en': 'English',
 		'language.es': 'Spanish',
