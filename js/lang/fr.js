@@ -8,7 +8,7 @@ app.lang['fr'] = (function() {
 		'language.cs': 'Czech',
 		'language.en': 'English',
 		'language.es': 'Spanish',
-    'language.fr': 'French',
+    'language.fr': 'français',
 		'main.message.status.0': 'Erreur: y a pas de reseau',
 		'menu.new-payment': 'Nouveau Paiement',
 		'menu.settings': 'Parametres',
