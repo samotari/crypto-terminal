@@ -118,3 +118,98 @@ Private View Key | `monero.privateViewKey` | `136674e3e6868bb04d4ef2674f97c00166
 ### Lightning Network
 
 !! TODO !!
+
+## Build Android platform with Cordova
+
+### Install Java Development Kit (JDK)
+Create a folder that will host JDK
+```bash
+cd /usr/local
+sudo mkdir java && cd java
+sudo tar xzvf ~/Downloads/jdk-*****_***.tar.gz
+# replace *** with the one you have
+```
+In order to have JAVA in path we have to add it to .bashrc file
+
+```bash
+cd ~
+vim .bashrc
+```
+
+```bash
+export JAVA_HOME="/usr/local/java/jdk*.*.*_***"
+PATH=$PATH:$JAVA_HOME/bin
+```
+
+```bash
+source .bashrc
+javac -version
+```
+You should see the version of JAVA you have.
+
+### Android Studio
+
+
+Download from their website
+
+```bash
+cd /usr/local
+sudo unzip ~/Downloads/android-studio-ide-***.zip
+cd android-studio/bin
+./studio.sh
+```
+
+Now we should add Android to the path
+```bash
+cd ~
+vim .bashrc
+```
+
+```bash
+export ANDROID_HOME="$HOME/Android/Sdk"
+PATH=$PATH:$ANDROID_HOME/tools
+PATH=$PATH:$ANDROID_HOME/platform-tools
+```
+### Gradle
+
+Install Gradle
+
+```bash
+sudo apt install gradle
+```
+
+### Cordova
+
+```bash
+npm install -g cordova
+```
+Check if everything is OK
+
+```bash
+cordova requirements
+```
+If all the requirements are met you can continue with the build
+
+### Create a keystore for signing apk
+
+Run the command below and follow the steps:
+
+```bash
+npm run key-android
+```
+
+### Modify build.json with the data form the keystore
+
+path: ``` crypto-terminal/cordova-config/build.json ```
+
+
+### Build it with signature
+Run the command below:
+
+```bash
+build-sign-android
+```
+It should creat .apk file in the path below:
+```
+crypto-terminal/platforms/android/app/build/outputs/apk/release/app-release.apk
+```
