@@ -9,7 +9,7 @@ app.lang['fr'] = (function() {
 		'language.en': 'English',
 		'language.es': 'Spanish',
     'language.fr': 'French',
-		'main.message.status.0': 'Erreur: y a pas de reseau',
+		'main.message.status.0': 'Erreur: il n\'y a pas  de reseau',
 		'menu.new-payment': 'Nouveau Paiement',
 		'menu.settings': 'Parametres',
 		'menu.payment-history': 'Histoire des paiements',
@@ -42,6 +42,6 @@ app.lang['fr'] = (function() {
 		'payment-details.amount': 'Montant',
 		'payment-request.data.must-be-object': '"data" doit etre un objet.',
 		'payment-confirmation.done': 'Terminer',
-		'sample-addresses.label': 'Example d\'addresse:',
+		'sample-addresses.label': 'Exemple d\'addresse:',
 	};
 })();
