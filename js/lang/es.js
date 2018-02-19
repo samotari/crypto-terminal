@@ -8,6 +8,7 @@ app.lang['es'] = (function() {
 		'language.cs': 'Checo',
 		'language.en': 'Inglés',
 		'language.es': 'Español',
+		'language.fr': 'Francais',
 		'main.message.status.0': 'Error: No hay conexión de red',
 		'menu.settings': 'Configuración',
 		'menu.payment-history': 'Historia de Pagos',
