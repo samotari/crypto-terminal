@@ -23,6 +23,11 @@ app.paymentMethods.bitcoin = (function() {
 		// Used to generate a payment request URI:
 		uriScheme: 'bitcoin',
 
+		// Used when formatting numbers (to be displayed in the UI).
+		numberFormat: {
+			decimals: 8,
+		},
+
 		lang: {
 			'en': {
 				'settings.addressIndex.label': 'Address Index',

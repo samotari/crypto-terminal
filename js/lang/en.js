@@ -23,6 +23,7 @@ app.lang['en'] = (function() {
 		'admin.pin.min-length': 'PIN must be at least {{minLength}} digit(s)',
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
+		'settings.number-format.label': 'Number Format',
 		'settings.accept-crypto-currencies.label': 'Which currencies do you want to accept?',
 		'settings.at-least-one-crypto-currency-required': 'Please configure at least one cryptocurrency',
 		'settings.field-required': '{{label}} is required',

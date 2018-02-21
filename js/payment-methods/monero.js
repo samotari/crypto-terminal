@@ -21,6 +21,11 @@ app.paymentMethods.monero = (function() {
 		// Used internally to reference itself:
 		ref: 'monero',
 
+		// Used when formatting numbers (to be displayed in the UI).
+		numberFormat: {
+			decimals: 12,
+		},
+
 		lang: {
 			'en': {
 				'settings.public-address.label': 'Public Address',
