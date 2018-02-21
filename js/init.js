@@ -6,10 +6,11 @@ $(function() {
 
 	FastClick.attach(document.body);
 
-	$('html').removeClass('no-js');
+	var $html = $('html');
+
+	$html.removeClass('no-js');
 
 	// Register partial templates with handlebars.
-	Handlebars.registerPartial('numpad', $('#template-numpad').html());
 	Handlebars.registerPartial('amount', $('#template-amount').html());
 	Handlebars.registerPartial('formField', $('#template-form-field').html());
 	Handlebars.registerPartial('slider', $('#template-slider').html());

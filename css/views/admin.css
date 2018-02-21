@@ -1,0 +1,71 @@
+.view.admin {
+	padding: 0;
+}
+.view.admin .button.payment-method {
+	background-size: 3rem;
+	padding: 2rem;
+	opacity: 0.5;
+	margin-left: .4rem;
+}
+.view.admin input[type="checkbox"] {
+	position: absolute;
+	top: 0;
+	left: -99999rem;
+	visibility: hidden;
+}
+.view.admin input[type="checkbox"]:checked + .button.payment-method {
+	opacity: 1;
+	background-color: #e6e6e6;
+}
+.view.admin .form-group.configurableCryptoCurrencies {
+	text-align: center;
+}
+.view.admin .form-group.configurableCryptoCurrencies .form-group-label {
+	color: #111;
+	text-align: center;
+	font-style: normal;
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+}
+.view.admin .form-button.save {
+	float: right;
+}
+.view.admin .success {
+	float: right;
+	color: #45A823;
+	font-size: 0.9rem;
+	line-height: 3.3rem;
+	margin-right: 1rem;
+}
+.view.admin .success:empty {
+	display: none;
+}
+.view.admin .slider {
+	padding-top: 4rem;
+}
+.view.admin .slider-item {
+	box-sizing: border-box;
+	padding: 2rem;
+}
+.view.admin .secondary-menu-item,
+.view.admin .slider-item {
+	display: none;
+}
+.view.admin .secondary-menu-item.visible,
+.view.admin .slider-item.visible {
+	display: block;
+}
+.view.admin .slider-item.payment-history {
+	padding: 0;
+}
+.view.admin .secondary-menu-item.lock {
+	display: none;
+	width: 2rem;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 2rem 2rem;
+	background-image: url('../images/lock-closed.svg');
+}
+html.require-pin.is-unlocked .view.admin .secondary-menu-item.lock {
+	display: block;
+}

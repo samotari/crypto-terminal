@@ -28,11 +28,6 @@ app.models.Settings = (function() {
 
 		localStorageKey: 'settings',
 
-		isConfigured: function() {
-
-			return !_.isEmpty(this.getAcceptedCryptoCurrencies());
-		},
-
 		getAcceptedCryptoCurrencies: function() {
 			var settings = this.toJSON();
 			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];

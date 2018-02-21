@@ -1,0 +1,16 @@
+<div class="enter-pin-inner">
+	{{#if title}}
+	<h2 class="page-title">{{title}}</h2>
+	{{/if}}
+	<div class="enter-pin-keys"></div>
+	<div class="number-pad"></div>
+	{{#if instructions}}
+	<p class="enter-pin-instructions">{{instructions}}</p>
+	{{/if}}
+	<div class="buttons">
+		<a class="button submit">{{i18n "enter-pin.submit"}}</a>
+		{{#if showCancel}}
+		<a class="button cancel">{{i18n "enter-pin.cancel"}}</a>
+		{{/if}}
+	</div>
+</div>

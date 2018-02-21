@@ -1,13 +1,11 @@
 .view.pay {
 	max-width: 25rem;
 }
+.view.pay .amount-wrap {
+	margin-bottom: 2rem;
+}
 .view.pay .continue.button {
 	float: right;
 	text-align: center;
 	margin-top: 2rem;
-}
-.view.pay .error {
-	font-size: 0.9rem;
-	text-align: center;
-	margin-bottom: 2rem;
 }

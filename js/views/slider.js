@@ -20,6 +20,7 @@ app.views.Slider = (function() {
 				className: 'slider-item',
 				template: '#template-slider-item',
 				onRender: function() {
+					this.$el.addClass(this.options.key);
 					this.$content = this.$('.slider-item-content');
 					this.$content.append(this.options.contentView.render().el);
 				},
@@ -178,11 +179,12 @@ app.views.Slider = (function() {
 
 			var adjustedIndex = index;
 
-			this.$('.slider-item').slice(0, index + 1).each(function() {
-				if (!$(this).is(':visible')) {
-					adjustedIndex++;
-				}
-			});
+			while (
+				!this.$('.slider-item').eq(adjustedIndex).hasClass('visible') &&
+				adjustedIndex < this.options.items.length
+			) {
+				adjustedIndex++
+			}
 
 			var key = this.options.items[adjustedIndex] && this.options.items[adjustedIndex].key;
 			if (key) {
@@ -203,7 +205,7 @@ app.views.Slider = (function() {
 
 			// Adjust the offset to account for hidden items.
 			this.$('.slider-item').slice(0, index).each(function() {
-				if (!$(this).is(':visible')) {
+				if (!$(this).hasClass('visible')) {
 					offsetX -= width;
 				}
 			});

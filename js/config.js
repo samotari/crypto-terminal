@@ -34,10 +34,17 @@ app.config = (function() {
 				return 200 * Math.pow(2, retryCount);
 			}
 		},
+		numberPad: {
+			keysMaxLength: 12,
+		},
 		sliders: {
 			speedThreshold: 0.4,// pixels / millisecond
 		},
 		numberOfSampleAddressesToShow: 5,
+		settingsPin: {
+			minLength: 1,
+			unlockTime: 5 * 60 * 1000,
+		},
 		settings: [
 			{
 				name: 'displayCurrency',

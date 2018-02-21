@@ -1,37 +1,43 @@
-.numpad {
+.number-pad {
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
 	width: 100%;
 	background: #efefef;
 }
-.numpad-key {
+.number-pad-key {
 	float: left;
 	display: block;
 	width: 33.3%;
 	height: 4rem;
 	line-height: 4rem;
+	color: #111;
 	font-weight: 100;
 	text-align: center;
 	border: .1rem solid #ccc;
 	border-left: none;
 	box-sizing: border-box;
 	cursor: pointer;
-	transform: translateZ(0);
-	-webkit-transform: translateZ(0);
 	padding: 0;
 }
-.numpad-key:hover,
-.numpad-key.pressed {
+.number-pad-key:hover,
+.number-pad-key.pressed {
+	text-decoration: none;
 	background: #e6e6e6;
 }
-.numpad-key:nth-child(3n+1) {
+.number-pad-key:nth-child(3n+1) {
 	border-left: .1rem solid #ccc;
 }
-.numpad-key:nth-child(n+4) {
+.number-pad-key:nth-child(n+4) {
 	border-top: none;
 }
-.numpad-key[data-value="."],
-.numpad-key.backspace {
+.number-pad-key.dot,
+.number-pad-key.backspace {
 	font-weight: 400;
+}
+.number-pad-key.disabled {
+	cursor: default;
+}
+.number-pad-key.disabled:hover {
+	background: transparent;
 }

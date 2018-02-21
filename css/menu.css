@@ -1,7 +1,3 @@
-#main-menu-toggle.header-button {
-	left: 0;
-	background-image: url('../images/menu.svg');
-}
 .menu {
 	position: absolute;
 	top: 0;
@@ -20,33 +16,20 @@
 .menu.visible {
 	left: 0;
 }
-.menu-cover {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 150;
-	display: none;
-	width: 100%;
-	height: 100%;
-	background: #fff;
-	opacity: 0;
-}
-.menu.visible + .menu-cover {
-	display: block;
-	opacity: .5;
-}
 .menu-item {
 	float: left;
 	display: block;
 	width: 100%;
 	height: 4.5rem;
 	line-height: 4.5rem;
+	color: #111;
 	font-size: 1rem;
 	text-align: center;
 	box-sizing: border-box;
 }
 .menu-item.pressed,
 .menu-item:hover {
+	text-decoration: none;
 	background-color: #e6e6e6;
 }
 .menu-info {
@@ -61,7 +44,7 @@
 	padding: 1rem 0;
 }
 .header-button#language-menu-toggle {
-	right: 0;
+	float: right;
 	width: 4.5rem;
 	-webkit-filter: grayscale(100%);
 	filter: gray;
@@ -105,22 +88,31 @@
 .secondary-menu {
 	position: relative;
 	z-index: 20;
-	display: inline-block;
-	vertical-align: top;
 	width: 100%;
 	height: 4rem;
 	background: #efefef;
+	overflow-y: hidden;
+	overflow-x: auto;
+}
+.secondary-menu-inner {
+	display: inline-block;
+	vertical-align: top;
+	width: 10000rem;
+	height: 100%;
 }
 .secondary-menu-item {
 	float: left;
 	height: 100%;
+	color: #111;
 	font-size: .8rem;
 	line-height: 4.2rem;
+	white-space: nowrap;
 	text-align: center;
 	padding: 0 1rem;
 }
 .secondary-menu-item.active,
 .secondary-menu-item:active,
 .secondary-menu-item:hover {
+	text-decoration: none;
 	background-color: #e6e6e6;
 }

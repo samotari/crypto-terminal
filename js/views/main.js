@@ -11,7 +11,6 @@ app.views.Main = (function() {
 		el: 'body',
 
 		events: {
-			'click #main-menu-toggle': 'toggleMainMenu',
 			'click #language-menu-toggle': 'toggleLanguageMenu',
 			'click #language-menu .menu-item': 'changeLanguage',
 		},
@@ -20,26 +19,42 @@ app.views.Main = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'onDocumentClick');
-			$(document).on('click', this.onDocumentClick);
-			this.$mainMenu = this.$('#main-menu');
-			this.$mainMenuToggle = this.$('#main-menu-toggle');
+			_.bindAll(this,
+				'onDocumentClick',
+				'toggleIsUnlockedFlag',
+				'toggleRequirePinFlag',
+				'toggleConfiguredFlag'
+			);
 			this.$languageMenu = this.$('#language-menu');
 			this.$languageMenuToggle = this.$('#language-menu-toggle');
 			this.$view = this.$('#view');
 			this.$message = this.$('#message');
 			this.$messageContent = this.$('#message-content');
-			this.initializeMainMenu();
 			this.initializeLanguageMenu();
 			this.updateLanguageToggle();
 			this.reRenderView();
+			$(document).on('click', this.onDocumentClick);
+			this.listenTo(app.settings, 'change:lastUnlockTime', this.toggleIsUnlockedFlag);
+			this.listenTo(app.settings, 'change:settingsPin', this.toggleRequirePinFlag);
+			this.listenTo(app.settings, 'change', this.toggleConfiguredFlag);
+			this.toggleIsUnlockedFlag();
+			this.toggleRequirePinFlag();
+			this.toggleConfiguredFlag();
 		},
 
-		initializeMainMenu: function() {
+		toggleConfiguredFlag: function() {
 
-			this.mainMenuView = (new app.views.MainMenu())
-				.setElement(this.$mainMenu)
-				.render();
+			$('html').toggleClass('configured', app.isConfigured());
+		},
+
+		toggleRequirePinFlag: function() {
+
+			$('html').toggleClass('require-pin', app.requirePin());
+		},
+
+		toggleIsUnlockedFlag: function() {
+
+			$('html').toggleClass('is-unlocked', app.isUnlocked());
 		},
 
 		initializeLanguageMenu: function() {
@@ -57,13 +72,15 @@ app.views.Main = (function() {
 				class: 'view'
 			});
 
-			this.$view.empty().append($el);
-			var view = new app.views[name](options);
-			view.setElement($el).render();
+			var View = app.views[name];
 
-			if (view.className) {
-				$el.addClass(view.className);
+			if (View.prototype.className) {
+				$el.addClass(View.prototype.className);
 			}
+
+			this.$view.empty().append($el);
+			var view = new View(options);
+			view.setElement($el).render();
 
 			this.currentView = view;
 			this.renderViewArguments = arguments;
@@ -91,16 +108,6 @@ app.views.Main = (function() {
 			}
 		},
 
-		toggleMainMenu: function() {
-
-			this.$mainMenu.toggleClass('visible');
-		},
-
-		hideMainMenu: function() {
-
-			this.$mainMenu.removeClass('visible');
-		},
-
 		toggleLanguageMenu: function() {
 
 			this.$languageMenu.toggleClass('visible');
@@ -115,10 +122,6 @@ app.views.Main = (function() {
 
 			var $target = $(evt.target);
 
-			if ($target[0] !== this.$mainMenuToggle[0]) {
-				this.hideMainMenu();
-			}
-
 			if ($target[0] !== this.$languageMenuToggle[0]) {
 				this.hideLanguageMenu();
 			}
@@ -128,13 +131,19 @@ app.views.Main = (function() {
 
 		showMessage: function(message) {
 
-			if (message.status === 0) {
-				this.$messageContent.text(app.i18n.t('main.message.status.0'));
-			} else {
-				this.$messageContent.text(message.message || message);
-			}
+			// Defer here in case this method was called as a result of an event that needs to further propogate.
+			// The hideMessage method is called because of the document click event, which could happen after.
+			_.defer(_.bind(function() {
 
-			this.$message.addClass('visible');
+				if (message.status === 0) {
+					this.$messageContent.text(app.i18n.t('main.message.status.0'));
+				} else {
+					this.$messageContent.text(message.message || message);
+				}
+
+				this.$message.addClass('visible');
+
+			}, this));
 		},
 
 		hideMessage: function() {

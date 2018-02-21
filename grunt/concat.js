@@ -12,8 +12,8 @@ module.exports = {
 			'build/css/header.min.css',
 			'build/css/menu.min.css',
 			'build/css/amount.min.css',
-			'build/css/numpad.min.css',
 			'build/css/overlay.min.css',
+			'build/css/number-pad.min.css',
 			'build/css/slider.min.css',
 			'build/css/views/*.min.css',
 			'build/css/responsive.min.css'
@@ -45,6 +45,7 @@ module.exports = {
 			// Application files:
 			'js/jquery.extend/*',
 			'js/handlebars.extend/*',
+			'js/app.js',
 			'js/util.js',
 			'js/lang/*.js',
 			'js/abstracts/*.js',
@@ -86,6 +87,7 @@ module.exports = {
 			// Application files:
 			'build/js/jquery.extend/*',
 			'build/js/handlebars.extend/*',
+			'build/js/app.min.js',
 			'build/js/util.min.js',
 			'build/js/lang/*.min.js',
 			'build/js/abstracts/*.min.js',

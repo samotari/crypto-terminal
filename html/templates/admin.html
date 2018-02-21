@@ -1,0 +1,11 @@
+<div class="secondary-menu">
+		<div class="secondary-menu-inner">
+		<a class="secondary-menu-item lock" title="{{i18n 'admin.lock-admin-screens'}}"></a>
+		{{#each menuItems}}
+		<a class="secondary-menu-item {{key}}" href="#admin/{{key}}" data-key="{{key}}">{{label}}</a>
+		{{/each}}
+	</div>
+</div>
+<div class="slider">
+	{{> slider}}
+</div>

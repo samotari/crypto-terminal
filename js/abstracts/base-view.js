@@ -14,16 +14,33 @@ app.abstracts.BaseView = (function() {
 
 			this.options = options || {};
 
-			_.bindAll(this, 'render', 'close');
+			_.bindAll(this, 'close', 'render', 'reRender', 'resize');
 
 			Backbone.View.prototype.constructor.apply(this, arguments);
 
-			this.listenTo(app.settings, 'change:locale', this.render);
+			this.listenTo(app.settings, 'change:locale', this.reRender);
+
+			/*
+				Start listening to resize on the window object.
+				We're using a namespace for this individual view's events.
+				This allows us to stop this view from listening without interfering with other listeners.
+
+				See:
+				https://api.jquery.com/event.namespace/
+			*/
+			$(window).on('resize.' + this.cid, _.throttle(this.resize, 1000));
 		},
 
 		isRendered: function() {
 
 			return this._rendered === true;
+		},
+
+		reRender: function() {
+
+			if (this.isRendered()) {
+				this.render();
+			}
 		},
 
 		render: function() {
@@ -71,18 +88,32 @@ app.abstracts.BaseView = (function() {
 			return Handlebars.compile(html);
 		},
 
+		resize: function() {
+
+			this.onResize();
+		},
+
+		onResize: function() {
+			// Left empty intentionally.
+			// Override as needed.
+			return this;
+		},
+
 		close: function() {
 
 			this.onClose();
 
 			// Stop listening to other objects (models, collections, etc).
 			this.stopListening();
+			$(window).off('resize.' + this.cid);
 
 			// Remove all callbacks bound to the view itself.
 			this.unbind();
 
 			// Remove the view from the DOM.
 			this.remove();
+
+			this.trigger('close');
 
 			return this;
 		},

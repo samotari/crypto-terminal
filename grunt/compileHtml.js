@@ -2,7 +2,8 @@
 
 module.exports = {
 	index: {
-		src: 'index.html',
+		nonull: true,
+		src: ['index.html'],
 		dest: 'build/index.html',
 	}
 };
