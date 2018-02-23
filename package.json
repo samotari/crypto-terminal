@@ -10,7 +10,9 @@
   "scripts": {
     "android-device": "grunt build && cordova run android --device",
     "start": "grunt",
-    "test": "grunt test"
+    "test": "grunt test",
+    "build-signed-apk": "./scripts/build-signed-apk.sh",
+    "generate-android-signing-key": "keytool -genkey -v -keystore android.keystore -alias cryptoTerminalKey -keyalg RSA -keysize 2048 -validity 10000"
   },
   "repository": {
     "type": "git",

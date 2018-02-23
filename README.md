@@ -10,6 +10,7 @@
     * [Lightning Network](#lightning-network)
   * [Litecoin](#litecoin)
   * [Monero](#monero)
+* [Create Signed APK](#create-signed-apk)
 
 The goal of this project is to create a mobile application that merchants can use to accept cryptocurrency payments in a variety of cryptocurrencies. The focus is on ease-of-use, security, and privacy.
 
@@ -118,3 +119,22 @@ Private View Key | `monero.privateViewKey` | `136674e3e6868bb04d4ef2674f97c00166
 ### Lightning Network
 
 !! TODO !!
+
+
+## Create Signed APK
+
+Before continuing, be sure you already have the [requirements](#requirements) for Android development.
+
+Create your signing key:
+```bash
+npm run generate-android-signing-key
+```
+
+Run the APK build script:
+```bash
+npm run build-signed-apk
+```
+If successful, it should have created a new `.apk` file at the following path:
+```
+./platforms/android/app/build/outputs/apk/release/app-release.apk
+```
