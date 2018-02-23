@@ -11,9 +11,8 @@
     "android-device": "grunt build && cordova run android --device",
     "start": "grunt",
     "test": "grunt test",
-    "build-android": "node ./scripts/build-android-with-key.js",
-    "key-android": "keytool -genkey -v -keystore android.keystore -alias cryptoTerminalKey -keyalg RSA -keysize 2048 -validity 10000",
-    "build-sign-android": "grunt build && cordova platform add android && npm run key-android && npm run build-android"
+    "build-signed-apk": "./scripts/build-signed-apk.sh",
+    "generate-android-signing-key": "keytool -genkey -v -keystore android.keystore -alias cryptoTerminalKey -keyalg RSA -keysize 2048 -validity 10000"
   },
   "repository": {
     "type": "git",
@@ -51,7 +50,6 @@
     "grunt-mocha-test": "0.13.3",
     "grunt-newer": "1.3.0",
     "handlebars": "4.0.11",
-    "inquirer": "^5.1.0",
     "jquery": "3.3.1",
     "js-sha3": "0.7.0",
     "load-grunt-config": "0.19.2",

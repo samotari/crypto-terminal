@@ -6,6 +6,8 @@ hooks/
 platforms/
 plugins/
 www/
+android-build-config.json
+android.keystore
 package-lock.json
 npm-debug.log
 .DS_Store

@@ -10,6 +10,7 @@
     * [Lightning Network](#lightning-network)
   * [Litecoin](#litecoin)
   * [Monero](#monero)
+* [Create Signed APK](#create-signed-apk)
 
 The goal of this project is to create a mobile application that merchants can use to accept cryptocurrency payments in a variety of cryptocurrencies. The focus is on ease-of-use, security, and privacy.
 
@@ -119,97 +120,21 @@ Private View Key | `monero.privateViewKey` | `136674e3e6868bb04d4ef2674f97c00166
 
 !! TODO !!
 
-## Build Android platform with Cordova
 
-### Install Java Development Kit (JDK)
-Create a folder that will host JDK
+## Create Signed APK
+
+Before continuing, be sure you already have the [requirements](#requirements) for Android development.
+
+Create your signing key:
 ```bash
-cd /usr/local
-sudo mkdir java && cd java
-sudo tar xzvf ~/Downloads/jdk-*****_***.tar.gz
-# replace *** with the one you have
+npm run generate-android-signing-key
 ```
-In order to have JAVA in path we have to add it to .bashrc file
 
+Run the APK build script:
 ```bash
-cd ~
-vim .bashrc
+npm run build-signed-apk
 ```
-
-```bash
-export JAVA_HOME="/usr/local/java/jdk*.*.*_***"
-PATH=$PATH:$JAVA_HOME/bin
+If successful, it should have created a new `.apk` file at the following path:
 ```
-
-```bash
-source .bashrc
-javac -version
-```
-You should see the version of JAVA you have.
-
-### Android Studio
-
-
-Download from their website
-
-```bash
-cd /usr/local
-sudo unzip ~/Downloads/android-studio-ide-***.zip
-cd android-studio/bin
-./studio.sh
-```
-
-Now we should add Android to the path
-```bash
-cd ~
-vim .bashrc
-```
-
-```bash
-export ANDROID_HOME="$HOME/Android/Sdk"
-PATH=$PATH:$ANDROID_HOME/tools
-PATH=$PATH:$ANDROID_HOME/platform-tools
-```
-### Gradle
-
-Install Gradle
-
-```bash
-sudo apt install gradle
-```
-
-### Cordova
-
-```bash
-npm install -g cordova
-```
-Check if everything is OK
-
-```bash
-cordova requirements
-```
-If all the requirements are met you can continue with the build
-
-### Create a keystore for signing apk
-
-Run the command below and follow the steps:
-
-```bash
-npm run key-android
-```
-
-### Modify build.json with the data form the keystore
-
-path: ``` crypto-terminal/cordova-config/build.json ```
-
-
-### Build it with signature
-Run the command below:
-
-```bash
-build-sign-android
-```
-It should creat .apk file in the path below:
-```
-crypto-terminal/platforms/android/app/build/outputs/apk/release/app-release.apk
+./platforms/android/app/build/outputs/apk/release/app-release.apk
 ```
