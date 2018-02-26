@@ -14,6 +14,9 @@ app.paymentMethods.bitcoin = (function() {
 		// The exchange symbol:
 		code: 'BTC',
 
+		// Symbol for testnet:
+		testnetCode: 'BTCTEST',
+
 		// Used internally to reference itself:
 		ref: 'bitcoin',
 
@@ -239,15 +242,21 @@ app.paymentMethods.bitcoin = (function() {
 		checkPaymentReceived: function(paymentRequest, cb) {
 
 			_.defer(_.bind(function() {
-
+				var timestamp = Date.now();
 				var address = paymentRequest.address;
 				var amount = paymentRequest.amount;
 				var networkName = this.getNetworkName();
 				var requestArr = app.util.requestArrFactory(
 					[
-						app.services.blockexplorer.getUnconfirmedBalance
+						app.services['chain.so'].checkPaymentReceived
 					],
-					{address: address, networkName: networkName, amount: amount}
+					{
+						address: address,
+						networkName: networkName,
+						currencyCode: app.paymentMethods.bitcoin.code,
+						currencyTestCode: app.paymentMethods.bitcoin.testnetCode,
+						timestamp: timestamp
+					}
 				)
 
 				async.tryEach(
@@ -277,12 +286,16 @@ app.paymentMethods.bitcoin = (function() {
 				}
 
 				var networkName = this.getNetwork(xpub).name;
-
 				var requestArr = app.util.requestArrFactory(
 					[
-						app.services.blockexplorer.getTotalReceiveByAddressAndNetworkName
+						app.services['chain.so'].getTotalReceivedByAddress
 					],
-					{address: address, networkName: networkName}
+					{
+						address: address,
+						networkName: networkName,
+						currencyCode: app.paymentMethods.bitcoin.code,
+						currencyTestCode: app.paymentMethods.bitcoin.testnetCode
+					}
 				)
 
 				async.tryEach(

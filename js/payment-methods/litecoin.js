@@ -14,6 +14,9 @@ app.paymentMethods.litecoin = (function() {
 		// The exchange symbol:
 		code: 'LTC',
 
+		// Symbol for testnet:
+		testnetCode: 'LTCTEST',
+
 		// Used internally to reference itself:
 		ref: 'litecoin',
 
@@ -121,7 +124,12 @@ app.paymentMethods.litecoin = (function() {
 					[
 						app.services['chain.so'].checkPaymentReceived
 					],
-					{address: address, amount: amount, network: network}
+					{
+						address: address,
+						networkName: networkName,
+						currencyCode: app.paymentMethods.litecoin.code,
+						currencyTestCode: app.paymentMethods.litecoin.testnetCode
+					}
 				)
 
 				async.tryEach(
@@ -154,9 +162,14 @@ app.paymentMethods.litecoin = (function() {
 
 				var requestArr = app.util.requestArrFactory(
 					[
-						app.services['chain.so'].getTotalReceiveByAddress
+						app.services['chain.so'].getTotalReceivedByAddress
 					],
-					{address: address, networkName: networkName}
+					{
+						address: address,
+						networkName: networkName,
+						currencyCode: app.paymentMethods.litecoin.code,
+						currencyTestCode: app.paymentMethods.litecoin.testnetCode
+					}
 				)
 
 				async.tryEach(

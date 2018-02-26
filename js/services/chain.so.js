@@ -8,10 +8,11 @@ app.services['chain.so'] = (function() {
 
 	return {
 
-		// argObj as {address, network, amount}
+		
+		// argObj as {address, networkName, amount, currencyCode, currencyTestCode, timestamp}
 		checkPaymentReceived: function(argObj, cb) {
 
-			app.services['chain.so'].getTotalReceiveByAddress(argObj, function(error, amountReceived) {
+			app.services['chain.so'].getTotalReceivedByAddressSince(argObj, function(error, amountReceived) {
 
 				if (error) {
 					return cb(error);
@@ -24,17 +25,16 @@ app.services['chain.so'] = (function() {
 
 		},
 
-		// argObj as {address, networkName}
-		getTotalReceiveByAddress: function(argObj, cb) {
+		// argObj as {address, networkName, currencyCode, currencyTestCode}
+		getTotalReceivedByAddress: function(argObj, cb) {
 
 			/*
 				For API details:
 				https://chain.so/api#get-balance
 			*/
 			var uri = 'https://chain.so/api/v2/get_address_balance';
-
 			// Network (e.g LTC or LTCTEST):
-			uri += '/' + (argObj.network === 'mainnet' ? 'LTC' : 'LTCTEST');
+			uri += '/' + (argObj.networkName === 'mainnet' ? argObj.currencyCode : argObj.currencyTestCode);
 			// Address:
 			uri += '/' + encodeURIComponent(argObj.address);
 			// Minimum number of confirmations:
@@ -55,6 +55,35 @@ app.services['chain.so'] = (function() {
 			}).fail(cb);
 
 		},
+
+		//  argObj as {address, networkName, currencyCode, currencyTestCode, timestamp}
+		getTotalReceivedByAddressSince: function(argObj, cb) {
+			var uri = 'https://chain.so/api/v2/get_tx_received';
+
+			uri += '/' + (argObj.networkName === 'mainnet' ? argObj.currencyCode : argObj.currencyTestCode);
+
+			uri += '/' + encodeURIComponent(argObj.address);
+
+			$.get(uri).then(function(result) {
+				try {
+					var txs = result.data.txs;
+					var amountReceived = new BigNumber('0');
+					// Selecting newer transactions
+					var amountsReceived = txs
+					// Selecting newer transactions
+					.filter(function(tx) {
+						return tx.time >= argObj.timestamp;
+					})
+					.forEach(function(tx) {
+						amountReceived.plus(tx.value);
+					});
+				} catch (error) {
+					return cb(error);
+				}
+
+				cb(null, amountReceived);
+			}).fail(cb);
+		}
 
 	};
 
