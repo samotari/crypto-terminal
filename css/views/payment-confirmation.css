@@ -47,8 +47,3 @@
     box-shadow: inset 0 0 0 3rem #7ac142;
   }
 }
-
-.view.payment-confirmation.view .secondary-controls {
-  text-align: center;
-  margin-top: 50%;
-}

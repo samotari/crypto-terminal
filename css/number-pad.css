@@ -5,6 +5,10 @@
 	width: 100%;
 	background: #efefef;
 }
+.number-pad-wrap {
+	max-width: 25rem;
+	margin: 0 auto;
+}
 .number-pad-key {
 	float: left;
 	display: block;

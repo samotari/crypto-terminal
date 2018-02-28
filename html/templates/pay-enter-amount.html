@@ -1,5 +1,11 @@
-<p class="page-description">{{i18n "pay-enter-amount.description"}}</p>
-{{> amount}}
-<div class="error"></div>
-<div class="number-pad"></div>
-<a class="button continue">{{i18n "pay-enter-amount.continue"}}</a>
+<div class="view-inner">
+	<p class="page-description">{{i18n "pay-enter-amount.description"}}</p>
+	{{> amount}}
+	<div class="error"></div>
+	<div class="number-pad-wrap">
+		<div class="number-pad"></div>
+	</div>
+	<div class="secondary-controls">
+		<a class="secondary-control button continue">{{i18n "pay-enter-amount.continue"}}</a>
+	</div>
+</div>

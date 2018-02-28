@@ -3,14 +3,16 @@
 	<h2 class="page-title">{{title}}</h2>
 	{{/if}}
 	<div class="enter-pin-keys"></div>
-	<div class="number-pad"></div>
+	<div class="number-pad-wrap">
+		<div class="number-pad"></div>
+	</div>
 	{{#if instructions}}
 	<p class="enter-pin-instructions">{{instructions}}</p>
 	{{/if}}
-	<div class="buttons">
-		<a class="button submit">{{i18n "enter-pin.submit"}}</a>
+	<div class="secondary-controls">
+		<a class="secondary-control button submit">{{i18n "enter-pin.submit"}}</a>
 		{{#if showCancel}}
-		<a class="button cancel">{{i18n "enter-pin.cancel"}}</a>
+		<a class="secondary-control button cancel">{{i18n "enter-pin.cancel"}}</a>
 		{{/if}}
 	</div>
 </div>
