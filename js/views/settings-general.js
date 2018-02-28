@@ -13,7 +13,6 @@ app.views.SettingsGeneral = (function() {
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',
-			'submit form': 'onSubmit',
 			'click .set-pin': 'onSetPinClick',
 			'click .remove-pin': 'onRemovePinClick',
 		},
@@ -76,15 +75,21 @@ app.views.SettingsGeneral = (function() {
 			// Check general settings.
 			_.each(app.config.settings, function(setting) {
 				if (setting.required && !data[setting.name]) {
-					errors.push(app.i18n.t('settings.field-required', {
-						label: _.result(setting, 'label')
-					}));
+					errors.push({
+						field: setting.name,
+						message: app.i18n.t('settings.field-required', {
+							label: _.result(setting, 'label')
+						}),
+					});
 				}
 				if (setting.validate) {
 					try {
 						setting.validate(data[setting.name]);
 					} catch (error) {
-						errors.push(error);
+						errors.push({
+							field: setting.name,
+							message: error,
+						});
 					}
 				}
 			});

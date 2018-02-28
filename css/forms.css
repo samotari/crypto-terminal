@@ -1,13 +1,5 @@
 .form {
 }
-.form-error {
-	min-height: 2.5rem;
-	text-align: center;
-	margin-bottom: 1rem;
-}
-.form-error:empty {
-	display: none;
-}
 .form-row {
 	display: inline-block;
 	vertical-align: top;
@@ -62,4 +54,8 @@
 	border-top: .1rem solid #efefef;
 	padding-top: 1rem;
 	margin-top: 1rem;
+}
+.form-error-message {
+	color: red;
+	font-size: 0.9rem;
 }

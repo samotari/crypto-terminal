@@ -123,6 +123,13 @@ app.abstracts.BaseView = (function() {
 			// Override as needed.
 			return this;
 		}
+	}, {
+		extend: function(properties, classProperties) {
+			properties = properties || {};
+			// Extend the events object, instead of overwriting.
+			properties.events = _.extend({}, this.prototype.events || {}, properties.events || {});
+			return Backbone.View.extend.call(this, properties, classProperties);
+		}
 	});
 
 })();

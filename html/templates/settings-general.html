@@ -1,6 +1,5 @@
 <form>
 	<div class="form">
-		<div class="form-error error"></div>
 		<div class="form-group settings">
 			<div class="form-row">
 				<div class="form-label">{{i18n "admin.pin.label"}}</div>
@@ -33,10 +32,6 @@
 			<input id="settings-configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
 			<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}"></label>
 			{{/each}}
-		</div>
-		<div class="form-buttons">
-			<input class="button form-button save" type="submit" value="{{i18n 'form.save'}}">
-			<div class="success"></div>
 		</div>
 	</div>
 </form>

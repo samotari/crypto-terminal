@@ -13,7 +13,14 @@ app.views.utility.Form = (function() {
 		template: null,
 
 		events: {
-			'submit form': 'onSubmit'
+			'change :input': 'process',
+			'submit form': 'process',
+		},
+
+		initialize: function() {
+
+			_.bindAll(this, 'process');
+			this.process = _.throttle(this.process, 500, { leading: false });
 		},
 
 		validate: function(data) {
@@ -26,46 +33,43 @@ app.views.utility.Form = (function() {
 		onRender: function() {
 
 			this.$error = this.$('.error');
-			this.$success = this.$('.success');
-		},
-
-		showSuccess: function(message) {
-
-			if (this.$success) {
-				this.$success.text(message);
-			}
-			_.delay(_.bind(this.clearSuccess, this), 5000);
-		},
-
-		clearSuccess: function() {
-
-			if (this.$success) {
-				this.$success.empty();
-			}
 		},
 
 		showErrors: function(errors) {
 
-			var errorText = errors.join('\n');
-			if (this.$error) {
-				this.$error.text(errorText);
-			}
+			_.each(errors, function(error) {
+				var $field = this.$(':input[name="' + error.field + '"]');
+				var $row = $field.parents('.form-row').first();
+				var $error = $row.find('.form-error');
+				$field.addClass('error');
+				$error.append($('<div/>', {
+					class: 'form-error-message',
+					text: error.message,
+				}));
+			}, this);
 		},
 
 		clearErrors: function() {
 
-			if (this.$error) {
-				this.$error.empty();
-			}
+			this.$('.form-error-message').remove();
+			this.$('.form-row.error').removeClass('error');
+			this.$(':input.error').removeClass('error');
 		},
 
-		onSubmit: function(evt) {
+		getFormData: function() {
 
-			evt.preventDefault();
+			return this.$('form').serializeJSON();
+		},
+
+		process: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+
 			this.clearErrors();
 			var data = this.getFormData();
 			var errors = this.validate(data);
-
 			if (!_.isEmpty(errors)) {
 				// Show the validation errors.
 				this.showErrors(errors);
@@ -78,14 +82,7 @@ app.views.utility.Form = (function() {
 					// Something went wrong during save.
 					return this.showErrors(errors);
 				}
-				// Saved successfully.
-				this.showSuccess(app.i18n.t('form.save-success'));
 			}
-		},
-
-		getFormData: function() {
-
-			return this.$('form').serializeJSON();
 		},
 
 		save: function(data) {
