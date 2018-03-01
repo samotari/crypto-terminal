@@ -8,83 +8,22 @@ app.services['chain.so'] = (function() {
 
 	return {
 
-		
-		// argObj as {address, networkName, amount, currencyCode, currencyTestCode, timestamp}
-		checkPaymentReceived: function(argObj, cb) {
+		hostname: 'https://chain.so',
 
-			app.services['chain.so'].getTotalReceivedByAddressSince(argObj, function(error, amountReceived) {
+		getUri: function(uri) {
 
-				if (error) {
-					return cb(error);
-				}
-
-				var wasReceived = amountReceived.isGreaterThanOrEqualTo(argObj.amount);
-
-				cb(null, wasReceived);
-			})
-
+			return this.hostname + uri;
 		},
 
-		// argObj as {address, networkName, currencyCode, currencyTestCode}
-		getTotalReceivedByAddress: function(argObj, cb) {
+		getTransactionsReceivedByAddress: function(address, currency, cb) {
 
-			/*
-				For API details:
-				https://chain.so/api#get-balance
-			*/
-			var uri = 'https://chain.so/api/v2/get_address_balance';
-			// Network (e.g LTC or LTCTEST):
-			uri += '/' + (argObj.networkName === 'mainnet' ? argObj.currencyCode : argObj.currencyTestCode);
-			// Address:
-			uri += '/' + encodeURIComponent(argObj.address);
-			// Minimum number of confirmations:
-			uri += '/0';
-
+			var uri = this.getUri('/api/v2/get_tx_received');
+			uri += '/' + encodeURIComponent(currency);
+			uri += '/' + encodeURIComponent(address);
 			$.get(uri).then(function(result) {
-
-				try {
-					var amountReceived = (new BigNumber('0'))
-						.plus(result.data.confirmed_balance)
-						.plus(result.data.unconfirmed_balance);
-				} catch (error) {
-					return cb(error);
-				}
-
-				cb(null, amountReceived);
-
-			}).fail(cb);
-
-		},
-
-		//  argObj as {address, networkName, currencyCode, currencyTestCode, timestamp}
-		getTotalReceivedByAddressSince: function(argObj, cb) {
-			var uri = 'https://chain.so/api/v2/get_tx_received';
-
-			uri += '/' + (argObj.networkName === 'mainnet' ? argObj.currencyCode : argObj.currencyTestCode);
-
-			uri += '/' + encodeURIComponent(argObj.address);
-
-			$.get(uri).then(function(result) {
-				try {
-					var txs = result.data.txs;
-					var amountReceived = new BigNumber('0');
-					// Selecting newer transactions
-					var amountsReceived = txs
-					// Selecting newer transactions
-					.filter(function(tx) {
-						return tx.time >= argObj.timestamp;
-					})
-					.forEach(function(tx) {
-						amountReceived.plus(tx.value);
-					});
-				} catch (error) {
-					return cb(error);
-				}
-
-				cb(null, amountReceived);
+				cb(null, result.data.txs);
 			}).fail(cb);
 		}
-
 	};
 
 })();

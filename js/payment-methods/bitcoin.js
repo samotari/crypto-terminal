@@ -242,37 +242,32 @@ app.paymentMethods.bitcoin = (function() {
 		checkPaymentReceived: function(paymentRequest, cb) {
 
 			_.defer(_.bind(function() {
-				var timestamp = Date.now();
+
 				var address = paymentRequest.address;
 				var amount = paymentRequest.amount;
 				var networkName = this.getNetworkName();
-				var requestArr = app.util.requestArrFactory(
-					[
-						app.services['chain.so'].checkPaymentReceived
-					],
-					{
-						address: address,
-						networkName: networkName,
-						currencyCode: app.paymentMethods.bitcoin.code,
-						currencyTestCode: app.paymentMethods.bitcoin.testnetCode,
-						timestamp: timestamp
+				var currency = networkName === 'mainnet' ? this.code : this.testnetCode;
+
+				app.services['chain.so'].getTransactionsReceivedByAddress(address, currency, function(error, txs) {
+
+					if (error) {
+						return cb(error);
 					}
-				)
 
-				async.tryEach(
-					requestArr,
-					function(error, results) {
-
-						if (error) {
-							return cb(error);
-						}
-
-						var wasReceived = results[0];
-						var amountReceived = results[1];
-
-						cb(null, wasReceived, amountReceived);
+					try {
+						var amountReceived = new BigNumber('0');
+						_.each(txs, function(tx) {
+							if (tx.time >= Math.floor(paymentRequest.timestamp / 1000)) {
+								amountReceived = amountReceived.plus(tx.value);
+							}
+						});
+						var wasReceived = amountReceived.isGreaterThanOrEqualTo(amount);
+					} catch (error) {
+						return cb(error);
 					}
-				);
+
+					cb(null, wasReceived);
+				});
 
 			}, this));
 		},
@@ -286,37 +281,18 @@ app.paymentMethods.bitcoin = (function() {
 				}
 
 				var networkName = this.getNetwork(xpub).name;
-				var requestArr = app.util.requestArrFactory(
-					[
-						app.services['chain.so'].getTotalReceivedByAddress
-					],
-					{
-						address: address,
-						networkName: networkName,
-						currencyCode: app.paymentMethods.bitcoin.code,
-						currencyTestCode: app.paymentMethods.bitcoin.testnetCode
+				var currency = networkName === 'mainnet' ? this.code : this.testnetCode;
+
+				app.services['chain.so'].getTransactionsReceivedByAddress(address, currency, function(error, txs) {
+
+					if (error) {
+						return cb(error);
 					}
-				)
 
-				async.tryEach(
-					requestArr,
-					function(error, results) {
+					var wasUsed = txs.length > 0;
+					cb(null, wasUsed);
+				});
 
-						if (error) {
-							return cb(error);
-						}
-
-						var totalReceived = results;
-
-						try {
-							var indexWasUsed = totalReceived.isGreaterThan('0');
-						} catch (error) {
-							return cb(error);
-						}
-
-						cb(null, indexWasUsed);
-					}
-				)
 			}, this))
 		},
 

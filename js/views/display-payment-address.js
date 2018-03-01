@@ -120,31 +120,34 @@ app.views.DisplayPaymentAddress = (function() {
 					this.resetQrCode();
 					return app.mainView.showMessage(error);
 				}
-				this.paymentRequest = paymentRequest;
-				this.savePaymentInPaymentHistory({
+
+				this.paymentRequestUri = paymentRequest.uri;
+
+				app.paymentRequests.add({
 					currency: paymentMethod.code,
 					address: paymentRequest.address,
-					confirmed: false,
 					amount: paymentRequest.amount,
 					displayCurrency: {
 						code: displayCurrency,
 						rate: displayCurrencyExchangeRate
 					},
 					data: paymentRequest.data || {},
-				});
-				this.renderQrCode(paymentRequest.uri);
-				this.renderAddress(paymentRequest.address);
-				this.startListeningForPayment(paymentRequest);
+					status: 'pending',
+				}).save().then(_.bind(function(attributes) {
+					this.paymentRequest = app.paymentRequests.get(attributes.id);
+					this.renderQrCode(this.paymentRequestUri);
+					this.renderAddress(attributes.address);
+					this.startListeningForPayment();
+				}, this));
 
 			}, this));
 		},
 
-		startListeningForPayment: function(paymentRequest) {
+		startListeningForPayment: function() {
 
 			this._listenForPaymentTimeout = _.delay(
 				this.listenForPayment,
-				app.config.displayPaymentAddress.listener.delays.first,
-				paymentRequest
+				app.config.displayPaymentAddress.listener.delays.first
 			);
 		},
 
@@ -155,10 +158,13 @@ app.views.DisplayPaymentAddress = (function() {
 			}
 		},
 
-		listenForPayment: function(paymentRequest) {
+		listenForPayment: function() {
+
+			if (!this.paymentRequest) return;
 
 			var received;
-			var startTime = (new Date).getTime();
+			var paymentRequest = this.paymentRequest.toJSON();
+			var startTime = paymentRequest.timestamp;
 			var timeout = app.config.displayPaymentAddress.listener.timeout;
 			var waitBetween = app.config.displayPaymentAddress.listener.delays.between;
 			var paymentMethod = app.paymentMethods[this.options.method];
@@ -219,24 +225,17 @@ app.views.DisplayPaymentAddress = (function() {
 			app.router.navigate('pay/' + encodeURIComponent(amount), { trigger: true });
 		},
 
-		savePaymentInPaymentHistory: function(data) {
-			app.paymentRequests.add(data).save().then(_.bind(function(model) {
-				this.paymentId = model.id;
-			}, this));
-		},
-
 		updatePaymentHistory: function() {
-			if (!this.paymentId) {
-				app.mainView.showMessage(new Error(app.i18n.t('pay-address.missing-payment-id')));
+
+			if (this.paymentRequest) {
+				this.paymentRequest.save({ status: 'unconfirmed' });
 			}
-			var paymentTransaction = app.paymentRequests.get(this.paymentId);
-			paymentTransaction.save({confirmed: true});
 		},
 
 		reRenderQrCode: function() {
 
-			if (this.paymentRequest) {
-				this.renderQrCode(this.paymentRequest.uri);
+			if (this.paymentRequestUri) {
+				this.renderQrCode(this.paymentRequestUri);
 			}
 		},
 
