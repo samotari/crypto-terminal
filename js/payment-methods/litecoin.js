@@ -32,23 +32,24 @@ app.paymentMethods.litecoin = (function() {
 					if (!app.paymentMethods.litecoin.prepareHDNodeInstance(value)) {
 						throw new Error(app.i18n.t('litecoin.settings.xpub.invalid'));
 					}
+				}
+			},
+			{
+				name: 'addressIndex',
+				label: function() {
+					return app.i18n.t('litecoin.settings.addressIndex.label');
 				},
-				beforeSaving: function(data, cb) {
-
-					this.getFirstIndexOfGap(data[this.ref + '.xpub'], _.bind(function(error, firstIndexOfGap) {
-
-						if (error) {
-							console.log(app.i18n.t(currency + 'litecoin.settings.error-beforesaving'));
-							return cb(error);
-						}
-
-						var lastIndexObj = {};
-						lastIndexObj[this.ref + '.lastIndex'] = firstIndexOfGap;
-
-						var fixedData = _.extend({}, data, lastIndexObj);
-
-						cb(null, fixedData);
-					}, this));
+				type: 'text',
+				required: true,
+				default: '0',
+				validate: function(value) {
+					value = parseInt(value);
+					if (_.isNaN(value)) {
+						throw new Error(app.i18n.t('litecoin.settings.addressIndex.integer-required'));
+					}
+					if (value < 0) {
+						throw new Error(app.i18n.t('litecoin.settings.addressIndex.greater-than-or-equal-zero'));
+					}
 				}
 			}
 		],

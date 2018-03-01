@@ -17,13 +17,6 @@ app.views.DisplayPaymentAddress = (function() {
 			'click .back': 'back'
 		},
 
-		paymentId: '',
-
-		initialize: function() {
-
-			_.bindAll(this, 'listenForPayment');
-		},
-
 		serializeData: function() {
 
 			return {
@@ -145,59 +138,32 @@ app.views.DisplayPaymentAddress = (function() {
 
 		startListeningForPayment: function() {
 
-			this._listenForPaymentTimeout = _.delay(
-				this.listenForPayment,
-				app.config.displayPaymentAddress.listener.delays.first
-			);
-		},
-
-		stopListeningForPayment: function() {
-
-			if (this._listenForPaymentTimeout) {
-				clearTimeout(this._listenForPaymentTimeout);
-			}
-		},
-
-		listenForPayment: function() {
-
 			if (!this.paymentRequest) return;
 
-			var received;
-			var paymentRequest = this.paymentRequest.toJSON();
-			var startTime = paymentRequest.timestamp;
-			var timeout = app.config.displayPaymentAddress.listener.timeout;
-			var waitBetween = app.config.displayPaymentAddress.listener.delays.between;
 			var paymentMethod = app.paymentMethods[this.options.method];
-			var updatePaymentHistory = _.bind(this.updatePaymentHistory, this);
+			var paymentRequest = this.paymentRequest.toJSON();
+			var received = false;
+			var errorWhileWaiting;
 
-			var iteratee = _.bind(function(next) {
+			paymentMethod.listenForPayment(paymentRequest, function(error, wasReceived) {
+				if (error) {
+					errorWhileWaiting = error;
+				} else {
+					received = wasReceived === true;
+				}
+			});
 
-				paymentMethod.checkPaymentReceived(paymentRequest, _.bind(function(error, wasReceived) {
+			var done = _.bind(function(error) {
 
-					if (error) {
-						return next(error);
-					}
-
-					if (wasReceived) {
-						received = true;
-						updatePaymentHistory();
-						return next();
-					}
-
-					// Wait before checking again.
-					this._listenForPaymentTimeout = _.delay(next, waitBetween);
-
-				}, this));
-
-			}, this);
-
-			var onDone = _.bind(function(error) {
+				this.stopListeningForPayment();
 
 				if (error) {
 					return app.mainView.showMessage(error);
 				}
 
 				if (received) {
+					// Update the status of the payment request.
+					this.paymentRequest.save({ status: 'unconfirmed' });
 					// Show success screen.
 					app.router.navigate('confirmed', { trigger: true });
 				} else {
@@ -206,10 +172,19 @@ app.views.DisplayPaymentAddress = (function() {
 
 			}, this);
 
-			async.until(function() {
-				// If the following returns TRUE, the loop will stop.
-				return received || ((new Date).getTime() - startTime) >= timeout;
-			}, iteratee, onDone);
+			async.until(function() { return received; }, function(next) {
+				if (errorWhileWaiting) {
+					return next(errorWhileWaiting);
+				} else {
+					_.delay(next, 100);
+				}
+			}, done);
+		},
+
+		stopListeningForPayment: function() {
+
+			var paymentMethod = app.paymentMethods[this.options.method];
+			paymentMethod.stopListeningForPayment();
 		},
 
 		cancel: function() {
@@ -223,13 +198,6 @@ app.views.DisplayPaymentAddress = (function() {
 
 			// Navigate back to the payment method screen.
 			app.router.navigate('pay/' + encodeURIComponent(amount), { trigger: true });
-		},
-
-		updatePaymentHistory: function() {
-
-			if (this.paymentRequest) {
-				this.paymentRequest.save({ status: 'unconfirmed' });
-			}
 		},
 
 		reRenderQrCode: function() {
