@@ -258,10 +258,7 @@ app.paymentMethods.bitcoin = (function() {
 							return cb(error);
 						}
 
-						var wasReceived = results[0];
-						var amountReceived = results[1];
-
-						cb(null, wasReceived, amountReceived);
+						cb(null, results);
 					}
 				);
 
