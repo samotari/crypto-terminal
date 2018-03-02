@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: https://ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+	<title>Mocha Tests For <%= name %></title>
+	<link rel="stylesheet" href="lib/mocha.css">
+	<link href="app/css/all.min.css" rel="stylesheet">
+	<link href="runner.css" rel="stylesheet">
+<%= html.favicon.content %>
+</head>
+<body>
+	<div id="mocha"></div>
+	<div id="test"></div>
+
+	<div id="app">
+<%= html.app.content %>
+	</div>
+
+<% _.each(_.values(html.templates), function(template) { %>
+	<script type="text/html" id="template-<%= template.key %>">
+<%= template.content %>
+	</script>
+<% }); %>
+
+	<!-- load deps -->
+	<script src="lib/chai.js"></script>
+	<script src="lib/mocha.js"></script>
+
+	<!-- run tests -->
+	<script>
+		window.expect = chai.expect;
+		mocha.setup('bdd');
+		window.onload = function() {
+			mocha.run()
+		};
+	</script>
+
+	<script>
+		var app = app || {};
+		app.name = '<%= name %>';
+		app.description = '<%= description %>';
+		app.version = '<%= version %>';
+	</script>
+	<script src="app/js/all.js"></script>
+
+	<!-- load testing scripts -->
+	<script src="tests/payment-methods/bitcoin.js"></script>
+
+</body>
+</html>

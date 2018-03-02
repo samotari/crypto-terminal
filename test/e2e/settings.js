@@ -5,7 +5,7 @@ var assert = require('assert');
 
 describe('Settings', function() {
 
-	var uri = 'http://localhost:3001/#settings';
+	var uri = 'http://localhost:3002/#settings';
 
 	var client;
 	before(function() {

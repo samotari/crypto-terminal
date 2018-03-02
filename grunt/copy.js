@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-	all: {
+	app: {
 		files: [
 			{
 				nonull: true,
@@ -45,6 +45,62 @@ module.exports = {
 				nonull: true,
 				src: 'images/favicon/favicon.ico',
 				dest: 'www/favicon.ico'
+			}
+		]
+	},
+	test: {
+		files: [
+			{
+				expand: true,
+				flatten: true,
+				cwd: 'node_modules/chai/',
+				src: [
+					'chai.js'
+				],
+				dest: 'test/unit/lib/'
+			},
+			{
+				expand: true,
+				flatten: true,
+				cwd: 'node_modules/mocha/',
+				src: [
+					'mocha.js',
+					'mocha.css'
+				],
+				dest: 'test/unit/lib/'
+			},
+			{
+				nonull: true,
+				src: 'build/all.js',
+				dest: 'test/unit/app/js/all.js'
+			},
+			{
+				nonull: true,
+				src: 'build/all.min.css',
+				dest: 'test/unit/app/css/all.min.css'
+			},
+			{
+				expand: true,
+				flatten: true,
+				cwd: 'node_modules/open-sans-fontface/',
+				src: [
+					'fonts/**/*.{ttf,eot,svg,woff,woff2}'
+				],
+				dest: 'test/unit/app/fonts/OpenSans/'
+			},
+			{
+				expand: true,
+				flatten: false,
+				cwd: 'images/',
+				src: [
+					'**/*'
+				],
+				dest: 'test/unit/app/images/'
+			},
+			{
+				nonull: true,
+				src: 'images/favicon/favicon.ico',
+				dest: 'test/unit/favicon.ico'
 			}
 		]
 	}
