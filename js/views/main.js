@@ -36,6 +36,7 @@ app.views.Main = (function() {
 			$(document).on('click', this.onDocumentClick);
 			this.listenTo(app.settings, 'change:lastUnlockTime', this.toggleIsUnlockedFlag);
 			this.listenTo(app.settings, 'change:settingsPin', this.toggleRequirePinFlag);
+			this.listenTo(app.settings, 'change:locale', this.updateLanguageToggle);
 			this.listenTo(app.settings, 'change', this.toggleConfiguredFlag);
 			this.toggleIsUnlockedFlag();
 			this.toggleRequirePinFlag();

@@ -18,7 +18,7 @@ app.views.PaymentHistory = (function() {
 		initialize: function() {
 
 			this.collection = app.paymentRequests;
-
+			this.collection.on('all', this.render);
 			this.collection.fetch({
 				error: function() {
 					app.main.showMessage(app.i18n.t('payment-history.failed-to-get-payment-data'));
@@ -29,10 +29,8 @@ app.views.PaymentHistory = (function() {
 		serializeData: function() {
 
 			var data = {};
-			data.payments = _.map(this.collection.models, function(model) {
-				return model.attributes;
-			})
-			data.format = app.settings.get('dateFormat')
+			data.payments = this.collection.toJSON();
+			data.format = app.settings.get('dateFormat');
 			return data;
 		},
 

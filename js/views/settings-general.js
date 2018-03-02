@@ -111,11 +111,12 @@ app.views.SettingsGeneral = (function() {
 				data.configurableCryptoCurrencies = [];
 			}
 
-			app.settings.set(data).save();
+			app.settings.set(data);
 		},
 
 		save: function(data) {
-			app.settings.set(data).save();
+
+			app.settings.set(data);
 		},
 
 		onSetPinClick: function(evt) {

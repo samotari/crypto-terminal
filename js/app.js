@@ -2,6 +2,12 @@ var app = app || {};
 
 (function() {
 
+	'use strict';
+
+	app.isCordova = function() {
+		return typeof cordova !== 'undefined';
+	};
+
 	app.isConfigured = function() {
 
 		return !_.isEmpty(app.settings.getAcceptedCryptoCurrencies());
@@ -9,12 +15,12 @@ var app = app || {};
 
 	app.unlock = function() {
 
-		app.settings.set('lastUnlockTime', Date.now()).save();
+		app.settings.set('lastUnlockTime', Date.now());
 	};
 
 	app.lock = function() {
 
-		app.settings.set('lastUnlockTime', null).save();
+		app.settings.set('lastUnlockTime', null);
 	};
 
 	app.isUnlocked = function() {
@@ -40,12 +46,19 @@ var app = app || {};
 
 	app.setPin = function(pin) {
 
-		app.settings.set('settingsPin', pin).save();
+		app.settings.set('settingsPin', pin);
 	};
 
 	app.clearPin = function(pin) {
 
-		app.settings.set('settingsPin', null).save();
+		app.settings.set('settingsPin', null);
+	};
+
+	app.log = function() {
+
+		if (app.config.debug) {
+			console.log.apply(console, arguments);
+		}
 	};
 
 })();

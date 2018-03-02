@@ -117,7 +117,7 @@ app.paymentMethods.bitcoin = (function() {
 					return cb(error);
 				}
 
-				app.settings.set(this.ref + '.addressIndex', index + 1).save();
+				app.settings.set(this.ref + '.addressIndex', index + 1);
 				cb(null, address);
 
 			}, this));

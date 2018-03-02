@@ -16,6 +16,7 @@
 				</div>
 			</div>
 			{{#each settings}}
+				{{#if visible}}
 				<div class="form-row form-row-type--{{type}}">
 					<div class="form-label">
 						<label for="{{id}}">{{label}}</label>
@@ -24,6 +25,7 @@
 						{{> formField .}}
 					</div>
 				</div>
+				{{/if}}
 			{{/each}}
 		</div>
 		<div class="form-group configurableCryptoCurrencies">

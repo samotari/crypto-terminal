@@ -64,7 +64,8 @@ app.views.SettingsPaymentMethod = (function() {
 		},
 
 		save: function(data) {
-			app.settings.set(data).save();
+
+			app.settings.set(data);
 		}
 
 	});
