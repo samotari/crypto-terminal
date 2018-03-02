@@ -14,35 +14,33 @@ app.paymentMethods.bitcoin = (function() {
 		// The exchange symbol:
 		code: 'BTC',
 
+		// Symbol for testnet:
+		testnetCode: 'BTCTEST',
+
 		// Used internally to reference itself:
 		ref: 'bitcoin',
-
-		// Used to get gap limit
-		gapLimit: 1,
 
 		lang: {
 			'en': {
 				'settings.xpub.label': 'Master Public Key',
 				'settings.xpub.invalid': 'Invalid master public key',
+				'settings.addressIndex.label': 'Address Index',
+				'settings.addressIndex.integer-required': 'Must be an integer',
+				'settings.addressIndex.greater-than-or-equal-zero': 'Must be greater than or equal to zero',
 				'invalid-payment-request': 'Invalid payment request',
 				'xpub-required': 'Master public key is required',
 				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
 				'invalid-network-version': 'Invalid network version',
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
-				'error-beforesaving': 'Error before saving settings',
-				'settings.error-getting-gap-limit': 'Error in getting "gap limit".',
 			},
 			'es': {
 				'settings.xpub.label': 'Clave Pública Maestra',
 				'settings.xpub.invalid': 'La clave pública maestra no es valida',
-				'settings.scheme.label': 'Ruta de dirección',
 				'invalid-payment-request': 'Solicitud de pago',
 				'xpub-required': 'Falta la clave pública maestra ',
 				'invalid-parent-fingerprint': 'La huella paterna no es válida',
 				'invalid-network-version': 'La versión de la red no es válida',
 				'private-keys-warning': '¡ADVERTENCIA: NO utilice claves privadas en esta aplicación!',
-				'error-beforesaving': 'Error antes de guardar settings',
-				'settings.error-getting-gap-limit': 'Error obteniendo "gap limit"'
 			},
 		},
 
@@ -58,23 +56,24 @@ app.paymentMethods.bitcoin = (function() {
 					if (!app.paymentMethods.bitcoin.prepareHDNodeInstance(value)) {
 						throw new Error(app.i18n.t('bitcoin.settings.xpub.invalid'));
 					}
+				}
+			},
+			{
+				name: 'addressIndex',
+				label: function() {
+					return app.i18n.t('bitcoin.settings.addressIndex.label');
 				},
-				beforeSaving: function(data, cb) {
-
-					this.getFirstIndexOfGap(data[this.ref + '.xpub'], _.bind(function(error, firstIndexOfGap) {
-
-						if (error) {
-							console.log(app.i18n.t(this.ref + 'bitcoin.settings.error-beforesaving'));
-							return cb(error);
-						}
-
-						var lastIndexObj = {};
-						lastIndexObj[this.ref + '.lastIndex'] = firstIndexOfGap;
-
-						var fixedData = _.extend({}, data, lastIndexObj);
-
-						cb(null, fixedData);
-					}, this));
+				type: 'text',
+				required: true,
+				default: '0',
+				validate: function(value) {
+					value = parseInt(value);
+					if (_.isNaN(value)) {
+						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.integer-required'));
+					}
+					if (value < 0) {
+						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.greater-than-or-equal-zero'));
+					}
 				}
 			}
 		],
@@ -109,8 +108,7 @@ app.paymentMethods.bitcoin = (function() {
 
 		getPaymentAddress: function(cb) {
 
-			var index = parseInt(app.settings.get(this.ref + '.lastIndex') || 0) + 1;
-
+			var index = parseInt(app.settings.get(this.ref + '.addressIndex') || '0');
 			var xpub = app.settings.get(this.ref + '.xpub');
 
 			this.getAddress(index, xpub, _.bind(function(error, address) {
@@ -119,7 +117,7 @@ app.paymentMethods.bitcoin = (function() {
 					return cb(error);
 				}
 
-				app.settings.set(this.ref + '.lastIndex', index).save();
+				app.settings.set(this.ref + '.addressIndex', index + 1).save();
 				cb(null, address);
 
 			}, this));
@@ -236,118 +234,38 @@ app.paymentMethods.bitcoin = (function() {
 			app.services.coinbase.getExchangeRates(this.code, cb);
 		},
 
-		checkPaymentReceived: function(paymentRequest, cb) {
+		listenForPayment: function(paymentRequest, cb) {
 
-			_.defer(_.bind(function() {
+			var address = paymentRequest.address;
+			var amount = paymentRequest.amount;
+			var networkName = this.getNetworkName();
+			var currency = networkName === 'mainnet' ? this.code : this.testnetCode;
+			var amountReceived = new BigNumber('0');
 
-				var address = paymentRequest.address;
-				var amount = paymentRequest.amount;
-				var networkName = this.getNetworkName();
-				var requestArr = app.util.requestArrFactory(
-					[
-						app.services.blockexplorer.getUnconfirmedBalance
-					],
-					{address: address, networkName: networkName, amount: amount}
-				)
+			var done = _.bind(function() {
+				app.services['chain.so'].stopListening();
+				cb.apply(undefined, arguments);
+			}, this);
 
-				async.tryEach(
-					requestArr,
-					function(error, results) {
-
-						if (error) {
-							return cb(error);
-						}
-
-						var wasReceived = results[0];
-						var amountReceived = results[1];
-
-						cb(null, wasReceived, amountReceived);
-					}
-				);
-
-			}, this));
-		},
-
-		checkIfAddressWasUsed: function(index, xpub, cb) {
-
-			this.getAddress(index, xpub, _.bind(function(error, address) {
+			app.services['chain.so'].listenForTransactionsToAddress(address, currency, function(error, tx) {
 
 				if (error) {
-					return cb(error);
+					return done(error);
 				}
 
-				var networkName = this.getNetwork(xpub).name;
+				amountReceived = amountReceived.plus(tx.amount_received);
 
-				var requestArr = app.util.requestArrFactory(
-					[
-						app.services.blockexplorer.getTotalReceiveByAddressAndNetworkName
-					],
-					{address: address, networkName: networkName}
-				)
+				if (amountReceived.isGreaterThanOrEqualTo(amount)) {
+					return done(null, true/* wasReceived */);
+				}
 
-				async.tryEach(
-					requestArr,
-					function(error, results) {
-
-						if (error) {
-							return cb(error);
-						}
-
-						var totalReceived = results;
-
-						try {
-							var indexWasUsed = totalReceived.isGreaterThan('0');
-						} catch (error) {
-							return cb(error);
-						}
-
-						cb(null, indexWasUsed);
-					}
-				)
-			}, this))
+				// Continue listening..
+			});
 		},
 
-		/**
-			finds the first index that contains gapLimit number of not used addresses
-		 */
-		getFirstIndexOfGap: function(xpub, cb) {
-			var gapLimit = this.gapLimit;
-			var gap = 0;
-			var index = 0;
-			var checkIfAddressWasUsed = _.bind(this.checkIfAddressWasUsed, this);
-			var ref = this.ref;
-			
-			async.whilst(
-				function() { return gap < gapLimit },
-				function(callback) {
-					checkIfAddressWasUsed(index, xpub, function(error, indexWasUsed) {
+		stopListeningForPayment: function() {
 
-						if (error) {
-							return callback(error);
-						}
-						if (indexWasUsed) {
-							gap = 0;
-						} else {
-							gap++;
-						}
-						
-						index++;
-						callback();
-					})
-
-				},
-				function(error) {
-
-					if (error) {
-						console.log(app.i18n.t(ref + 'settings.error-getting-gap-limit'));
-						return cb(error);
-					}
-
-					cb(null, index - gap);
-
-				}
-			)
-
+			app.services['chain.so'].stopListening();
 		},
 
 	});

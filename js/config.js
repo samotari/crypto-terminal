@@ -10,30 +10,6 @@ app.config = (function() {
 			margin: 0,
 		},
 		defaultLocale: 'en',
-		displayPaymentAddress: {
-			listener: {
-				// When to stop performing checks (milliseconds):
-				timeout: 180000,
-				delays: {
-					// Wait time before the first check (milliseconds):
-					first: 10000,
-					// Wait time between checks (milliseconds):
-					between: 5000
-				}
-			}
-		},
-		httpRequests: {
-			timeBetweenRequests: 100
-		},
-		retryRequest: {
-			// how many times it tries with an api when request fails (times):
-			times: 5,
-			// try calling apiMethod X times with exponential backoff (milliseconds):
-			// (i.e. intervals of 100, 200, 400, 800, 1600, ...)
-			interval: function(retryCount) {
-				return 200 * Math.pow(2, retryCount);
-			}
-		},
 		numberPad: {
 			keysMaxLength: 12,
 		},

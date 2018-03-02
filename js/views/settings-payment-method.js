@@ -57,53 +57,6 @@ app.views.SettingsPaymentMethod = (function() {
 			return errors;
 		},
 
-		onSubmit: function(evt) {
-
-			evt.preventDefault();
-			this.clearErrors();
-			var data = this.$('form').serializeJSON();
-			var errors = this.validate(data);
-			var save = _.bind(this.save, this);
-			var key = this.options.key;
-			var paymentMethod = app.paymentMethods[key];
-
-			if (!_.isEmpty(errors)) {
-				this.showErrors(errors);
-			} else {
-				// No errors.
-
-				app.mainView.busy();
-
-				async.eachSeries(paymentMethod.settings, function(setting, next) {
-					if (setting.beforeSaving) {
-						setting.beforeSaving.call(paymentMethod, data, function(error, fixedData) {
-							if (error) {
-								next(error);
-							} else {
-
-								data = fixedData;
-								next();
-							}
-						});
-					} else {
-						next();
-					}
-				}, function(error) {
-
-					app.mainView.notBusy();
-
-					if (error) {
-						throw new Error(error);
-					}
-
-					save(data);
-
-				})
-
-			}
-
-		},
-
 		save: function(data) {
 			app.settings.set(data).save();
 		}

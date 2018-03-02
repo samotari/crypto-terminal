@@ -251,6 +251,43 @@ app.paymentMethods.monero = (function() {
 			});
 		},
 
+		stopListeningForPayment: function() {
+
+			clearTimeout(this._listenForPaymentTimeout);
+		},
+
+		listenForPayment: function(paymentRequest, cb) {
+
+			var received = false;
+			var waitBetween = 5000;
+			var iteratee = _.bind(function(next) {
+				this.checkPaymentReceived(paymentRequest, _.bind(function(error, wasReceived) {
+
+					if (error) {
+						return next(error);
+					}
+
+					if (wasReceived) {
+						received = true;
+						return next();
+					}
+
+					// Wait before checking again.
+					this._listenForPaymentTimeout = _.delay(next, waitBetween);
+
+				}, this));
+			}, this);
+
+			async.until(function() { return received }, iteratee, function(error) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				cb(null, received);
+			});
+		},
+
 		checkPaymentReceived: function(paymentRequest, cb) {
 
 			_.defer(_.bind(function() {

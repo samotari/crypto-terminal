@@ -8,54 +8,64 @@ app.services['chain.so'] = (function() {
 
 	return {
 
-		// argObj as {address, network, amount}
-		checkPaymentReceived: function(argObj, cb) {
+		_pusher: null,
+		_channels: [],
 
-			app.services['chain.so'].getTotalReceiveByAddress(argObj, function(error, amountReceived) {
+		hostname: 'https://chain.so',
 
-				if (error) {
-					return cb(error);
-				}
+		getUri: function(uri) {
 
-				var wasReceived = amountReceived.isGreaterThanOrEqualTo(argObj.amount);
-
-				cb(null, wasReceived);
-			})
-
+			return this.hostname + uri;
 		},
 
-		// argObj as {address, networkName}
-		getTotalReceiveByAddress: function(argObj, cb) {
+		stopListening: function() {
 
-			/*
-				For API details:
-				https://chain.so/api#get-balance
-			*/
-			var uri = 'https://chain.so/api/v2/get_address_balance';
-
-			// Network (e.g LTC or LTCTEST):
-			uri += '/' + (argObj.network === 'mainnet' ? 'LTC' : 'LTCTEST');
-			// Address:
-			uri += '/' + encodeURIComponent(argObj.address);
-			// Minimum number of confirmations:
-			uri += '/0';
-
-			$.get(uri).then(function(result) {
-
-				try {
-					var amountReceived = (new BigNumber('0'))
-						.plus(result.data.confirmed_balance)
-						.plus(result.data.unconfirmed_balance);
-				} catch (error) {
-					return cb(error);
-				}
-
-				cb(null, amountReceived);
-
-			}).fail(cb);
-
+			var pusher = this._pusher;
+			_.each(this._channels, function(channel) {
+				channel.unbind();
+				pusher.unsubscribe(channel.name);
+			});
 		},
 
+		listenForTransactionsToAddress: function(address, currency, cb) {
+
+			try {
+				if (!this._pusher) {
+					this._pusher = this.initializePusher();
+				}
+				var pusher = this._pusher;
+				var channel = pusher.subscribe([
+					'address',
+					currency.toLowerCase(),
+					address
+				].join('_'));
+				channel.bind('balance_update', function(data) {
+					if (data.type === 'address') {
+						var tx = {
+							amount_received: data.value.value_received,
+						};
+						cb(null, tx);
+					}
+				});
+				this._channels.push(channel);
+			} catch (error) {
+				return cb(error);
+			}
+		},
+
+		initializePusher: function() {
+			return new Pusher('e9f5cc20074501ca7395', {
+				wsHost: 'slanger1.chain.so',
+				httpHost: 'slanger1.chain.so',
+				wsPort: 443,
+				wssPort: 443,
+				httpPort: 443,
+				httpsPort: 443,
+				encrypted: true,
+				disabledTransports: ['sockjs'],
+				disableStats: true
+			});
+		}
 	};
 
 })();
