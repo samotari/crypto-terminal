@@ -6,29 +6,28 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: https://ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
 	<title>Mocha Tests For <%= name %></title>
-	<link rel="stylesheet" href="lib/mocha.css" />
+	<link rel="stylesheet" href="lib/mocha.css">
 	<link href="app/css/all.min.css" rel="stylesheet">
+	<link href="runner.css" rel="stylesheet">
 <%= html.favicon.content %>
 </head>
 <body>
 	<div id="mocha"></div>
 	<div id="test"></div>
 
-	<div style="position: absolute; left:-99999px">
-
-		<%= html.app.content %>
-
-		<% _.each(_.values(html.templates), function(template) { %>
-			<script type="text/html" id="template-<%= template.key %>">
-		<%= template.content %>
-			</script>
-		<% }); %>
-
+	<div id="app">
+<%= html.app.content %>
 	</div>
 
+<% _.each(_.values(html.templates), function(template) { %>
+	<script type="text/html" id="template-<%= template.key %>">
+<%= template.content %>
+	</script>
+<% }); %>
+
 	<!-- load deps -->
-	<script src="/lib/chai.js"></script>
-	<script src="/lib/mocha.js"></script>
+	<script src="lib/chai.js"></script>
+	<script src="lib/mocha.js"></script>
 
 	<!-- run tests -->
 	<script>
@@ -45,10 +44,10 @@
 		app.description = '<%= description %>';
 		app.version = '<%= version %>';
 	</script>
-	<script src="lib/build/all.js"></script>
+	<script src="app/js/all.js"></script>
 
 	<!-- load testing scripts -->
-	<script src="/payment-methods/bitcoin.js"></script>
+	<script src="tests/payment-methods/bitcoin.js"></script>
 
 </body>
 </html>

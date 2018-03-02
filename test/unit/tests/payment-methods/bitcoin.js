@@ -1,4 +1,4 @@
-describe('Pyment Method: Bitcoin', function() {
+describe('Payment Method: Bitcoin', function() {
 
 	it('prepareHDNodeInstance should return an object', function() {
 
@@ -6,5 +6,5 @@ describe('Pyment Method: Bitcoin', function() {
 
 		 var hDNodeInstance = app.paymentMethods.bitcoin.prepareHDNodeInstance(xpub);
 		expect(hDNodeInstance).to.be.an('object');
-	})
-}); 
+	});
+});

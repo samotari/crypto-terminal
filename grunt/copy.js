@@ -72,7 +72,7 @@ module.exports = {
 			{
 				nonull: true,
 				src: 'build/all.js',
-				dest: 'test/unit/lib/'
+				dest: 'test/unit/app/js/all.js'
 			},
 			{
 				nonull: true,
@@ -100,7 +100,7 @@ module.exports = {
 			{
 				nonull: true,
 				src: 'images/favicon/favicon.ico',
-				dest: 'test/unit/app/favicon.ico'
+				dest: 'test/unit/favicon.ico'
 			}
 		]
 	}
