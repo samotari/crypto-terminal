@@ -1,23 +1,16 @@
 <form>
 	<div class="form">
-		<div class="form-error error"></div>
 		<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
 			{{#each settings}}
-			<div class="form-row">
-				<div class="form-row form-row-type--{{type}}">
-					<div class="form-label">
-						<label for="{{id}}">{{label}}</label>
-					</div>
-					<div class="form-field">
-						{{> formField .}}
-					</div>
+			<div class="form-row form-row-type--{{type}}">
+				<div class="form-label">
+					<label for="{{id}}">{{label}}</label>
+				</div>
+				<div class="form-field">
+					{{> formField .}}
 				</div>
 			</div>
 			{{/each}}
-		</div>
-		<div class="form-buttons">
-			<input class="button form-button save" type="submit" value="{{i18n 'form.save'}}">
-			<div class="success"></div>
 		</div>
 	</div>
 </form>

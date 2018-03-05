@@ -14,7 +14,6 @@ app.views.SampleAddresses = (function() {
 		serializeData: function() {
 			return {
 				addresses: this.options.addresses,
-				error: this.options.error,
 			};
 		}
 	});

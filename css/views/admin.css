@@ -27,19 +27,6 @@
 	font-size: 1.2rem;
 	margin-bottom: 1rem;
 }
-.view.admin .form-button.save {
-	float: right;
-}
-.view.admin .success {
-	float: right;
-	color: #45A823;
-	font-size: 0.9rem;
-	line-height: 3.3rem;
-	margin-right: 1rem;
-}
-.view.admin .success:empty {
-	display: none;
-}
 .view.admin .slider {
 	padding-top: 4rem;
 }

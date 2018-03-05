@@ -41,15 +41,21 @@ app.views.SettingsPaymentMethod = (function() {
 
 			_.each(paymentMethod.settings, function(setting) {
 				if (setting.required && !data[key + '.' + setting.name]) {
-					errors.push(errorMessagePrefix + app.i18n.t('settings.field-required', {
-						label: _.result(setting, 'label')
-					}));
+					errors.push({
+						field: key + '.' + setting.name,
+						message: errorMessagePrefix + app.i18n.t('settings.field-required', {
+							label: _.result(setting, 'label')
+						}),
+					});
 				}
 				if (setting.validate) {
 					try {
 						setting.validate(data[key + '.' + setting.name]);
 					} catch (error) {
-						errors.push(errorMessagePrefix + error);
+						errors.push({
+							field: key + '.' + setting.name,
+							message: errorMessagePrefix + error,
+						});
 					}
 				}
 			});

@@ -197,13 +197,11 @@ app.views.Admin = (function() {
 					});
 				}
 				view.options.addresses = addresses;
-				view.options.error = null;
+				view.render();
 			} catch (error) {
-				view.options.addresses = [];
-				view.options.error = error;
+				view.close();
+				view = this.sampleAddressesViews[fieldName] = null;
 			}
-
-			view.render();
 		}
 
 	});
