@@ -46,9 +46,12 @@ module.exports = {
 
 			// Application files:
 			'js/jquery.extend/*',
+			'js/backbone.extend/*',
 			'js/handlebars.extend/*',
 			'js/app.js',
+			'js/queues.js',
 			'js/util.js',
+			'js/sqlite.js',
 			'js/lang/*.js',
 			'js/abstracts/*.js',
 			'js/services/*.js',
@@ -58,6 +61,7 @@ module.exports = {
 			'js/views/*.js',
 			'js/payment-methods/*.js',
 			'js/config.js',
+			'js/settings.js',
 			'js/i18n.js',
 			'js/router.js',
 			'js/init.js'
@@ -89,9 +93,12 @@ module.exports = {
 
 			// Application files:
 			'build/js/jquery.extend/*',
+			'build/js/backbone.extend/*',
 			'build/js/handlebars.extend/*',
 			'build/js/app.min.js',
+			'build/js/queues.min.js',
 			'build/js/util.min.js',
+			'build/js/sqlite.min.js',
 			'build/js/lang/*.min.js',
 			'build/js/abstracts/*.min.js',
 			'build/js/services/*.min.js',
@@ -101,6 +108,7 @@ module.exports = {
 			'build/js/views/*.min.js',
 			'build/js/payment-methods/*.min.js',
 			'build/js/config.min.js',
+			'build/js/settings.min.js',
 			'build/js/i18n.min.js',
 			'build/js/router.min.js',
 			'build/js/init.min.js'

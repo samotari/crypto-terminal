@@ -11,13 +11,15 @@ app.views.PaymentDetails = (function() {
 		className: 'payment-detail',
 		template: '#template-payment-details',
 
+		initialize: function() {
+
+			this.model = app.paymentRequests.get(this.options.paymentId);
+			this.model.on('sync change', this.render);
+		},
+
 		serializeData: function() {
 
-			if (!app.paymentRequests.get(this.options.paymentId)) {
-				app.paymentRequests.fetch();
-			}
-			var data = {};
-			data = _.clone(app.paymentRequests.get(this.options.paymentId).attributes);
+			var data = this.model.toJSON();
 			data.format = app.settings.get('dateFormat')
 			return data;
 		}

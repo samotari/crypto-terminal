@@ -1,6 +1,6 @@
 var app = app || {};
 
-$(function() {
+app.onDeviceReady(function() {
 
 	'use strict';
 
@@ -15,19 +15,21 @@ $(function() {
 	Handlebars.registerPartial('formField', $('#template-form-field').html());
 	Handlebars.registerPartial('slider', $('#template-slider').html());
 
-	// Initialize models.
-	app.settings = new app.models.Settings();
-	app.settings.fetch();
+	app.queues.onReady.push({
+		fn: function() {
+			// Initialize collections and models.
+			app.paymentRequests = new app.collections.PaymentRequests();
 
-	// Initialize collections
-	app.paymentRequests = new app.collections.PaymentRequests();
+			// Initialize the main view.
+			app.mainView = new app.views.Main();
 
-	// Initialize the main view.
-	app.mainView = new app.views.Main();
+			// Initialize the router.
+			app.router = new app.Router();
 
-	// Initialize the router.
-	app.router = new app.Router();
+			// Start storing in-app browsing history.
+			Backbone.history.start();
+		}
+	});
 
-	// Start storing in-app browsing history.
-	Backbone.history.start();
+	app.queues.onStart.resume();
 });

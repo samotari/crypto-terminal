@@ -12,7 +12,6 @@ app.views.Admin = (function() {
 		template: '#template-admin',
 
 		events: {
-			'change input[name="configurableCryptoCurrencies[]"]': 'toggleCryptoCurrencySettingsVisibility',
 			'keyup input[name$=".xpub"]': 'onKeyUpMasterPublicKeyField',
 			'click .lock': 'lock',
 		},
@@ -21,8 +20,9 @@ app.views.Admin = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'setActiveMenuItem');
+			_.bindAll(this, 'setActiveMenuItem', 'toggleCryptoCurrencySettingsVisibility');
 			this.options.page = this.options.page || 'general-settings';
+			this.listenTo(app.settings, 'change:configurableCryptoCurrencies', this.toggleCryptoCurrencySettingsVisibility);
 		},
 
 		lock: function() {

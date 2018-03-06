@@ -5,6 +5,15 @@ app.config = (function() {
 	'use strict';
 
 	var config = {
+		debug: true,
+		sqlite: {
+			name: 'crypto-terminal.db',
+			location: 'default',
+			uniqueId: {
+				length: 20,
+				charset: 'abcdefghijklmnopqrstuvqxyzABCDEFGHIJKLMNOPQRSTUVQXYZ1234567890-_',
+			},
+		},
 		qrCodes: {
 			errorCorrectionLevel: 'M',
 			margin: 0,
@@ -23,11 +32,17 @@ app.config = (function() {
 		},
 		settings: [
 			{
+				name: 'configurableCryptoCurrencies',
+				visible: false,
+				default: [],
+			},
+			{
 				name: 'displayCurrency',
 				label: function() {
 					return app.i18n.t('settings.display-currency.label');
 				},
 				type: 'select',
+				default: 'CZK',
 				required: true,
 				options: [].concat(
 					_.chain(app.paymentMethods).values().pluck('code').map(function(code) {
@@ -80,6 +95,12 @@ app.config = (function() {
 			}
 		]
 	};
+
+	config.settings = _.map(config.settings, function(setting) {
+		return _.extend({}, setting, {
+			visible: setting.visible !== false,
+		});
+	});
 
 	// Build an array of display currency keys.
 	config.supportedDisplayCurrencies = _.pluck(

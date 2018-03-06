@@ -6,16 +6,12 @@ app.collections.PaymentRequests = (function() {
 
 	'use strict';
 
-	return Backbone.Collection.extend({
-		
+	return app.abstracts.BaseCollection.extend({
 		model: app.models.PaymentRequest,
-
-		localStorage: new Backbone.LocalStorage('PR'),
-
+		storeName: 'payment_requests',
 		comparator: function(model) {
 			return -model.attributes.timestamp;
-		}
-
+		},
 	});
 
 })();
