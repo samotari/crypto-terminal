@@ -34,18 +34,3 @@
 	text-align: center;
 	margin-top: 2rem;
 }
-.view.display-payment-address .secondary-controls {
-	position: absolute;
-	left: 0;
-	bottom: 2rem;/* padding of the .view element */
-	width: 100%;
-	height: 2.4rem;
-	text-align: center;
-	box-sizing: border-box;
-}
-.view.display-payment-address .secondary-controls .button {
-	height: 2.4rem;
-	line-height: 2.4rem;
-	box-sizing: border-box;
-	padding: 0 1.4rem;
-}

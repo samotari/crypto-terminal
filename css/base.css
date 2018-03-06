@@ -51,6 +51,9 @@ body {
 	padding: 2rem;
 	margin: 0 auto;
 }
+.view-inner {
+	margin: 0 auto;
+}
 .page-title {
 	font-weight: 700;
 	font-size: 1.4rem;

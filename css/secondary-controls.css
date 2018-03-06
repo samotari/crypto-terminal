@@ -1,0 +1,39 @@
+.secondary-controls {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 4rem;
+	line-height: 3.8rem;
+}
+.secondary-control {
+	float: left;
+	height: 100%;
+	font-size: 1.1rem;
+	text-align: center;
+	box-sizing: border-box;
+	border-radius: 0;
+	padding: 0;
+}
+.secondary-control + .secondary-control {
+	border-left: none;
+}
+/* one item */
+.secondary-control:first-child:nth-last-child(1) {
+	width: 100%;
+}
+/* two items */
+.secondary-control:first-child:nth-last-child(2),
+.secondary-control:first-child:nth-last-child(2) ~ .secondary-control {
+	width: 50%;
+}
+/* three items */
+.secondary-control:first-child:nth-last-child(3),
+.secondary-control:first-child:nth-last-child(3) ~ .secondary-control {
+	width: 33.3333%;
+}
+/* four items */
+.secondary-control:first-child:nth-last-child(4),
+.secondary-control:first-child:nth-last-child(4) ~ .secondary-control {
+	width: 25%;
+}

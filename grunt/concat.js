@@ -12,6 +12,7 @@ module.exports = {
 			'build/css/header.min.css',
 			'build/css/menu.min.css',
 			'build/css/amount.min.css',
+			'build/css/secondary-controls.min.css',
 			'build/css/overlay.min.css',
 			'build/css/number-pad.min.css',
 			'build/css/slider.min.css',

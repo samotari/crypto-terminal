@@ -1,7 +1,9 @@
-.view.choose-payment-method .select-payment-method {
-	text-align: center;
-	margin: 2rem 0;
+.view.choose-payment-method {
+	display: flex;
+	align-items: center;
+	padding: 0;
+	padding-bottom: 4rem;/* height of buttons */
 }
-.view.choose-payment-method .secondary-controls {
+.view.choose-payment-method .select-payment-method {
 	text-align: center;
 }

@@ -1,11 +1,9 @@
 .view.pay {
-	max-width: 25rem;
+	display: flex;
+	align-items: center;
+	padding: 0;
+	padding-bottom: 4rem;/* height of buttons */
 }
 .view.pay .amount-wrap {
 	margin-bottom: 2rem;
-}
-.view.pay .continue.button {
-	float: right;
-	text-align: center;
-	margin-top: 2rem;
 }

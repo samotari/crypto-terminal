@@ -34,7 +34,7 @@ app.views.EnterPin = (function() {
 			return {
 				title: this.options.title,
 				instructions: this.options.instructions,
-				showCancel: this.options.showCancel,
+				showCancel: this.options.showCancel !== false,
 			};
 		},
 
