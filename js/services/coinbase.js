@@ -8,25 +8,48 @@ app.services.coinbase = (function() {
 
 	return {
 
+		hostname: 'https://api.coinbase.com',
+
+		getUri: function(uri) {
+
+			return this.hostname + uri;
+		},
+
 		getExchangeRates: function(currency, cb) {
 
-			var uri = 'https://api.coinbase.com/v2/exchange-rates';
-			uri += '?currency=' + encodeURIComponent(currency);
+			_.defer(_.bind(function() {
 
-			$.get(uri).then(function(result) {
+				var cacheKey = 'services.coinbase.exchange-rates.' + currency;
+				var cacheMaxAge = 5 * 60 * 1000;// 5 minutes
+				var fromCache = app.services.memoryCache.get(cacheKey, cacheMaxAge);
 
-				var rates = {};
+				if (fromCache) {
+					return cb(null, fromCache);
+				}
 
-				_.each(result.data.rates, function(rate, code) {
-					code = code.toUpperCase();
-					if (_.contains(app.config.supportedDisplayCurrencies, code)) {
-						rates[code] = rate;
-					}
+				var uri = this.getUri('/v2/exchange-rates');
+
+				uri += '?' + querystring.stringify({
+					currency: currency,
 				});
 
-				cb(null, rates);
+				$.get(uri).then(function(result) {
 
-			}).fail(cb);
+					var rates = {};
+
+					_.each(result.data.rates, function(rate, code) {
+						code = code.toUpperCase();
+						if (_.contains(app.config.supportedDisplayCurrencies, code)) {
+							rates[code] = rate;
+						}
+					});
+
+					app.services.memoryCache.set(cacheKey, rates);
+
+					cb(null, rates);
+
+				}).fail(cb);
+			}, this));
 		}
 	};
 
