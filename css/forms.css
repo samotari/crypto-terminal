@@ -43,8 +43,11 @@
 }
 .form-input {
 	width: 100%;
+	height: 2rem;
 	font-size: 0.9rem;
+	line-height: 2rem;
 	box-sizing: border-box;
+	padding: 0 .5rem;
 }
 .form-buttons {
 	text-align: right;
@@ -58,4 +61,22 @@
 .form-error-message {
 	color: red;
 	font-size: 0.9rem;
+}
+.form-field-actions {
+	margin-top: .5rem;
+}
+.form-field-action {
+	width: 2.2rem;
+	height: 2rem;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 1.2rem;
+	box-sizing: border-box;
+	padding: 0;
+}
+.form-field-action + .form-field-action {
+	margin-left: .2rem;
+}
+.form-field-action.camera {
+	background-image: url('../images/camera.svg');
 }

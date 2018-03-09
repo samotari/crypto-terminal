@@ -14,3 +14,10 @@
 	{{/default}}
 {{/switch}}
 	<div class="form-error"></div>
+{{#if actions}}
+	<div class="form-field-actions">
+	{{#each actions}}
+		<a class="form-field-action button {{name}}" data-action="{{name}}" data-setting="{{../name}}"></a>
+	{{/each}}
+	</div>
+{{/if}}
