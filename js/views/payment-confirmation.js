@@ -13,10 +13,14 @@ app.views.PaymentConfirmation = (function() {
 		template: '#template-payment-confirmation',
 
 		events: {
-			'click .done': 'done'
+			'quicktouch .done': 'done',
 		},
 
-		done: function() {
+		done: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			// Navigate back to the homescreen
 			app.router.navigate('main', { trigger: true });

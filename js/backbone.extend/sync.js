@@ -1,7 +1,5 @@
 (function() {
 
-	'use strict';
-
 	var localStorageSync = Backbone.sync;
 
 	var getDeferred = function() {
@@ -20,6 +18,7 @@
 
 		options = _.clone(options || {});
 		var store = this.sqliteStore || this.collection.sqliteStore;
+		var storeMethodOptions = _.pick(options, 'limit', 'offset');
 		var deferred = getDeferred();
 
 		_.defer(function() {
@@ -27,7 +26,7 @@
 			switch (method) {
 				case 'read':
 					storeMethod = _.isUndefined(model.id) ? 
-						_.bind(store.findAll, store) :
+						_.bind(store.findAll, store, storeMethodOptions) :
 						_.bind(store.find, store, model);
 					break;
 				case 'create':

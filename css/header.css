@@ -1,30 +1,32 @@
 #header {
 	position: absolute;
 	z-index: 100;
-	display: inline-block;
+	display: none;
 	vertical-align: top;
 	width: 100%;
-	height: 3.3rem;
+	height: 4.1rem;
 	background: #f7f7f7;
 	box-sizing: border-box;
 	padding: 0;
+}
+html.loaded #header {
+	display: inline-block;
 }
 .header-button {
 	position: relative;
 	z-index: 20;
 	float: left;
 	display: block;
-	width: 3.3rem;
-	height: 3.3rem;
+	width: 4.1rem;
+	height: 4.1rem;
 	background-color: transparent;
 	background-position: center center;
 	background-repeat: no-repeat;
-	background-size: 2rem 2rem;
+	background-size: 2.7rem 2.7rem;
 	box-sizing: border-box;
 	cursor: pointer;
 }
-.header-button.pressed,
-.header-button:hover {
+.header-button.quicktouch {
 	background-color: #e6e6e6;
 }
 .header-button.admin {
@@ -67,15 +69,22 @@ html.configured .header-button.pay {
 	top: 0;
 	left: 0;
 	z-index: 5;
-	display: block;
 	width: 100%;
-	font-size: 1rem;
-	line-height: 3.3rem;
 	text-align: center;
+	box-sizing: border-box;
+	padding: 0;
+	padding-right: 4.5rem;/* language toggle width */
+	padding-left: 4.1rem;/* admin icon width */
+}
+html.configured #header-app-name {
+	padding-left: 8.2rem;/* admin+pay icons width */
+}
+#header-app-name-anchor {
+	font-size: 1.1rem;
+	line-height: 4.1rem;
 	text-decoration: none;
 	color: #ccc;
 }
-#header-app-name.pressed,
-#header-app-name:hover {
+#header-app-name-anchor.pressed {
 	text-decoration: none;
 }

@@ -12,7 +12,7 @@ app.views.PaymentHistory = (function() {
 		template: '#template-payment-history',
 
 		events: {
-			'click .payment-history-item': 'gotoPaymentDetails'
+			'quicktouch .payment-history-item': 'gotoPaymentDetails',
 		},
 
 		initialize: function() {
@@ -20,8 +20,9 @@ app.views.PaymentHistory = (function() {
 			this.collection = app.paymentRequests;
 			this.collection.on('all', this.render);
 			this.collection.fetch({
+				limit: 10,
 				error: function() {
-					app.main.showMessage(app.i18n.t('payment-history.failed-to-get-payment-data'));
+					app.mainView.showMessage(app.i18n.t('payment-history.failed-to-get-payment-data'));
 				}
 			});
 		},
@@ -35,6 +36,10 @@ app.views.PaymentHistory = (function() {
 		},
 
 		gotoPaymentDetails: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			var paymentId = $(evt.currentTarget).attr('data-payment-id');
 			app.router.navigate('payment-details/' + paymentId, { trigger: true });

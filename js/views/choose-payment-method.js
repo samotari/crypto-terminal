@@ -13,8 +13,8 @@ app.views.ChoosePaymentMethod = (function() {
 		template: '#template-pay-choose-method',
 
 		events: {
-			'click .payment-method': 'continueWithChosenPaymentMethod',
-			'click .cancel': 'cancel'
+			'quicktouch .payment-method': 'continueWithChosenPaymentMethod',
+			'quicktouch .cancel': 'cancel',
 		},
 
 		serializeData: function() {
@@ -27,12 +27,11 @@ app.views.ChoosePaymentMethod = (function() {
 			return data;
 		},
 
-		onRender: function() {
+		cancel: function(evt) {
 
-			this.$error = this.$('.error');
-		},
-
-		cancel: function() {
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			// Navigate back to the amount screen.
 			app.router.navigate('pay', { trigger: true });
@@ -40,25 +39,15 @@ app.views.ChoosePaymentMethod = (function() {
 
 		continueWithChosenPaymentMethod: function(evt) {
 
-			evt.preventDefault();
-
-			this.clearError();
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			var amount = this.options.amount.toString();
 			var method = $(evt.target).attr('data-payment-method');
 
 			// Navigate to the next screen with the amount in the URI.
 			app.router.navigate('pay/' + encodeURIComponent(amount) + '/' + encodeURIComponent(method), { trigger: true });
-		},
-
-		clearError: function() {
-
-			this.$error.text('');
-		},
-
-		showError: function(error) {
-
-			this.$error.text(error);
 		}
 
 	});

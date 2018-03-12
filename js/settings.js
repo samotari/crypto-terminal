@@ -67,9 +67,12 @@ app.settings = (function() {
 	}, Backbone.Events);
 
 	app.onDeviceReady(function() {
+
+		// Initialize the settings collection.
+		settings.collection = new app.collections.Settings();
+
 		app.queues.onStart.push({
 			fn: function(done) {
-				settings.collection = new app.collections.Settings();
 				settings.collection.on('change:value', function(model) {
 					var key = model.get('key');
 					var value = model.get('value');

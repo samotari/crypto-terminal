@@ -22,13 +22,38 @@ app.onDeviceReady(function() {
 		},
 	});
 
+	app.queues.onStart.push({
+		fn: function(done) {
+			var collections = [
+				app.settings.collection,
+				app.paymentRequests,
+			];
+			app.sqlite.db.transaction(
+				function(tx) {
+					_.each(collections, function(collection) {
+						if (collection.sqliteStore) {
+							collection.sqliteStore.tx = tx;
+							collection.sqliteStore.setupTable(function() {
+								collection.sqliteStore.tx = null;
+							});
+						}
+					});
+				},
+				function(error) {
+					app.log('db setup failed', error);
+					done(error);
+				}, function() {
+					app.log('db setup succeeded');
+					// Transaction was successful.
+					done();
+				}
+			);
+		},
+	});
+
 	var Store = function(name) {
-		_.bindAll(this,
-			'prepareResultItems',
-			'setupTable'
-		);
+		_.bindAll(this, 'prepareResultItems', 'newTransaction');
 		this.tableName = this.makeTableName(name);
-		this.db = app.sqlite.db;
 	};
 
 	Store.prototype.makeTableName = function(name) {
@@ -50,23 +75,26 @@ app.onDeviceReady(function() {
 	Store.prototype.setupTable = function(cb) {
 		app.log('SQLiteStore.setupTable');
 		this.query('CREATE TABLE IF NOT EXISTS '+this.tableName+' (id TEXT PRIMARY KEY, data TEXT)', function(error) {
-			cb(error);
+			cb && cb(error);
 		});
 	};
 
 	Store.prototype.create = function(model, cb) {
 		app.log('SQLiteStore.create', model);
 		model.id = model.get(model.idAttribute) || null;
-		async.seq(
-			this.setupTable,
-			_.bind(this.ensureId, this, model),
-			_.bind(function(next) {
-				this._replace(model.id, model.toJSON(), next);
-			}, this),
-			function(next) {
-				next(null, model.toJSON());
+		this.newTransaction(function() {
+			async.seq(
+				_.bind(this.ensureId, this, model),
+				_.bind(function(next) {
+					this._replace(model.id, model.toJSON(), next);
+				}, this)
+			)(_.noop);
+		}, function(error) {
+			if (error) {
+				return cb(error);
 			}
-		)(cb);
+			cb(null, model.toJSON());
+		});
 	};
 
 	Store.prototype.ensureId = function(model, cb) {
@@ -92,26 +120,54 @@ app.onDeviceReady(function() {
 		});
 	};
 
-	Store.prototype.findAll = function(cb) {
+	Store.prototype.findAll = function(options, cb) {
 		app.log('SQLiteStore.findAll');
-		async.seq(
-			this.setupTable,
-			_.bind(this._findAll, this),
-			this.prepareResultItems
-		)(cb);
+		if (_.isFunction(options)) {
+			cb = options;
+			options = null;
+		}
+		var items;
+		var prepareResultItems = this.prepareResultItems;
+		this.newTransaction({ readOnly: true }, function() {
+			this._findAll(options, function(error, result) {
+				items = prepareResultItems(result);
+			});
+		}, function(error) {
+			if (error) {
+				return cb(error);
+			}
+			cb(null, items);
+		});
 	};
 
-	Store.prototype._findAll = function(cb) {
-		this.query('SELECT id, data FROM '+this.tableName+'', cb);
+	Store.prototype._findAll = function(options, cb) {
+		if (_.isFunction(options)) {
+			cb = options;
+			options = null;
+		}
+		options = _.defaults(options || {}, {
+			limit: 999,
+			offset: 0,
+		});
+		var sql = 'SELECT id, data FROM '+this.tableName+' LIMIT ? OFFSET ?';
+		var params = [ options.limit, options.offset ];
+		this.query(sql, params, cb);
 	};
 
 	Store.prototype.find = function(model, cb) {
 		app.log('SQLiteStore.find');
-		async.seq(
-			this.setupTable,
-			_.bind(this._find, this, model.id),
-			this.prepareResultItems
-		)(cb);
+		var items;
+		var prepareResultItems = this.prepareResultItems;
+		this.newTransaction({ readOnly: true }, function() {
+			this._find(model.id, function(error, result) {
+				items = prepareResultItems(result);
+			});
+		}, function(error) {
+			if (error) {
+				return cb(error);
+			}
+			cb(null, items);
+		});
 	};
 
 	Store.prototype._find = function(id, cb) {
@@ -120,13 +176,14 @@ app.onDeviceReady(function() {
 
 	Store.prototype.update = function(model, cb) {
 		app.log('SQLiteStore.update');
-		async.seq(
-			this.setupTable,
-			_.bind(this._replace, this, model.id, model.toJSON()),
-			function(next) {
-				next(null, model.toJSON());
+		this.newTransaction(function() {
+			this._replace(model.id, model.toJSON());
+		}, function(error) {
+			if (error) {
+				return cb(error);
 			}
-		)(cb);
+			cb(null, model.toJSON());
+		});
 	};
 
 	Store.prototype._replace = function(id, data, cb) {
@@ -145,16 +202,13 @@ app.onDeviceReady(function() {
 
 	Store.prototype.destroy = function(model, cb) {
 		app.log('SQLiteStore.destroy');
-		async.seq(
-			this.setupTable,
-			_.bind(this._destroy, this, model.id)
-		)(cb);
+		this.newTransaction(function() {
+			this._destroy(model.id);
+		}, cb);
 	};
 
 	Store.prototype._destroy = function(id, cb) {
-		this.query('DELETE FROM '+this.tableName+' WHERE id = ? LIMIT 1', [ id ], function(error) {
-			cb(error);
-		});
+		this.query('DELETE FROM '+this.tableName+' WHERE id = ? LIMIT 1', [ id ], cb);
 	};
 
 	Store.prototype.query = function(sql, params, cb) {
@@ -163,38 +217,58 @@ app.onDeviceReady(function() {
 			params = [];
 		}
 		app.log('SQLiteStore.query', sql, params);
-		this.db.executeSql(sql, params, function(result) {
-			app.log('query success');
+		this.tx.executeSql(sql, params, function(tx, result) {
 			app.log(result);
-			cb(null, result);
-		}, function(error) {
-			app.log('query error');
-			app.log(error);
-			cb(error);
+			cb && cb(null, result);
 		});
 	};
 
-	Store.prototype.prepareResultItems = function(result, cb) {
-		var deserializeData = _.bind(this.deserializeData, this);
-		_.defer(function() {
-			try {
-				var rows = [];
-				for (var index = 0; index < result.rows.length; index++) {
-					rows.push(result.rows.item(index));
-				}
-				var items = _.chain(rows).map(function(row) {
-					try {
-						var data = deserializeData(row.data);
-					} catch (error) {
-						return null;
-					}
-					return data;
-				}).compact().value();
-			} catch (error) {
-				return cb(error);
-			}
-			cb(null, items);
+	/*
+		Should use transactions with SQLite plugin to improve performance.
+
+		See:
+		https://stackoverflow.com/questions/28188164/android-sqlite-performance
+	*/
+	Store.prototype.newTransaction = function(options, ready, done) {
+		if (_.isFunction(options)) {
+			done = ready;
+			ready = options;
+			options = null;
+		}
+		options = _.defaults(options || {}, {
+			readOnly: false,
 		});
+		ready = ready && _.bind(ready, this) || _.noop;
+		done = done && _.bind(done, this) || _.noop;
+		var txMethod = options.readOnly === true ? 'readTransaction' : 'transaction';
+		var txReady = _.bind(function(tx) {
+			this.tx = tx;
+			ready();
+		}, this);
+		var txError = _.bind(function(error) {
+			this.tx = null;
+			done(error);
+		}, this);
+		var txSuccess = _.bind(function() {
+			this.tx = null;
+			done();
+		}, this);
+		app.sqlite.db[txMethod](txReady, txError, txSuccess);
+	};
+
+	Store.prototype.prepareResultItems = function(result, cb) {
+		var rows = [];
+		for (var index = 0; index < result.rows.length; index++) {
+			rows.push(result.rows.item(index));
+		}
+		return _.chain(rows).map(function(row) {
+			try {
+				var data = this.deserializeData(row.data);
+			} catch (error) {
+				return null;
+			}
+			return data;
+		}, this).compact().value();
 	};
 
 	Store.prototype.serializeData = function(data) {

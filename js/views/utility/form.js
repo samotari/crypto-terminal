@@ -30,11 +30,6 @@ app.views.utility.Form = (function() {
 			return [];
 		},
 
-		onRender: function() {
-
-			this.$error = this.$('.error');
-		},
-
 		showErrors: function(errors) {
 
 			_.each(errors, function(error) {

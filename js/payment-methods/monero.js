@@ -108,29 +108,33 @@ app.paymentMethods.monero = (function() {
 		*/
 		validatePublicAddress: function(publicAddress) {
 
-			if (!_.isString(publicAddress) || publicAddress.length !== 95) {
-				return false;
-			}
-
-			var hex = this.addressToHex(publicAddress);
-			var version = hex.substr(0, 2);
-
-			if (!this.getNetwork(version)) {
-				// Invalid network version byte.
-				return false;
-			}
-
-			var publicSpendKey = hex.substr(2, 64);
-			var publicViewKey = hex.substr(66, 64);
-			var checksum = hex.substr(130, 8);
-			var hash = keccak256(Buffer.from(version + publicSpendKey + publicViewKey, 'hex'));
-			if (hash.substr(0, 8) !== checksum) {
-				// Invalid checksum.
-				return false;
-			}
-
-			// If we got this far, it's valid.
+			// !!!
+			// Is rejecting at least one valid, mainnet public address.
 			return true;
+
+			// if (!_.isString(publicAddress) || publicAddress.length !== 95) {
+			// 	return false;
+			// }
+
+			// var hex = this.addressToHex(publicAddress);
+			// var version = hex.substr(0, 2);
+
+			// if (!this.getNetwork(version)) {
+			// 	// Invalid network version byte.
+			// 	return false;
+			// }
+
+			// var publicSpendKey = hex.substr(2, 64);
+			// var publicViewKey = hex.substr(66, 64);
+			// var checksum = hex.substr(130, 8);
+			// var hash = keccak256(Buffer.from(version + publicSpendKey + publicViewKey, 'hex'));
+			// if (hash.substr(0, 8) !== checksum) {
+			// 	// Invalid checksum.
+			// 	return false;
+			// }
+
+			// // If we got this far, it's valid.
+			// return true;
 		},
 
 		/*
@@ -183,7 +187,14 @@ app.paymentMethods.monero = (function() {
 						throw new Error(app.i18n.t('monero.payment-request.public-address-required'));
 					}
 
-					var paymentId = this.generatePaymentId();
+					/*
+						32 bytes for normal public address.
+						8 bytes for integrated address.
+
+						See:
+						https://getmonero.org/resources/moneropedia/paymentid.html
+					*/
+					var paymentId = this.generatePaymentId(32);
 
 					var uri = this.uriScheme + ':' + address + '?' + querystring.stringify({
 						tx_payment_id: paymentId,
@@ -214,9 +225,9 @@ app.paymentMethods.monero = (function() {
 			See:
 			https://getmonero.org/resources/moneropedia/paymentid.html
 		*/
-		generatePaymentId: function() {
+		generatePaymentId: function(length) {
 
-			var randomString = app.util.generateRandomString(32);
+			var randomString = app.util.generateRandomString(length);
 			var paymentId = '';
 			for (var index = 0; index < randomString.length; index++ ) {
 				paymentId += randomString.charCodeAt(index).toString(16);
@@ -413,6 +424,37 @@ app.paymentMethods.monero = (function() {
 			$.get(uri).then(function(result) {
 				cb(null, result.data.txs);
 			}).fail(cb);
-		}
+		},
+
+		parseExtra: function(extra) {
+
+			var parsed = {
+				publicKey: null,
+				paymentId: null,
+			};
+
+			var bin = Buffer.from(extra, 'hex');
+			var bintohex = function(bin) {
+				return Buffer.from(bin).toString('hex');
+			};
+
+			if (bin[0] === 1){ //pubkey is tag 1
+				parsed.publicKey = bintohex(bin.slice(1, 33)); //pubkey is 32 bytes
+				if (bin[33] === 2 && bin[35] === 0 || bin[35] === 1){
+					parsed.paymentId = bintohex(bin.slice(36, 36 + bin[34] - 1));
+				}
+			} else if (bin[0] === 2){
+				if (bin[2] === 0 || bin[2] === 1){
+					parsed.paymentId = bintohex(bin.slice(3, 3 + bin[1] - 1));
+				}
+				//second byte of nonce is nonce payload length; payload length + nonce tag byte + payload length byte should be the location of the pubkey tag
+				if (bin[2 + bin[1]] === 1){
+					var offset = 2 + bin[1];
+					parsed.publicKey = bintohex(bin.slice(offset + 1, offset + 1 + 32));
+				}
+			}
+
+			return parsed;
+		},
 	});
 })();

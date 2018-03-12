@@ -11,16 +11,27 @@ app.views.Main = (function() {
 		el: 'body',
 
 		events: {
-			'click #language-menu-toggle': 'toggleLanguageMenu',
-			'click #language-menu .menu-item': 'changeLanguage',
+			'touchstart': 'onTouchStart',
+			'touchmove': 'onTouchMove',
+			'touchend': 'onTouchEnd',
+			'touchcancel': 'onTouchCancel',
+			'mousedown': 'onMouseDown',
+			'mousemove': 'onMouseMove',
+			'mouseup': 'onMouseUp',
+			'click': 'onClick',
+			'quicktouch #language-menu-toggle': 'showLanguageMenu',
+			'quicktouch #language-menu .menu-item': 'changeLanguage',
+			'quicktouch a': 'onQuickTouchAnchor',
 		},
 
 		currentView: null,
+		$interactTarget: null,
+		interaction: null,
 
 		initialize: function() {
 
 			_.bindAll(this,
-				'onDocumentClick',
+				'onDocumentInteraction',
 				'toggleIsUnlockedFlag',
 				'toggleRequirePinFlag',
 				'toggleConfiguredFlag'
@@ -30,12 +41,10 @@ app.views.Main = (function() {
 			this.$view = this.$('#view');
 			this.$message = this.$('#message');
 			this.$messageContent = this.$('#message-content');
-			this.$appName = this.$('#header-app-name');
-			this.renderAppName();
 			this.initializeLanguageMenu();
 			this.updateLanguageToggle();
 			this.reRenderView();
-			$(document).on('click', this.onDocumentClick);
+			$(document).on('click quicktouch', this.onDocumentInteraction);
 			this.listenTo(app.settings, 'change:lastUnlockTime', this.toggleIsUnlockedFlag);
 			this.listenTo(app.settings, 'change:settingsPin', this.toggleRequirePinFlag);
 			this.listenTo(app.settings, 'change:locale', this.updateLanguageToggle);
@@ -43,11 +52,6 @@ app.views.Main = (function() {
 			this.toggleIsUnlockedFlag();
 			this.toggleRequirePinFlag();
 			this.toggleConfiguredFlag();
-		},
-
-		renderAppName: function() {
-
-			this.$appName.text(app.info.name);
 		},
 
 		toggleConfiguredFlag: function() {
@@ -116,9 +120,13 @@ app.views.Main = (function() {
 			}
 		},
 
-		toggleLanguageMenu: function() {
+		showLanguageMenu: function(evt) {
 
-			this.$languageMenu.toggleClass('visible');
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+
+			this.$languageMenu.addClass('visible');
 		},
 
 		hideLanguageMenu: function() {
@@ -126,7 +134,7 @@ app.views.Main = (function() {
 			this.$languageMenu.removeClass('visible');
 		},
 
-		onDocumentClick: function(evt) {
+		onDocumentInteraction: function(evt) {
 
 			var $target = $(evt.target);
 
@@ -137,10 +145,120 @@ app.views.Main = (function() {
 			this.hideMessage();
 		},
 
+		onTouchStart: function(evt) {
+
+			var $target = $(evt.target);
+			this.interaction = {
+				$target: $target,
+				startTime: Date.now(),
+				startPosition: this.getEventPosition(evt),
+				longTimeout: setTimeout(_.bind(this.onLongTouch, this, evt), app.config.touch.long.delay),
+			};
+		},
+
+		onLongTouch: function(evt) {
+
+			// Trigger a custom event.
+			var $target = $(evt.target);
+			$target.trigger('longtouch', evt);
+		},
+
+		onTouchMove: function(evt) {
+
+			if (this.interaction) {
+				var $target = $(evt.target);
+				if ($target[0] !== this.interaction.$target[0]) {
+					this.resetInteraction();
+				} else {
+					var lastPosition = this.interaction.lastPosition || this.interaction.startPosition;
+					var moveX = Math.abs(this.interaction.startPosition.x - lastPosition.x);
+					var moveY = Math.abs(this.interaction.startPosition.y - lastPosition.y);
+					var movement = Math.max(
+						moveX / $(window).width(),
+						moveY / $(window).height()
+					) * 100;
+					this.interaction.lastPosition = this.getEventPosition(evt);
+					if (movement > app.config.touch.quick.maxMovement) {
+						this.resetInteraction();
+					}
+				}
+			}
+		},
+
+		onTouchEnd: function(evt) {
+
+			if (this.interaction) {
+				clearTimeout(this.interaction.longTimeout);
+				var $target = $(evt.target);
+				if ($target[0] === this.interaction.$target[0]) {
+					var diffTime = Date.now() - this.interaction.startTime;
+					if (diffTime < app.config.touch.quick.maxTime) {
+						evt.preventDefault();
+						evt.stopPropagation();
+						this.onQuickTouch(evt);
+					}
+				}
+				this.resetInteraction();
+			}
+		},
+
+		onQuickTouch: function(evt) {
+
+			var $target = $(evt.target);
+			$target.addClass('quicktouch');
+			_.delay(function() {
+				$target.removeClass('quicktouch');
+			}, app.config.touch.quick.uiFeedbackDuration);
+			// Trigger a custom event.
+			$target.trigger('quicktouch', evt);
+		},
+
+		onTouchCancel: function(evt) {
+
+			this.resetInteraction();
+		},
+
+		onMouseDown: function(evt) {
+
+			// Left-mouse button only.
+			if (evt && evt.which === 1) {
+				this.onTouchStart(evt);
+			}
+		},
+
+		onMouseMove: function(evt) {
+
+			this.onTouchMove(evt);
+		},
+
+		onMouseUp: function(evt) {
+
+			// Left-mouse button only.
+			if (evt && evt.which === 1) {
+				this.onTouchEnd(evt);
+			}
+		},
+
+		resetInteraction: function() {
+
+			if (this.interaction) {
+				clearTimeout(this.interaction.longTimeout);
+			}
+			this.interaction = null;
+		},
+
+		getEventPosition: function(evt) {
+
+			return {
+				x: evt.originalEvent.touches && evt.originalEvent.touches[0].pageX || evt.clientX,
+				y: evt.originalEvent.touches && evt.originalEvent.touches[0].pageY || evt.clientY,
+			};
+		},
+
 		showMessage: function(message) {
 
 			// Defer here in case this method was called as a result of an event that needs to further propogate.
-			// The hideMessage method is called because of the document click event, which could happen after.
+			// The hideMessage method is called because of the document event, which could happen after.
 			_.defer(_.bind(function() {
 
 				if (message.status === 0) {
@@ -170,12 +288,46 @@ app.views.Main = (function() {
 
 		changeLanguage: function(evt) {
 
-			// Prevent navigation event when clicking a link:
-			evt.preventDefault();
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			var $target = $(evt.target);
 			var newLocale = $target.attr('data-locale');
-			app.settings.set('locale', newLocale).save();
+			app.busy();
+			_.delay(function() {
+				app.settings.set('locale', newLocale);
+				_.delay(function() {
+					app.busy(false);
+				}, 100);
+			}, 500/* let the close animation finish */);
+		},
+
+		onClick: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+		},
+
+		onQuickTouchAnchor: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+
+			var $target = $(evt.target);
+			var href = $target.attr('href');
+			if (href) {
+				if (href.substr(0, 1) === '#') {
+					// Internal navigation.
+					app.router.navigate(href, { trigger: true });
+				} else if (app.isCordova()) {
+					cordova.InAppBrowser.open(href);
+				} else {
+					window.open(href, '_blank');
+				}
+			}
 		},
 
 		render: function() {
@@ -186,13 +338,9 @@ app.views.Main = (function() {
 			// Do not close this view.
 		},
 
-		busy: function() {
-			$('#overlay').show();
+		onClose: function() {
+			$(document).off('click quicktouch', this.onDocumentInteraction);
 		},
-
-		notBusy: function() {
-			$('#overlay').hide();
-		}
 
 	});
 

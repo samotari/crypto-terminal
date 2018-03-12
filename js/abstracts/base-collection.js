@@ -23,7 +23,19 @@ app.abstracts.BaseCollection = (function() {
 			} else {
 				this.localStorage = new Backbone.LocalStorage(storeName);
 			}
-		}
+		},
+
+		fetched: false,
+		fetch: function(options) {
+			options = _.defaults(options || {}, {
+				force: false,
+			});
+			if (!options.force && this.fetched) return;
+			this.fetched = true;
+			options = _.omit(options, 'force');
+			return Backbone.Collection.prototype.fetch.call(this, options);
+		},
+
 	});
 
 })();

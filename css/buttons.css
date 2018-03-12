@@ -13,8 +13,7 @@
 	cursor: pointer;
 	padding: .6rem 1.4rem;
 }
-.button.pressed,
-.button:hover {
+.button.quicktouch {
 	text-decoration: none;
 	background-color: #e6e6e6;
 }
@@ -22,8 +21,7 @@
 	opacity: 0.35;
 	cursor: not-allowed;
 }
-.button.disabled.pressed,
-.button.disabled:hover {
+.button.disabled.pressed {
 	background-color: #efefef;
 }
 .button.payment-method {

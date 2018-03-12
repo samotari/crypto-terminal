@@ -13,8 +13,8 @@ app.views.DisplayPaymentAddress = (function() {
 		template: '#template-pay-address',
 
 		events: {
-			'click .cancel': 'cancel',
-			'click .back': 'back'
+			'quicktouch .cancel': 'cancel',
+			'quicktouch .back': 'back',
 		},
 
 		serializeData: function() {
@@ -114,6 +114,8 @@ app.views.DisplayPaymentAddress = (function() {
 					return app.mainView.showMessage(error);
 				}
 
+				this.renderQrCode(paymentRequest.uri);
+				this.renderAddress(paymentRequest.address);
 				this.paymentRequestUri = paymentRequest.uri;
 
 				app.paymentRequests.add({
@@ -128,8 +130,6 @@ app.views.DisplayPaymentAddress = (function() {
 					status: 'pending',
 				}).save().then(_.bind(function(attributes) {
 					this.paymentRequest = app.paymentRequests.get(attributes.id);
-					this.renderQrCode(this.paymentRequestUri);
-					this.renderAddress(attributes.address);
 					this.startListeningForPayment();
 				}, this));
 
@@ -187,13 +187,22 @@ app.views.DisplayPaymentAddress = (function() {
 			paymentMethod.stopListeningForPayment();
 		},
 
-		cancel: function() {
+		cancel: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			// Navigate back to the amount screen.
 			app.router.navigate('pay', { trigger: true });
 		},
 
-		back: function() {
+		back: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+
 			var amount = this.options.amount.toString();
 
 			// Navigate back to the payment method screen.

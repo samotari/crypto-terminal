@@ -13,8 +13,8 @@ app.views.SettingsGeneral = (function() {
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',
-			'click .set-pin': 'onSetPinClick',
-			'click .remove-pin': 'onRemovePinClick',
+			'quicktouch .set-pin': 'setPin',
+			'quicktouch .remove-pin': 'removePin',
 		},
 
 		serializeData: function() {
@@ -119,9 +119,11 @@ app.views.SettingsGeneral = (function() {
 			app.settings.set(data);
 		},
 
-		onSetPinClick: function(evt) {
+		setPin: function(evt) {
 
-			evt.preventDefault();
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			var enterPinView = new app.views.EnterPin({
 				title: app.requirePin() ? app.i18n.t('admin.pin.change-pin.title') : app.i18n.t('admin.pin.set-pin.title'),
@@ -135,8 +137,9 @@ app.views.SettingsGeneral = (function() {
 
 				if (!keys) {
 					return app.mainView.showMessage(
-						app.i18n.t('admin.pin.min-length'),
-						{ minLength: app.config.pin.minLength }
+						app.i18n.t('admin.pin.min-length', {
+							minLength: app.config.settingsPin.minLength
+						})
 					);
 				}
 
@@ -158,9 +161,12 @@ app.views.SettingsGeneral = (function() {
 			});
 		},
 
-		onRemovePinClick: function(evt) {
+		removePin: function(evt) {
 
-			evt.preventDefault();
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+
 			app.clearPin();
 			// Re-render the general settings screen.
 			this.render();

@@ -4,6 +4,16 @@
 	padding: 0;
 	padding-bottom: 4rem;/* height of buttons */
 }
+.view.pay .page-description {
+	margin-bottom: 1rem;
+}
 .view.pay .amount-wrap {
+	margin-bottom: 1rem;
+}
+.view.pay .presets {
+	text-align: center;
 	margin-bottom: 2rem;
+}
+.view.pay .preset.button {
+	font-size: 1.1rem;
 }

@@ -27,8 +27,7 @@
 	text-align: center;
 	box-sizing: border-box;
 }
-.menu-item.pressed,
-.menu-item:hover {
+.menu-item.quicktouch {
 	text-decoration: none;
 	background-color: #e6e6e6;
 }
@@ -51,8 +50,7 @@
 	filter: url('../images/grayscale-filter.svg#grayscale');
 	background-size: 3rem;
 }
-.header-button#language-menu-toggle.pressed,
-.header-button#language-menu-toggle:hover {
+.header-button#language-menu-toggle.quicktouch {
 	-webkit-filter: none;
 	filter: none;
 }
@@ -105,14 +103,12 @@
 	height: 100%;
 	color: #111;
 	font-size: .8rem;
-	line-height: 4.2rem;
+	line-height: 4.1rem;
 	white-space: nowrap;
 	text-align: center;
 	padding: 0 1rem;
 }
-.secondary-menu-item.active,
-.secondary-menu-item:active,
-.secondary-menu-item:hover {
+.secondary-menu-item.active {
 	text-decoration: none;
 	background-color: #e6e6e6;
 }

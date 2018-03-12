@@ -13,7 +13,7 @@ app.views.Pay = (function() {
 		template: '#template-pay-enter-amount',
 
 		events: {
-			'click .continue': 'continue'
+			'quicktouch .continue': 'continue',
 		},
 
 		initialize: function() {
@@ -30,13 +30,17 @@ app.views.Pay = (function() {
 
 		serializeData: function() {
 
+			var displayCurrency = app.settings.get('displayCurrency');
+
 			return {
 				amount: {
 					display: {
 						value: this.numberPadView.getKeys(),
-						currency: app.settings.get('displayCurrency')
+						currency: displayCurrency,
 					}
-				}
+				},
+				displayCurrency: displayCurrency,
+				presets: app.config.presets[displayCurrency] || [],
 			};
 		},
 
@@ -57,7 +61,11 @@ app.views.Pay = (function() {
 			this.$amount.text(amount);
 		},
 
-		continue: function() {
+		continue: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			var amount;
 

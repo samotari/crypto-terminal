@@ -1,10 +1,22 @@
 var app = app || {};
 
+document.addEventListener('DOMContentLoaded', function() {
+	// Initialize the FastClick library.
+	FastClick.attach(document.body);
+});
+
 app.onDeviceReady(function() {
 
 	'use strict';
 
-	FastClick.attach(document.body);
+	/*
+		See:
+		https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-inappbrowser/
+	*/
+	if (app.isCordova()) {
+		window.open = cordova.InAppBrowser.open;
+	}
+
 	$('html').removeClass('no-js');
 
 	// Register partial templates with handlebars.
@@ -12,11 +24,11 @@ app.onDeviceReady(function() {
 	Handlebars.registerPartial('formField', $('#template-form-field').html());
 	Handlebars.registerPartial('slider', $('#template-slider').html());
 
+	// Initialize collections and models.
+	app.paymentRequests = new app.collections.PaymentRequests();
+
 	app.queues.onReady.push({
 		fn: function() {
-			// Initialize collections and models.
-			app.paymentRequests = new app.collections.PaymentRequests();
-
 			// Initialize the main view.
 			app.mainView = new app.views.Main();
 
@@ -28,6 +40,9 @@ app.onDeviceReady(function() {
 				// Start storing in-app browsing history.
 				Backbone.history.start();
 			}
+
+			$('html').addClass('loaded');
+			$('#cover-text').text('');
 		}
 	});
 
