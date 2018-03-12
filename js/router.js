@@ -7,6 +7,7 @@ app.Router = (function() {
 	var allowedWhenNotConfigured = [
 		// !! IMPORTANT !!
 		// These are router function names, not URI hashes.
+		'about',
 		'admin',
 	];
 
@@ -36,6 +37,7 @@ app.Router = (function() {
 			'payment-details/:paymentId': 'paymentDetails',
 			'admin': 'admin',
 			'admin/:page': 'admin',
+			'about': 'about',
 
 			// For un-matched route, default to:
 			'*notFound': 'notFound'
@@ -120,6 +122,11 @@ app.Router = (function() {
 			}
 
 			app.mainView.renderView('Admin', { page: page });
+		},
+
+		about: function() {
+
+			app.mainView.renderView('About');
 		},
 
 		pay: function() {

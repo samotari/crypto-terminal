@@ -47,9 +47,15 @@ module.exports = function(grunt) {
 
 			try {
 				var data = {
-					name: pkg.name,
-					description: pkg.description,
-					version: pkg.version,
+					info: _.extend({}, _.pick(pkg,
+						'author',
+						'contributors',
+						'description',
+						'homepage',
+						'version'
+					), {
+						name: pkg.app.name,
+					}),
 					html: prepareContents(results.htmlFiles),
 				};
 			} catch(error) {

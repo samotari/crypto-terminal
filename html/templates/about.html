@@ -1,0 +1,11 @@
+<h2>Version:</h2>
+<p>{{version}}</p>
+<h2>Home Page:</h2>
+<p><a href="{{homepage}}">{{homepage}}</a></p>
+<h2>Contributors</h2>
+{{#if author}}
+<p>{{author.name}}{{#if author.email}}<br>&lt;{{author.email}}&gt;{{/if}}</p>
+{{/if}}
+{{#each contributors}}
+<p>{{name}}{{#if email}}<br>&lt;{{email}}&gt;{{/if}}</p>
+{{/each}}

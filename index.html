@@ -5,7 +5,7 @@
 	<meta http-equiv="x-ua-compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss: https://ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-	<title><%= name %></title>
+	<title><%= info.name %></title>
 	<link href="css/all.min.css" rel="stylesheet">
 <%= html.favicon.content %>
 </head>
@@ -24,9 +24,7 @@
 <% }); %>
 	<script>
 		var app = app || {};
-		app.name = '<%= name %>';
-		app.description = '<%= description %>';
-		app.version = '<%= version %>';
+		app.info = '<%= JSON.stringify(info) %>';
 	</script>
 	<script src="cordova.js"></script>
 	<script src="js/all.js"></script>
