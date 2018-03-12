@@ -74,7 +74,8 @@
     ],
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-file": {}
     }
   }
 }

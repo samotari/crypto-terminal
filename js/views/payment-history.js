@@ -12,7 +12,8 @@ app.views.PaymentHistory = (function() {
 		template: '#template-payment-history',
 
 		events: {
-			'click .payment-history-item': 'gotoPaymentDetails'
+			'click .payment-history-item': 'gotoPaymentDetails',
+			'click #export': 'exportAsCsv'
 		},
 
 		initialize: function() {
@@ -38,6 +39,23 @@ app.views.PaymentHistory = (function() {
 
 			var paymentId = $(evt.currentTarget).attr('data-payment-id');
 			app.router.navigate('payment-details/' + paymentId, { trigger: true });
+		},
+
+		exportAsCsv: function() {
+			var history = _.filter(_.map(this.collection.models, function (model) {
+				return model.attributes;
+			}), function(model) {
+				return model.status !== "pending";
+			});
+
+			app.services.export.exportPaymentHistory(history, function () {
+				alert(app.i18n.t('payment-history.export-success'));
+			}, function (e) {
+				console.error(e);
+				alert(app.i18n.t('payment-history.export-fail'));
+			});
+
 		}
+
 	});
 })();
