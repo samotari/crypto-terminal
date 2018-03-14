@@ -30,6 +30,8 @@ app.views.Main = (function() {
 			this.$view = this.$('#view');
 			this.$message = this.$('#message');
 			this.$messageContent = this.$('#message-content');
+			this.$appName = this.$('#header-app-name');
+			this.renderAppName();
 			this.initializeLanguageMenu();
 			this.updateLanguageToggle();
 			this.reRenderView();
@@ -41,6 +43,11 @@ app.views.Main = (function() {
 			this.toggleIsUnlockedFlag();
 			this.toggleRequirePinFlag();
 			this.toggleConfiguredFlag();
+		},
+
+		renderAppName: function() {
+
+			this.$appName.text(app.info.name);
 		},
 
 		toggleConfiguredFlag: function() {

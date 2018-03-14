@@ -61,4 +61,10 @@ var app = app || {};
 		}
 	};
 
+	try {
+		app.info = JSON.parse(app.info);
+	} catch (error) {
+		app.log(error);
+	}
+
 })();
