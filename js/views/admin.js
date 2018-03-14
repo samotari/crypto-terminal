@@ -95,13 +95,15 @@ app.views.Admin = (function() {
 
 		updateSecondaryMenuWidth: function() {
 
-			var secondaryMenuItemsWidth = 0;
-			this.$('.secondary-menu-item').each(function() {
-				if ($(this).is(':visible')) {
-					secondaryMenuItemsWidth += $(this).outerWidth();
-				}
-			});
-			this.$('.secondary-menu-inner').width(secondaryMenuItemsWidth);
+			_.defer(_.bind(function() {
+				var secondaryMenuItemsWidth = 0;
+				this.$('.secondary-menu-item').each(function() {
+					if ($(this).is(':visible')) {
+						secondaryMenuItemsWidth += $(this).outerWidth();
+					}
+				});
+				this.$('.secondary-menu-inner').width(secondaryMenuItemsWidth);
+			}, this));
 		},
 
 		initializeSlider: function() {
@@ -162,6 +164,7 @@ app.views.Admin = (function() {
 					.filter('[data-key="' + key + '"]')
 					.toggleClass('visible', configurable);
 			}, this);
+			this.updateSecondaryMenuWidth();
 		},
 
 		onClose: function() {
