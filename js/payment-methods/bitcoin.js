@@ -56,7 +56,15 @@ app.paymentMethods.bitcoin = (function() {
 					if (!app.paymentMethods.bitcoin.prepareHDNodeInstance(value)) {
 						throw new Error(app.i18n.t('bitcoin.settings.xpub.invalid'));
 					}
-				}
+				},
+				actions: [
+					{
+						name: 'camera',
+						fn: function(value, cb) {
+							app.device.scanBarcodeWithCamera(cb);
+						}
+					}
+				]
 			},
 			{
 				name: 'addressIndex',

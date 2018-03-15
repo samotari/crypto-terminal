@@ -4,7 +4,7 @@
 	color: #111;
 	font-size: 0.9rem;
 	font-weight: 100;
-	background: #efefef;
+	background-color: #efefef;
 	border: .1rem solid #ccc;
 	border-radius: .5rem;
 	box-sizing: border-box;
@@ -15,7 +15,7 @@
 .button.pressed,
 .button:hover {
 	text-decoration: none;
-	background: #e6e6e6;
+	background-color: #e6e6e6;
 }
 .button.disabled {
 	opacity: 0.35;
@@ -23,7 +23,7 @@
 }
 .button.disabled.pressed,
 .button.disabled:hover {
-	background: #efefef;
+	background-color: #efefef;
 }
 .button.payment-method {
 	background-position: center center;

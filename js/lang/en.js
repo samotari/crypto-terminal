@@ -51,6 +51,7 @@ app.lang['en'] = (function() {
 		'pin-required.title': 'PIN Required',
 		'pin-required.instructions': 'Enter the admin PIN to continue',
 		'pin-required.incorrect': 'The PIN you entered was incorrect',
+		'device.camera.not-available': 'Device camera not available',
 	};
 
 })();
