@@ -5,10 +5,7 @@ app.onDeviceReady(function() {
 	'use strict';
 
 	FastClick.attach(document.body);
-
-	var $html = $('html');
-
-	$html.removeClass('no-js');
+	$('html').removeClass('no-js');
 
 	// Register partial templates with handlebars.
 	Handlebars.registerPartial('amount', $('#template-amount').html());
@@ -26,8 +23,11 @@ app.onDeviceReady(function() {
 			// Initialize the router.
 			app.router = new app.Router();
 
-			// Start storing in-app browsing history.
-			Backbone.history.start();
+			// Don't initialize backbone history when testing.
+			if (!app.isTest()) {
+				// Start storing in-app browsing history.
+				Backbone.history.start();
+			}
 		}
 	});
 

@@ -1,4 +1,5 @@
 .button {
+	position: relative;
 	display: inline-block;
 	vertical-align: top;
 	color: #111;
@@ -31,12 +32,25 @@
 	background-size: 4.8rem;
 	padding: 3.2rem;
 }
-.button.payment-method.bitcoin {
+.button.payment-method.bitcoin,
+.button.payment-method.bitcoinTestnet {
 	background-image: url('../images/bitcoin.svg');
 }
-.button.payment-method.litecoin {
+.button.payment-method.litecoin,
+.button.payment-method.litecoinTestnet {
 	background-image: url('../images/litecoin.svg');
 }
 .button.payment-method.monero {
 	background-image: url('../images/monero.svg');
+}
+.button.payment-method.bitcoinTestnet:after,
+.button.payment-method.litecoinTestnet:after {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	content: 'testnet';
+	color: red;
+	font-weight: 700;
+	text-align: center;
 }

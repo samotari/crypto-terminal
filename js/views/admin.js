@@ -12,7 +12,7 @@ app.views.Admin = (function() {
 		template: '#template-admin',
 
 		events: {
-			'keyup input[name$=".xpub"]': 'onKeyUpMasterPublicKeyField',
+			'keyup input[name$=".extendedPublicKey"]': 'onKeyUpExtendedPublicKeyField',
 			'click .lock': 'lock',
 		},
 
@@ -31,7 +31,7 @@ app.views.Admin = (function() {
 			app.router.navigate('pay', { trigger: true });
 		},
 
-		onKeyUpMasterPublicKeyField: function(evt) {
+		onKeyUpExtendedPublicKeyField: function(evt) {
 
 			// To prevent the sample addresses from being updated too quickly (ie. while the user is typing).
 			clearTimeout(this.updateSampleAddressesTimeout);
@@ -190,18 +190,18 @@ app.views.Admin = (function() {
 				var paymentMethodName = fieldName.split('.')[0];
 				var paymentMethod = app.paymentMethods[paymentMethodName];
 				var xpub = $target.val();
-				var node = paymentMethod.prepareHDNodeInstance(xpub);
 				var addresses = [];
 				var index = 0;
 				while (addresses.length < app.config.numberOfSampleAddressesToShow) {
 					addresses.push({
 						index: index,
-						address: node.derive(0).derive(index++).getAddress().toString()
+						address: paymentMethod.deriveAddress(xpub, index++),
 					});
 				}
 				view.options.addresses = addresses;
 				view.render();
 			} catch (error) {
+				app.log(error);
 				view.close();
 				view = this.sampleAddressesViews[fieldName] = null;
 			}

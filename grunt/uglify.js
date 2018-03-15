@@ -13,14 +13,10 @@ module.exports = {
 			}
 		]
 	},
-	bitcoin: {
-		options: {
-			mangle: {
-				reserved: ['BigInteger', 'ECPair', 'Point']
-			}
-		},
-		src: 'build/bitcoin.js',
-		dest: 'build/bitcoin.min.js'
+	bigi: {
+		nonull: true,
+		src: 'build/bigi.js',
+		dest: 'build/bigi.min.js'
 	},
 	bs58: {
 		src: 'build/bs58.js',
@@ -31,11 +27,7 @@ module.exports = {
 		dest: 'build/buffer.min.js'
 	},
 	ecurve: {
-		options: {
-			mangle: {
-				reserved: ['Point']
-			}
-		},
+		nonull: true,
 		src: 'build/ecurve.js',
 		dest: 'build/ecurve.min.js'
 	},
@@ -47,10 +39,5 @@ module.exports = {
 		nonull: true,
 		src: 'build/querystring.js',
 		dest: 'build/querystring.min.js'
-	},
-	sjcl: {
-		nonull: true,
-		src: 'node_modules/sjcl/sjcl.js',
-		dest: 'build/sjcl.min.js'
 	}
 };

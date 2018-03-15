@@ -29,13 +29,10 @@
 	<script src="lib/chai.js"></script>
 	<script src="lib/mocha.js"></script>
 
-	<!-- run tests -->
+	<!-- defer running tests -->
 	<script>
 		window.expect = chai.expect;
 		mocha.setup('bdd');
-		window.onload = function() {
-			mocha.run()
-		};
 	</script>
 
 	<script>
@@ -46,8 +43,15 @@
 	</script>
 	<script src="app/js/all.js"></script>
 
+	<!-- run tests -->
+	<script>
+		app.onReady(function() {
+			mocha.run();
+		});
+	</script>
+
 	<!-- load testing scripts -->
-	<script src="tests/payment-methods/bitcoin.js"></script>
+	<script src="tests/payment-methods/bitcoin-testnet.js"></script>
 
 </body>
 </html>

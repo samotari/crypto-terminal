@@ -2,6 +2,7 @@
 	<div class="form">
 		<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
 			{{#each settings}}
+				{{#if visible}}
 			<div class="form-row form-row-type--{{type}}">
 				<div class="form-label">
 					<label for="{{id}}">{{label}}</label>
@@ -10,6 +11,7 @@
 					{{> formField .}}
 				</div>
 			</div>
+				{{/if}}
 			{{/each}}
 		</div>
 	</div>
