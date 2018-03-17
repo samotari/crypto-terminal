@@ -81,6 +81,11 @@ app.views.Pay = (function() {
 
 			// Navigate to the next screen with the amount in the URI.
 			app.router.navigate('pay/' + encodeURIComponent(amount.toString()), { trigger: true });
+		},
+
+		onBackButton: function() {
+
+			navigator.app.exitApp();
 		}
 
 	});

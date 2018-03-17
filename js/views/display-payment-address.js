@@ -224,6 +224,11 @@ app.views.DisplayPaymentAddress = (function() {
 		onClose: function() {
 
 			this.stopListeningForPayment();
+		},
+
+		onBackButton: function() {
+
+			this.back();
 		}
 
 	});

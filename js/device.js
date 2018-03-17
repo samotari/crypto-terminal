@@ -38,6 +38,25 @@ app.device = (function() {
 			cordova.plugins.barcodeScanner.scan(onSuccess, onError, options);
 		},
 
+		overrideBackButton: function() {
+
+			if (!app.isCordova()) {
+				return
+			}
+
+			document.addEventListener("backbutton", function() {
+
+				var currentView = app.mainView.currentView;
+
+				if (!currentView || !currentView.onBackButton) {
+					return
+				}
+
+				currentView.onBackButton();
+
+			}, false);
+		}
+
 	};
 
 })();
