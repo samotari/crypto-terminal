@@ -169,7 +169,7 @@ app.paymentMethods.bitcoin = (function() {
 			if (!child) {
 				throw new Error(app.i18n.t(this.ref + '.failed-to-derive-address'));
 			}
-			var address = app.paymentMethods.bitcoinTestnet.encodePublicKey(child.key, child.network);
+			var address = this.encodePublicKey(child.key, child.network);
 			return address;
 		},
 
@@ -421,7 +421,7 @@ app.paymentMethods.bitcoin = (function() {
 
 			var address = paymentRequest.address;
 			var amount = paymentRequest.amount;
-			var currency = this.code;
+			var currency = this.chainSoCode;
 			var amountReceived = new BigNumber('0');
 
 			var done = _.bind(function() {

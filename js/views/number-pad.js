@@ -13,14 +13,12 @@ app.views.NumberPad = (function() {
 		template: '#template-number-pad',
 
 		events: {
-			'mousedown .number-pad-key': 'onKeyMouseDown',
-			'touchstart .number-pad-key': 'onKeyTouchStart',
-			'touchend .number-pad-key': 'onKeyTouchEnd',
+			'quicktouch .number-pad-key': 'onQuickTouchNumberKey',
+			'longtouch .number-pad-key': 'onLongTouchNumberKey',
+			'touchend .number-pad-key': 'onTouchEndNumberKey',
 		},
 
 		initialize: function() {
-
-			_.bindAll(this, 'onLongTouch');
 
 			this.options = _.defaults(this.options || {}, {
 				initialKeys: '',
@@ -45,27 +43,17 @@ app.views.NumberPad = (function() {
 			};
 		},
 
-		onKeyTouchStart: function(evt) {
+		onTouchEndNumberKey: function(evt) {
 
-			evt.preventDefault();
-			var $target = $(evt.target);
-			// Give the target key the "pressed" class name temporarily.
-			// This gives the user some visual feedback.
-			$target.addClass('pressed');
-			// When the user presses and holds a key.
-			// Wait a moment and then start executing the key press repeatedly.
-			this.longKeyTouch = false;
-			this.longKeyTouchTimeout = setTimeout(this.onLongTouch, 500);
+			this.longTouchNumberKey = false;
 		},
 
-		onLongTouch: function() {
+		onLongTouchNumberKey: function(evt) {
 
-			var $target = this.$('.number-pad-key.pressed');
-
-			this.longKeyTouch = true;
-
+			this.longTouchNumberKey = true;
+			var $target = $(evt.target);
 			var test = _.bind(function() {
-				return !this.longKeyTouch;
+				return !this.longTouchNumberKey;
 			}, this);
 
 			var iteratee = _.bind(function(next) {
@@ -84,28 +72,8 @@ app.views.NumberPad = (function() {
 			async.until(test, iteratee);
 		},
 
-		onKeyTouchEnd: function(evt) {
+		onQuickTouchNumberKey: function(evt) {
 
-			evt.preventDefault();
-			var $target = $(evt.target);
-			$target.removeClass('pressed');
-
-			if (!this.longKeyTouch) {
-				if ($target.hasClass('backspace')) {
-					this.removeLastKey();
-				} else {
-					var key = $target.attr('data-key');
-					this.addKey(key);
-				}
-			}
-
-			this.longKeyTouch = false;
-			clearTimeout(this.longKeyTouchTimeout);
-		},
-
-		onKeyMouseDown: function(evt) {
-
-			evt.preventDefault();
 			var $target = $(evt.target);
 			if ($target.hasClass('backspace')) {
 				this.removeLastKey();

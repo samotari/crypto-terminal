@@ -175,8 +175,6 @@ app.views.Slider = (function() {
 				animate: false,
 			});
 
-			this.index = index;
-
 			var adjustedIndex = index;
 
 			while (
@@ -186,9 +184,12 @@ app.views.Slider = (function() {
 				adjustedIndex++
 			}
 
-			var key = this.options.items[adjustedIndex] && this.options.items[adjustedIndex].key;
-			if (key) {
-				this.trigger('change:active', key);
+			if (this.index !== index) {
+				// Changed the slide.
+				var key = this.options.items[adjustedIndex] && this.options.items[adjustedIndex].key;
+				if (key) {
+					this.trigger('change:active', key);
+				}
 			}
 
 			// Calculate the offset of the slide by its index.
@@ -196,6 +197,8 @@ app.views.Slider = (function() {
 
 			// Move and animate the items element to bring the slide into view.
 			this.translateX(offsetX, options);
+
+			this.index = index;
 		},
 
 		calculateItemOffsetX: function(index) {

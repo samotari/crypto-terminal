@@ -12,20 +12,27 @@ app.views.Admin = (function() {
 		template: '#template-admin',
 
 		events: {
+			'quicktouch label[for^="settings-configurableCryptoCurrencies-"]': 'onQuickTouchCryptoCurrencyToggle',
+			'quicktouch .secondary-menu-item': 'onQuickTouchNavMenuItem',
 			'keyup input[name$=".extendedPublicKey"]': 'onKeyUpExtendedPublicKeyField',
-			'click .lock': 'lock',
+			'quicktouch .lock': 'lock',
 		},
 
 		sampleAddressesViews: {},
 
 		initialize: function() {
 
-			_.bindAll(this, 'setActiveMenuItem', 'toggleCryptoCurrencySettingsVisibility');
+			_.bindAll(this, 'setActiveMenuItem', 'toggleCryptoCurrency', 'goToSubPage');
+			this.toggleCryptoCurrency = _.throttle(this.toggleCryptoCurrency, 50);
+			this.goToSubPage = _.throttle(this.goToSubPage, 50);
 			this.options.page = this.options.page || 'general-settings';
-			this.listenTo(app.settings, 'change:configurableCryptoCurrencies', this.toggleCryptoCurrencySettingsVisibility);
 		},
 
-		lock: function() {
+		lock: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
 
 			app.lock();
 			app.router.navigate('pay', { trigger: true });
@@ -74,7 +81,7 @@ app.views.Admin = (function() {
 
 			this.$menuItems = this.$('.secondary-menu-item');
 			this.initializeSlider();
-			this.toggleCryptoCurrencySettingsVisibility();
+			this.updateCryptoCurrencySettingsVisibility();
 
 			// Always show these admin pages.
 			this.$menuItems
@@ -83,9 +90,32 @@ app.views.Admin = (function() {
 
 			if (this.options.page) {
 				this.slider.switchToItem(this.options.page);
+				this.setActiveMenuItem(this.options.page);
 			}
 
 			this.updateSecondaryMenuWidth();
+		},
+
+		onQuickTouchNavMenuItem: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+
+			var $target = $(evt.target);
+			var key = $target.attr('data-key');
+			if (key) {
+				if (evt && evt.stopPropagation) {
+					evt.stopPropagation();
+				}
+				this.goToSubPage(key);
+			}
+		},
+
+		goToSubPage: function(key) {
+
+			this.slider.switchToItem(key);
+			this.setActiveMenuItem(key);
 		},
 
 		onResize: function() {
@@ -97,6 +127,8 @@ app.views.Admin = (function() {
 
 			_.defer(_.bind(function() {
 				var secondaryMenuItemsWidth = 0;
+				// Add some extra width to ensure no wrapping.
+				secondaryMenuItemsWidth += 60;
 				this.$('.secondary-menu-item').each(function() {
 					if ($(this).is(':visible')) {
 						secondaryMenuItemsWidth += $(this).outerWidth();
@@ -149,22 +181,39 @@ app.views.Admin = (function() {
 			var $activeMenuItem = this.$menuItems.filter('[data-key="' + key + '"]').addClass('active');
 			// Set the menu scroll position to the active menu item.
 			this.$('.secondary-menu')[0].scrollLeft = $activeMenuItem[0].offsetLeft;
-			app.router.navigate('#admin/' + encodeURIComponent(key));
+			app.router.navigate('#admin/' + encodeURIComponent(key), { trigger: false });
 		},
 
-		toggleCryptoCurrencySettingsVisibility: function() {
+		onQuickTouchCryptoCurrencyToggle: function(evt) {
+
+			var $target = $(evt.target);
+			var key = $target.attr('data-key');
+			this.toggleCryptoCurrency(key);
+		},
+
+		toggleCryptoCurrency: function(key) {
+
+			var $input = this.$(':input[value="' + key + '"]');
+			var isChecked = $input.is(':checked');
+			$input.prop('checked', !isChecked).trigger('change');
+			this.setCryptoCurrencySettingsVisibility(key, !isChecked);
+		},
+
+		updateCryptoCurrencySettingsVisibility: function() {
 
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies') || [];
 			_.each(_.keys(app.paymentMethods), function(key) {
-				var configurable = _.contains(configurableCryptoCurrencies, key);
-				this.$menuItems
-					.filter('[data-key="' + key + '"]')
-					.toggleClass('visible', configurable);
-				this.slider.$('.slider-item')
-					.filter('[data-key="' + key + '"]')
-					.toggleClass('visible', configurable);
+				var visible = _.contains(configurableCryptoCurrencies, key);
+				this.setCryptoCurrencySettingsVisibility(key, visible);
 			}, this);
 			this.updateSecondaryMenuWidth();
+		},
+
+		setCryptoCurrencySettingsVisibility: function(key, visible) {
+
+			visible = visible === true;
+			this.$menuItems.filter('[data-key="' + key + '"]').toggleClass('visible', visible);
+			this.slider.$('.slider-item').filter('[data-key="' + key + '"]').toggleClass('visible', visible);
 		},
 
 		onClose: function() {

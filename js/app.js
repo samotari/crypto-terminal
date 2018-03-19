@@ -4,6 +4,10 @@ var app = app || {};
 
 	'use strict';
 
+	app.busy = function(isBusy) {
+		$('html').toggleClass('busy', isBusy !== false);
+	};
+
 	app.isCordova = function() {
 
 		return typeof cordova !== 'undefined';
@@ -15,17 +19,14 @@ var app = app || {};
 	};
 
 	app.isConfigured = function() {
-
 		return !_.isEmpty(app.settings.getAcceptedCryptoCurrencies());
 	};
 
 	app.unlock = function() {
-
 		app.settings.set('lastUnlockTime', Date.now());
 	};
 
 	app.lock = function() {
-
 		app.settings.set('lastUnlockTime', null);
 	};
 

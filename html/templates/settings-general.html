@@ -32,7 +32,7 @@
 			<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
 			{{#each paymentMethods}}
 			<input id="settings-configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
-			<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}"></label>
+			<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}" data-key="{{key}}"></label>
 			{{/each}}
 		</div>
 	</div>

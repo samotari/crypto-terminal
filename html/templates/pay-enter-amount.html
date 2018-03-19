@@ -1,7 +1,13 @@
 <div class="view-inner">
 	<p class="page-description">{{i18n "pay-enter-amount.description"}}</p>
 	{{> amount}}
-	<div class="error"></div>
+	{{#if presets}}
+	<div class="presets">
+		{{#each presets}}
+		<a class="preset button" href="#pay/{{.}}">{{.}} {{../displayCurrency}}</a>
+		{{/each}}
+	</div>
+	{{/if}}
 	<div class="number-pad-wrap">
 		<div class="number-pad"></div>
 	</div>

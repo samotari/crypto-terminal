@@ -22,10 +22,11 @@ app.lang['cs'] = (function() {
 		'pay-enter-amount.greater-than-zero': 'Částka musí být větší než nula',
 		'pay-choose-method.description': 'Vyberte metodu platby',
 		'pay-choose-method.cancel': 'Zrušit',
-		'pay-address.description': 'Pro zaplacení načtěte QR kód',
+		'pay-address.description': 'Načtěte QR kód',
 		'pay-address.timeout': 'Vypršel čas pro provedení platby',
 		'pay-address.missing-payment-id': 'Chybí ID platby',
 		'pay-address.cancel': 'Zrušit',
+		'pay-address.back': 'Zpět',
 		'payment-history.failed-to-get-payment-data': 'Nepodařilo se načíst data o platbách',
 		'payment-details.title': 'Detaily platby',
 		'payment-details.confirmed': 'Potvrzeno',
@@ -33,7 +34,8 @@ app.lang['cs'] = (function() {
 		'payment-details.date': 'Datum',
 		'payment-details.amount': 'Částka',
 		'payment-request.data.must-be-object': '"data" musí být objekt',
-		'payment-confirmation.done': 'Hotovo'
+		'payment-confirmation.done': 'Hotovo',
+		'payment-confirmation.message': 'Díky!'
 	};
 
 })();

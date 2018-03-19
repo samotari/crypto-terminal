@@ -24,8 +24,7 @@
 	cursor: pointer;
 	padding: 0;
 }
-.number-pad-key:hover,
-.number-pad-key.pressed {
+.number-pad-key.quicktouch {
 	text-decoration: none;
 	background: #e6e6e6;
 }
@@ -42,6 +41,6 @@
 .number-pad-key.disabled {
 	cursor: default;
 }
-.number-pad-key.disabled:hover {
+.number-pad-key.disabled.quicktouch {
 	background: transparent;
 }

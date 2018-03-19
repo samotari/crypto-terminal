@@ -9,6 +9,17 @@ module.exports = function(grunt) {
 
 	var htmlDir = path.join(__dirname, '..', 'html');
 	var pkg = require('../package.json');
+	var templateData = {
+		info: _.extend({}, _.pick(pkg,
+			'author',
+			'contributors',
+			'description',
+			'homepage',
+			'version'
+		), {
+			name: pkg.app.name,
+		}),
+	};
 
 	grunt.registerMultiTask('compileHtml', function() {
 
@@ -46,18 +57,9 @@ module.exports = function(grunt) {
 			}
 
 			try {
-				var data = {
-					info: _.extend({}, _.pick(pkg,
-						'author',
-						'contributors',
-						'description',
-						'homepage',
-						'version'
-					), {
-						name: pkg.app.name,
-					}),
+				var data = _.extend({}, templateData, {
 					html: prepareContents(results.htmlFiles),
-				};
+				})
 			} catch(error) {
 				return cb(error);
 			}
@@ -70,9 +72,11 @@ module.exports = function(grunt) {
 		return _.object(_.map(results, function(result) {
 			var key = prepareKey(result);
 			if (_.isArray(result)) return [key, prepareContents(result)];
+			var template = _.template(result.content);
+			var content = template(templateData);
 			return [key, {
 				key: key,
-				content: result.content,
+				content: content,
 			}];
 		}));
 	};

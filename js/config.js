@@ -25,6 +25,25 @@ app.config = (function() {
 		sliders: {
 			speedThreshold: 0.4,// pixels / millisecond
 		},
+		touch: {
+			quick: {
+				// Maximum time between touchstart and touchend; milliseconds.
+				maxTime: 400,
+				// Maximum percent of screen traveled for emitting "quicktouch" event.
+				maxMovement: 4,
+				// Time to show visual feedback; milliseconds.
+				uiFeedbackDuration: 60,
+			},
+			long: {
+				// Delay before emitting "longtouch" event; milliseconds.
+				delay: 500,
+			},
+		},
+		// Preset amounts are displayed on the #pay screen as buttons.
+		presets: {
+			// Example:
+			// 'CZK': ['150', '200']
+		},
 		numberOfSampleAddressesToShow: 5,
 		settingsPin: {
 			minLength: 1,
