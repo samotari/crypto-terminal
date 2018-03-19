@@ -99,6 +99,11 @@ app.views.SettingsPaymentMethod = (function() {
 		save: function(data) {
 
 			app.settings.set(data);
+		},
+
+		onBackButton: function() {
+
+			app.router.navigate('admin', { trigger: true });
 		}
 
 	});

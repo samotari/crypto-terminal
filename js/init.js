@@ -43,6 +43,9 @@ app.onDeviceReady(function() {
 
 			$('html').addClass('loaded');
 			$('#cover-text').text('');
+
+			app.device.overrideBackButton();
+
 		}
 	});
 

@@ -48,6 +48,11 @@ app.views.ChoosePaymentMethod = (function() {
 
 			// Navigate to the next screen with the amount in the URI.
 			app.router.navigate('pay/' + encodeURIComponent(amount) + '/' + encodeURIComponent(method), { trigger: true });
+		},
+
+		onBackButton: function() {
+
+			this.cancel();
 		}
 
 	});

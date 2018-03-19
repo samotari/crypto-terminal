@@ -24,6 +24,11 @@ app.views.PaymentConfirmation = (function() {
 
 			// Navigate back to the homescreen
 			app.router.navigate('main', { trigger: true });
+		},
+
+		onBackButton: function() {
+
+			this.done();
 		}
 
 	});

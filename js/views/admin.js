@@ -254,8 +254,18 @@ app.views.Admin = (function() {
 				view.close();
 				view = this.sampleAddressesViews[fieldName] = null;
 			}
-		}
+		},
 
+		onBackButton: function() {
+
+			var page = app.mainView.currentView.options.page;
+
+			if (page === 'general-settings') {
+				app.router.navigate('pay', { trigger: true });
+			} else {
+				app.router.navigate('admin', { trigger: true });
+			}
+		}
 	});
 
 })();
