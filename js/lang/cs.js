@@ -8,6 +8,7 @@ app.lang['cs'] = (function() {
 		'language.cs': 'Čeština',
 		'language.en': 'Angličtina',
 		'language.es': 'Španělština',
+		'language.fr': 'Francouzština',
 		'main.message.status.0': 'Chyba: Síťové spojení bylo zřejmě přerušeno',
 		'admin.title': 'Administrace',
 		'admin.general-settings.label': 'Obecná nastavení',
