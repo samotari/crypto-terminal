@@ -4,6 +4,17 @@ app.config = (function() {
 
 	'use strict';
 
+	var displayCurrencies = [].concat(
+		// Supported cryptocurrencies:
+		_.chain(app.paymentMethods).values().pluck('code').uniq().value(),
+		// Other currencies:
+		[
+			'EUR',
+			'CZK',
+			'USD',
+		]
+	);
+
 	var config = {
 		debug: true,
 		sqlite: {
@@ -63,28 +74,12 @@ app.config = (function() {
 				type: 'select',
 				default: 'CZK',
 				required: true,
-				options: [].concat(
-					_.chain(app.paymentMethods).values().pluck('code').map(function(code) {
-						return {
-							key: code,
-							label: code
-						}
-					}).value(),
-					[
-						{
-							key: 'EUR',
-							label: 'EUR'
-						},
-						{
-							key: 'CZK',
-							label: 'CZK'
-						},
-						{
-							key: 'USD',
-							label: 'USD'
-						}
-					]
-				)
+				options: _.chain(displayCurrencies).map(function(code) {
+					return {
+						key: code,
+						label: code
+					}
+				}).value(),
 			},
 			{
 				name: 'dateFormat',
@@ -121,11 +116,7 @@ app.config = (function() {
 		});
 	});
 
-	// Build an array of display currency keys.
-	config.supportedDisplayCurrencies = _.pluck(
-		_.findWhere(config.settings, { name: 'displayCurrency' }).options,
-		'key'
-	);
+	config.supportedDisplayCurrencies = _.clone(displayCurrencies);
 
 	return config;
 
