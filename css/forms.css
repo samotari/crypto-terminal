@@ -49,6 +49,22 @@
 	box-sizing: border-box;
 	padding: 0 .5rem;
 }
+
+/* Text input */
+.form-input.text-input {
+	width: 100%;
+	font-size: 0.9rem;
+	padding: 0.9rem 0.9rem 0.9rem 0.4rem;
+	display: block;
+	border: none;
+	border-bottom: 0.1rem solid #757575;
+}
+.form-input.text-input:focus {
+	outline:none;
+	border-bottom: 0.1rem solid #5264AE;
+}
+/* Text input */
+
 .form-buttons {
 	text-align: right;
 	margin-top: 2rem;
