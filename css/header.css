@@ -58,12 +58,6 @@ html.require-pin .header-button.admin:after {
 .header-button.pay {
 	background-image: url('../images/number-pad.svg');
 }
-.header-button.pay {
-	display: none;
-}
-html.configured .header-button.pay {
-	display: block;
-}
 #header-app-name {
 	position: absolute;
 	top: 0;
