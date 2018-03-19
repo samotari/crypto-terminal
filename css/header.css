@@ -134,3 +134,10 @@ body.view-getting-started .header-button.language {
 body.view-display-payment-address .header-button.qrcode.visible {
 	display: block;
 }
+body.view-admin .header-button.export {
+	display: block;
+}
+.header-button.export {
+	display: none;
+	background-image: url('../images/export.svg');
+}

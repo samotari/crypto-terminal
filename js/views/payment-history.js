@@ -49,5 +49,24 @@ app.views.PaymentHistory = (function() {
 			}
 		},
 
+		exportPaymentDetails: function() {
+
+			var fileName = app.config.paymentHistory.export.fileName;
+
+			var history = _.filter(_.map(this.collection.models, function (model) {
+				return model.attributes;
+			}));
+
+			app.services.exportPayments.exportPaymentDetails(history, fileName, function(error) {
+
+				if (error) {
+					return alert(app.i18n.t('payment-history.export.fail'));
+				}
+
+				alert(app.i18n.t('payment-history.export.success'));
+
+			})
+			
+		}
 	});
 })();
