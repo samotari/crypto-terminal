@@ -1,6 +1,13 @@
 'use strict';
 
 module.exports = {
+	basex: {
+		options: {
+			standalone: 'basex'
+		},
+		src: 'node_modules/base-x/index.js',
+		dest: 'build/base-x.js'
+	},
 	bigi: {
 		options: {
 			standalone: 'BigInteger'
