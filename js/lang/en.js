@@ -21,7 +21,6 @@ app.lang['en'] = (function() {
 		'admin.pin.change': 'Change',
 		'admin.pin.remove': 'Remove',
 		'admin.pin.min-length': 'PIN must be at least {{minLength}} digit(s)',
-		'admin.lock-admin-screens': 'Lock administrative screens',
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
 		'settings.accept-crypto-currencies.label': 'Which currencies do you want to accept?',

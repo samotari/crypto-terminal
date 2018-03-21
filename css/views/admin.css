@@ -45,15 +45,3 @@
 .view.admin .slider-item.payment-history {
 	padding: 0;
 }
-html.require-pin.is-unlocked .view.admin .secondary-menu-item.lock {
-	display: block;
-}
-.view-admin .header-button.admin {
-	display: none;
-}
-.view-pay .header-button.pay {
-	display: none;
-}
-html.configured .view-pay > .header-button.pay {
-	display: block;
-}

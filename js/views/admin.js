@@ -15,7 +15,6 @@ app.views.Admin = (function() {
 			'quicktouch label[for^="settings-configurableCryptoCurrencies-"]': 'onQuickTouchCryptoCurrencyToggle',
 			'quicktouch .secondary-menu-item': 'onQuickTouchNavMenuItem',
 			'keyup input[name$=".extendedPublicKey"]': 'onKeyUpExtendedPublicKeyField',
-			'quicktouch .lock': 'lock',
 		},
 
 		sampleAddressesViews: {},
@@ -26,16 +25,6 @@ app.views.Admin = (function() {
 			this.toggleCryptoCurrency = _.throttle(this.toggleCryptoCurrency, 50);
 			this.goToSubPage = _.throttle(this.goToSubPage, 50);
 			this.options.page = this.options.page || 'general-settings';
-		},
-
-		lock: function(evt) {
-
-			if (evt && evt.preventDefault) {
-				evt.preventDefault();
-			}
-
-			app.lock();
-			app.router.navigate('pay', { trigger: true });
 		},
 
 		onKeyUpExtendedPublicKeyField: function(evt) {

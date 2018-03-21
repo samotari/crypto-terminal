@@ -21,7 +21,6 @@ app.lang['fr'] = (function () {
 		'admin.pin.change': 'Changer',
 		'admin.pin.remove': 'Supprimer',
 		'admin.pin.min-length': 'Le PIN doit consister d\'au moins {{minLength}} chiffre(s)',
-		'admin.lock-admin-screens': 'Verrouiller l\'espace d\'adminstration',
 		'settings.display-currency.label': 'Devise d\'affichage',
 		'settings.date-format.label': 'Format de date ',
 		'settings.accept-crypto-currencies.label': 'Quelle(s) monnaie(s) souhaitez-vous accepter ?',
