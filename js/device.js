@@ -40,21 +40,18 @@ app.device = (function() {
 
 		overrideBackButton: function() {
 
-			if (!app.isCordova()) {
-				return
+			if (app.isCordova()) {
+				document.addEventListener('backbutton', function() {
+					var currentView = app.mainView.currentView;
+					if (currentView && currentView.onBackButton) {
+						// Use current view's custom back button behavior, if defined.
+						currentView.onBackButton();
+					} else {
+						// Otherwise, use browser history to go back.
+						Backbone.history.history.back();
+					}
+				}, false);
 			}
-
-			document.addEventListener("backbutton", function() {
-
-				var currentView = app.mainView.currentView;
-
-				if (!currentView || !currentView.onBackButton) {
-					return
-				}
-
-				currentView.onBackButton();
-
-			}, false);
 		}
 
 	};

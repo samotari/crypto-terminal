@@ -22,6 +22,11 @@ app.views.PaymentDetails = (function() {
 			var data = this.model.toJSON();
 			data.format = app.settings.get('dateFormat')
 			return data;
+		},
+
+		onBackButton: function() {
+
+			app.router.navigate('admin/payment-history', { trigger: true });
 		}
 	});
 })();

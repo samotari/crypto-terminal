@@ -14,7 +14,7 @@ app.views.About = (function() {
 		serializeData: function() {
 
 			return _.clone(app.info);
-		},
+		}
 
 	});
 
