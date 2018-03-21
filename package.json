@@ -69,6 +69,7 @@
     "moment": "2.20.1",
     "open-sans-fontface": "https://github.com/Learn-by-doing/open-sans/archive/1.4.2.tar.gz",
     "phonegap-plugin-barcodescanner": "7.0.2",
+    "puppeteer": "1.2.0",
     "pusher-js": "4.2.2",
     "qrcode": "1.2.0",
     "selenium-standalone": "6.12.0",

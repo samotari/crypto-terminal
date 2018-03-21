@@ -25,8 +25,7 @@
 	],
 	"test:unit": [
 		"build",
-		"compileHtml:test",
-		"copy:test",
-		"connect:test:unit:keepalive"
+		"connect:test",
+		"mochaTest:unit"
 	]
 }

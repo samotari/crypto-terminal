@@ -20,7 +20,7 @@ module.exports = {
 		options: {
 			port: 3001,
 			hostname: 'localhost',
-			base: 'test/unit'
+			base: 'www'
 		}
 	}
 };
