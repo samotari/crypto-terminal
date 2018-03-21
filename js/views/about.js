@@ -14,12 +14,6 @@ app.views.About = (function() {
 		serializeData: function() {
 
 			return _.clone(app.info);
-		},
-
-		onBackButton: function() {
-
-			// Go to the previous view.
-			Backbone.history.history.back()
 		}
 
 	});
