@@ -55,14 +55,32 @@ html.is-unlocked .header-button.admin:after {
 html.require-pin .header-button.admin:after {
 	display: block;
 }
-.header-button.pay {
-	background-image: url('../images/number-pad.svg');
-}
-.header-button.pay {
+body.view-admin .header-button.admin {
+	/*
+		Hide the admin button while viewing the admin screens.
+	*/
 	display: none;
 }
+.header-button.pay {
+	/*
+		Hide the pay button by default.
+	*/
+	display: none;
+	background-image: url('../images/number-pad.svg');
+}
 html.configured .header-button.pay {
+	/*
+		Show the pay button when the app is configured.
+	*/
 	display: block;
+}
+body.view-pay .header-button.pay,
+body.view-display-payment-address .header-button.pay,
+body.view-choose-payment-method .header-button.pay {
+	/*
+		Hide the pay button when viewing the pay screens.
+	*/
+	display: none;
 }
 #header-app-name {
 	position: absolute;
@@ -73,11 +91,6 @@ html.configured .header-button.pay {
 	text-align: center;
 	box-sizing: border-box;
 	padding: 0;
-	padding-right: 4.5rem;/* language toggle width */
-	padding-left: 4.1rem;/* admin icon width */
-}
-html.configured #header-app-name {
-	padding-left: 8.2rem;/* admin+pay icons width */
 }
 #header-app-name-anchor {
 	font-size: 1.1rem;

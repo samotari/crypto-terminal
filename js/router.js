@@ -45,6 +45,10 @@ app.Router = (function() {
 
 		execute: function(callback, args, name) {
 
+			if (!isPinProtected(name) && app.requirePin() && app.isUnlocked()) {
+				app.lock();
+			}
+
 			if (isPinProtected(name)) {
 				if (app.requirePin() && !app.isUnlocked()) {
 
