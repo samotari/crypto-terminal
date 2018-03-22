@@ -48,10 +48,16 @@ app.views.DisplayPaymentAddress = (function() {
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var displayAmount = this.options.amount;
 
+			app.busy();
+
+			var done = function() {
+				app.busy(false);
+			};
+
 			if (displayCurrency === paymentMethod.code) {
 				// Don't need to convert, because the payment method is the display currency.
 				this.renderCryptoAmount(displayAmount);
-				this.updateQrCode(displayAmount);
+				this.updateQrCode(displayAmount, null, null, done);
 			} else {
 				// Convert the display amount to the real amount in the desired cryptocurrency.
 				paymentMethod.convertAmount(displayAmount, displayCurrency, _.bind(function(error, amount, displayCurrencyExchangeRate, displayCurrency) {
@@ -62,13 +68,13 @@ app.views.DisplayPaymentAddress = (function() {
 					}
 
 					this.renderCryptoAmount(amount);
-					this.updateQrCode(amount, displayCurrencyExchangeRate, displayCurrency);
+					this.updateQrCode(amount, displayCurrencyExchangeRate, displayCurrency, done);
 
 				}, this));
 			}
 		},
 
-		renderQrCode: function(data) {
+		renderQrCode: function(data, done) {
 
 			var width = Math.min(
 				this.$address.width(),
@@ -78,6 +84,8 @@ app.views.DisplayPaymentAddress = (function() {
 			app.util.renderQrCode(this.$addressQrCode/* $target */, data, {
 				width: width,
 			}, function(error) {
+
+				done && done();
 
 				if (error) {
 					return app.mainView.showMessage(error);
@@ -107,7 +115,7 @@ app.views.DisplayPaymentAddress = (function() {
 			this.$addressText.empty();
 		},
 
-		updateQrCode: function(amount, displayCurrencyExchangeRate, displayCurrency) {
+		updateQrCode: function(amount, displayCurrencyExchangeRate, displayCurrency, done) {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
 
@@ -118,24 +126,26 @@ app.views.DisplayPaymentAddress = (function() {
 					return app.mainView.showMessage(error);
 				}
 
-				this.renderQrCode(paymentRequest.uri);
+				this.renderQrCode(paymentRequest.uri, done);
 				this.renderAddress(paymentRequest.address);
 				this.paymentRequestUri = paymentRequest.uri;
 
-				app.paymentRequests.add({
-					currency: paymentMethod.code,
-					address: paymentRequest.address,
-					amount: paymentRequest.amount,
-					displayCurrency: {
-						code: displayCurrency,
-						rate: displayCurrencyExchangeRate
-					},
-					data: paymentRequest.data || {},
-					status: 'pending',
-				}).save().then(_.bind(function(attributes) {
-					this.paymentRequest = app.paymentRequests.get(attributes.id);
-					this.startListeningForPayment();
-				}, this));
+				this._createPaymentRequestTimeout = _.delay(_.bind(function() {
+					app.paymentRequests.add({
+						currency: paymentMethod.code,
+						address: paymentRequest.address,
+						amount: paymentRequest.amount,
+						displayCurrency: {
+							code: displayCurrency,
+							rate: displayCurrencyExchangeRate
+						},
+						data: paymentRequest.data || {},
+						status: 'pending',
+					}).save().then(_.bind(function(attributes) {
+						this.paymentRequest = app.paymentRequests.get(attributes.id);
+						this.startListeningForPayment();
+					}, this));
+				}, this), 5000);
 
 			}, this));
 		},
@@ -227,6 +237,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		onClose: function() {
 
+			clearTimeout(this._createPaymentRequestTimeout);
 			this.stopListeningForPayment();
 		},
 

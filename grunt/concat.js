@@ -20,6 +20,26 @@ module.exports = {
 		],
 		dest: 'build/all.min.css'
 	},
+	workers: {
+		nonull: true,
+		files: [
+			{
+				src: [
+					'node_modules/async/dist/async.min.js',
+					'node_modules/bignumber.js/bignumber.min.js',
+					'node_modules/underscore/underscore-min.js',
+					'node_modules/js-sha3/build/sha3.min.js',
+					'build/bigi.min.js',
+					'build/bs58.min.js',
+					'build/buffer.min.js',
+					'build/ecurve.min.js',
+					'third-party/sjcl/sjcl.min.js',
+					'build/js/workers/bitcoin.min.js',
+				],
+				dest: 'build/workers/bitcoin.js',
+			},
+		],
+	},
 	all_js: {
 		nonull: true,
 		src: [
@@ -66,6 +86,7 @@ module.exports = {
 			'js/payment-methods/litecoin-testnet.js',
 			'js/payment-methods/monero.js',
 			'js/config.js',
+			'js/cache.js',
 			'js/settings.js',
 			'js/i18n.js',
 			'js/router.js',
@@ -119,6 +140,7 @@ module.exports = {
 			'build/js/payment-methods/litecoin-testnet.min.js',
 			'build/js/payment-methods/monero.min.js',
 			'build/js/config.min.js',
+			'build/js/cache.min.js',
 			'build/js/settings.min.js',
 			'build/js/i18n.min.js',
 			'build/js/router.min.js',

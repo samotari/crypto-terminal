@@ -6,6 +6,19 @@ app.paymentMethods.bitcoin = (function() {
 
 	'use strict';
 
+	app.onReady(function() {
+		app.paymentRequests.on('add', function(model) {
+			var paymentMethod = _.findWhere(app.paymentMethods, {
+				code: model.get('currency'),
+			});
+			if (paymentMethod) {
+				var settingPath = paymentMethod.ref + '.addressIndex';
+				var index = parseInt(app.settings.get(settingPath) || '0');
+				app.settings.set(settingPath, index + 1);
+			}
+		});
+	});
+
 	return app.abstracts.PaymentMethod.extend({
 
 		// The name of the cryptocurrency shown in the UI:
@@ -63,8 +76,8 @@ app.paymentMethods.bitcoin = (function() {
 				},
 				type: 'text',
 				required: true,
-				validate: function(value) {
-					this.validateExtendedPublicKey(value);
+				validateAsync: function(value, cb) {
+					this.worker.call('decodeExtendedPublicKey', [value, this.networks], cb);
 				},
 				actions: [
 					{
@@ -114,9 +127,17 @@ app.paymentMethods.bitcoin = (function() {
 			},
 		],
 
+		worker: app.createWorker('workers/bitcoin.js'),
+
 		generatePaymentRequest: function(amount, cb) {
 
-			this.getPaymentAddress(_.bind(function(error, address) {
+			var ref = this.ref;
+			var uriScheme = this.uriScheme;
+			var extendedPublicKey = app.settings.get(ref + '.extendedPublicKey');
+			var derivationScheme = app.settings.get(ref + '.derivationScheme');
+			var index = parseInt(app.settings.get(ref + '.addressIndex') || '0');
+
+			this.deriveAddress(extendedPublicKey, derivationScheme, index, function(error, address) {
 
 				if (error) {
 					return cb(error);
@@ -125,57 +146,83 @@ app.paymentMethods.bitcoin = (function() {
 				var paymentRequest = {
 					address: address,
 					amount: amount,
-					uri: this.uriScheme + ':' + address + '?amount=' + amount,
+					uri: uriScheme + ':' + address + '?amount=' + amount,
 				};
 
 				cb(null, paymentRequest);
-
-			}, this));
+			});
 		},
 
-		getPaymentAddress: function(cb) {
+		deriveAddress: function(extendedPublicKey, derivationScheme, addressIndex, cb) {
 
 			var ref = this.ref;
-			var extendedPublicKey = app.settings.get(ref + '.extendedPublicKey');
-			var index = parseInt(app.settings.get(ref + '.addressIndex') || '0');
+			var networks = this.networks;
+			var deriveLastParentExtendedPublicKey = _.bind(this.deriveLastParentExtendedPublicKey, this);
+			var deriveChildKeyAtIndex = _.bind(this.deriveChildKeyAtIndex, this);
+			var encodePublicKey = _.bind(this.encodePublicKey, this);
 
-			_.defer(_.bind(function() {
+			async.seq(
+				deriveLastParentExtendedPublicKey,
+				function(lastParentExtendedPublicKey, next) {
+					deriveChildKeyAtIndex(lastParentExtendedPublicKey, addressIndex, networks, next);
+				}
+			)(extendedPublicKey, derivationScheme, function(error, child) {
 
-				try {
-					var address = this.deriveAddress(extendedPublicKey, index);
-				} catch (error) {
+				if (error) {
 					return cb(error);
 				}
 
-				app.settings.set(ref + '.addressIndex', index + 1);
+				if (!child) {
+					return cb(new Error(ref + '.failed-to-derive-address'));
+				}
+
+				var address = encodePublicKey(child.key, child.network);
 				cb(null, address);
-
-			}, this));
+			});
 		},
 
-		validateExtendedPublicKey: function(extendedPublicKey) {
+		deriveLastParentExtendedPublicKey: function(extendedPublicKey, derivationScheme, cb) {
 
-			this.decodeExtendedPublicKey(extendedPublicKey);
+			var cacheKey = this.ref + '.lastParentExtendedPublicKey.' + extendedPublicKey;
+			var lastParentExtendedPublicKey = app.cache.get(cacheKey) || null;
 
-			// If we got this far, it's valid.
-			return true;
-		},
-
-		deriveAddress: function(extendedPublicKey, addressIndex) {
-
-			var scheme = app.settings.get(this.ref + '.derivationScheme');
-			var indexes = this.parseDerivationScheme(scheme);
-			indexes.push(addressIndex);
-			var child;
-			_.each(indexes, function(index) {
-				var extendedKey = child && child.extendedKey || extendedPublicKey;
-				child = this.deriveChildKeyAtIndex(extendedKey, index);
-			}, this);
-			if (!child) {
-				throw new Error(app.i18n.t(this.ref + '.failed-to-derive-address'));
+			if (lastParentExtendedPublicKey) {
+				// From cache.
+				_.defer(cb, null, lastParentExtendedPublicKey);
+				return;
 			}
-			var address = this.encodePublicKey(child.key, child.network);
-			return address;
+
+			var networks = this.networks;
+			var deriveChildKeyAtIndex = _.bind(this.deriveChildKeyAtIndex, this);
+			var indexes = this.parseDerivationScheme(derivationScheme);
+
+			async.until(function() { return !(indexes.length > 0); }, function(next) {
+
+				var index = indexes.shift();
+				var extendedKey = lastParentExtendedPublicKey || extendedPublicKey;
+
+				deriveChildKeyAtIndex(extendedKey, index, networks, function(error, result) {
+
+					if (error) {
+						return next(error);
+					}
+
+					lastParentExtendedPublicKey = result && result.extendedKey;
+					next();
+				});
+
+			}, function(error) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				if (lastParentExtendedPublicKey) {
+					app.cache.set(cacheKey, lastParentExtendedPublicKey);
+				}
+
+				cb(null, lastParentExtendedPublicKey);
+			});
 		},
 
 		parseDerivationScheme: function(scheme) {
@@ -204,113 +251,9 @@ app.paymentMethods.bitcoin = (function() {
 			}, this);
 		},
 
-		deriveChildKeyAtIndex: function(extendedPublicKey, index) {
+		deriveChildKeyAtIndex: function(extendedPublicKey, index, networks, cb) {
 
-			if (parseInt(index).toString() !== index.toString()) {
-				throw new Error(app.i18n.t(this.ref + '.index-must-be-an-integer'));
-			}
-
-			try {
-				index = new BigNumber(index);
-			} catch (error) {
-				throw new Error(app.i18n.t(this.ref + '.index-must-be-an-integer'));
-			}
-
-			if (index.isGreaterThanOrEqualTo(0x100000000)) {
-				// Maximum number of child keys is 2^32.
-				throw new Error(app.i18n.t(this.ref + '.index-must-be-less-than'));
-			}
-
-			if (index.isGreaterThanOrEqualTo(0x80000000)) {
-				// Hardened child keys start at index 2^31.
-				throw new Error(app.i18n.t(this.ref + '.index-no-hardened'));
-			}
-
-			var decoded = this.decodeExtendedPublicKey(extendedPublicKey);
-
-			/*
-				https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#public-parent-key--public-child-key
-			*/
-			var hmac = new sjcl.misc.hmac(
-				sjcl.codec.hex.toBits(decoded.chainCode),
-				sjcl.hash.sha512
-			);
-
-			// I = HMAC-SHA512(Key = cpar, Data = serP(Kpar) || ser32(i))
-			var I = sjcl.codec.hex.fromBits(hmac.encrypt(sjcl.codec.hex.toBits(
-				decoded.publicKey + this.leftPadHex(index.toString(16), 8)
-			)));
-			// Split I into two 32-byte sequences, IL and IR.
-			var IL = I.substr(0, 64);
-			var IR = I.substr(64, 64);
-
-			var curve = ecurve.getCurveByName('secp256k1');
-			var Kpar = ecurve.Point.decodeFrom(curve, Buffer.from(decoded.publicKey, 'hex'));
-			curve.validate(Kpar);
-
-			var pIL = BigInteger.fromBuffer(Buffer.from(IL, 'hex'));
-
-			// In case parse256(IL) >= n, proceed with the next value for i
-			if (pIL.compareTo(curve.n) >= 0) {
-				return this.deriveChildKey(extendedPublicKey, index + 1);
-			}
-
-			// The returned child key is point(parse256(IL)) + Kpar.
-			//	= G*IL + Kpar
-			var Ki = curve.G.multiply(pIL).add(Kpar);
-
-			if (curve.isInfinity(Ki)) {
-				return this.deriveChildKey(extendedPublicKey, index + 1);
-			}
-
-			curve.validate(Ki);
-
-			var network = decoded.network;
-			var prefix = network.bip32.public;
-			// Left pad with a leading zero.
-			var depth = this.leftPadHex((new BigNumber('0x' + decoded.depth)).toNumber() + 1, 2);
-			var parentFingerPrint = this.hash160(decoded.publicKey).substr(0, 8);
-			// Left pad with leading zeroes.
-			var keyIndex = this.leftPadHex(index, 8);
-			var chainCode = IR;
-			var compressedKey = Buffer.from(Ki.getEncoded(true)).toString('hex');
-
-			var extendedKey = [
-				prefix,
-				depth,
-				parentFingerPrint,
-				keyIndex,
-				chainCode,
-				compressedKey,
-			].join('');
-
-			var checksum = this.sha256sha256(extendedKey).substr(0, 8);
-			var encodedExtendedKey = bs58.encode(Buffer.from(extendedKey + checksum, 'hex'));
-
-			return {
-				chainCode: chainCode,
-				depth: depth,
-				extendedKey: encodedExtendedKey,
-				key: compressedKey,
-				network: network,
-				parentFingerPrint: parentFingerPrint,
-			};
-		},
-
-		decompressPublicKey: function(publicKey) {
-
-			var curve = ecurve.getCurveByName('secp256k1');
-			var point = ecurve.Point.decodeFrom(curve, Buffer.from(publicKey, 'hex'));
-			return Buffer.from(point.getEncoded(false)).toString('hex');
-		},
-
-		leftPadHex: function(hex, length) {
-
-			for (var index = 0; index < length; index++) {
-				hex = '0' + hex;
-			}
-
-			return hex.toString(16).substr(-1 * length);
+			this.worker.call('deriveChildKeyAtIndex', [extendedPublicKey, index, networks], cb);
 		},
 
 		sha256sha256: function(data) {
@@ -346,75 +289,6 @@ app.paymentMethods.bitcoin = (function() {
 			var version = network.p2pkh;
 			var checksum = this.sha256sha256(version + hash).substr(0, 8);
 			return bs58.encode(Buffer.from(version + hash + checksum, 'hex'));
-		},
-
-		/*
-			See:
-			https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#serialization-format
-
-			And:
-			https://bitcoin.stackexchange.com/questions/62533/key-derivation-in-hd-wallets-using-the-extended-private-key-vs-hardened-derivati
-
-			[ magic ][ depth ][ parent fingerprint ][ key index ][ chain code ][ key ]
-		*/
-		decodeExtendedPublicKey: function(extendedPublicKey) {
-
-			var hex = bs58.decode(extendedPublicKey).toString('hex');
-
-			// Expect 82 bytes.
-			if (hex.length !== 164) {
-				throw new Error(app.i18n.t(this.ref + '.incorrect-number-of-bytes'));
-			}
-
-			// Check version bytes.
-			var version = hex.substr(0, 8).toLowerCase();
-
-			var network = _.find(this.networks, function(network) {
-				if (version === network.bip32.private) {
-					throw new Error(app.i18n.t(this.ref + '.private-keys-warning'));
-				}
-				return version === network.bip32.public;
-			}, this);
-
-			if (!network) {
-				throw new Error(app.i18n.t(this.ref + '.invalid-network-version'));
-			}
-
-			// Validate the checksum.
-			var checksum = hex.substr(156, 8);
-			var hash = this.sha256sha256(hex.substr(0, 156));
-
-			if (hash.substr(0, 8) !== checksum) {
-				// Invalid checksum.
-				throw new Error(app.i18n.t(this.ref + '.invalid-checksum'));
-			}
-
-			// 1 byte: depth: 0x00 for master nodes, 0x01 for level-1 derived keys, ....
-			var depth = hex.substr(8, 2);
-
-			// 4 bytes: the fingerprint of the parent's key (0x00000000 if master key)
-			var parentFingerPrint = hex.substr(10, 8);
-			if (depth === '00' && parentFingerPrint !== '00000000') {
-				throw new Error(app.i18n.t(this.ref + '.invalid-parent-fingerprint'));
-			}
-
-			var index = hex.substr(18, 8);
-
-			// 32 bytes: the chain code
-			var chainCode = hex.substr(26, 64);
-
-			// 33 bytes: public key data (0x02 + X or 0x03 + X)
-			var compressedPublicKey = hex.substr(90, 66);
-
-			return {
-				chainCode: chainCode,
-				checksum: hex.substr(156, 8),
-				depth: depth,
-				index: index,
-				network: network,
-				parentFingerPrint: parentFingerPrint,
-				publicKey: compressedPublicKey,
-			};
 		},
 
 		getExchangeRates: function(cb) {

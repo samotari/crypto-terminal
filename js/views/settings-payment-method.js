@@ -64,36 +64,10 @@ app.views.SettingsPaymentMethod = (function() {
 			return data;
 		},
 
-		validate: function(data) {
+		validate: function(data, done) {
 
-			var errors = [];
-			var key = this.options.key;
-			var paymentMethod = app.paymentMethods[key];
-			var errorMessagePrefix = '[' + _.result(paymentMethod, 'label') + '] ';
-
-			_.each(paymentMethod.settings, function(setting) {
-				if (setting.required && !data[key + '.' + setting.name]) {
-					errors.push({
-						field: key + '.' + setting.name,
-						message: errorMessagePrefix + app.i18n.t('settings.field-required', {
-							label: _.result(setting, 'label')
-						}),
-					});
-				}
-				if (setting.validate) {
-					try {
-						// Call the validate function with context of the payment method.
-						setting.validate.call(paymentMethod, data[key + '.' + setting.name]);
-					} catch (error) {
-						errors.push({
-							field: key + '.' + setting.name,
-							message: errorMessagePrefix + error,
-						});
-					}
-				}
-			});
-
-			return errors;
+			var paymentMethod = app.paymentMethods[this.options.key];
+			app.settings.doValidation(paymentMethod.settings, data, done);
 		},
 
 		save: function(data) {
