@@ -82,13 +82,15 @@ app.onDeviceReady(function() {
 	Store.prototype.create = function(model, cb) {
 		app.log('SQLiteStore.create', model);
 		model.id = model.get(model.idAttribute) || null;
-		this.newTransaction(function() {
+		this.newTransaction(function(tx) {
 			async.seq(
 				_.bind(this.ensureId, this, model),
 				_.bind(function(next) {
 					this._replace(model.id, model.toJSON(), next);
 				}, this)
-			)(_.noop);
+			)(function() {
+				tx.finish();
+			});
 		}, function(error) {
 			if (error) {
 				return cb(error);
@@ -128,7 +130,7 @@ app.onDeviceReady(function() {
 		}
 		var items;
 		var prepareResultItems = this.prepareResultItems;
-		this.newTransaction({ readOnly: true }, function() {
+		this.newTransaction({ readOnly: true }, function(tx) {
 			this._findAll(options, function(error, result) {
 				items = prepareResultItems(result);
 			});
@@ -158,7 +160,7 @@ app.onDeviceReady(function() {
 		app.log('SQLiteStore.find');
 		var items;
 		var prepareResultItems = this.prepareResultItems;
-		this.newTransaction({ readOnly: true }, function() {
+		this.newTransaction({ readOnly: true }, function(tx) {
 			this._find(model.id, function(error, result) {
 				items = prepareResultItems(result);
 			});
@@ -176,8 +178,10 @@ app.onDeviceReady(function() {
 
 	Store.prototype.update = function(model, cb) {
 		app.log('SQLiteStore.update');
-		this.newTransaction(function() {
-			this._replace(model.id, model.toJSON());
+		this.newTransaction(function(tx) {
+			this._replace(model.id, model.toJSON(), function() {
+				tx.finish();
+			});
 		}, function(error) {
 			if (error) {
 				return cb(error);
@@ -202,8 +206,10 @@ app.onDeviceReady(function() {
 
 	Store.prototype.destroy = function(model, cb) {
 		app.log('SQLiteStore.destroy');
-		this.newTransaction(function() {
-			this._destroy(model.id);
+		this.newTransaction(function(tx) {
+			this._destroy(model.id, function() {
+				tx.finish();
+			});
 		}, cb);
 	};
 
@@ -243,7 +249,7 @@ app.onDeviceReady(function() {
 		var txMethod = options.readOnly === true ? 'readTransaction' : 'transaction';
 		var txReady = _.bind(function(tx) {
 			this.tx = tx;
-			ready();
+			ready(tx);
 		}, this);
 		var txError = _.bind(function(error) {
 			this.tx = null;
