@@ -12,6 +12,7 @@
 		"newer:copy:app"
 	],
 	"test": [
+		"test:unit",
 		"test:code-style"
 	],
 	"test:code-style": [
@@ -25,8 +26,7 @@
 	],
 	"test:unit": [
 		"build",
-		"compileHtml:test",
-		"copy:test",
-		"connect:test:unit:keepalive"
+		"connect:test",
+		"mochaTest:unit"
 	]
 }

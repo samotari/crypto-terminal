@@ -9,9 +9,5 @@ module.exports = {
 	app: {
 		src: 'index.html',
 		dest: 'build/index.html',
-	},
-	test: {
-		src: 'test/unit/runner-template.html',
-		dest: 'test/unit/runner.html'
 	}
 };
