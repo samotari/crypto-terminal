@@ -12,6 +12,7 @@
 		"newer:copy:app"
 	],
 	"test": [
+		"test:unit",
 		"test:code-style"
 	],
 	"test:code-style": [
