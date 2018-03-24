@@ -30,6 +30,28 @@ app.config = (function() {
 			margin: 0,
 		},
 		defaultLocale: 'en',
+		numberFormats: {
+			default: {
+				BigNumber: {
+					FORMAT: {
+						decimalSeparator: '.',
+						groupSeparator: ',',
+						groupSize: 3,
+					},
+				},
+				decimals: 2,
+			},
+			decimalComma: {
+				BigNumber: {
+					FORMAT: {
+						decimalSeparator: ',',
+						groupSeparator: '.',
+						groupSize: 3,
+					},
+				},
+				decimals: 2,
+			}
+		},
 		numberPad: {
 			keysMaxLength: 12,
 		},
@@ -104,6 +126,32 @@ app.config = (function() {
 					{
 						key: 'DD/MM/YYYY hh:mm:ss',
 						label: moment().format('DD/MM/YYYY hh:mm:ss')
+					}
+				]
+			},
+			{
+				name: 'numberFormat',
+				label: function() {
+					return app.i18n.t('settings.number-format.label');
+				},
+				type: 'select',
+				required: true,
+				options: [
+					{
+						key: 'default',
+						label: function() {
+							return app.util.formatNumber('123456789.123456789', {
+								format: this.key,
+							});
+						}
+					},
+					{
+						key: 'decimalComma',
+						label: function() {
+							return app.util.formatNumber('123456789.123456789', {
+								format: this.key,
+							});
+						}
 					}
 				]
 			}

@@ -38,8 +38,10 @@ app.views.NumberPad = (function() {
 
 		serializeData: function() {
 
+			var numberFormatConfig = app.util.getNumberFormatConfig();
 			return {
 				dot: this.options.dot,
+				decimalSeparator: numberFormatConfig.BigNumber.FORMAT.decimalSeparator,
 			};
 		},
 

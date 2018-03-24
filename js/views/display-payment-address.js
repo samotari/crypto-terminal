@@ -26,7 +26,8 @@ app.views.DisplayPaymentAddress = (function() {
 						currency: app.settings.get('displayCurrency')
 					},
 					crypto: {
-						currency: app.paymentMethods[this.options.method].code
+						ref: this.options.method,
+						currency: app.paymentMethods[this.options.method].code,
 					}
 				}
 			};
@@ -93,7 +94,10 @@ app.views.DisplayPaymentAddress = (function() {
 
 			var displayCurrency = app.settings.get('displayCurrency');
 			var paymentMethod = app.paymentMethods[this.options.method];
-			this.$cryptoAmount.find('.amount-value').text(amount);
+			var formattedAmount = app.util.formatNumber(amount, {
+				paymentMethod: paymentMethod.ref,
+			});
+			this.$cryptoAmount.find('.amount-value').text(formattedAmount);
 			this.$cryptoAmount.toggleClass('visible', displayCurrency !== paymentMethod.code);
 		},
 

@@ -54,10 +54,9 @@ app.views.Pay = (function() {
 		updateAmountElement: function() {
 
 			var amount = this.numberPadView.getKeys() || '0';
-
 			// Remove extra leading zeroes.
 			amount = amount.replace(/^0{2,}/, '0').replace(/^0([^\\.])/, '$1');
-
+			amount = app.util.formatNumber(amount);
 			this.$amount.text(amount);
 		},
 
