@@ -13,6 +13,11 @@ module.exports = {
 			}
 		]
 	},
+	basex: {
+		nonull: true,
+		src: 'build/base-x.js',
+		dest: 'build/base-x.min.js'
+	},
 	bigi: {
 		nonull: true,
 		src: 'build/bigi.js',
