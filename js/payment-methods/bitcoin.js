@@ -291,11 +291,6 @@ app.paymentMethods.bitcoin = (function() {
 			return bs58.encode(Buffer.from(version + hash + checksum, 'hex'));
 		},
 
-		getExchangeRates: function(cb) {
-
-			app.services.coinbase.getExchangeRates(this.code, cb);
-		},
-
 		listenForPayment: function(paymentRequest, cb) {
 
 			var address = paymentRequest.address;

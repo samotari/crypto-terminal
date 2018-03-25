@@ -262,35 +262,6 @@ app.paymentMethods.monero = (function() {
 			return paymentId;
 		},
 
-		getExchangeRates: function(cb) {
-
-			// First get the currency rates for bitcoin.
-			app.paymentMethods.bitcoin.getExchangeRates(function(error, btcRates) {
-
-				if (error) {
-					return cb(error);
-				}
-
-				// Then get the bitcoin->monero rate.
-				$.get('https://poloniex.com/public?command=returnTicker').then(function(poloniex) {
-
-					var xmrToBtcRate = new BigNumber(poloniex.BTC_XMR.last);
-					var rates = {};
-
-					// Convert from Fiat->BTC rate to Fiat->XMR.
-					_.each(btcRates, function(btcRate, code) {
-						code = code.toUpperCase();
-						if (_.contains(app.config.supportedDisplayCurrencies, code)) {
-							rates[code] = (new BigNumber(btcRate)).times(xmrToBtcRate).toString();
-						}
-					});
-
-					cb(null, rates);
-
-				}).fail(cb);
-			});
-		},
-
 		checkPaymentReceived: function(paymentRequest, cb) {
 
 			_.defer(_.bind(function() {

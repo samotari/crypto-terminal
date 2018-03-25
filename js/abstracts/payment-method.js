@@ -51,9 +51,7 @@ app.abstracts.PaymentMethod = (function() {
 							{ 'USD': '0.0012', 'EUR': '0.00091' }
 		*/
 		getExchangeRates: function(cb) {
-			_.defer(function() {
-				cb(new Error('This payment method has not implemented the `getExchangeRates` method.'));
-			});
+			app.services.ctApi.getExchangeRates(this.code, cb);
 		},
 
 		listenForPayment: function(paymentRequest, cb) {
