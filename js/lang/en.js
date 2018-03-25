@@ -54,6 +54,8 @@ app.lang['en'] = (function() {
 		'pin-required.instructions': 'Enter the admin PIN to continue',
 		'pin-required.incorrect': 'The PIN you entered was incorrect',
 		'device.camera.not-available': 'Device camera not available',
+		'payment-timed-out.message': 'Timed out',
+		'payment-timed-out.ok': 'Ok',
 	};
 
 })();

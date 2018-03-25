@@ -82,6 +82,9 @@ app.config = (function() {
 			minLength: 1,
 			unlockTime: 5 * 60 * 1000,
 		},
+		paymentRequest: {
+			timedOut: 5 * 60 * 1000,
+		},
 		settings: [
 			{
 				name: 'configurableCryptoCurrencies',
