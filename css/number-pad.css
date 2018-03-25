@@ -6,7 +6,8 @@
 	background: #efefef;
 }
 .number-pad-wrap {
-	max-width: 25rem;
+	width: 15rem;
+	max-width: 100%;
 	margin: 0 auto;
 }
 .number-pad-key {
