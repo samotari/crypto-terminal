@@ -121,18 +121,36 @@ app.abstracts.PaymentMethod = (function() {
 
 				fromCurrency = fromCurrency.toUpperCase();
 
-				this.getExchangeRates(function(error, rates) {
+				var toCurrency = this.code;
+				var paymentMethod = _.findWhere(app.paymentMethods, { code: fromCurrency });
+				var getExchangeRates;
+
+				if (paymentMethod) {
+					getExchangeRates = _.bind(paymentMethod.getExchangeRates, paymentMethod);
+				} else {
+					getExchangeRates = _.bind(this.getExchangeRates, this);
+				}
+
+				getExchangeRates(function(error, rates) {
 
 					if (error) {
 						return cb(error);
 					}
 
-					if (_.isUndefined(rates[fromCurrency])) {
+					var rate;
+
+					if (paymentMethod) {
+						rate = rates[toCurrency];
+						amount = amount.times(rate);
+					} else {
+						rate = rates[fromCurrency];
+						amount = amount.dividedBy(rate);
+					}
+
+					if (!rate) {
 						return cb(new Error('Conversion rate not found for given currency: "' + fromCurrency + '"'));
 					}
 
-					var rate = rates[fromCurrency];
-					amount = amount.dividedBy(rate);
 					// Maximum of 8 decimal places.
 					amount = amount.decimalPlaces(8);
 					cb(null, amount.toString(), rate, fromCurrency);
