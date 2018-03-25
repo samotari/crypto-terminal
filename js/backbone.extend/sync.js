@@ -13,11 +13,14 @@
 
 	Backbone.sync = function(method, model, options) {
 
-		// If SQLite isn't available, fallback to LocalStorage sync method.
-		if (!app.sqlite) return localStorageSync.apply(this, arguments);
+		var sqliteStore = this.sqliteStore || this.collection && this.collection.sqliteStore;
+		var useSqlite = !!app.sqlite && !!sqliteStore;
+
+		// Fallback to LocalStorage sync method.
+		if (!useSqlite) return localStorageSync.apply(this, arguments);
 
 		options = _.clone(options || {});
-		var store = this.sqliteStore || this.collection.sqliteStore;
+		var store = sqliteStore;
 		var storeMethodOptions = _.pick(options, 'limit', 'offset');
 		var deferred = getDeferred();
 

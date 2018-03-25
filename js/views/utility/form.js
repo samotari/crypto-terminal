@@ -23,25 +23,36 @@ app.views.utility.Form = (function() {
 			this.process = _.throttle(this.process, 500, { leading: false });
 		},
 
-		validate: function(data) {
+		validate: function(data, done) {
 			// `data` is an object containing the form data.
 			// Put your custom validation here.
-			// Should return an array of errors. An empty array means no validation errors.
-			return [];
+			// Execute the callback with an array of errors to indicate failure.
+			/*
+				done([
+					{
+						field: 'fieldname',
+						message: new Error('Not valid!'),
+					}
+				]);
+			*/
+			// Execute the callback with no arguments to indicate success.
+			done();
 		},
 
-		showErrors: function(errors) {
+		showErrors: function(validationErrors) {
 
-			_.each(errors, function(error) {
-				var $field = this.$(':input[name="' + error.field + '"]');
-				var $row = $field.parents('.form-row').first();
-				var $error = $row.find('.form-error');
-				$field.addClass('error');
-				$error.append($('<div/>', {
-					class: 'form-error-message',
-					text: error.message,
-				}));
-			}, this);
+			if (!_.isEmpty(validationErrors)) {
+				_.each(validationErrors, function(validationError) {
+					var $field = this.$(':input[name="' + validationError.field + '"]');
+					var $row = $field.parents('.form-row').first();
+					var $error = $row.find('.form-error');
+					$field.addClass('error');
+					$error.append($('<div/>', {
+						class: 'form-error-message',
+						text: validationError.error,
+					}));
+				}, this);
+			}
 		},
 
 		clearErrors: function() {
@@ -63,21 +74,30 @@ app.views.utility.Form = (function() {
 			}
 
 			this.clearErrors();
+
 			var data = this.getFormData();
-			var errors = this.validate(data);
-			if (!_.isEmpty(errors)) {
-				// Show the validation errors.
-				this.showErrors(errors);
-			} else {
-				// No validation errors.
-				try {
-					// Try saving.
-					this.save(data);
-				} catch (error) {
-					// Something went wrong during save.
-					return this.showErrors(errors);
+
+			this.validate(data, _.bind(function(error, validationErrors) {
+
+				if (error) {
+					app.error(error);
+					return app.mainView.showMessage(error);
 				}
-			}
+
+				if (!_.isEmpty(validationErrors)) {
+					this.showErrors(validationErrors);
+				} else {
+					// No validation errors.
+					try {
+						// Try saving.
+						this.save(data);
+					} catch (error) {
+						app.error(error);
+						return app.mainView.showMessage(error);
+					}
+				}
+
+			}, this));
 		},
 
 		save: function(data) {

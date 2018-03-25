@@ -224,25 +224,29 @@ app.views.Admin = (function() {
 				$target.after(view.el);
 			}
 
-			try {
-				var paymentMethodName = fieldName.split('.')[0];
-				var paymentMethod = app.paymentMethods[paymentMethodName];
-				var xpub = $target.val();
-				var addresses = [];
-				var index = 0;
-				while (addresses.length < app.config.numberOfSampleAddressesToShow) {
-					addresses.push({
+			var key = fieldName.split('.')[0];
+			var paymentMethod = app.paymentMethods[key];
+			var derivationScheme = app.settings.get(paymentMethod.ref + '.derivationScheme');
+			var extendedPublicKey = $target.val();
+
+			async.times(app.config.numberOfSampleAddressesToShow, function(index, next) {
+				paymentMethod.deriveAddress(extendedPublicKey, derivationScheme, index, function(error, address) {
+					if (error) return next(error);
+					next(null, {
 						index: index,
-						address: paymentMethod.deriveAddress(xpub, index++),
+						address: address,
 					});
+				});
+			}, _.bind(function(error, addresses) {
+				if (error) {
+					app.log(error);
+					view.close();
+					view = this.sampleAddressesViews[fieldName] = null;
+				} else {
+					view.options.addresses = addresses;
+					view.render();
 				}
-				view.options.addresses = addresses;
-				view.render();
-			} catch (error) {
-				app.log(error);
-				view.close();
-				view = this.sampleAddressesViews[fieldName] = null;
-			}
+			}, this));
 		},
 
 		onBackButton: function() {

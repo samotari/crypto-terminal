@@ -25,6 +25,15 @@ module.exports = {
 			},
 			{
 				expand: true,
+				flatten: false,
+				cwd: 'build/workers/',
+				src: [
+					'*'
+				],
+				dest: 'www/workers/'
+			},
+			{
+				expand: true,
 				flatten: true,
 				cwd: 'node_modules/open-sans-fontface/',
 				src: [

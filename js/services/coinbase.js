@@ -21,7 +21,7 @@ app.services.coinbase = (function() {
 
 				var cacheKey = 'services.coinbase.exchange-rates.' + currency;
 				var cacheMaxAge = 5 * 60 * 1000;// 5 minutes
-				var fromCache = app.services.memoryCache.get(cacheKey, cacheMaxAge);
+				var fromCache = app.cache.get(cacheKey, cacheMaxAge);
 
 				if (fromCache) {
 					return cb(null, fromCache);
@@ -44,7 +44,7 @@ app.services.coinbase = (function() {
 						}
 					});
 
-					app.services.memoryCache.set(cacheKey, rates);
+					app.cache.set(cacheKey, rates);
 
 					cb(null, rates);
 

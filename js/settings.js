@@ -7,26 +7,96 @@ app.settings = (function() {
 	var defaults = {};
 
 	_.each(app.config.settings, function(setting) {
-		defaults[setting.name] = _.result(setting, 'default');
-	})
+		setting.path = setting.name;
+		defaults[setting.path] = _.result(setting, 'default');
+	});
 
-	_.each(app.paymentMethods, function(paymentMethod, name) {
+	_.each(app.paymentMethods, function(paymentMethod, key) {
 		if (!_.isEmpty(paymentMethod.settings)) {
-			_.each(paymentMethod.settings, function(setting) {
-				defaults[name + '.' + setting.name] = _.result(setting, 'default');
+			paymentMethod.settings = _.map(paymentMethod.settings, function(setting) {
+				setting = _.clone(setting);
+				setting.path = key + '.' + setting.name;
+				defaults[setting.path] = _.result(setting, 'default');
+				if (setting.validate) {
+					setting.validate = _.bind(setting.validate, paymentMethod);
+				}
+				if (setting.validateAsync) {
+					setting.validateAsync = _.bind(setting.validateAsync, paymentMethod);
+				}
+				return setting;
 			});
 		}
 	});
 
 	var settings = _.extend({}, {
+
+		doValidation: function(settings, data, done) {
+
+			async.map(settings, function(setting, next) {
+
+				var value = data[setting.path];
+				var errors = [];
+
+				if (setting.required && _.isEmpty(value)) {
+					errors.push({
+						field: setting.path,
+						error: app.i18n.t('settings.field-required', {
+							label: _.result(setting, 'label')
+						}),
+					});
+				}
+
+				if (setting.validate) {
+					try {
+						setting.validate(value);
+					} catch (error) {
+						errors.push({
+							field: setting.path,
+							error: error,
+						});
+					}
+				}
+
+				if (!setting.validateAsync) {
+					return next(null, errors);
+				}
+
+				try {
+					setting.validateAsync(value, function(error) {
+						if (error) {
+							errors.push({
+								field: setting.path,
+								error: error,
+							});
+						}
+						next(null, errors);
+					});
+				} catch (error) {
+					next(error);
+				}
+
+			}, function(error, results) {
+
+				if (error) {
+					return done(error);
+				}
+
+				// Flatten the errors array.
+				var errors = Array.prototype.concat.apply([], results);
+
+				done(null, errors);
+			});
+		},
 		getAcceptedCryptoCurrencies: function() {
 			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];
-			var settings = this.getAll();
+			var data = this.getAll();
 			return _.filter(configurableCryptoCurrencies, function(key) {
-				if (!app.paymentMethods[key]) return false;
-				var settingsView = new app.views.SettingsPaymentMethod({ key: key });
-				// A cryptocurrency is "accepted" if it is configured without validation errors.
-				return _.isEmpty(settingsView.validate(settings));
+				var paymentMethod = app.paymentMethods[key];
+				if (!paymentMethod) return false;
+				// A cryptocurrency is "accepted" if it has all its required settings set.
+				return _.every(paymentMethod.settings, function(setting) {
+					return setting.required !== true || !_.isEmpty(data[setting.path]);
+				});
 			});
 		},
 		getAll: function() {

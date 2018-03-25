@@ -68,38 +68,22 @@ app.views.SettingsGeneral = (function() {
 			return data;
 		},
 
-		validate: function(data) {
+		validate: function(data, done) {
 
-			var errors = [];
+			app.settings.doValidation(app.config.settings, data, function(error, validationErrors) {
 
-			// Check general settings.
-			_.each(app.config.settings, function(setting) {
-				if (setting.required && !data[setting.name]) {
-					errors.push({
-						field: setting.name,
-						message: app.i18n.t('settings.field-required', {
-							label: _.result(setting, 'label')
-						}),
-					});
+				if (error) {
+					// An unexpected error.
+					return done(error);
 				}
-				if (setting.validate) {
-					try {
-						setting.validate(data[setting.name]);
-					} catch (error) {
-						errors.push({
-							field: setting.name,
-							message: error,
-						});
-					}
+
+				// At least one cryptocurrency is required.
+				if (_.isEmpty(data.configurableCryptoCurrencies)) {
+					validationErrors.push(app.i18n.t('settings.at-least-one-crypto-currency-required'));
 				}
+
+				done(null, validationErrors);
 			});
-
-			// At least one cryptocurrency is required.
-			if (_.isEmpty(data.configurableCryptoCurrencies)) {
-				errors.push(app.i18n.t('settings.at-least-one-crypto-currency-required'));
-			}
-
-			return errors;
 		},
 
 		onChangeConfigurableCryptocurrencies: function() {

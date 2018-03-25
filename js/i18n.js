@@ -17,7 +17,7 @@ app.i18n = (function() {
 		// `data` object is optional and allows find-and-replace in the language string.
 		t: function(key, data) {
 			// Get the current locale from the settings.
-			var locale = app.settings.get('locale');
+			var locale = app.settings && app.settings.get('locale') || null;
 			var defaultLocale = app.config.defaultLocale;
 			var text;
 			if (!!app.lang[locale] && app.lang[locale][key]) {
