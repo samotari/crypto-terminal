@@ -17,6 +17,10 @@ app.views.DisplayPaymentAddress = (function() {
 			'quicktouch .back': 'back',
 		},
 
+		timerForTimeOut: null,
+
+		listenerTimeOut: null,
+
 		serializeData: function() {
 
 			return {
@@ -147,6 +151,7 @@ app.views.DisplayPaymentAddress = (function() {
 			var paymentMethod = app.paymentMethods[this.options.method];
 			var paymentRequest = this.paymentRequest.toJSON();
 			var received = false;
+			var timedOut = false;
 			var errorWhileWaiting;
 
 			paymentMethod.listenForPayment(paymentRequest, function(error, wasReceived) {
@@ -171,24 +176,36 @@ app.views.DisplayPaymentAddress = (function() {
 					// Show success screen.
 					app.router.navigate('confirmed', { trigger: true });
 				} else {
-					app.mainView.showMessage(new Error(app.i18n.t('pay-address.timeout')));
+					// Update the status of the payment request.
+					this.paymentRequest.save({ status: 'timed-out' });
+					// Show timed-out screen.
+					app.router.navigate('timed-out', { trigger: true });
 				}
 
 			}, this);
 
-			async.until(function() { return received; }, function(next) {
+			var iteratee = _.bind(function(next) {
+
 				if (errorWhileWaiting) {
 					return next(errorWhileWaiting);
 				} else {
-					_.delay(next, 100);
+					this.listenerTimeOut = _.delay(next, 100);
 				}
-			}, done);
+			}, this);
+
+			this.timerForTimeOut = setTimeout(function() {
+				timedOut = true;
+			}, app.config.paymentRequest.timedOut)
+
+			async.until(function() { return received || timedOut; }, iteratee, done);
 		},
 
 		stopListeningForPayment: function() {
 
 			var paymentMethod = app.paymentMethods[this.options.method];
 			paymentMethod.stopListeningForPayment();
+			clearTimeout(this.listenerTimeOut);
+			clearTimeout(this.timerForTimeOut);
 		},
 
 		cancel: function(evt) {

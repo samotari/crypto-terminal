@@ -32,6 +32,7 @@ app.Router = (function() {
 		routes: {
 			'pay': 'pay',
 			'confirmed': 'paymentConfirmation',
+			'timed-out': 'paymentTimedOut',
 			'pay/:amount': 'choosePaymentMethod',
 			'pay/:amount/:method': 'displayPaymentAddress',
 			'payment-details/:paymentId': 'paymentDetails',
@@ -162,6 +163,12 @@ app.Router = (function() {
 			app.mainView.renderView('PaymentDetails', {
 				paymentId: paymentId
 			});
+		},
+
+		paymentTimedOut: function() {
+
+			app.mainView.renderView('PaymentTimedOut');
+
 		}
 
 	});
