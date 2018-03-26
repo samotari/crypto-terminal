@@ -103,58 +103,40 @@ app.abstracts.PaymentMethod = (function() {
 			});
 		},
 
-		convertAmount: function(amount, fromCurrency, cb) {
+		getExchangeRate: function(fromCurrency, cb) {
 
-			_.defer(_.bind(function() {
+			if (!_.isString(fromCurrency)) {
+				return cb(new Error('Invalid "fromCurrency". String expected.'));
+			}
 
-				try {
-					amount = new BigNumber(amount);
-				} catch (error) {
-					return cb(new Error('Invalid "amount". Number expected.'));
+			fromCurrency = fromCurrency.toUpperCase();
+
+			var toCurrency = this.code;
+			var paymentMethod = _.findWhere(app.paymentMethods, { code: fromCurrency });
+			var getExchangeRates;
+
+			if (paymentMethod) {
+				getExchangeRates = _.bind(paymentMethod.getExchangeRates, paymentMethod);
+			} else {
+				getExchangeRates = _.bind(this.getExchangeRates, this);
+			}
+
+			getExchangeRates(function(error, rates) {
+
+				if (error) {
+					return cb(error);
 				}
 
-				if (!_.isString(fromCurrency)) {
-					return cb(new Error('Invalid "fromCurrency". String expected.'));
-				}
-
-				fromCurrency = fromCurrency.toUpperCase();
-
-				var toCurrency = this.code;
-				var paymentMethod = _.findWhere(app.paymentMethods, { code: fromCurrency });
-				var getExchangeRates;
+				var rate;
 
 				if (paymentMethod) {
-					getExchangeRates = _.bind(paymentMethod.getExchangeRates, paymentMethod);
+					rate = (new BigNumber(1)).dividedBy(rates[toCurrency]);
 				} else {
-					getExchangeRates = _.bind(this.getExchangeRates, this);
+					rate = rates[fromCurrency];
 				}
 
-				getExchangeRates(function(error, rates) {
-
-					if (error) {
-						return cb(error);
-					}
-
-					var rate;
-
-					if (paymentMethod) {
-						rate = rates[toCurrency];
-						amount = amount.times(rate);
-					} else {
-						rate = rates[fromCurrency];
-						amount = amount.dividedBy(rate);
-					}
-
-					if (!rate) {
-						return cb(new Error('Conversion rate not found for given currency: "' + fromCurrency + '"'));
-					}
-
-					// Maximum of 8 decimal places.
-					amount = amount.decimalPlaces(8);
-					cb(null, amount.toString(), rate, fromCurrency);
-				});
-
-			}, this));
+				cb(null, rate);
+			});
 		},
 
 		extend: function() {

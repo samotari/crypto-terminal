@@ -17,6 +17,12 @@ app.views.ChoosePaymentMethod = (function() {
 			'quicktouch .cancel': 'cancel',
 		},
 
+		initialize: function() {
+
+			_.bindAll(this, 'onBeforeUnload');
+			$(window).on('beforeunload', this.onBeforeUnload);
+		},
+
 		serializeData: function() {
 
 			var data = {};
@@ -33,6 +39,12 @@ app.views.ChoosePaymentMethod = (function() {
 				evt.preventDefault();
 			}
 
+			if (this.model.isSaved()) {
+				this.model.save({ status: 'canceled' });
+			} else {
+				app.paymentRequests.remove(this.model);
+			}
+
 			// Navigate back to the amount screen.
 			app.router.navigate('pay', { trigger: true });
 		},
@@ -43,17 +55,29 @@ app.views.ChoosePaymentMethod = (function() {
 				evt.preventDefault();
 			}
 
-			var amount = this.options.amount.toString();
 			var method = $(evt.target).attr('data-payment-method');
+			this.model.set({ method: method });
 
 			// Navigate to the next screen with the amount in the URI.
-			app.router.navigate('pay/' + encodeURIComponent(amount) + '/' + encodeURIComponent(method), { trigger: true });
+			app.router.navigate('display-payment-address', { trigger: true });
 		},
 
 		onBackButton: function() {
-
 			this.cancel();
-		}
+		},
+
+		onClose: function() {
+			$(window).off('beforeunload', this.onBeforeUnload);
+		},
+
+		onBeforeUnload: function() {
+
+			if (this.model.isSaved()) {
+				this.model.save({ status: 'canceled' });
+			} else {
+				app.paymentRequests.remove(this.model);
+			}
+		},
 
 	});
 
