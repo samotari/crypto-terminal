@@ -55,9 +55,6 @@ app.config = (function() {
 		numberPad: {
 			keysMaxLength: 12,
 		},
-		sliders: {
-			speedThreshold: 0.4,// pixels / millisecond
-		},
 		touch: {
 			quick: {
 				// Maximum time between touchstart and touchend; milliseconds.
@@ -70,6 +67,10 @@ app.config = (function() {
 			long: {
 				// Delay before emitting "longtouch" event; milliseconds.
 				delay: 500,
+			},
+			swipe: {
+				minSpeed: 0.0025,// % of screen width / millisecond
+				minMovementX: 15,// % screen width
 			},
 		},
 		// Preset amounts are displayed on the #pay screen as buttons.

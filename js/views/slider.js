@@ -9,10 +9,7 @@ app.views.Slider = (function() {
 	return app.abstracts.BaseView.extend({
 
 		events: {
-			'touchstart .slider-items': 'onTouchStart',
-			'touchmove .slider-items': 'onTouchMove',
-			'touchend .slider-items': 'onTouchEndOrCancel',
-			'touchcancel .slider-items': 'onTouchEndOrCancel',
+			'swipe .slider-items': 'onSwipe',
 		},
 
 		ItemView: (function() {
@@ -33,12 +30,9 @@ app.views.Slider = (function() {
 		})(),
 
 		itemViews: [],
-		slidable: false,
 		index: 0,
 
 		initialize: function() {
-
-			_.bindAll(this, 'finalizeTouchMovement');
 
 			this.$items = this.$('.slider-items');
 			this.itemViews = _.map(this.options.items, this.addItem, this);
@@ -46,149 +40,32 @@ app.views.Slider = (function() {
 			this.$('.slider-item').css('width', (100 / this.itemViews.length) + '%');
 		},
 
-		addItem: function(item) {
+		onSwipe: function(evt, velocity) {
 
-			var itemView = (new this.ItemView(item)).render();
-			itemView.$el.attr('data-key', item.key);
-			this.$items.append(itemView.el);
-			return itemView;
-		},
-
-		switchToItem: function(key) {
-
-			var index = this.getItemIndexByKey(key);
-			if (index !== false) {
-				this.setIndex(index);
-				var offsetX = this.calculateItemOffsetX(index);
-				this.$items.css('transform', 'translate3d(-' + offsetX + 'px, 0, 0)');
-			}
-		},
-
-		getItemIndexByKey: function(key) {
-
-			for (var index = 0; index < this.itemViews.length; index++) {
-				if (this.itemViews[index].options.key === key) {
-					return index;
-				}
-			}
-
-			return false;
-		},
-
-		onTouchStart: function(evt) {
-
-			this.touchStartPosX = evt.originalEvent.touches[0].pageX;
-			this.touchStartTime = Date.now();
-			this.slidable = true;
-		},
-
-		onTouchMove: function(evt) {
-
-			if (!this.slidable) return;
-			clearTimeout(this.touchMoveTimeout);
-			/*
-				!! IMPORTANT !!
-
-				Calling preventDefault() prevents the premature touchcancel event in Android 4.4.x
-
-				See:
-				https://stackoverflow.com/questions/10367854/html5-android-touchcancel
-			*/
-			evt.preventDefault();
-			var posX = this.lastTouchPosX = evt.originalEvent.touches[0].pageX;
-			var offsetX = this.calculateItemOffsetX(this.index);
-			var tmpOffsetX = offsetX + (this.touchStartPosX - posX);
-			// Update the offset of the items container, but without an animation.
-			this.translateX(tmpOffsetX, { animate: false });
-		},
-
-		onTouchEndOrCancel: function(evt) {
-
-			if (!this.slidable) return;
-			clearTimeout(this.touchMoveTimeout);
-			this.finalizeTouchMovement();
-		},
-
-		calculateVelocity: function(endPosX, startPosX, startTime) {
-
-			return (startPosX - endPosX) / (Date.now() - startTime);
-		},
-
-		finalizeTouchMovement: function() {
-
-			// Prevent anymore sliding until a new touchstart event.
-			this.slidable = false;
-			// Calculate the distance swiped.
-			var offsetX = this.calculateItemOffsetX(this.index);
-			var moveX = offsetX + (this.touchStartPosX - this.lastTouchPosX);
-			var absoluteMoveX = Math.abs(offsetX - moveX);
-			var width = this.getSlideWidth();
-			var velocity = this.calculateVelocity(
-				this.lastTouchPosX,
-				this.touchStartPosX,
-				this.touchStartTime
-			);
+			var currentIndex = this.index || 0;
+			// Positive velocity is left-to-right.
+			// Negative velocity is right-to-left.
+			var newIndex = velocity > 0 ? currentIndex - 1 : currentIndex + 1;
+			var currentPosX = this.calculateItemOffsetX(currentIndex);
+			var newOffsetX = this.calculateItemOffsetX(newIndex);
+			var distance = Math.abs(currentPosX - newOffsetX);
 			var speed = Math.abs(velocity);
-			var speedThreshold = app.config.sliders.speedThreshold;// pixels/milliseconds
-			var index = this.index;
-			if (absoluteMoveX > (width / 2) || speed > speedThreshold) {
-				var numSlides = this.getNumberVisibleItems();
-				if (velocity > speedThreshold || moveX > offsetX && index < numSlides
-				) {
-					index++;
-				} else if (velocity < speedThreshold * -1 || moveX < offsetX) {
-					index--;
-				}
-			}
-			this.setIndex(index, { animate: true });
-		},
-
-		translateX: function(posX, options) {
-
-			options = _.defaults(options || {}, {
-				animate: false,
-			});
-
-			if (options.animate) {
-				this.$items.addClass('slider-animate');
-			} else {
-				this.$items.removeClass('slider-animate');
-			}
-
-			var maxPosX = (this.getSlideWidth() * (this.options.items.length - 0.8));
-			posX = Math.min(posX, maxPosX);
-			this.$items.css('transform', 'translate3d(-' + posX + 'px, 0, 0)');
-		},
-
-		getSlideWidth: function() {
-
-			return this.$el.width();
+			var duration = Math.min(distance / speed, 300);
+			this.setIndex(newIndex, { animate: true, duration: duration });
 		},
 
 		setIndex: function(index, options) {
 
 			// Index cannot be less than zero.
 			// Nor can it better greater than the number of items minus one.
-			index = Math.max(0, Math.min(index, this.options.items.length - 1));
-
-			options = _.defaults(options || {}, {
-				animate: false,
-			});
-
-			var adjustedIndex = index;
-
-			while (
-				!this.$('.slider-item').eq(adjustedIndex).hasClass('visible') &&
-				adjustedIndex < this.options.items.length
-			) {
-				adjustedIndex++
-			}
+			var maxVisibleIndex = this.getMaxVisibleIndex();
+			index = Math.max(0, Math.min(index, maxVisibleIndex));
 
 			if (this.index !== index) {
 				// Changed the slide.
-				var key = this.options.items[adjustedIndex] && this.options.items[adjustedIndex].key;
-				if (key) {
-					this.trigger('change:active', key);
+				var item = this.getVisibleItemAtIndex(index);
+				if (item) {
+					this.trigger('change:active', item.key);
 				}
 			}
 
@@ -201,24 +78,68 @@ app.views.Slider = (function() {
 			this.index = index;
 		},
 
+		translateX: function(posX, options) {
+
+			options = _.defaults(options || {}, {
+				duration: 200,
+			});
+			var maxVisibleIndex = this.getMaxVisibleIndex();
+			var maxPosX = $(window).width() * maxVisibleIndex;
+			posX = Math.min(posX, maxPosX);
+			this.$items.css('transition-duration', Math.floor(options.duration).toString() + 'ms');
+			this.$items.css('transform', 'translate3d(-' + posX + 'px, 0, 0)');
+		},
+
 		calculateItemOffsetX: function(index) {
 
-			var width = this.getSlideWidth();
-			var offsetX = index * width;
+			var width = $(window).width();
+			return index * width;
+		},
 
-			// Adjust the offset to account for hidden items.
-			this.$('.slider-item').slice(0, index).each(function() {
-				if (!$(this).hasClass('visible')) {
-					offsetX -= width;
-				}
+		addItem: function(item) {
+
+			var itemView = (new this.ItemView(item)).render();
+			itemView.$el.attr('data-key', item.key);
+			this.$items.append(itemView.el);
+			return itemView;
+		},
+
+		switchToItem: function(key) {
+
+			var visibleItems = this.getVisibleItems();
+			var index = _.findIndex(visibleItems, function(item) {
+				return item.key === key;
 			});
+			if (index !== -1) {
+				this.setIndex(index);
+			}
+		},
 
-			return offsetX;
+		getVisibleItemAtIndex: function(index) {
+
+			return this.getVisibleItems()[index] || null;
+		},
+
+		getVisibleItems: function() {
+
+			return _.filter(this.options.items, function(item, index) {
+				return this.isVisible(index);
+			}, this);
 		},
 
 		getNumberVisibleItems: function() {
 
-			return this.$('.slider-item:visible').length;
+			return this.getVisibleItems().length;
+		},
+
+		getMaxVisibleIndex: function() {
+
+			return this.getNumberVisibleItems() - 1;
+		},
+
+		isVisible: function(index) {
+
+			return this.$('.slider-item').eq(index).hasClass('visible');
 		},
 
 		onClose: function() {

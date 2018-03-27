@@ -18,6 +18,7 @@ app.views.Main = (function() {
 			'mousedown': 'onMouseDown',
 			'mousemove': 'onMouseMove',
 			'mouseup': 'onMouseUp',
+			'mouseleave': 'onMouseLeave',
 			'click': 'onClick',
 			'quicktouch #language-menu-toggle': 'showLanguageMenu',
 			'quicktouch #language-menu .menu-item': 'changeLanguage',
@@ -168,18 +169,41 @@ app.views.Main = (function() {
 			if (this.interaction) {
 				var $target = $(evt.target);
 				if ($target[0] !== this.interaction.$target[0]) {
-					this.resetInteraction();
-				} else {
-					var lastPosition = this.interaction.lastPosition || this.interaction.startPosition;
-					var moveX = Math.abs(this.interaction.startPosition.x - lastPosition.x);
-					var moveY = Math.abs(this.interaction.startPosition.y - lastPosition.y);
-					var movement = Math.max(
-						moveX / $(window).width(),
-						moveY / $(window).height()
-					) * 100;
-					this.interaction.lastPosition = this.getEventPosition(evt);
-					if (movement > app.config.touch.quick.maxMovement) {
+					this.interaction.quick = false;
+				}
+				var previous = {
+					position: this.interaction.lastPosition || this.interaction.startPosition,
+					time: this.interaction.lastTime || this.interaction.startTime,
+				};
+				this.interaction.lastPosition = this.getEventPosition(evt);
+				this.interaction.lastTime = Date.now();
+				var canSwipe = $target.hasClass('can-swipe') || $target.parents('.can-swipe').length > 0;
+				if (canSwipe) {
+					var moveX = this.interaction.startPosition.x - this.interaction.lastPosition.x;
+					var moveY = this.interaction.startPosition.y - this.interaction.lastPosition.y;
+					var absoluteMoveX = Math.abs(moveX);
+					var absoluteMoveY = Math.abs(moveY);
+					var tolerance = (4 / 100) * $(window).width();
+					// If movement is more vertical than horizontal, the user is probably trying to scroll.
+					// Allow for some tolerance.
+					if (absoluteMoveY > (absoluteMoveX + tolerance)) {
+						// Scroll.
 						this.resetInteraction();
+					} else {
+						// Not scroll.
+						/*
+							!! IMPORTANT !!
+							Calling preventDefault() prevents the premature touchcancel event in Android 4.4.x
+
+							See:
+							https://stackoverflow.com/questions/10367854/html5-android-touchcancel
+						*/
+						evt.preventDefault();
+						this.interaction.velocity = this.calculateVelocity(
+							this.interaction.lastPosition.x,
+							previous.position.x,
+							previous.time
+						);
 					}
 				}
 			}
@@ -190,12 +214,33 @@ app.views.Main = (function() {
 			if (this.interaction) {
 				clearTimeout(this.interaction.longTimeout);
 				var $target = $(evt.target);
-				if ($target[0] === this.interaction.$target[0]) {
-					var diffTime = Date.now() - this.interaction.startTime;
-					if (diffTime < app.config.touch.quick.maxTime) {
-						evt.preventDefault();
-						evt.stopPropagation();
-						this.onQuickTouch(evt);
+				var elapsedTime = Date.now() - this.interaction.startTime;
+				var lastPosition = this.interaction.lastPosition || this.interaction.startPosition;
+				var moveX = this.interaction.startPosition.x - lastPosition.x;
+				var moveY = this.interaction.startPosition.y - lastPosition.y;
+				var absoluteMoveX = Math.abs(moveX);
+				var absoluteMoveY = Math.abs(moveY);
+				var movement = Math.max(
+					absoluteMoveX / $(window).width(),
+					absoluteMoveY / $(window).height()
+				) * 100;
+				var isQuickTouch = (
+					this.interaction.quick !== false &&
+					$target[0] === this.interaction.$target[0] &&
+					elapsedTime <= app.config.touch.quick.maxTime &&
+					movement <= app.config.touch.quick.maxMovement
+				);
+				if (isQuickTouch) {
+					this.onQuickTouch(evt);
+				}
+				var velocity = this.interaction.velocity;
+				if (velocity) {
+					var speed = Math.abs(velocity);
+					var minSpeed = $(window).width() * (app.config.touch.swipe.minSpeed / 100);
+					var minMovementX = $(window).width() * (app.config.touch.swipe.minMovementX / 100);
+					var isSwipe = absoluteMoveX >= minMovementX && speed >= minSpeed;
+					if (isSwipe) {
+						this.onSwipe(evt, velocity);
 					}
 				}
 				this.resetInteraction();
@@ -211,6 +256,12 @@ app.views.Main = (function() {
 			}, app.config.touch.quick.uiFeedbackDuration);
 			// Trigger a custom event.
 			$target.trigger('quicktouch', evt);
+		},
+
+		onSwipe: function(evt, velocity) {
+
+			// Trigger a custom event.
+			$(evt.target).trigger('swipe', [velocity]);
 		},
 
 		onTouchCancel: function(evt) {
@@ -239,12 +290,25 @@ app.views.Main = (function() {
 			}
 		},
 
+		onMouseLeave: function(evt) {
+
+			// Left-mouse button only.
+			if (evt && evt.which === 1) {
+				this.onTouchEnd(evt);
+			}
+		},
+
 		resetInteraction: function() {
 
 			if (this.interaction) {
 				clearTimeout(this.interaction.longTimeout);
 			}
 			this.interaction = null;
+		},
+
+		calculateVelocity: function(endPosX, startPosX, startTime) {
+
+			return (endPosX - startPosX) / (Date.now() - startTime);
 		},
 
 		getEventPosition: function(evt) {
