@@ -31,29 +31,6 @@
 	text-decoration: none;
 	background-color: #e6e6e6;
 }
-.menu-info {
-	float: left;
-	width: 100%;
-	font-size: 0.9rem;
-	line-height: 3.2rem;
-	text-align: center;
-	background-color: #e6e6e6;
-	border-bottom: .5rem solid #efefef;
-	box-sizing: border-box;
-	padding: 1rem 0;
-}
-.header-button#language-menu-toggle {
-	float: right;
-	width: 4.5rem;
-	-webkit-filter: grayscale(100%);
-	filter: gray;
-	filter: url('../images/grayscale-filter.svg#grayscale');
-	background-size: 3rem;
-}
-.header-button#language-menu-toggle.quicktouch {
-	-webkit-filter: none;
-	filter: none;
-}
 #language-menu .menu-item {
 	text-align: center;
 	background-position: 2rem center;
@@ -62,29 +39,31 @@
 	cursor: pointer;
 	padding-left: 2rem;
 }
-#language-menu-toggle.cs,
+.header-button.language.cs,
 #language-menu .menu-item.cs {
 	background-image: url('../images/flags/cz.svg');
 }
-#language-menu-toggle.en,
+.header-button.language.en,
 #language-menu .menu-item.en {
 	background-image: url('../images/flags/gb.svg');
 }
-#language-menu-toggle.es,
+.header-button.language.es,
 #language-menu .menu-item.es {
 	background-image: url('../images/flags/es.svg');
 }
-#language-menu-toggle.fr,
+.header-button.language.fr,
 #language-menu .menu-item.fr {
 	background-image: url('../images/flags/fr.svg');
 }
-#language-menu.menu {
+#language-menu.menu,
+#more-menu.menu {
 	left: initial;
 	right: -80%;
 	max-width: 15rem;
 	transition: right .5s;
 }
-#language-menu.menu.visible {
+#language-menu.menu.visible,
+#more-menu.menu.visible {
 	right: 0;
 }
 .secondary-menu {

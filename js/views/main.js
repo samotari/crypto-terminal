@@ -19,7 +19,8 @@ app.views.Main = (function() {
 			'mousemove': 'onMouseMove',
 			'mouseup': 'onMouseUp',
 			'click': 'onClick',
-			'quicktouch #language-menu-toggle': 'showLanguageMenu',
+			'quicktouch .header-button.language': 'showLanguageMenu',
+			'quicktouch .header-button.more': 'showMoreMenu',
 			'quicktouch #language-menu .menu-item': 'changeLanguage',
 			'quicktouch a': 'onQuickTouchAnchor',
 		},
@@ -37,11 +38,14 @@ app.views.Main = (function() {
 				'toggleConfiguredFlag'
 			);
 			this.$languageMenu = this.$('#language-menu');
-			this.$languageMenuToggle = this.$('#language-menu-toggle');
+			this.$languageMenuToggle = this.$('.header-button.language');
+			this.$moreMenu = this.$('#more-menu');
+			this.$moreMenuToggle = this.$('.header-button.more');
 			this.$view = this.$('#view');
 			this.$message = this.$('#message');
 			this.$messageContent = this.$('#message-content');
 			this.initializeLanguageMenu();
+			this.initializeMoreMenu();
 			this.updateLanguageToggle();
 			this.reRenderView();
 			$(document).on('click quicktouch', this.onDocumentInteraction);
@@ -73,6 +77,13 @@ app.views.Main = (function() {
 
 			this.languageMenuView = (new app.views.LanguageMenu())
 				.setElement(this.$languageMenu)
+				.render();
+		},
+
+		initializeMoreMenu: function() {
+
+			this.moreMenuView = (new app.views.MoreMenu())
+				.setElement(this.$moreMenu)
 				.render();
 		},
 
@@ -134,12 +145,30 @@ app.views.Main = (function() {
 			this.$languageMenu.removeClass('visible');
 		},
 
+		showMoreMenu: function(evt) {
+
+			if (evt && evt.preventDefault) {
+				evt.preventDefault();
+			}
+
+			this.$moreMenu.addClass('visible');
+		},
+
+		hideMoreMenu: function() {
+
+			this.$moreMenu.removeClass('visible');
+		},
+
 		onDocumentInteraction: function(evt) {
 
 			var $target = $(evt.target);
 
 			if ($target[0] !== this.$languageMenuToggle[0]) {
 				this.hideLanguageMenu();
+			}
+
+			if ($target[0] !== this.$moreMenuToggle[0]) {
+				this.hideMoreMenu();
 			}
 
 			this.hideMessage();
