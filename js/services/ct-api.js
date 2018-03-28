@@ -25,6 +25,29 @@ app.services.ctApi = (function() {
 				cb(null, rates);
 			}).catch(cb);
 		},
+
+		getMoneroMemPoolTransactions: function(networkName, cb) {
+			var uri = this.getUri('/api/v1/monero/mempool', { network: networkName });
+			$.get(uri).then(function(result) {
+				cb(null, result);
+			}).catch(cb);
+		},
+
+		getMoneroConfirmedTransactions: function(networkName, cb) {
+			var uri = this.getUri('/api/v1/monero/transactions', { network: networkName });
+			$.get(uri).then(function(result) {
+				cb(null, result);
+			}).catch(cb);
+		},
+
+		getMoneroOutputs: function(networkName, txObject, cb) {
+
+			var uri = this.getUri('/api/v1/monero/outputs', { network: networkName });
+			uri += '?' + querystring.stringify(txObject);
+			$.get(uri).then(function(result) {
+				cb(null, result);
+			}).catch(cb)
+		}
 	};
 
 })();

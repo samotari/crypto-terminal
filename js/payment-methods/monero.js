@@ -316,37 +316,31 @@ app.paymentMethods.monero = (function() {
 			}, this));
 		},
 
-		blockExplorerHostNames: {
-			mainnet: 'xmrchain.com',
-			testnet: 'testnet.xmrchain.com',
-		},
-
-		getBlockExplorerUrl: function(uri) {
-
-			var networkName = this.getNetworkName();
-			var hostname = this.blockExplorerHostNames[networkName];
-			return 'https://' + hostname + uri;
-		},
-
 		/*
 			Checks the outputs of the transaction using our private view key.
 		*/
 		checkTransaction: function(tx, cb) {
 
-			var uri = this.getBlockExplorerUrl('/api/outputs');
-			uri += '?' + querystring.stringify({
+			var networkName = this.getNetworkName();
+
+			var txObject = {
 				txhash: tx.tx_hash,
 				address: app.settings.get(this.ref + '.publicAddress'),
 				viewkey: app.settings.get(this.ref + '.privateViewKey'),
 				txprove: 0,
-			});
-			$.get(uri).then(function(result) {
+			}
+
+			app.services.ctApi.getMoneroOutputs(networkName, txObject, function(error, result) {
+				if (error) {
+					return cb(error);
+				}
+
 				var outputs = result && result.data && result.data.outputs || [];
 				outputs = _.filter(outputs, function(output) {
 					return output.match === true;
 				});
 				cb(null, outputs);
-			}).fail(cb);
+			});
 		},
 
 		getTransactions: function(cb) {
@@ -369,22 +363,30 @@ app.paymentMethods.monero = (function() {
 
 		getRecentConfirmedTransactions: function(cb) {
 
-			var uri = this.getBlockExplorerUrl('/api/transactions');
-			$.get(uri).then(function(result) {
+			var networkName = this.getNetworkName();
+			app.services.ctApi.getMoneroConfirmedTransactions(networkName, function(error, result) {
+				if (error) {
+					return cb(error);
+				}
+
 				var txs = [];
 				_.each(result.data.blocks, function(block) {
 					txs.push.apply(txs, block.txs);
 				});
 				cb(null, txs);
-			}).fail(cb);
+			});
+
 		},
 
 		getMemPoolTransactions: function(cb) {
-
-			var uri = this.getBlockExplorerUrl('/api/mempool');
-			$.get(uri).then(function(result) {
+			var networkName = this.getNetworkName();
+			app.services.ctApi.getMoneroMemPoolTransactions(networkName, function(error, result) {
+				if (error) {
+					return cb(error);
+				}
 				cb(null, result.data.txs);
-			}).fail(cb);
+			});
+
 		},
 
 	});
