@@ -78,14 +78,19 @@ app.views.Pay = (function() {
 				return app.mainView.showMessage(app.i18n.t('pay-enter-amount.greater-than-zero'));
 			}
 
+			amount = amount.toString();
+
+			this.model.set({ amount: amount });
+
 			// Navigate to the next screen with the amount in the URI.
-			app.router.navigate('pay/' + encodeURIComponent(amount.toString()), { trigger: true });
+			app.router.navigate('choose-payment-method', { trigger: true });
 		},
 
 		onBackButton: function() {
 
+			app.paymentRequests.remove(this.model);
 			navigator.app.exitApp();
-		}
+		},
 
 	});
 

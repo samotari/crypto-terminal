@@ -31,10 +31,10 @@ app.Router = (function() {
 
 		routes: {
 			'pay': 'pay',
-			'confirmed': 'paymentConfirmation',
+			'choose-payment-method': 'choosePaymentMethod',
+			'display-payment-address': 'displayPaymentAddress',
+			'confirmed': 'paymentConfirmed',
 			'timed-out': 'paymentTimedOut',
-			'pay/:amount': 'choosePaymentMethod',
-			'pay/:amount/:method': 'displayPaymentAddress',
 			'payment-details/:paymentId': 'paymentDetails',
 			'admin': 'admin',
 			'admin/:page': 'admin',
@@ -129,46 +129,73 @@ app.Router = (function() {
 			app.mainView.renderView('Admin', { page: page });
 		},
 
-		about: function() {
-
-			app.mainView.renderView('About');
-		},
-
-		pay: function() {
-
-			app.mainView.renderView('Pay');
-		},
-
-		paymentConfirmation: function(){
-
-			app.mainView.renderView('PaymentConfirmation');
-
-		},
-
-		choosePaymentMethod: function(amount) {
-
-			app.mainView.renderView('ChoosePaymentMethod', { amount: amount });
-		},
-
-		displayPaymentAddress: function(amount, method) {
-
-			app.mainView.renderView('DisplayPaymentAddress', {
-				amount: amount,
-				method: method
-			});
-		},
-
 		paymentDetails: function(paymentId) {
-
 			app.mainView.renderView('PaymentDetails', {
 				paymentId: paymentId
 			});
 		},
 
+		about: function() {
+			app.mainView.renderView('About');
+		},
+
+		pay: function() {
+
+			// Create a new payment request, but don't save it.
+			var paymentRequest = app.paymentRequests.add({
+				currency: app.settings.get('displayCurrency'),
+			});
+
+			app.mainView.renderView('Pay', { model: paymentRequest });
+		},
+
+		choosePaymentMethod: function() {
+
+			// Get latest payment request.
+			var paymentRequest = app.paymentRequests.at(0);
+
+			// If the latest payment request is not pending, then we need to make a new one.
+			if (paymentRequest && !paymentRequest.isPending()) {
+				paymentRequest = null;
+			}
+
+			if (!paymentRequest) {
+				// Start from the beginning of the payment process.
+				app.router.navigate('pay', { trigger: true });
+				return false;
+			}
+
+			// Reset the method.
+			paymentRequest.set({ method: null });
+
+			app.mainView.renderView('ChoosePaymentMethod', { model: paymentRequest });
+		},
+
+		displayPaymentAddress: function() {
+
+			// Get latest payment request.
+			var paymentRequest = app.paymentRequests.at(0);
+
+			// If the latest payment request is not pending, then we need to make a new one.
+			if (paymentRequest && !paymentRequest.isPending()) {
+				paymentRequest = null;
+			}
+
+			if (!paymentRequest) {
+				// Start from the beginning of the payment process.
+				app.router.navigate('pay', { trigger: true });
+				return false;
+			}
+
+			app.mainView.renderView('DisplayPaymentAddress', { model: paymentRequest });
+		},
+
+		paymentConfirmed: function(){
+			app.mainView.renderView('PaymentConfirmation');
+		},
+
 		paymentTimedOut: function() {
-
 			app.mainView.renderView('PaymentTimedOut');
-
 		}
 
 	});

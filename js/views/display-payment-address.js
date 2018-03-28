@@ -18,21 +18,56 @@ app.views.DisplayPaymentAddress = (function() {
 		},
 
 		timerForTimeOut: null,
-
 		listenerTimeOut: null,
+		savePaymentRequestTimeout: null,
+
+		initialize: function() {
+
+			_.bindAll(this, 'queryRate', 'onChangeRate', 'onBeforeUnload');
+
+			var method = this.model.get('method');
+			this.paymentMethod = app.paymentMethods[method];
+			this.listenTo(this.model, 'change:rate', this.onChangeRate);
+			$(window).on('beforeunload', this.onBeforeUnload);
+		},
+
+		queryRate: function() {
+
+			app.busy();
+
+			var currency = this.model.get('currency');
+			var rate = this.model.get('rate');
+
+			if (!_.isNull(rate)) {
+				this.onChangeRate();
+			} else {
+				if (this.paymentMethod.code !== currency) {
+					this.paymentMethod.getExchangeRate(currency, _.bind(function(error, rate) {
+						if (error) {
+							return app.mainView.showMessage(error);
+						}
+						this.model.set({ rate: rate });
+					}, this));
+				} else {
+					this.model.set({ rate: '1' });
+				}
+			}
+		},
 
 		serializeData: function() {
+
+			if (!this.model) return {};
 
 			return {
 				amount: {
 					display: {
-						value: this.options.amount,
-						currency: app.settings.get('displayCurrency')
+						value: this.model.get('amount'),
+						currency: this.model.get('currency'),
 					},
 					crypto: {
-						ref: this.options.method,
-						currency: app.paymentMethods[this.options.method].code,
-					}
+						ref: this.paymentMethod.ref,
+						currency: this.paymentMethod.code,
+					},
 				}
 			};
 		},
@@ -41,53 +76,81 @@ app.views.DisplayPaymentAddress = (function() {
 
 			this.$address = this.$('.address');
 			this.$addressQrCode = this.$('.address-qr-code');
-			this.$addressText = this.$('.address-text');
 			this.$cryptoAmount = this.$('.crypto.amount');
-			this.updateCryptoAmount();
+			_.defer(this.queryRate);
 		},
 
-		updateCryptoAmount: function() {
+		onChangeRate: function() {
 
-			var displayCurrency = app.settings.get('displayCurrency');
-			var paymentMethod = app.paymentMethods[this.options.method];
-			var displayAmount = this.options.amount;
+			var cryptoAmount = this.getCryptoAmount();
 
-			app.busy();
+			this.renderCryptoAmount(cryptoAmount);
 
-			var done = function() {
-				app.busy(false);
-			};
+			this.paymentMethod.generatePaymentRequest(cryptoAmount, _.bind(function(error, paymentRequest) {
 
-			if (displayCurrency === paymentMethod.code) {
-				// Don't need to convert, because the payment method is the display currency.
-				this.renderCryptoAmount(displayAmount);
-				this.updateQrCode(displayAmount, null, null, done);
+				if (error) {
+					return app.mainView.showMessage(error);
+				}
+
+				this.model.set({
+					data: paymentRequest.data,
+					uri: paymentRequest.uri,
+					status: 'pending',
+				});
+				this.renderQrCode();
+				this.startListeningForPayment();
+				this.savePaymentRequestTimeout = _.delay(_.bind(function() {
+					this.model.save();
+				}, this), 5000);
+
+			}, this));
+		},
+
+		getCryptoAmount: function() {
+
+			var amount = this.model.get('amount');
+			var paymentMethod = this.paymentMethod;
+			var numDecimals = paymentMethod.numberFormat && paymentMethod.numberFormat.decimals || 8;
+			var rate = this.model.get('rate');
+			return (new BigNumber(amount))
+				.dividedBy(rate)
+				.decimalPlaces(numDecimals)
+				.toString();
+		},
+
+		renderCryptoAmount: function(cryptoAmount) {
+
+			var currency = this.model.get('currency');
+			var paymentMethod = this.paymentMethod;
+
+			if (paymentMethod.code === currency) {
+				this.$cryptoAmount.find('.amount-value').text('');
+				this.$cryptoAmount.removeClass('visible');
 			} else {
-				// Convert the display amount to the real amount in the desired cryptocurrency.
-				paymentMethod.convertAmount(displayAmount, displayCurrency, _.bind(function(error, amount, displayCurrencyExchangeRate, displayCurrency) {
-
-					if (error) {
-						this.resetQrCode();
-						return app.mainView.showMessage(error);
-					}
-
-					this.renderCryptoAmount(amount);
-					this.updateQrCode(amount, displayCurrencyExchangeRate, displayCurrency, done);
-
-				}, this));
+				var formattedAmount = app.util.formatNumber(cryptoAmount, {
+					paymentMethod: paymentMethod.ref,
+				});
+				this.$cryptoAmount.find('.amount-value').text(formattedAmount);
+				this.$cryptoAmount.addClass('visible');
 			}
 		},
 
-		renderQrCode: function(data, done) {
+		renderQrCode: function(done) {
 
 			var width = Math.min(
 				this.$address.width(),
 				this.$address.height()
 			);
 
+			var data = this.model.get('uri');
+
+			app.busy();
+
 			app.util.renderQrCode(this.$addressQrCode/* $target */, data, {
 				width: width,
 			}, function(error) {
+
+				app.busy(false);
 
 				done && done();
 
@@ -97,74 +160,14 @@ app.views.DisplayPaymentAddress = (function() {
 			});
 		},
 
-		renderAddress: function(address) {
-
-			this.$addressText.text(address);
-		},
-
-		renderCryptoAmount: function(amount) {
-
-			var displayCurrency = app.settings.get('displayCurrency');
-			var paymentMethod = app.paymentMethods[this.options.method];
-			var formattedAmount = app.util.formatNumber(amount, {
-				paymentMethod: paymentMethod.ref,
-			});
-			this.$cryptoAmount.find('.amount-value').text(formattedAmount);
-			this.$cryptoAmount.toggleClass('visible', displayCurrency !== paymentMethod.code);
-		},
-
-		resetQrCode: function() {
-
-			this.$addressQrCode.empty();
-			this.$addressText.empty();
-		},
-
-		updateQrCode: function(amount, displayCurrencyExchangeRate, displayCurrency, done) {
-
-			var paymentMethod = app.paymentMethods[this.options.method];
-
-			paymentMethod.generatePaymentRequest(amount, _.bind(function(error, paymentRequest) {
-
-				if (error) {
-					this.resetQrCode();
-					return app.mainView.showMessage(error);
-				}
-
-				this.renderQrCode(paymentRequest.uri, done);
-				this.renderAddress(paymentRequest.address);
-				this.paymentRequestUri = paymentRequest.uri;
-
-				this._createPaymentRequestTimeout = _.delay(_.bind(function() {
-					app.paymentRequests.add({
-						currency: paymentMethod.code,
-						address: paymentRequest.address,
-						amount: paymentRequest.amount,
-						displayCurrency: {
-							code: displayCurrency,
-							rate: displayCurrencyExchangeRate
-						},
-						data: paymentRequest.data || {},
-						status: 'pending',
-					}).save().then(_.bind(function(attributes) {
-						this.paymentRequest = app.paymentRequests.get(attributes.id);
-						this.startListeningForPayment();
-					}, this));
-				}, this), 5000);
-
-			}, this));
-		},
-
 		startListeningForPayment: function() {
 
-			if (!this.paymentRequest) return;
-
-			var paymentMethod = app.paymentMethods[this.options.method];
-			var paymentRequest = this.paymentRequest.toJSON();
+			var paymentRequest = this.model.toJSON();
 			var received = false;
 			var timedOut = false;
 			var errorWhileWaiting;
 
-			paymentMethod.listenForPayment(paymentRequest, function(error, wasReceived) {
+			this.paymentMethod.listenForPayment(paymentRequest, function(error, wasReceived) {
 				if (error) {
 					errorWhileWaiting = error;
 				} else {
@@ -181,21 +184,16 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 
 				if (received) {
-					// Update the status of the payment request.
-					this.paymentRequest.save({ status: 'unconfirmed' });
-					// Show success screen.
+					this.model.save({ status: 'unconfirmed' });
 					app.router.navigate('confirmed', { trigger: true });
 				} else {
-					// Update the status of the payment request.
-					this.paymentRequest.save({ status: 'timed-out' });
-					// Show timed-out screen.
+					this.model.save({ status: 'timed-out' });
 					app.router.navigate('timed-out', { trigger: true });
 				}
 
 			}, this);
 
 			var iteratee = _.bind(function(next) {
-
 				if (errorWhileWaiting) {
 					return next(errorWhileWaiting);
 				} else {
@@ -212,8 +210,9 @@ app.views.DisplayPaymentAddress = (function() {
 
 		stopListeningForPayment: function() {
 
-			var paymentMethod = app.paymentMethods[this.options.method];
-			paymentMethod.stopListeningForPayment();
+			if (this.paymentMethod) {
+				this.paymentMethod.stopListeningForPayment();
+			}
 			clearTimeout(this.listenerTimeOut);
 			clearTimeout(this.timerForTimeOut);
 		},
@@ -224,7 +223,13 @@ app.views.DisplayPaymentAddress = (function() {
 				evt.preventDefault();
 			}
 
-			// Navigate back to the amount screen.
+			if (this.model.isSaved()) {
+				this.model.save({ status: 'canceled' });
+			} else {
+				app.paymentRequests.remove(this.model);
+			}
+
+			// Navigate back to the enter amount screen.
 			app.router.navigate('pay', { trigger: true });
 		},
 
@@ -234,34 +239,32 @@ app.views.DisplayPaymentAddress = (function() {
 				evt.preventDefault();
 			}
 
-			var amount = this.options.amount.toString();
-
-			// Navigate back to the payment method screen.
-			app.router.navigate('pay/' + encodeURIComponent(amount), { trigger: true });
-		},
-
-		reRenderQrCode: function() {
-
-			if (this.paymentRequestUri) {
-				this.renderQrCode(this.paymentRequestUri);
-			}
+			// Navigate back to the choose payment method screen.
+			app.router.navigate('choose-payment-method', { trigger: true });
 		},
 
 		onResize: function() {
-
-			this.reRenderQrCode();
+			this.renderQrCode();
 		},
 
 		onClose: function() {
-
-			clearTimeout(this._createPaymentRequestTimeout);
+			clearTimeout(this.savePaymentRequestTimeout);
 			this.stopListeningForPayment();
+			$(window).off('beforeunload', this.onBeforeUnload);
 		},
 
 		onBackButton: function() {
-
 			this.back();
-		}
+		},
+
+		onBeforeUnload: function() {
+
+			if (this.model.isSaved()) {
+				this.model.save({ status: 'canceled' });
+			} else {
+				app.paymentRequests.remove(this.model);
+			}
+		},
 
 	});
 

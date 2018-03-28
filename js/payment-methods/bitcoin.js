@@ -8,13 +8,17 @@ app.paymentMethods.bitcoin = (function() {
 
 	app.onReady(function() {
 		app.paymentRequests.on('add', function(model) {
-			var paymentMethod = _.findWhere(app.paymentMethods, {
-				code: model.get('currency'),
-			});
-			if (paymentMethod) {
-				var settingPath = paymentMethod.ref + '.addressIndex';
-				var index = parseInt(app.settings.get(settingPath) || '0');
-				app.settings.set(settingPath, index + 1);
+			var status = model.get('status');
+			if (status) {
+				// Only payment requests with a status are considered.
+				var paymentMethod = _.findWhere(app.paymentMethods, {
+					code: model.get('currency'),
+				});
+				if (paymentMethod) {
+					var settingPath = paymentMethod.ref + '.addressIndex';
+					var index = parseInt(app.settings.get(settingPath) || '0');
+					app.settings.set(settingPath, index + 1);
+				}
 			}
 		});
 	});
