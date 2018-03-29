@@ -58,6 +58,8 @@ app.Router = (function() {
 
 		execute: function(callback, args, name) {
 
+			app.log('router.execute', name);
+
 			if (!isPinProtected(name) && app.requirePin() && app.isUnlocked()) {
 				app.lock();
 			}
@@ -131,14 +133,15 @@ app.Router = (function() {
 		admin: function(page) {
 
 			if (page) {
-				// Don't allow navigation to disabled cryptocurrency settings pages.
-				for (var key in app.paymentMethods) {
-					if (page === key) {
-						if (!_.contains(app.settings.get('configurableCryptoCurrencies'), key)) {
-							return this.navigate('admin/general-settings', { trigger: true });
-						}
-						break;
-					}
+
+				var possiblePages = [
+					'general-settings',
+					'payment-history',
+				].concat(app.settings.get('configurableCryptoCurrencies'));
+
+				if (!_.contains(possiblePages, page)) {
+					this.navigate('admin/general-settings', { trigger: true });
+					return false;
 				}
 			}
 
@@ -177,7 +180,7 @@ app.Router = (function() {
 
 			if (!paymentRequest) {
 				// Start from the beginning of the payment process.
-				app.router.navigate('pay', { trigger: true });
+				this.navigate('pay', { trigger: true });
 				return false;
 			}
 
@@ -199,7 +202,7 @@ app.Router = (function() {
 
 			if (!paymentRequest) {
 				// Start from the beginning of the payment process.
-				app.router.navigate('pay', { trigger: true });
+				this.navigate('pay', { trigger: true });
 				return false;
 			}
 

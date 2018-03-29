@@ -42,6 +42,8 @@ var app = app || {};
 	};
 
 	app.cleanUpPendingPaymentRequest = function() {
+
+		app.log('cleanUpPendingPaymentRequest');
 		var paymentRequest = app.paymentRequests.at(0);
 		if (paymentRequest && !paymentRequest.isComplete()) {
 			if (paymentRequest.isSaved()) {
@@ -79,29 +81,28 @@ var app = app || {};
 	};
 
 	app.requirePin = function() {
-
 		return !!app.settings.get('settingsPin');
 	};
 
 	app.checkPin = function(pin) {
-
 		var currentPin = app.settings.get('settingsPin');
 		return !!currentPin && pin === currentPin;
 	};
 
 	app.setPin = function(pin) {
-
 		app.settings.set('settingsPin', pin);
 	};
 
 	app.clearPin = function(pin) {
-
 		app.settings.set('settingsPin', null);
 	};
 
-	app.log = function() {
+	app.debugging = function() {
+		return app.config.debug === true || app.settings && app.settings.get('debug') === true;
+	};
 
-		if (app.config.debug) {
+	app.log = function() {
+		if (app.debugging()) {
 			console.log.apply(console, arguments);
 		}
 	};

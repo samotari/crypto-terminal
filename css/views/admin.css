@@ -2,10 +2,12 @@
 	padding: 0;
 }
 .view.admin .button.payment-method {
+	float: left;
+	vertical-align: initial;
 	background-size: 3rem;
-	padding: 2rem;
 	opacity: 0.5;
-	margin-left: .4rem;
+	margin: 0 .4rem .4rem 0;
+	padding: 2rem;
 }
 .view.admin input[type="checkbox"] {
 	position: absolute;
@@ -18,7 +20,9 @@
 	background-color: #e6e6e6;
 }
 .view.admin .form-group.configurableCryptoCurrencies {
-	text-align: center;
+	display: inline-block;
+	vertical-align: top;
+	padding-bottom: 1.6rem;
 }
 .view.admin .form-group.configurableCryptoCurrencies .form-group-label {
 	color: #111;

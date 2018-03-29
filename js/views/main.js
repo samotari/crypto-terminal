@@ -92,6 +92,7 @@ app.views.Main = (function() {
 
 		renderView: function(name, options) {
 
+			app.log('mainView.renderView', name);
 			this.closeCurrentView();
 
 			var $el = $('<div/>', {
@@ -179,6 +180,7 @@ app.views.Main = (function() {
 
 		onTouchStart: function(evt) {
 
+			app.log('onTouchStart');
 			var $target = $(evt.target);
 			this.interaction = {
 				$target: $target,
@@ -190,6 +192,7 @@ app.views.Main = (function() {
 
 		onLongTouch: function(evt) {
 
+			app.log('onLongTouch');
 			// Trigger a custom event.
 			var $target = $(evt.target);
 			$target.trigger('longtouch', evt);
@@ -242,6 +245,7 @@ app.views.Main = (function() {
 
 		onTouchEnd: function(evt) {
 
+			app.log('onTouchEnd');
 			if (this.interaction) {
 				clearTimeout(this.interaction.longTimeout);
 				var $target = $(evt.target);
@@ -262,6 +266,8 @@ app.views.Main = (function() {
 					movement <= app.config.touch.quick.maxMovement
 				);
 				if (isQuickTouch) {
+					evt.preventDefault();
+					evt.stopPropagation();
 					this.onQuickTouch(evt);
 				}
 				var velocity = this.interaction.velocity;
@@ -280,6 +286,7 @@ app.views.Main = (function() {
 
 		onQuickTouch: function(evt) {
 
+			app.log('onQuickTouch');
 			var $target = $(evt.target);
 			$target.addClass('quicktouch');
 			_.delay(function() {
@@ -291,17 +298,20 @@ app.views.Main = (function() {
 
 		onSwipe: function(evt, velocity) {
 
+			app.log('onSwipe');
 			// Trigger a custom event.
 			$(evt.target).trigger('swipe', [velocity]);
 		},
 
 		onTouchCancel: function(evt) {
 
+			app.log('onTouchCancel');
 			this.resetInteraction();
 		},
 
 		onMouseDown: function(evt) {
 
+			app.log('onMouseDown');
 			// Left-mouse button only.
 			if (evt && evt.which === 1) {
 				this.onTouchStart(evt);
@@ -310,11 +320,13 @@ app.views.Main = (function() {
 
 		onMouseMove: function(evt) {
 
+			app.log('onMouseMove');
 			this.onTouchMove(evt);
 		},
 
 		onMouseUp: function(evt) {
 
+			app.log('onMouseUp');
 			// Left-mouse button only.
 			if (evt && evt.which === 1) {
 				this.onTouchEnd(evt);
@@ -323,10 +335,8 @@ app.views.Main = (function() {
 
 		onMouseLeave: function(evt) {
 
-			// Left-mouse button only.
-			if (evt && evt.which === 1) {
-				this.onTouchEnd(evt);
-			}
+			app.log('onMouseLeave');
+			this.onTouchEnd(evt);
 		},
 
 		resetInteraction: function() {
@@ -400,6 +410,7 @@ app.views.Main = (function() {
 
 		onClick: function(evt) {
 
+			app.log('onClick');
 			if (evt && evt.preventDefault) {
 				evt.preventDefault();
 			}
@@ -407,6 +418,7 @@ app.views.Main = (function() {
 
 		onQuickTouchAnchor: function(evt) {
 
+			app.log('onQuickTouchAnchor');
 			if (evt && evt.preventDefault) {
 				evt.preventDefault();
 			}
@@ -428,12 +440,6 @@ app.views.Main = (function() {
 		onBeforeUnload: function() {
 
 			app.cleanUpPendingPaymentRequest();
-		},
-
-		onClose: function() {
-
-			$(document).off('click quicktouch', this.onDocumentInteraction);
-			$(window).off('beforeunload', this.onBeforeUnload);
 		},
 
 		render: function() {

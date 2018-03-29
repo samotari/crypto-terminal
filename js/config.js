@@ -16,7 +16,7 @@ app.config = (function() {
 	);
 
 	var config = {
-		debug: true,
+		debug: false,
 		sqlite: {
 			name: 'crypto-terminal.db',
 			location: 'default',

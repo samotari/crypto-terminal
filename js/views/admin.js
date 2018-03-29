@@ -22,8 +22,8 @@ app.views.Admin = (function() {
 		initialize: function() {
 
 			_.bindAll(this, 'setActiveMenuItem', 'toggleCryptoCurrency', 'goToSubPage');
-			this.toggleCryptoCurrency = _.throttle(this.toggleCryptoCurrency, 50);
-			this.goToSubPage = _.throttle(this.goToSubPage, 50);
+			this.toggleCryptoCurrency = _.debounce(this.toggleCryptoCurrency, 20);
+			this.goToSubPage = _.debounce(this.goToSubPage, 20);
 			this.options.page = this.options.page || 'general-settings';
 		},
 
