@@ -98,9 +98,11 @@ app.util = (function() {
 			return randomValues;
 		},
 
-		formatNumber: function(number, options) {
+		formatNumber: function(number, format) {
+
 			if (!number) return '';
-			var config = this.getNumberFormatConfig(options);
+			format = format || 'default';
+			var config = this.getNumberFormatConfig(format);
 			BigNumber.config(config.BigNumber);
 			try {
 				number = (new BigNumber(number)).toFormat(config.decimals);
@@ -111,24 +113,9 @@ app.util = (function() {
 			return number;
 		},
 
-		getNumberFormatConfig: function(options) {
-			var config;
-			options = _.defaults(options || {}, {
-				format: app.settings.get('numberFormat') || 'default',
-				paymentMethodCode: null,
-			});
-			if (options.format && app.config.numberFormats[options.format]) {
-				config = app.config.numberFormats[options.format];
-			} else {
-				config = app.config.numberFormats['default'];
-			}
-			if (options.paymentMethod) {
-				var paymentMethod = app.paymentMethods[options.paymentMethod];
-				if (paymentMethod && paymentMethod.numberFormat) {
-					config = _.extend({}, config, paymentMethod.numberFormat);
-				}
-			}
-			return config;
+		getNumberFormatConfig: function(format) {
+
+			return app.config.numberFormats[format] || app.config.numberFormats['default'];
 		},
 
 		formatDate: function(datetime, format) {

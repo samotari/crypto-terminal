@@ -125,9 +125,7 @@ app.views.DisplayPaymentAddress = (function() {
 				this.$cryptoAmount.find('.amount-value').text('');
 				this.$cryptoAmount.removeClass('visible');
 			} else {
-				var formattedAmount = app.util.formatNumber(cryptoAmount, {
-					paymentMethod: paymentMethod.ref,
-				});
+				var formattedAmount = app.util.formatNumber(cryptoAmount, paymentMethod.code);
 				this.$cryptoAmount.find('.amount-value').text(formattedAmount);
 				this.$cryptoAmount.addClass('visible');
 			}

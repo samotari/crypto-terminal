@@ -32,7 +32,7 @@ app.views.PaymentDetails = (function() {
 			} catch (error) {
 				app.log(error);
 			}
-			data.paymentMethod = _.pick(paymentMethod, 'ref', 'code');
+			data.paymentMethod = _.pick(paymentMethod, 'code');
 			return data
 		},
 

@@ -20,7 +20,7 @@ app.views.EnterPin = (function() {
 		initialize: function() {
 
 			_.bindAll(this, 'updateKeysDisplay', 'onDocumentTouch');
-			this.numberPadView = new app.views.NumberPad({ dot: false });
+			this.numberPadView = new app.views.NumberPad({ decimal: false });
 			this.listenTo(this.numberPadView.model, 'change:keys', this.updateKeysDisplay);
 			this.render().$el.appendTo($('body'));
 			_.defer(_.bind(function() {

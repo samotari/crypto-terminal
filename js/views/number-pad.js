@@ -22,26 +22,24 @@ app.views.NumberPad = (function() {
 
 			this.options = _.defaults(this.options || {}, {
 				initialKeys: '',
-				dot: true,
+				decimal: true,
+				numberFormat: 'default',
 			});
+
+			this.numberFormatConfig = app.util.getNumberFormatConfig(this.options.numberFormat);
 
 			// Use a model to store the state.
 			this.model = new Backbone.Model();
 
 			// Set the keys string with an initial value.
 			this.model.set('keys', this.options.initialKeys);
-
-			if (!this.options.dot) {
-				this.$el.addClass('no-dot');
-			}
 		},
 
 		serializeData: function() {
 
-			var numberFormatConfig = app.util.getNumberFormatConfig();
 			return {
-				dot: this.options.dot,
-				decimalSeparator: numberFormatConfig.BigNumber.FORMAT.decimalSeparator,
+				useDecimal: this.options.decimal,
+				decimalSeparator: this.getDecimalSeparator(),
 			};
 		},
 
@@ -79,6 +77,8 @@ app.views.NumberPad = (function() {
 			var $target = $(evt.target);
 			if ($target.hasClass('backspace')) {
 				this.removeLastKey();
+			} else if ($target.hasClass('decimal')) {
+				this.addDecimal();
 			} else {
 				var key = $target.attr('data-key');
 				this.addKey(key);
@@ -96,6 +96,20 @@ app.views.NumberPad = (function() {
 			}
 		},
 
+		addDecimal: function() {
+
+			/*
+				Don't add a decimal character if:
+					* There is already a decimal in the keys string.
+					* Or, the decimal character is disabled.
+			*/
+			if (!this.options.decimal) return;
+			if (this.hasDecimal()) return;
+			var keys = this.getKeys();
+			keys += this.getDecimalSeparator();
+			this.model.set('keys', keys);
+		},
+
 		addKey: function(key) {
 
 			// Don't add an empty key.
@@ -108,17 +122,13 @@ app.views.NumberPad = (function() {
 				return;
 			}
 
-			/*
-				Don't add a dot character if:
-					* There is already a dot in the keys string.
-					* Or, the dot character is disabled.
-			*/
-			if (key === '.' && (this.hasDot() || !this.options.dot)) {
+			// Prevent excess leading zeroes.
+			if (this.amount === '0' && value === '0') {
 				return;
 			}
 
-			// Prevent excess leading zeroes.
-			if (this.amount === '0' && value === '0') {
+			// Prevent excess digits after decimal.
+			if (this.hasDecimal() && this.hasMaximumDigitsAfterDecimal()) {
 				return;
 			}
 
@@ -126,6 +136,30 @@ app.views.NumberPad = (function() {
 			keys += key;
 
 			this.model.set('keys', keys);
+		},
+
+		getDecimalSeparator: function() {
+
+			return this.numberFormatConfig.BigNumber.FORMAT.decimalSeparator;
+		},
+
+		hasMaximumDigitsAfterDecimal: function() {
+
+			return this.countDigitsAfterDecimal() >= this.numberFormatConfig.decimals;
+		},
+
+		countDigitsAfterDecimal: function() {
+
+			if (!this.hasDecimal()) return 0;
+			var decimalSeparator = this.getDecimalSeparator();
+			return this.getKeys().split(decimalSeparator)[1].length;
+		},
+
+		hasDecimal: function() {
+
+			if (!this.options.decimal) return false;
+			var decimalSeparator = this.getDecimalSeparator();
+			return this.getKeys().indexOf(decimalSeparator) !== -1;
 		},
 
 		resetKeys: function() {
@@ -136,11 +170,6 @@ app.views.NumberPad = (function() {
 		getKeys: function() {
 
 			return this.model.get('keys') || '';
-		},
-
-		hasDot: function() {
-
-			return this.getKeys().indexOf('.') !== -1;
 		},
 
 		onClose: function() {

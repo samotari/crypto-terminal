@@ -41,16 +41,16 @@ app.config = (function() {
 				},
 				decimals: 2,
 			},
-			decimalComma: {
+			'CZK': {
 				BigNumber: {
 					FORMAT: {
 						decimalSeparator: ',',
-						groupSeparator: '.',
+						groupSeparator: ' ',
 						groupSize: 3,
 					},
 				},
 				decimals: 2,
-			}
+			},
 		},
 		numberPad: {
 			keysMaxLength: 12,
@@ -104,7 +104,7 @@ app.config = (function() {
 					return {
 						key: code,
 						label: code
-					}
+					};
 				}).value(),
 			},
 			{
@@ -115,6 +115,10 @@ app.config = (function() {
 				type: 'select',
 				required: true,
 				options: [
+					{
+						key: 'DD/MM/YYYY hh:mm:ss',
+						label: moment().format('DD/MM/YYYY hh:mm:ss')
+					},
 					{
 						key: 'MMMM Do YYYY, h:mm:ss A',
 						label: moment().format('MMMM Do YYYY, h:mm:ss A')
@@ -127,39 +131,9 @@ app.config = (function() {
 						key: 'LLLL',
 						label: moment().format('LLLL')
 					},
-					{
-						key: 'DD/MM/YYYY hh:mm:ss',
-						label: moment().format('DD/MM/YYYY hh:mm:ss')
-					}
-				]
+				],
 			},
-			{
-				name: 'numberFormat',
-				label: function() {
-					return app.i18n.t('settings.number-format.label');
-				},
-				type: 'select',
-				required: true,
-				options: [
-					{
-						key: 'default',
-						label: function() {
-							return app.util.formatNumber('123456789.123456789', {
-								format: this.key,
-							});
-						}
-					},
-					{
-						key: 'decimalComma',
-						label: function() {
-							return app.util.formatNumber('123456789.123456789', {
-								format: this.key,
-							});
-						}
-					}
-				]
-			}
-		]
+		],
 	};
 
 	config.settings = _.map(config.settings, function(setting) {
@@ -169,6 +143,12 @@ app.config = (function() {
 	});
 
 	config.supportedDisplayCurrencies = _.clone(displayCurrencies);
+
+	_.each(app.paymentMethods, function(paymentMethod) {
+		if (paymentMethod.numberFormat) {
+			config.numberFormats[paymentMethod.code] = paymentMethod.numberFormat;
+		}
+	});
 
 	return config;
 

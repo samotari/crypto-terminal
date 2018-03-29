@@ -22,7 +22,8 @@ app.views.Pay = (function() {
 
 			this.numberPadView = new app.views.NumberPad({
 				initialKeys: '0',
-				dot: true,
+				decimal: true,
+				numberFormat: this.model.get('currency'),
 			});
 
 			this.listenTo(this.numberPadView.model, 'change:keys', this.updateAmountElement);
@@ -55,8 +56,8 @@ app.views.Pay = (function() {
 
 			var amount = this.numberPadView.getKeys() || '0';
 			// Remove extra leading zeroes.
-			amount = amount.replace(/^0{2,}/, '0').replace(/^0([^\\.])/, '$1');
-			amount = app.util.formatNumber(amount);
+			amount = amount.replace(/^0{2,}/, '0');
+			amount = amount.replace(new RegExp('^0([^' + this.options.decimal + '])'), '$1');
 			this.$amount.text(amount);
 		},
 
@@ -66,10 +67,12 @@ app.views.Pay = (function() {
 				evt.preventDefault();
 			}
 
-			var amount;
+			var keys = this.numberPadView.getKeys();
+			var decimalSeparator = this.numberPadView.getDecimalSeparator();
+			var amount = keys.replace(decimalSeparator, '.');
 
 			try {
-				amount = new BigNumber(this.numberPadView.getKeys());
+				amount = new BigNumber(amount);
 			} catch (error) {
 				return app.mainView.showMessage(app.i18n.t('pay-enter-amount.valid-number'));
 			}

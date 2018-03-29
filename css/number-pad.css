@@ -35,7 +35,7 @@
 .number-pad-key:nth-child(n+4) {
 	border-top: none;
 }
-.number-pad-key.dot,
+.number-pad-key.decimal,
 .number-pad-key.backspace {
 	font-weight: 400;
 }

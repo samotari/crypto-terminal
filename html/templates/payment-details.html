@@ -11,8 +11,8 @@
 	<div class="payment-details-info-item">
 		<div class="payment-details-info-item-label">{{i18n "payment-details.label.amount"}}</div>
 		<div class="payment-details-info-item-value">
-			<div class="payment-details-amount-display">{{formatNumber amount}} {{currency}}</div>
-			<div class="payment-details-amount-crypto">{{formatNumber cryptoAmount paymentMethod.ref}} {{paymentMethod.code}}</div>
+			<div class="payment-details-amount-display">{{formatNumber amount currency}} {{currency}}</div>
+			<div class="payment-details-amount-crypto">{{formatNumber cryptoAmount paymentMethod.code}} {{paymentMethod.code}}</div>
 		</div>
 	</div>
 </div>

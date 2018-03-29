@@ -1,10 +1,10 @@
 <div class="amount-wrap">
 	<div class="amount display">
-		<div class="amount-value">{{formatNumber amount.display.value}}</div>
+		<div class="amount-value">{{formatNumber amount.display.value amount.display.currency}}</div>
 		<div class="amount-currency">{{amount.display.currency}}</div>
 	</div>
 	<div class="amount crypto">
-		<div class="amount-value">{{formatNumber amount.crypto.value amount.crypto.ref}}</div>
+		<div class="amount-value">{{formatNumber amount.crypto.value amount.crypto.currency}}</div>
 		<div class="amount-currency">{{amount.crypto.currency}}</div>
 	</div>
 </div>
