@@ -23,12 +23,10 @@ app.views.DisplayPaymentAddress = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'queryRate', 'onChangeRate', 'onBeforeUnload');
-
+			_.bindAll(this, 'queryRate', 'onChangeRate');
 			var method = this.model.get('method');
 			this.paymentMethod = app.paymentMethods[method];
 			this.listenTo(this.model, 'change:rate', this.onChangeRate);
-			$(window).on('beforeunload', this.onBeforeUnload);
 		},
 
 		queryRate: function() {
@@ -56,7 +54,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		serializeData: function() {
 
-			if (!this.model) return {};
+			if (!this.model || !this.paymentMethod) return {};
 
 			return {
 				amount: {
@@ -223,11 +221,7 @@ app.views.DisplayPaymentAddress = (function() {
 				evt.preventDefault();
 			}
 
-			if (this.model.isSaved()) {
-				this.model.save({ status: 'canceled' });
-			} else {
-				app.paymentRequests.remove(this.model);
-			}
+			app.cleanUpPendingPaymentRequest();
 
 			// Navigate back to the enter amount screen.
 			app.router.navigate('pay', { trigger: true });
@@ -244,26 +238,19 @@ app.views.DisplayPaymentAddress = (function() {
 		},
 
 		onResize: function() {
+
 			this.renderQrCode();
 		},
 
 		onClose: function() {
+
 			clearTimeout(this.savePaymentRequestTimeout);
 			this.stopListeningForPayment();
-			$(window).off('beforeunload', this.onBeforeUnload);
 		},
 
 		onBackButton: function() {
+
 			this.back();
-		},
-
-		onBeforeUnload: function() {
-
-			if (this.model.isSaved()) {
-				this.model.save({ status: 'canceled' });
-			} else {
-				app.paymentRequests.remove(this.model);
-			}
 		},
 
 	});

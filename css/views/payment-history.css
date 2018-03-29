@@ -1,32 +1,53 @@
-.payment-history-confirmation-circle {
-    border-radius: 1.8rem;
-    width: 2.2rem;
-    height: 2rem;
-    margin: 1rem;
+.view.admin .payment-history-item {
+	display: flex;
+	flex: 1;
+	justify-content: space-between;
+	cursor: pointer;
+	background-color: rgba(210, 210, 210, 0.5);
+	box-sizing: border-box;
+	padding: .8rem 1rem;
 }
-
-.payment-history-confirmed {
-    background-color: #7ac142;
+.view.admin .payment-history-empty {
+	text-align: center;
+	padding: 2rem;
 }
-
-.payment-history-unconfirmed {
-    background-color: #ff0000;
+.view.admin .payment-history-item-timestamp,
+.view.admin .payment-history-item-amount-crypto {
+	font-size: 0.9rem;
+	font-weight: 100;
+	margin-top: .2rem;
 }
-
-.payment-history-item {
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-    box-shadow: 0 .5rem 1rem #f7f7f7;
-    margin-bottom: 1rem;
-    cursor: pointer;
+.view.admin .payment-history-status-and-timestamp {
+	text-align: right;
 }
-
-.payment-history-item-body {
-    margin-left: 5%;
-    margin-right: 5%;
+.view.admin .payment-history-item:nth-child(even) {
+	background-color: rgba(210, 210, 210, 0.25);
 }
-
-.payment-history-item-amount {
-    float: right;
+.view.admin .payment-history-item.quicktouch {
+	background-color: rgba(210, 210, 210, 0.6);
+}
+.view.admin .payment-history-item.status-canceled {
+	opacity: 0.5;
+}
+.view.admin .payment-history-item.status-canceled:nth-child(even),
+.view.admin .payment-history-item.status-canceled.quicktouch {
+	background-color: rgba(210, 210, 210, 0.5);
+}
+.view.admin .payment-history-item.status-timed-out {
+	background-color: rgba(216, 0, 12, 0.3);
+}
+.view.admin .payment-history-item.status-timed-out:nth-child(even) {
+	background-color: rgba(216, 0, 12, 0.2);
+}
+.view.admin .payment-history-item.status-timed-out.quicktouch {
+	background-color: rgba(216, 0, 12, 0.4);
+}
+.view.admin .payment-history-item.status-confirmed {
+	background-color: rgba(122, 193, 66, 0.4);
+}
+.view.admin .payment-history-item.status-confirmed:nth-child(even) {
+	background-color: rgba(122, 193, 66, 0.3);
+}
+.view.admin .payment-history-item.status-confirmed.quicktouch {
+	background-color: rgba(122, 193, 66, 0.6);
 }

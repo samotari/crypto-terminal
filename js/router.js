@@ -17,6 +17,13 @@ app.Router = (function() {
 		'paymentDetails',
 	];
 
+	var paymentScreens = [
+		// Same as above.
+		'pay',
+		'choosePaymentMethod',
+		'displayPaymentAddress',
+	];
+
 	var isAllowedWhenNotConfigured = function(routerMethodName) {
 
 		return _.contains(allowedWhenNotConfigured, routerMethodName);
@@ -25,6 +32,11 @@ app.Router = (function() {
 	var isPinProtected = function(routerMethodName) {
 
 		return _.contains(pinProtected, routerMethodName);
+	};
+
+	var isPaymentScreen = function(routerMethodName) {
+
+		return _.contains(paymentScreens, routerMethodName);
 	};
 
 	return Backbone.Router.extend({
@@ -48,6 +60,10 @@ app.Router = (function() {
 
 			if (!isPinProtected(name) && app.requirePin() && app.isUnlocked()) {
 				app.lock();
+			}
+
+			if (!isPaymentScreen(name)) {
+				app.cleanUpPendingPaymentRequest();
 			}
 
 			if (isPinProtected(name)) {

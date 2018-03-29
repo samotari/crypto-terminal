@@ -36,7 +36,8 @@ app.views.Main = (function() {
 				'onDocumentInteraction',
 				'toggleIsUnlockedFlag',
 				'toggleRequirePinFlag',
-				'toggleConfiguredFlag'
+				'toggleConfiguredFlag',
+				'onBeforeUnload'
 			);
 			this.$languageMenu = this.$('#language-menu');
 			this.$languageMenuToggle = this.$('.header-button.language');
@@ -50,6 +51,7 @@ app.views.Main = (function() {
 			this.updateLanguageToggle();
 			this.reRenderView();
 			$(document).on('click quicktouch', this.onDocumentInteraction);
+			$(window).on('beforeunload', this.onBeforeUnload);
 			this.listenTo(app.settings, 'change:lastUnlockTime', this.toggleIsUnlockedFlag);
 			this.listenTo(app.settings, 'change:settingsPin', this.toggleRequirePinFlag);
 			this.listenTo(app.settings, 'change:locale', this.updateLanguageToggle);
@@ -423,16 +425,23 @@ app.views.Main = (function() {
 			}
 		},
 
+		onBeforeUnload: function() {
+
+			app.cleanUpPendingPaymentRequest();
+		},
+
+		onClose: function() {
+
+			$(document).off('click quicktouch', this.onDocumentInteraction);
+			$(window).off('beforeunload', this.onBeforeUnload);
+		},
+
 		render: function() {
 			// Do not render this view.
 		},
 
 		close: function() {
 			// Do not close this view.
-		},
-
-		onClose: function() {
-			$(document).off('click quicktouch', this.onDocumentInteraction);
 		},
 
 	});

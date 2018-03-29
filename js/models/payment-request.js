@@ -16,13 +16,9 @@ app.models.PaymentRequest = (function() {
 
 	return Backbone.Model.extend({
 
-		isPending: function() {
-			var status = this.get('status');
-			return !status || status === 'pending';
-		},
+		initialize: function() {
 
-		isSaved: function() {
-			return !!this.get('id');
+			this.collection = app.paymentRequests;
 		},
 
 		defaults: function() {
@@ -56,6 +52,42 @@ app.models.PaymentRequest = (function() {
 			if (attributes.status && !_.contains(statuses, attributes.status)) {
 				return app.i18n.t('payment-request.status.invalid');
 			}
-		}
+		},
+
+		isPending: function() {
+
+			var status = this.get('status');
+			return !status || status === 'pending';
+		},
+
+		isSaved: function() {
+
+			return !!this.get('id');
+		},
+
+		isComplete: function() {
+
+			var requiredFields = ['amount', 'currency', 'method', 'rate'];
+			return this.isSaved() && _.every(requiredFields, function(field) {
+				return !!this.get(field);
+			}, this);
+		},
+
+		getCryptoAmount: function() {
+
+			var amount = this.get('amount');
+			var rate = this.get('rate');
+
+			if (_.isNull(amount)) {
+				throw new Error(app.i18n.t('payment-request.crypto-amount.amount-required'));
+			}
+
+			if (_.isNull(rate)) {
+				throw new Error(app.i18n.t('payment-request.crypto-amount.rate-required'));
+			}
+
+			return (new BigNumber(amount)).dividedBy(rate).toString();
+		},
+
 	});
 })();

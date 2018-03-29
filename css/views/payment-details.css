@@ -1,33 +1,48 @@
-.payment-details-confirmation-circle {
-    border-radius: 1.8rem;
-    height: 3rem;
-    width: 14.5rem;
-    margin-left: 1rem;
-    font-size: 1.2rem;
+.view.payment-detail {
+	padding: 0;
+	padding-bottom: 4rem;
 }
-
-.payment-details-confirmed {
-    background-color: #7ac142;
+.view.payment-detail .page-title {
+	margin: 2rem 0;
 }
-
-.payment-details-confirmed span {
-    color: #fff;
-    margin-left: 1rem;
+.view.payment-detail .payment-details-info-item {
+	display: flex;
+	flex: 1;
+	justify-content: space-between;
+	box-sizing: border-box;
+	border: .1rem dashed rgba(210, 210, 210, 0.3);
+	border-left: none;
+	border-right: none;
+	padding: .8rem 1rem;
 }
-
-.payment-details-unconfirmed {
-    background-color: #F5F5F5;
+.view.payment-detail .payment-details-info-item + .payment-details-info-item {
+	border-top: none;
 }
-
-.payment-details-unconfirmed span {
-    color: #ff0000;
-    margin-left: 1rem;
+.view.payment-detail .payment-details-info-item-label {
+	display: flex;
+	align-self: center;
 }
-
-.payment-details-elements {
-    margin-top: 1rem;
+.view.payment-detail .payment-details-info-item-value {
+	text-align: right;
 }
-
-.payment-details-elements p {
-    text-align: right;
+.view.payment-detail .payment-details-info-item-value.status {
+	font-weight: bold;
+}
+.view.payment-detail.status-canceled .payment-details-info-item-value.status {
+	color: rgba(180, 180, 180, 0.6);
+}
+.view.payment-detail.status-timed-out .payment-details-info-item-value.status {
+	color: rgba(216, 0, 12, 1);
+}
+.view.payment-detail.status-confirmed .payment-details-info-item-value.status {
+	color: rgba(122, 193, 66, 1);
+}
+.view.payment-detail .payment-details-info-item-value-timestamp,
+.view.payment-detail .payment-details-amount-crypto {
+	font-size: 0.9rem;
+	font-weight: 100;
+	margin-top: .2rem;
+}
+.view.payment-detail .payment-details-info-item:nth-child(even) {
+	background-color: rgba(255, 255, 255, 0.25);
 }

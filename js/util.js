@@ -131,6 +131,12 @@ app.util = (function() {
 			return config;
 		},
 
+		formatDate: function(datetime, format) {
+
+			format = format || app.settings.get('dateFormat');
+			return moment(datetime).format(format);
+		},
+
 	};
 
 })();
