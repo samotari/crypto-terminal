@@ -15,7 +15,7 @@ a {
 	cursor: pointer;
 }
 a.quicktouch {
-	text-decoration: underline;
+	/*text-decoration: underline;*/
 }
 *:active {
 	/* remove blue highlight from touched elements: */

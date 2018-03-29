@@ -24,6 +24,7 @@ app.views.Main = (function() {
 			'quicktouch .header-button.more': 'showMoreMenu',
 			'quicktouch #language-menu .menu-item': 'changeLanguage',
 			'quicktouch a': 'onQuickTouchAnchor',
+			'quicktouch :input': 'onQuickTouchInput',
 		},
 
 		currentView: null,
@@ -39,6 +40,7 @@ app.views.Main = (function() {
 				'toggleConfiguredFlag',
 				'onBeforeUnload'
 			);
+			this.$menuCover = this.$('#menu-cover');
 			this.$languageMenu = this.$('#language-menu');
 			this.$languageMenuToggle = this.$('.header-button.language');
 			this.$moreMenu = this.$('#more-menu');
@@ -135,12 +137,23 @@ app.views.Main = (function() {
 			}
 		},
 
+		showMenuCover: function() {
+
+			this.$menuCover.addClass('visible');
+		},
+
+		hideMenuCover: function() {
+
+			this.$menuCover.removeClass('visible');
+		},
+
 		showLanguageMenu: function(evt) {
 
 			if (evt && evt.preventDefault) {
 				evt.preventDefault();
 			}
 
+			this.showMenuCover();
 			this.$languageMenu.addClass('visible');
 		},
 
@@ -155,6 +168,7 @@ app.views.Main = (function() {
 				evt.preventDefault();
 			}
 
+			this.showMenuCover();
 			this.$moreMenu.addClass('visible');
 		},
 
@@ -167,13 +181,19 @@ app.views.Main = (function() {
 
 			app.log('onDocumentTouch');
 			var $target = $(evt.target);
+			var isLanguageMenu = $target[0] === this.$languageMenuToggle[0];
+			var isMoreMenu = $target[0] === this.$moreMenuToggle[0];
 
-			if ($target[0] !== this.$languageMenuToggle[0]) {
+			if (!isLanguageMenu) {
 				this.hideLanguageMenu();
 			}
 
-			if ($target[0] !== this.$moreMenuToggle[0]) {
+			if (!isMoreMenu) {
 				this.hideMoreMenu();
+			}
+
+			if (!isLanguageMenu && !isMoreMenu) {
+				this.hideMenuCover();
 			}
 
 			this.hideMessage();
@@ -267,8 +287,17 @@ app.views.Main = (function() {
 					movement <= app.config.touch.quick.maxMovement
 				);
 				if (isQuickTouch) {
-					evt.preventDefault();
-					evt.stopPropagation();
+					switch ($target[0].tagName) {
+						case 'SELECT':
+						case 'INPUT':
+							// These need to continue with their default behavior.
+							break;
+						default:
+							// For most HTML elements, we want to prevent the default behavior.
+							// This is necessary to prevent double firing of events.
+							evt.preventDefault();
+							break;
+					}
 					this.onQuickTouch(evt);
 				}
 				var velocity = this.interaction.velocity;

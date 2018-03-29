@@ -15,6 +15,9 @@
 	border-radius: 0;
 	padding: 0;
 }
+.secondary-control.quicktouch {
+	text-decoration: none;
+}
 .secondary-control + .secondary-control {
 	border-left: none;
 }
