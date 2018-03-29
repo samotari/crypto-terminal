@@ -19,13 +19,13 @@ app.views.EnterPin = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'updateKeysDisplay', 'onDocumentInteraction');
+			_.bindAll(this, 'updateKeysDisplay', 'onDocumentTouch');
 			this.numberPadView = new app.views.NumberPad({ dot: false });
 			this.listenTo(this.numberPadView.model, 'change:keys', this.updateKeysDisplay);
 			this.render().$el.appendTo($('body'));
 			_.defer(_.bind(function() {
 				// Defer the document event listener so that the view isn't closed immediately.
-				$(document).on('click', this.onDocumentInteraction);
+				$(document).on('quicktouch', this.onDocumentTouch);
 			}, this));
 		},
 
@@ -74,7 +74,7 @@ app.views.EnterPin = (function() {
 			this.$keys.text(displayedKeys);
 		},
 
-		onDocumentInteraction: function(evt) {
+		onDocumentTouch: function(evt) {
 
 			if (this.options.closable) {
 
@@ -92,7 +92,7 @@ app.views.EnterPin = (function() {
 		onClose: function() {
 
 			this.numberPadView.close();
-			$(document).off('click', this.onDocumentInteraction);
+			$(document).off('quicktouch', this.onDocumentTouch);
 		}
 
 	});

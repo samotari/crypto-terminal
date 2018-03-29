@@ -12,7 +12,7 @@ app.views.SettingsPaymentMethod = (function() {
 		template: '#template-settings-payment-method',
 
 		events: {
-			'click .form-field-action': 'onClickAction',
+			'quicktouch .form-field-action': 'onQuickTouchAction',
 		},
 
 		initialize: function() {
@@ -21,7 +21,7 @@ app.views.SettingsPaymentMethod = (function() {
 			this.paymentMethod = app.paymentMethods[this.options.key];
 		},
 
-		onClickAction: function(evt) {
+		onQuickTouchAction: function(evt) {
 
 			var $target = $(evt.target);
 			var setting = _.findWhere(this.paymentMethod.settings, {

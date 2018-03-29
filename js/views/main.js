@@ -33,7 +33,7 @@ app.views.Main = (function() {
 		initialize: function() {
 
 			_.bindAll(this,
-				'onDocumentInteraction',
+				'onDocumentTouch',
 				'toggleIsUnlockedFlag',
 				'toggleRequirePinFlag',
 				'toggleConfiguredFlag',
@@ -50,7 +50,7 @@ app.views.Main = (function() {
 			this.initializeMoreMenu();
 			this.updateLanguageToggle();
 			this.reRenderView();
-			$(document).on('click quicktouch', this.onDocumentInteraction);
+			$(document).on('quicktouch', this.onDocumentTouch);
 			$(window).on('beforeunload', this.onBeforeUnload);
 			this.listenTo(app.settings, 'change:lastUnlockTime', this.toggleIsUnlockedFlag);
 			this.listenTo(app.settings, 'change:settingsPin', this.toggleRequirePinFlag);
@@ -163,8 +163,9 @@ app.views.Main = (function() {
 			this.$moreMenu.removeClass('visible');
 		},
 
-		onDocumentInteraction: function(evt) {
+		onDocumentTouch: function(evt) {
 
+			app.log('onDocumentTouch');
 			var $target = $(evt.target);
 
 			if ($target[0] !== this.$languageMenuToggle[0]) {
