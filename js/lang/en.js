@@ -56,6 +56,7 @@ app.lang['en'] = (function() {
 		'device.camera.not-available': 'Device camera not available',
 		'payment-timed-out.message': 'Timed out',
 		'payment-timed-out.ok': 'Ok',
+		'more-menu.about': 'About',
 	};
 
 })();

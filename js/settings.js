@@ -143,11 +143,11 @@ app.settings = (function() {
 
 		app.queues.onStart.push({
 			fn: function(done) {
-				settings.collection.on('change:value', function(model) {
+				settings.collection.on('add update change', function(model) {
 					var key = model.get('key');
 					var value = model.get('value');
 					settings.trigger('change:' + key, value);
-					settings.trigger('change');
+					settings.trigger('change', key, value);
 				});
 				settings.collection.fetch({
 					success: function() {

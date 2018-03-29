@@ -29,6 +29,11 @@ html.loaded #header {
 .header-button.quicktouch {
 	background-color: #e6e6e6;
 }
+.header-button.more {
+	float: right;
+	background-image: url('../images/vertical-dot-menu.svg');
+	background-size: 1.8rem 1.8rem;
+}
 .header-button.admin {
 	background-image: url('../images/gear.svg');
 }
@@ -48,6 +53,18 @@ html.loaded #header {
 	background-repeat: no-repeat;
 	background-size: 0.8rem 0.8rem;
 	background-image: url('../images/lock-closed.svg');
+}
+.header-button.language {
+	float: right;
+	width: 4.5rem;
+	-webkit-filter: grayscale(100%);
+	filter: gray;
+	filter: url('../images/grayscale-filter.svg#grayscale');
+	background-size: 3rem;
+}
+.header-button.language.quicktouch {
+	-webkit-filter: none;
+	filter: none;
 }
 html.is-unlocked .header-button.admin:after {
 	background-image: url('../images/lock-open.svg');
@@ -81,23 +98,4 @@ body.view-choose-payment-method .header-button.pay {
 		Hide the pay button when viewing the pay screens.
 	*/
 	display: none;
-}
-#header-app-name {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 5;
-	width: 100%;
-	text-align: center;
-	box-sizing: border-box;
-	padding: 0;
-}
-#header-app-name-anchor {
-	font-size: 1.1rem;
-	line-height: 4.1rem;
-	text-decoration: none;
-	color: #ccc;
-}
-#header-app-name-anchor.pressed {
-	text-decoration: none;
 }
