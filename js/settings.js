@@ -150,6 +150,7 @@ app.settings = (function() {
 					settings.trigger('change', key, value);
 				});
 				settings.collection.fetch({
+					limit: 999,
 					success: function() {
 						done();
 					},

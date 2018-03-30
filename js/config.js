@@ -84,7 +84,7 @@ app.config = (function() {
 			unlockTime: 5 * 60 * 1000,
 		},
 		paymentRequests: {
-			maxPendingTime: 5 * 6 * 1000,
+			maxPendingTime: 5 * 60 * 1000,
 		},
 		settings: [
 			{

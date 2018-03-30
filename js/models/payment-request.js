@@ -14,7 +14,7 @@ app.models.PaymentRequest = (function() {
 		'canceled',// Canceled by the customer.
 	];
 
-	return Backbone.Model.extend({
+	return app.abstracts.BaseModel.extend({
 
 		initialize: function() {
 
@@ -58,11 +58,6 @@ app.models.PaymentRequest = (function() {
 
 			var status = this.get('status');
 			return !status || status === 'pending';
-		},
-
-		isSaved: function() {
-
-			return !!this.get('id');
 		},
 
 		isComplete: function() {

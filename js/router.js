@@ -162,22 +162,18 @@ app.Router = (function() {
 		pay: function() {
 
 			// Create a new payment request, but don't save it.
-			var paymentRequest = app.paymentRequests.add({
+			var paymentRequest = new app.paymentRequests.model({
 				currency: app.settings.get('displayCurrency'),
 			});
 
 			app.mainView.renderView('Pay', { model: paymentRequest });
+			app.paymentRequests.add(paymentRequest);
 		},
 
 		choosePaymentMethod: function() {
 
 			// Get latest payment request.
-			var paymentRequest = app.paymentRequests.at(0);
-
-			// If the latest payment request is not pending, then we need to make a new one.
-			if (paymentRequest && !paymentRequest.isPending()) {
-				paymentRequest = null;
-			}
+			var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
 
 			if (!paymentRequest) {
 				// Start from the beginning of the payment process.
@@ -194,12 +190,7 @@ app.Router = (function() {
 		displayPaymentAddress: function() {
 
 			// Get latest payment request.
-			var paymentRequest = app.paymentRequests.at(0);
-
-			// If the latest payment request is not pending, then we need to make a new one.
-			if (paymentRequest && !paymentRequest.isPending()) {
-				paymentRequest = null;
-			}
+			var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
 
 			if (!paymentRequest) {
 				// Start from the beginning of the payment process.
