@@ -38,7 +38,7 @@ app.views.PaymentHistory = (function() {
 				var cryptoAmount = payment.getCryptoAmount();
 				return _.extend({}, _.pick(payment.toJSON(), 'id', 'status', 'amount', 'currency', 'timestamp'), {
 					cryptoAmount: cryptoAmount,
-					paymentMethod: _.pick(paymentMethod, 'ref', 'code'),
+					paymentMethod: _.pick(paymentMethod, 'code'),
 				});
 			}).value();
 			return data;

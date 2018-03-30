@@ -36,7 +36,10 @@ app.lang['es'] = (function() {
 		'payment-details.date': 'Fecha',
 		'payment-details.amount': 'Cantidad',
 		'payment-request.data.must-be-object': '"data" tiene que ser un objeto.',
-		'payment-confirmation.done': 'Hecho'
+		'payment-status.unconfirmed.message': '¡Gracias!',
+		'payment-status.unconfirmed.done': 'Hecho',
+		'payment-status.timed-out.message': 'Caducado',
+		'payment-status.timed-out.done': 'OK',
 	};
 
 })();

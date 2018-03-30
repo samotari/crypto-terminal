@@ -45,9 +45,8 @@ app.Router = (function() {
 			'pay': 'pay',
 			'choose-payment-method': 'choosePaymentMethod',
 			'display-payment-address': 'displayPaymentAddress',
-			'confirmed': 'paymentConfirmed',
-			'timed-out': 'paymentTimedOut',
 			'payment-details/:paymentId': 'paymentDetails',
+			'payment-status/:status': 'paymentStatus',
 			'admin': 'admin',
 			'admin/:page': 'admin',
 			'about': 'about',
@@ -149,12 +148,14 @@ app.Router = (function() {
 		},
 
 		paymentDetails: function(paymentId) {
+
 			app.mainView.renderView('PaymentDetails', {
-				paymentId: paymentId
+				paymentId: paymentId,
 			});
 		},
 
 		about: function() {
+
 			app.mainView.renderView('About');
 		},
 
@@ -209,13 +210,12 @@ app.Router = (function() {
 			app.mainView.renderView('DisplayPaymentAddress', { model: paymentRequest });
 		},
 
-		paymentConfirmed: function(){
-			app.mainView.renderView('PaymentConfirmation');
-		},
+		paymentStatus: function(status) {
 
-		paymentTimedOut: function() {
-			app.mainView.renderView('PaymentTimedOut');
-		}
+			app.mainView.renderView('PaymentStatus', {
+				status: status,
+			});
+		},
 
 	});
 

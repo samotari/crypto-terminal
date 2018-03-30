@@ -35,8 +35,10 @@ app.lang['cs'] = (function() {
 		'payment-details.date': 'Datum',
 		'payment-details.amount': 'Částka',
 		'payment-request.data.must-be-object': '"data" musí být objekt',
-		'payment-confirmation.done': 'Hotovo',
-		'payment-confirmation.message': 'Díky!'
+		'payment-status.unconfirmed.message': 'Díky!',
+		'payment-status.unconfirmed.done': 'Hotovo',
+		'payment-status.timed-out.message': 'Čas vypršel',
+		'payment-status.timed-out.done': 'OK',
 	};
 
 })();

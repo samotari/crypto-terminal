@@ -46,8 +46,10 @@ app.lang['en'] = (function() {
 		'payment-details.label.amount': 'Amount',
 		'payment-details.back': 'Back',
 		'payment-request.data.must-be-object': '"data" must be an object.',
-		'payment-confirmation.message': 'Thanks!',
-		'payment-confirmation.done': 'Done',
+		'payment-status.unconfirmed.message': 'Thanks!',
+		'payment-status.unconfirmed.done': 'Done',
+		'payment-status.timed-out.message': 'Timed out',
+		'payment-status.timed-out.done': 'OK',
 		'sample-addresses.label': 'Sample Addresses:',
 		'enter-pin.cancel': 'Cancel',
 		'enter-pin.submit': 'Enter',
@@ -55,8 +57,6 @@ app.lang['en'] = (function() {
 		'pin-required.instructions': 'Enter the admin PIN to continue',
 		'pin-required.incorrect': 'The PIN you entered was incorrect',
 		'device.camera.not-available': 'Device camera not available',
-		'payment-timed-out.message': 'Timed out',
-		'payment-timed-out.ok': 'Ok',
 		'more-menu.about': 'About',
 	};
 
