@@ -5,10 +5,7 @@ app.lang = app.lang || {};
 app.lang['fr'] = (function () {
 
 	return {
-		'language.cs': 'Tchèque',
-		'language.en': 'Anglais',
-		'language.es': 'Espagnol',
-		'language.fr': 'Français',
+		'self.label': 'Français',
 		'main.message.status.0': 'Erreur : il n\'y a pas de réseau',
 		'admin.title': 'Admin',
 		'admin.general-settings.label': 'Paramètres généraux',

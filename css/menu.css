@@ -50,27 +50,7 @@
 }
 #language-menu .menu-item {
 	text-align: center;
-	background-position: 2rem center;
-	background-repeat: no-repeat;
-	background-size: 3rem;
 	cursor: pointer;
-	padding-left: 2.5rem;
-}
-.header-button.language.cs,
-#language-menu .menu-item.cs {
-	background-image: url('../images/flags/cz.svg');
-}
-.header-button.language.en,
-#language-menu .menu-item.en {
-	background-image: url('../images/flags/gb.svg');
-}
-.header-button.language.es,
-#language-menu .menu-item.es {
-	background-image: url('../images/flags/es.svg');
-}
-.header-button.language.fr,
-#language-menu .menu-item.fr {
-	background-image: url('../images/flags/fr.svg');
 }
 #language-menu.menu,
 #more-menu.menu {

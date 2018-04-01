@@ -5,10 +5,7 @@ app.lang = app.lang || {};
 app.lang['en'] = (function() {
 
 	return {
-		'language.cs': 'Czech',
-		'language.en': 'English',
-		'language.es': 'Spanish',
-		'language.fr': 'French',
+		'self.label': 'English',
 		'main.message.status.0': 'Error: Network seems to be down',
 		'admin.title': 'Admin',
 		'admin.general-settings.label': 'General settings',

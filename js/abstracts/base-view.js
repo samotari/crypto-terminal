@@ -14,11 +14,11 @@ app.abstracts.BaseView = (function() {
 
 			this.options = options || {};
 
-			_.bindAll(this, 'close', 'render', 'reRender', 'resize');
+			_.bindAll(this, 'close', 'render', 'onChangeLocale', 'resize');
 
 			Backbone.View.prototype.constructor.apply(this, arguments);
 
-			this.listenTo(app.settings, 'change:locale', this.reRender);
+			this.listenTo(app.settings, 'change:locale', this.onChangeLocale);
 
 			/*
 				Start listening to resize on the window object.
@@ -28,12 +28,17 @@ app.abstracts.BaseView = (function() {
 				See:
 				https://api.jquery.com/event.namespace/
 			*/
-			$(window).on('resize.' + this.cid, _.throttle(this.resize, 1000));
+			$(window).on('resize.' + this.cid, _.throttle(this.debounce, 1000));
 		},
 
 		isRendered: function() {
 
 			return this._rendered === true;
+		},
+
+		onChangeLocale: function() {
+
+			this.reRender();
 		},
 
 		reRender: function() {
