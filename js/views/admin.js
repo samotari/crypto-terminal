@@ -111,15 +111,14 @@ app.views.Admin = (function() {
 		updateSecondaryMenuWidth: function() {
 
 			_.defer(_.bind(function() {
-				var secondaryMenuItemsWidth = 0;
-				// Add some extra width to ensure no wrapping.
-				secondaryMenuItemsWidth += 60;
+				// Start with some extra width to ensure no wrapping.
+				var newWidth = 60;
 				this.$('.secondary-menu-item').each(function() {
 					if ($(this).is(':visible')) {
-						secondaryMenuItemsWidth += $(this).outerWidth();
+						newWidth += $(this).outerWidth();
 					}
 				});
-				this.$('.secondary-menu-inner').width(secondaryMenuItemsWidth);
+				this.$('.secondary-menu-inner').width(newWidth);
 			}, this));
 		},
 
@@ -178,6 +177,7 @@ app.views.Admin = (function() {
 			var isChecked = $input.is(':checked');
 			$input.prop('checked', !isChecked).trigger('change');
 			this.setCryptoCurrencySettingsVisibility(key, !isChecked);
+			this.updateSecondaryMenuWidth();
 		},
 
 		updateCryptoCurrencySettingsVisibility: function() {
