@@ -77,11 +77,6 @@ app.views.SettingsGeneral = (function() {
 					return done(error);
 				}
 
-				// At least one cryptocurrency is required.
-				if (_.isEmpty(data.configurableCryptoCurrencies)) {
-					validationErrors.push(app.i18n.t('settings.at-least-one-crypto-currency-required'));
-				}
-
 				done(null, validationErrors);
 			});
 		},

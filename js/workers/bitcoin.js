@@ -32,7 +32,7 @@ var functions = {
 
 		// Expect 82 bytes.
 		if (hex.length !== 164) {
-			throw new Error('bitcoin.incorrect-number-of-bytes');
+			throw new Error('incorrect-number-of-bytes');
 		}
 
 		// Check version bytes.
@@ -40,13 +40,13 @@ var functions = {
 
 		var network = _.find(networks, function(network) {
 			if (version === network.bip32.private) {
-				throw new Error('bitcoin.private-keys-warning');
+				throw new Error('private-keys-warning');
 			}
 			return version === network.bip32.public;
 		});
 
 		if (!network) {
-			throw new Error('bitcoin.invalid-network-version');
+			throw new Error('invalid-network-byte');
 		}
 
 		// Validate the checksum.
@@ -55,7 +55,7 @@ var functions = {
 
 		if (hash.substr(0, 8) !== checksum) {
 			// Invalid checksum.
-			throw new Error('bitcoin.invalid-checksum');
+			throw new Error('invalid-checksum');
 		}
 
 		// 1 byte: depth: 0x00 for master nodes, 0x01 for level-1 derived keys, ....
@@ -64,7 +64,7 @@ var functions = {
 		// 4 bytes: the fingerprint of the parent's key (0x00000000 if master key)
 		var parentFingerPrint = hex.substr(10, 8);
 		if (depth === '00' && parentFingerPrint !== '00000000') {
-			throw new Error('bitcoin.invalid-parent-fingerprint');
+			throw new Error('invalid-parent-fingerprint');
 		}
 
 		var index = hex.substr(18, 8);
@@ -92,23 +92,23 @@ var functions = {
 	deriveChildKeyAtIndex: function(extendedPublicKey, index, networks) {
 
 		if (parseInt(index).toString() !== index.toString()) {
-			throw new Error('bitcoin.index-must-be-an-integer');
+			throw new Error('index-must-be-an-integer');
 		}
 
 		try {
 			index = new BigNumber(index);
 		} catch (error) {
-			throw new Error('bitcoin.index-must-be-an-integer');
+			throw new Error('index-must-be-an-integer');
 		}
 
 		if (index.isGreaterThanOrEqualTo(0x100000000)) {
 			// Maximum number of child keys is 2^32.
-			throw new Error('bitcoin.index-must-be-less-than');
+			throw new Error('index-must-be-less-than');
 		}
 
 		if (index.isGreaterThanOrEqualTo(0x80000000)) {
 			// Hardened child keys start at index 2^31.
-			throw new Error('bitcoin.index-no-hardened');
+			throw new Error('index-no-hardened');
 		}
 
 		var decoded = functions.decodeExtendedPublicKey(extendedPublicKey, networks);

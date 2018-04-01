@@ -46,7 +46,7 @@ app.models.PaymentRequest = (function() {
 		validate: function(attributes, options) {
 
 			if (attributes.data && !_.isObject(attributes.data)) {
-				return app.i18n.t('payment-request.data.must-be-object');
+				return app.i18n.t('payment-request.data.invalid');
 			}
 
 			if (attributes.status && !_.contains(statuses, attributes.status)) {
@@ -76,15 +76,15 @@ app.models.PaymentRequest = (function() {
 			var method = this.get('method');
 
 			if (_.isNull(amount)) {
-				throw new Error(app.i18n.t('payment-request.crypto-amount.amount-required'));
+				throw new Error(app.i18n.t('payment-request.crypto-amount.field-missing', { field: 'amount' }));
 			}
 
 			if (_.isNull(rate)) {
-				throw new Error(app.i18n.t('payment-request.crypto-amount.rate-required'));
+				throw new Error(app.i18n.t('payment-request.crypto-amount.field-missing', { field: 'rate' }));
 			}
 
 			if (_.isNull(method)) {
-				throw new Error(app.i18n.t('payment-request.crypto-amount.method-required'));
+				throw new Error(app.i18n.t('payment-request.crypto-amount.field-missing', { field: 'method' }));
 			}
 
 			var paymentMethod = app.paymentMethods[method];
