@@ -46,6 +46,8 @@ app.lang['en'] = (function() {
 		'payment-details.label.amount': 'Amount',
 		'payment-details.back': 'Back',
 		'payment-request.data.must-be-object': '"data" must be an object.',
+		'payment-request.crypto-amount.amount-required': '"amount" is required to convert to "cryptoAmount"',
+		'payment-request.crypto-amount.rate-required': '"rate" is required to convert to "cryptoAmount"',
 		'payment-status.unconfirmed.message': 'Thanks!',
 		'payment-status.unconfirmed.done': 'Done',
 		'payment-status.timed-out.message': 'Timed out',

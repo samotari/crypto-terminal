@@ -1,0 +1,8 @@
+<div class="payment-history-item-amount">
+	<div class="payment-history-item-amount-display">{{formatNumber amount currency}} {{currency}}</div>
+	<div class="payment-history-item-amount-crypto">{{formatNumber cryptoAmount paymentMethod.code}} {{paymentMethod.code}}</div>
+</div>
+<div class="payment-history-status-and-timestamp">
+	<div class="payment-history-item-status">{{status}}</div>
+	<div class="payment-history-item-timestamp">{{formatDate timestamp}}</div>
+</div>

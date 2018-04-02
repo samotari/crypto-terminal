@@ -10,12 +10,15 @@ app.abstracts.BaseCollection = (function() {
 
 		// storeName: '<NAME>',
 
+		// Internal counter for the total number of models stored in this collection's db table.
+		total: 0,
+
 		initialize: function() {
 
 			var storeName = _.result(this, 'storeName') || _.result(this.collection, 'storeName');
 
 			if (!storeName) {
-				throw new Error('Failed to initialize model, because store name is missing.');
+				throw new Error('"storeName" is missing');
 			}
 
 			if (app.sqlite) {
@@ -23,17 +26,6 @@ app.abstracts.BaseCollection = (function() {
 			} else {
 				this.localStorage = new Backbone.LocalStorage(storeName);
 			}
-		},
-
-		fetched: false,
-		fetch: function(options) {
-			options = _.defaults(options || {}, {
-				force: false,
-			});
-			if (!options.force && this.fetched) return;
-			this.fetched = true;
-			options = _.omit(options, 'force');
-			return Backbone.Collection.prototype.fetch.call(this, options);
 		},
 
 	});

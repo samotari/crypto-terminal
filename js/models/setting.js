@@ -6,7 +6,7 @@ app.models.Setting = (function() {
 
 	'use strict';
 
-	return Backbone.Model.extend({
+	return app.abstracts.BaseModel.extend({
 		idAttribute: 'key',
 	});
 

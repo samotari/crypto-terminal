@@ -44,7 +44,7 @@ var app = app || {};
 	app.cleanUpPendingPaymentRequest = function() {
 
 		app.log('cleanUpPendingPaymentRequest');
-		var paymentRequest = app.paymentRequests.at(0);
+		var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
 		if (paymentRequest && !paymentRequest.isComplete()) {
 			if (paymentRequest.isSaved()) {
 				paymentRequest.save({ status: 'canceled' });

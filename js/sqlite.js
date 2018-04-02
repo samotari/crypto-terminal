@@ -30,11 +30,19 @@ app.onDeviceReady(function() {
 			];
 			app.sqlite.db.transaction(
 				function(tx) {
-					_.each(collections, function(collection) {
-						if (collection.sqliteStore) {
-							collection.sqliteStore.tx = tx;
-							collection.sqliteStore.setupTable(function() {
-								collection.sqliteStore.tx = null;
+					_.each(collections, function(collection, index) {
+						var store = collection.sqliteStore;
+						if (store) {
+							store.tx = tx;
+							store._setupTable();
+							store._count(function(error, total) {
+								collection.total = total;
+								store.tx = null;
+								if (index === collections.length - 1) {
+									// Last collection.
+									// Finish the db transaction.
+									tx.finish();
+								}
 							});
 						}
 					});
@@ -72,9 +80,9 @@ app.onDeviceReady(function() {
 		return name;
 	};
 
-	Store.prototype.setupTable = function(cb) {
-		app.log('SQLiteStore.setupTable');
-		this.query('CREATE TABLE IF NOT EXISTS '+this.tableName+' (id TEXT PRIMARY KEY, data TEXT)', function(error) {
+	Store.prototype._setupTable = function(cb) {
+		app.log('SQLiteStore._setupTable');
+		this.query('CREATE TABLE IF NOT EXISTS '+this.tableName+' (id TEXT PRIMARY KEY, data TEXT, created_at INTEGER)', function(error) {
 			cb && cb(error);
 		});
 	};
@@ -130,15 +138,21 @@ app.onDeviceReady(function() {
 		}
 		var items;
 		var prepareResultItems = this.prepareResultItems;
+		var done = _.once(cb);
 		this.newTransaction({ readOnly: true }, function(tx) {
 			this._findAll(options, function(error, result) {
-				items = prepareResultItems(result);
+				try {
+					items = prepareResultItems(result);
+				} catch (error) {
+					done(error);
+				}
+				tx.finish();
 			});
 		}, function(error) {
 			if (error) {
-				return cb(error);
+				return done(error);
 			}
-			cb(null, items);
+			done(null, items);
 		});
 	};
 
@@ -148,10 +162,10 @@ app.onDeviceReady(function() {
 			options = null;
 		}
 		options = _.defaults(options || {}, {
-			limit: 999,
+			limit: 10,
 			offset: 0,
 		});
-		var sql = 'SELECT id, data FROM '+this.tableName+' LIMIT ? OFFSET ?';
+		var sql = 'SELECT id, data FROM '+this.tableName+' ORDER BY created_at DESC LIMIT ? OFFSET ?';
 		var params = [ options.limit, options.offset ];
 		this.query(sql, params, cb);
 	};
@@ -160,20 +174,26 @@ app.onDeviceReady(function() {
 		app.log('SQLiteStore.find');
 		var items;
 		var prepareResultItems = this.prepareResultItems;
+		var done = _.once(cb);
 		this.newTransaction({ readOnly: true }, function(tx) {
 			this._find(model.id, function(error, result) {
-				items = prepareResultItems(result);
+				try {
+					items = prepareResultItems(result);
+				} catch (error) {
+					done(error);
+				}
+				tx.finish();
 			});
 		}, function(error) {
 			if (error) {
-				return cb(error);
+				return done(error);
 			}
-			cb(null, items);
+			done(null, items);
 		});
 	};
 
 	Store.prototype._find = function(id, cb) {
-		this.query('SELECT id, data FROM '+this.tableName+' WHERE id = ?', [ id ], cb);
+		this.query('SELECT id, data FROM '+this.tableName+' WHERE id = ? LIMIT 1', [ id ], cb);
 	};
 
 	Store.prototype.update = function(model, cb) {
@@ -199,7 +219,11 @@ app.onDeviceReady(function() {
 			});
 			return;
 		}
-		this.query('REPLACE INTO '+this.tableName+' (id,data) VALUES (?,?)', [ id, data ], function(error) {
+		this.query('REPLACE INTO '+this.tableName+' (id,data,created_at) VALUES (?,?,?)', [
+			id,
+			data,
+			Date.now(),
+		], function(error) {
 			cb(error);
 		});
 	};
@@ -215,6 +239,16 @@ app.onDeviceReady(function() {
 
 	Store.prototype._destroy = function(id, cb) {
 		this.query('DELETE FROM '+this.tableName+' WHERE id = ? LIMIT 1', [ id ], cb);
+	};
+
+	Store.prototype._count = function(cb) {
+		this.query('SELECT COUNT(*) FROM '+this.tableName, function(error, result) {
+			if (error) {
+				return cb(error);
+			}
+			var total = result.rows.item(0)['COUNT(*)'];
+			cb(null, total);
+		});
 	};
 
 	Store.prototype.query = function(sql, params, cb) {
@@ -262,7 +296,7 @@ app.onDeviceReady(function() {
 		app.sqlite.db[txMethod](txReady, txError, txSuccess);
 	};
 
-	Store.prototype.prepareResultItems = function(result, cb) {
+	Store.prototype.prepareResultItems = function(result) {
 		var rows = [];
 		for (var index = 0; index < result.rows.length; index++) {
 			rows.push(result.rows.item(index));
@@ -271,6 +305,7 @@ app.onDeviceReady(function() {
 			try {
 				var data = this.deserializeData(row.data);
 			} catch (error) {
+				app.log(error);
 				return null;
 			}
 			return data;

@@ -23,6 +23,7 @@
 		var store = sqliteStore;
 		var storeMethodOptions = _.pick(options, 'limit', 'offset');
 		var deferred = getDeferred();
+		var models = this.models || null;
 
 		_.defer(function() {
 			var storeMethod;
@@ -52,6 +53,10 @@
 						deferred.reject(error);
 					}
 				} else {
+					// Combine the result with the existing models in the collection.
+					if (models) {
+						result = models.concat(result);
+					}
 					if (options.success) {
 						options.success.call(model, result, options);
 					}
