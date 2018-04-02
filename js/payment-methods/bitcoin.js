@@ -303,7 +303,7 @@ app.paymentMethods.bitcoin = (function() {
 			var amountReceived = new BigNumber('0');
 
 			var done = _.bind(function() {
-				app.services['chain.so'].stopListening();
+				this.stopListeningForPayment();
 				cb.apply(undefined, arguments);
 			}, this);
 
@@ -313,7 +313,11 @@ app.paymentMethods.bitcoin = (function() {
 					return done(error);
 				}
 
-				amountReceived = amountReceived.plus(tx.amount_received);
+				// Converted to the amount used in paymentRequest for right comparison.
+				amountReceived = amountReceived
+					.plus(tx.amount_received)
+					.multipliedBy(paymentRequest.rate)
+					.precision(15, BigNumber.ROUND_UP);
 
 				if (amountReceived.isGreaterThanOrEqualTo(amount)) {
 					return done(null, true/* wasReceived */);

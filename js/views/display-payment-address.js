@@ -91,6 +91,7 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 
 				this.model.set({
+					address: paymentRequest.address,
 					data: paymentRequest.data,
 					uri: paymentRequest.uri,
 					status: 'pending',
