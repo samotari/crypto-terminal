@@ -17,6 +17,10 @@ app.config = (function() {
 
 	var config = {
 		debug: false,
+		ctApi: _.extend({}, {
+			baseUrl: 'http://localhost:3600',
+			primusPath: '/primus',
+		}, app.config.ctApi),
 		sqlite: {
 			name: 'crypto-terminal.db',
 			location: 'default',

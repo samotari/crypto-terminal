@@ -60,6 +60,7 @@ app.lang['en'] = (function() {
 		'pin-required.incorrect': 'The PIN you entered was incorrect',
 		'device.camera.not-available': 'Device camera not available',
 		'more-menu.about': 'About',
+		'ct-api.missing-exchange-rates': 'Missing exchange rates data',
 	};
 
 })();
