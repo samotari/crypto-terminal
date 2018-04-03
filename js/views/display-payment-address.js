@@ -80,7 +80,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		onChangeRate: function() {
 
-			var cryptoAmount = this.getCryptoAmount();
+			var cryptoAmount = this.model.getCryptoAmount();
 
 			this.renderCryptoAmount(cryptoAmount);
 
@@ -91,7 +91,6 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 
 				this.model.set({
-					address: paymentRequest.address,
 					data: paymentRequest.data,
 					uri: paymentRequest.uri,
 					status: 'pending',
@@ -103,18 +102,6 @@ app.views.DisplayPaymentAddress = (function() {
 				}, this), 5000);
 
 			}, this));
-		},
-
-		getCryptoAmount: function() {
-
-			var amount = this.model.get('amount');
-			var paymentMethod = this.paymentMethod;
-			var numDecimals = paymentMethod.numberFormat && paymentMethod.numberFormat.decimals || 8;
-			var rate = this.model.get('rate');
-			return (new BigNumber(amount))
-				.dividedBy(rate)
-				.decimalPlaces(numDecimals)
-				.toString();
 		},
 
 		renderCryptoAmount: function(cryptoAmount) {

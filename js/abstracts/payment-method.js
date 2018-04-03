@@ -35,8 +35,6 @@ app.abstracts.PaymentMethod = (function() {
 				`error`          .. An error object if some problem occurs while generating the payment request
 				`paymentRequest` .. An object containing at least the following information:
 					`uri`        .. URI (e.g "bitcoin:ADDRESS?amount=AMOUNT")
-					`amount`     .. The amount requested.
-					`address`    .. The address to which to send the funds.
 		*/
 		generatePaymentRequest: function(amount, cb) {
 			_.defer(function() {
@@ -92,7 +90,7 @@ app.abstracts.PaymentMethod = (function() {
 		},
 
 		/*
-			`paymentRequest` .. A cryptocurrency payment request (e.g "bitcoin:ADDRESS?amount=AMOUNT")
+			`paymentRequest` .. A cryptocurrency payment request object
 			`cb(error, wasReceived)`:
 				`error` .. An error object or NULL
 				`wasReceived` .. TRUE or FALSE
