@@ -22,6 +22,7 @@ app.Router = (function() {
 		'pay',
 		'choosePaymentMethod',
 		'displayPaymentAddress',
+		'paymentStatus',
 	];
 
 	var isAllowedWhenNotConfigured = function(routerMethodName) {
