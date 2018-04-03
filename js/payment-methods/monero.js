@@ -229,10 +229,10 @@ app.paymentMethods.monero = (function() {
 					});
 
 					var paymentRequest = {
-						address: address,
 						amount: amount,
 						uri: uri,
 						data: {
+							address: address,
 							paymentId: paymentId,
 						},
 					};

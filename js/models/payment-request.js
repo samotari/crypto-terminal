@@ -73,6 +73,7 @@ app.models.PaymentRequest = (function() {
 
 			var amount = this.get('amount');
 			var rate = this.get('rate');
+			var method = this.get('method');
 
 			if (_.isNull(amount)) {
 				throw new Error(app.i18n.t('payment-request.crypto-amount.amount-required'));
@@ -82,7 +83,32 @@ app.models.PaymentRequest = (function() {
 				throw new Error(app.i18n.t('payment-request.crypto-amount.rate-required'));
 			}
 
-			return (new BigNumber(amount)).dividedBy(rate).toString();
+			if (_.isNull(method)) {
+				throw new Error(app.i18n.t('payment-request.crypto-amount.method-required'));
+			}
+
+			var paymentMethod = app.paymentMethods[method];
+
+			if (!paymentMethod) {
+				throw new Error(app.i18n.t('payment-request.crypto-amount.unknown-method', { method: method }));
+			}
+
+			var decimals;
+
+			if (paymentMethod.numberFormat) {
+				decimals = paymentMethod.numberFormat.decimals;
+			}
+
+			return this.convertToCryptoAmount(amount, rate, decimals);
+		},
+
+		convertToCryptoAmount: function(amount, rate, decimals) {
+
+			var cryptoAmount = (new BigNumber(amount)).dividedBy(rate);
+			if (!_.isUndefined(decimals)) {
+				cryptoAmount = cryptoAmount.decimalPlaces(decimals);
+			}
+			return cryptoAmount.toString();
 		},
 
 	});

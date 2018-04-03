@@ -148,9 +148,11 @@ app.paymentMethods.bitcoin = (function() {
 				}
 
 				var paymentRequest = {
-					address: address,
 					amount: amount,
 					uri: uriScheme + ':' + address + '?amount=' + amount,
+					data: {
+						address: address,
+					},
 				};
 
 				cb(null, paymentRequest);
@@ -297,13 +299,16 @@ app.paymentMethods.bitcoin = (function() {
 
 		listenForPayment: function(paymentRequest, cb) {
 
-			var address = paymentRequest.address;
+			var address = paymentRequest.data && paymentRequest.data.address;
 			var amount = paymentRequest.amount;
+			var rate = paymentRequest.rate;
+			var decimals = this.numberFormat.decimals;
+			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
 			var currency = this.chainSoCode;
 			var amountReceived = new BigNumber('0');
 
 			var done = _.bind(function() {
-				app.services['chain.so'].stopListening();
+				this.stopListeningForPayment();
 				cb.apply(undefined, arguments);
 			}, this);
 
@@ -315,7 +320,7 @@ app.paymentMethods.bitcoin = (function() {
 
 				amountReceived = amountReceived.plus(tx.amount_received);
 
-				if (amountReceived.isGreaterThanOrEqualTo(amount)) {
+				if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
 					return done(null, true/* wasReceived */);
 				}
 
