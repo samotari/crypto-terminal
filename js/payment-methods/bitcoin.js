@@ -50,12 +50,11 @@ app.paymentMethods.bitcoin = (function() {
 				'settings.addressIndex.label': 'Address Index',
 				'settings.addressIndex.integer-required': 'Must be an integer',
 				'settings.addressIndex.greater-than-or-equal-zero': 'Must be greater than or equal to zero',
-				'settings.extendedPublicKey.label': 'Master Public Key',
-				'settings.extendedPublicKey.invalid': 'Invalid master public key',
+				'settings.extendedPublicKey.label': 'Extended Public Key',
 				'incorrect-number-of-bytes': 'Incorrect number of bytes',
 				'invalid-checksum': 'Invalid checksum',
 				'invalid-derivation-scheme': 'Invalid derivation scheme',
-				'invalid-network-version': 'Invalid network version',
+				'invalid-network-byte': 'Invalid network byte',
 				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
 				'index-must-be-an-integer': 'Index must be an integer',
 				'index-must-be-less-than': 'Index must be less than 2^32',
@@ -63,12 +62,53 @@ app.paymentMethods.bitcoin = (function() {
 				'failed-to-derive-address': 'Failed to derive address',
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
 			},
+			'cs': {
+				'settings.addressIndex.label': 'Index adresy',
+				'settings.addressIndex.integer-required': 'Musí být celé číslo',
+				'settings.addressIndex.greater-than-or-equal-zero': 'Musí být větší nebo rovno nule',
+				'settings.extendedPublicKey.label': 'Rozšířený veřejný klíč',
+				'incorrect-number-of-bytes': 'Nesprávný počet bajtů',
+				'invalid-checksum': 'Neplatný kontrolní součet',
+				'invalid-derivation-scheme': 'Neplatná schéma odvození',
+				'invalid-network-byte': 'Neplatný síťový byte',
+				'invalid-parent-fingerprint': 'Neplatný nadřazený otisk prstu',
+				'index-must-be-an-integer': 'Index musí být celé číslo',
+				'index-must-be-less-than': 'Index musí být menší než 2^32',
+				'index-no-hardened': 'Tvrdé podřízené klíče nejsou podporovány',
+				'failed-to-derive-address': 'Nepodařilo se odvodit adresu',
+				'private-keys-warning': 'UPOZORNĚNÍ: Nepoužívejte s touto aplikací soukromé klíče!',
+			},
 			'es': {
-				'settings.extendedPublicKey.label': 'Clave Pública Maestra',
-				'settings.extendedPublicKey.invalid': 'La clave pública maestra no es valida',
+				'settings.addressIndex.label': 'Indice de direcciones',
+				'settings.addressIndex.integer-required': 'Debe ser un entero',
+				'settings.addressIndex.greater-than-or-equal-zero': 'Debe ser mayor o igual que cero',
+				'settings.extendedPublicKey.label': 'Clave Pública Extendida',
+				'incorrect-number-of-bytes': 'Número incorrecto de bytes',
+				'invalid-checksum': 'Suma de comprobación inválida',
+				'invalid-derivation-scheme': 'Esquema de derivación no válido',
+				'invalid-network-byte': 'Byte de red inválido',
 				'invalid-parent-fingerprint': 'La huella paterna no es válida',
-				'invalid-network-version': 'La versión de la red no es válida',
+				'index-must-be-an-integer': 'El índice debe ser un número entero',
+				'index-must-be-less-than': 'El índice debe ser menor que 2^32',
+				'index-no-hardened': 'Las claves secundarias reforzadas no son compatibles',
+				'failed-to-derive-address': 'No se pudo derivar la dirección',
 				'private-keys-warning': '¡ADVERTENCIA: NO utilice claves privadas en esta aplicación!',
+			},
+			'fr': {
+				'settings.addressIndex.label': 'Indice d\'adresse',
+				'settings.addressIndex.integer-required': 'Doit être un entier',
+				'settings.addressIndex.greater-than-or-equal-zero': 'Doit être supérieur ou égal à zéro',
+				'settings.extendedPublicKey.label': 'Clé publique étendue',
+				'incorrect-number-of-bytes': 'Nombre incorrect d\'octets',
+				'invalid-checksum': 'Somme de contrôle invalide',
+				'invalid-derivation-scheme': 'Schéma de dérivation invalide',
+				'invalid-network-byte': 'Octet réseau non valide',
+				'invalid-parent-fingerprint': 'Empreinte parentale invalide',
+				'index-must-be-an-integer': 'L\'index doit être un nombre entier',
+				'index-must-be-less-than': 'L\'index doit être inférieur à 2^32',
+				'index-no-hardened': 'Les clés enfants durcies ne sont pas prises en charge',
+				'failed-to-derive-address': 'Impossible de dériver l\'adresse',
+				'private-keys-warning': 'AVERTISSEMENT: N\'utilisez pas de clés privées avec cette application!',
 			},
 		},
 
@@ -81,7 +121,7 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'text',
 				required: true,
 				validateAsync: function(value, cb) {
-					this.worker.call('decodeExtendedPublicKey', [value, this.networks], cb);
+					this.decodeExtendedPublicKey(value, cb);
 				},
 				actions: [
 					{
@@ -257,9 +297,28 @@ app.paymentMethods.bitcoin = (function() {
 			}, this);
 		},
 
+		decodeExtendedPublicKey: function(extendedPublicKey, cb) {
+
+			var ref = this.ref;
+			this.worker.call('decodeExtendedPublicKey', [extendedPublicKey, this.networks], function(error) {
+				if (error) {
+					error = app.i18n.t(ref + '.' + error);
+					return cb(error);
+				}
+				cb.apply(undefined, arguments);
+			});
+		},
+
 		deriveChildKeyAtIndex: function(extendedPublicKey, index, networks, cb) {
 
-			this.worker.call('deriveChildKeyAtIndex', [extendedPublicKey, index, networks], cb);
+			var ref = this.ref;
+			this.worker.call('deriveChildKeyAtIndex', [extendedPublicKey, index, networks], function(error) {
+				if (error) {
+					error = app.i18n.t(ref + '.' + error);
+					return cb(error);
+				}
+				cb.apply(undefined, arguments);
+			});
 		},
 
 		sha256sha256: function(data) {

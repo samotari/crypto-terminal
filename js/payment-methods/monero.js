@@ -34,7 +34,31 @@ app.paymentMethods.monero = (function() {
 				'invalid-checksum': 'Invalid checksum',
 				'invalid-length': 'Invalid length',
 				'invalid-network-byte': 'Invalid network byte',
-			}
+			},
+			'cs': {
+				'settings.public-address.label': 'Veřejná adresa',
+				'settings.private-view-key.label': 'Klíč soukromého zobrazení',
+				'payment-request.public-address-required': 'Pro generování žádosti o platbu je vyžadována veřejná adresa',
+				'invalid-checksum': 'Neplatný kontrolní součet',
+				'invalid-length': 'Neplatná délka',
+				'invalid-network-byte': 'Neplatná síťová verze',
+			},
+			'es': {
+				'settings.public-address.label': 'Direccion publica',
+				'settings.private-view-key.label': 'Clave de vista privada',
+				'payment-request.public-address-required': 'Se requiere una dirección pública para generar una solicitud de pago',
+				'invalid-checksum': 'Suma de comprobación inválida',
+				'invalid-length': 'Longitud inválida',
+				'invalid-network-byte': 'La versión de la red no es válida',
+			},
+			'fr': {
+				'settings.public-address.label': 'Adresse publique',
+				'settings.private-view-key.label': 'Clé privée',
+				'payment-request.public-address-required': 'L\'adresse publique est requise pour générer une demande de paiement',
+				'invalid-checksum': 'Somme de contrôle invalide',
+				'invalid-length': 'Longueur invalide',
+				'invalid-network-byte': 'Octet réseau non valide',
+			},
 		},
 
 		settings: [
