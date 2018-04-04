@@ -4,7 +4,11 @@
 	<meta charset="utf-8">
 	<meta http-equiv="x-ua-compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss: https://ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+<% if (target === 'dev') { %>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss: http: ws:; script-src 'self' 'unsafe-eval' <%= config.ctApi.baseUrl %>/primus/primus.js;">
+<% } else { %>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss:; script-src 'self' 'unsafe-eval' <%= config.ctApi.baseUrl %>/primus/primus.js;">
+<% } %>
 	<title><%= info.name %></title>
 	<link href="css/all.min.css" rel="stylesheet">
 <%= html.favicon.content %>
@@ -22,11 +26,10 @@
 <%= template.content %>
 	</script>
 <% }); %>
-	<script>
-		var app = app || {};
-		app.info = '<%= JSON.stringify(info) %>';
-	</script>
+	<script type="text/json" id="json-info"><%= JSON.stringify(info) %></script>
+	<script type="text/json" id="json-config"><%= JSON.stringify(config) %></script>
 	<script src="cordova.js"></script>
+	<script src="<%= config.ctApi.baseUrl %>/primus/primus.js"></script>
 	<script src="js/all.js"></script>
 
 </body>

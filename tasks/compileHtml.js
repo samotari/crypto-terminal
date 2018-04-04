@@ -9,7 +9,11 @@ module.exports = function(grunt) {
 
 	var htmlDir = path.join(__dirname, '..', 'html');
 	var pkg = require('../package.json');
+	var target = process.env.TARGET || 'prod';
+	var config = require('../config')[target];
 	var templateData = {
+		config: config,
+		target: target,
 		info: _.extend({}, _.pick(pkg,
 			'author',
 			'contributors',
@@ -59,7 +63,7 @@ module.exports = function(grunt) {
 			try {
 				var data = _.extend({}, templateData, {
 					html: prepareContents(results.htmlFiles),
-				})
+				});
 			} catch(error) {
 				return cb(error);
 			}

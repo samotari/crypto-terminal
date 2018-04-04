@@ -108,9 +108,17 @@ var app = app || {};
 	};
 
 	try {
-		app.info = app.info && JSON.parse(app.info) || {};
+		app.info = JSON.parse($('#json-info').html());
 	} catch (error) {
 		app.log(error);
+		app.info = {};
+	}
+
+	try {
+		app.config = JSON.parse($('#json-config').html());
+	} catch (error) {
+		app.log(error);
+		app.config = {};
 	}
 
 })();

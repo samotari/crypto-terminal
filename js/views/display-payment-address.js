@@ -31,8 +31,6 @@ app.views.DisplayPaymentAddress = (function() {
 
 		queryRate: function() {
 
-			app.busy();
-
 			var currency = this.model.get('currency');
 			var rate = this.model.get('rate');
 
@@ -40,8 +38,10 @@ app.views.DisplayPaymentAddress = (function() {
 				this.onChangeRate();
 			} else {
 				if (this.paymentMethod.code !== currency) {
+					app.busy();
 					this.paymentMethod.getExchangeRate(currency, _.bind(function(error, rate) {
 						if (error) {
+							app.busy(false);
 							return app.mainView.showMessage(error);
 						}
 						this.model.set({ rate: rate });
