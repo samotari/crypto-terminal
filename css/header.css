@@ -54,18 +54,6 @@ html.loaded #header {
 	background-size: 0.8rem 0.8rem;
 	background-image: url('../images/lock-closed.svg');
 }
-.header-button.language {
-	float: right;
-	width: 4.5rem;
-	-webkit-filter: grayscale(100%);
-	filter: gray;
-	filter: url('../images/grayscale-filter.svg#grayscale');
-	background-size: 3rem;
-}
-.header-button.language.quicktouch {
-	-webkit-filter: none;
-	filter: none;
-}
 html.is-unlocked .header-button.admin:after {
 	background-image: url('../images/lock-open.svg');
 }
@@ -99,4 +87,28 @@ body.view-payment-status .header-button.pay {
 		Hide the pay button when viewing the pay screens.
 	*/
 	display: none;
+}
+.header-button.language {
+	position: relative;
+	z-index: 20;
+	float: right;
+	width: 4.1rem;
+	height: 4.1rem;
+	line-height: 4.1rem;
+	font-size: 1.1rem;
+	text-align: center;
+	color: #ccc;
+}
+.header-button.language:after {
+	position: absolute;
+	left: 0;
+	top: 0;
+	content: ' ';
+	width: 3.1rem;
+	height: 3.1rem;
+	z-index: 10;
+	border: .1rem solid #efefef;
+	box-sizing: border-box;
+	border-radius: .5rem;
+	margin: .5rem;
 }

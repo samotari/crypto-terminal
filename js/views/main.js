@@ -415,10 +415,7 @@ app.views.Main = (function() {
 		updateLanguageToggle: function() {
 
 			var locale = app.settings.get('locale') || app.config.defaultLocale;
-			_.each(_.keys(app.lang), function(key) {
-				this.$languageMenuToggle.removeClass(key);
-			}, this);
-			this.$languageMenuToggle.addClass(locale);
+			this.$languageMenuToggle.text(locale);
 		},
 
 		changeLanguage: function(evt) {

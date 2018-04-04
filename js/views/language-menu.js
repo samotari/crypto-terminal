@@ -16,10 +16,14 @@ app.views.LanguageMenu = (function() {
 			data.languages = _.map(_.keys(app.lang), function(key) {
 				return {
 					key: key,
-					label: app.i18n.t('language.' + key)
+					label: app.lang[key]['self.label'],
 				};
 			});
 			return data;
+		},
+
+		onChangeLocale: function() {
+			// Do not re-render this view when the locale is changed.
 		},
 
 	});

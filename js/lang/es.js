@@ -5,10 +5,7 @@ app.lang = app.lang || {};
 app.lang['es'] = (function() {
 
 	return {
-		'language.cs': 'Checo',
-		'language.en': 'Inglés',
-		'language.es': 'Español',
-		'language.fr': 'Francés',
+		'self.label': 'Español',
 		'main.message.status.0': 'Error: No hay conexión de red',
 		'admin.general-settings.label': 'Configuración general',
 		'admin.payment-history.label': 'Historia de Pagos',
