@@ -26,6 +26,8 @@ app.paymentMethods.monero = (function() {
 			decimals: 12,
 		},
 
+		txsSubscriptionId: null,
+
 		lang: {
 			'en': {
 				'settings.public-address.label': 'Public Address',
@@ -287,60 +289,6 @@ app.paymentMethods.monero = (function() {
 			return paymentId;
 		},
 
-		checkPaymentReceived: function(paymentRequest, cb) {
-
-			_.defer(_.bind(function() {
-
-				var amount = paymentRequest.amount;
-				var paymentId = paymentRequest.data.paymentId;
-
-				this.getTransactions(_.bind(function(error, txs) {
-
-					if (error) {
-						return cb(error);
-					}
-
-					// Filter out transactions that don't have the correct payment ID.
-					txs = _.filter(txs, function(tx) {
-						return !!tx.payment_id && tx.payment_id === paymentId;
-					});
-
-					// Check the remaining transactions.
-					async.map(txs, _.bind(function(tx, nextTx) {
-						this.checkTransaction(tx, function(error, outputs) {
-							if (error) {
-								app.log(error);
-							}
-							if (outputs) {
-								tx.outputs = outputs;
-							}
-							nextTx(null, tx);
-						});
-					}, this), function(error, txs) {
-
-						if (error) {
-							return cb(error);
-						}
-
-						try {
-							var amountReceived = (new BigNumber('0'))
-							_.each(txs, function(tx) {
-								_.each(tx.outputs, function(output) {
-									amountReceived = amountReceived.plus(output.amount);
-								});
-							});
-							amountReceived = amountReceived.times('10e-12');
-						} catch (error) {
-							return cb(error);
-						}
-
-						var wasReceived = amountReceived.isGreaterThanOrEqualTo(amount);
-						cb(null, wasReceived, amountReceived.toString());
-					});
-				}, this));
-			}, this));
-		},
-
 		blockExplorerHostNames: {
 			mainnet: 'xmrchain.com',
 			testnet: 'testnet.xmrchain.com',
@@ -358,59 +306,108 @@ app.paymentMethods.monero = (function() {
 		*/
 		checkTransaction: function(tx, cb) {
 
-			var uri = this.getBlockExplorerUrl('/api/outputs');
-			uri += '?' + querystring.stringify({
+			var networkName = this.getNetworkName();
+
+			var txObject = {
 				txhash: tx.tx_hash,
 				address: app.settings.get(this.ref + '.publicAddress'),
 				viewkey: app.settings.get(this.ref + '.privateViewKey'),
 				txprove: 0,
-			});
-			$.get(uri).then(function(result) {
+			}
+
+			app.services.ctApi.getMoneroOutputs(networkName, txObject, function(error, result) {
+				if (error) {
+					return cb(error);
+				}
+
 				var outputs = result && result.data && result.data.outputs || [];
 				outputs = _.filter(outputs, function(output) {
 					return output.match === true;
 				});
 				cb(null, outputs);
-			}).fail(cb);
+			});
 		},
 
-		getTransactions: function(cb) {
+		checkRemainingTransactions: function(txs, cb) {
 
-			async.parallel({
-				confirmed: _.bind(this.getRecentConfirmedTransactions, this),
-				mempool: _.bind(this.getMemPoolTransactions, this),
-			}, function(error, results) {
+			// Check the remaining transactions.
+			async.map(txs, _.bind(function(tx, nextTx) {
+				this.checkTransaction(tx, function(error, outputs) {
+					if (error) {
+						app.log(error);
+					}
+					if (outputs) {
+						tx.outputs = outputs;
+					}
+					nextTx(null, tx);
+				});
+			}, this), function(error, txs) {
 
 				if (error) {
+					app.log(error);
 					return cb(error);
 				}
 
-				var txs = [];
-				txs.push.apply(txs, results.confirmed);
-				txs.push.apply(txs, results.mempool);
 				cb(null, txs);
 			});
 		},
 
-		getRecentConfirmedTransactions: function(cb) {
+		listenForPayment: function(paymentRequest, cb) {
+			var networkName = this.getNetworkName();
+			var amount = paymentRequest.amount;
+			var paymentId = paymentRequest.data.paymentId;
+			var channelName = 'get-monero-transactions?' + querystring.stringify({
+				networkName: networkName
+			});
 
-			var uri = this.getBlockExplorerUrl('/api/transactions');
-			$.get(uri).then(function(result) {
-				var txs = [];
-				_.each(result.data.blocks, function(block) {
-					txs.push.apply(txs, block.txs);
+			var done = _.bind(function() {
+				this.stopListeningForPayment();
+				cb.apply(undefined, arguments);
+			}, this);
+
+			this.txsSubscriptionId = app.services.ctApi.subscribe(channelName, _.bind(function(txs) {
+
+				// Filter out transactions that don't have the correct payment ID.
+				txs = _.filter(txs, function(tx) {
+					return !!tx.payment_id && tx.payment_id === paymentId;
 				});
-				cb(null, txs);
-			}).fail(cb);
+
+				this.checkRemainingTransactions(txs, function(error, txsRemaining) {
+
+					if (error) {
+						app.log(error);
+						return;
+					}
+
+					try {
+						var amountReceived = (new BigNumber('0'))
+						_.each(txsRemaining, function(tx) {
+							_.each(tx.outputs, function(output) {
+								amountReceived = amountReceived.plus(output.amount);
+							});
+						});
+						amountReceived = amountReceived.times('10e-12');
+					} catch (error) {
+						app.log(error);
+						return done(error);
+					}
+
+					if (amountReceived.isGreaterThanOrEqualTo(amount)) {
+						done(null, true/* wasReceived */)
+					}
+
+					// Continue listening..
+
+				});
+
+			}, this));
 		},
 
-		getMemPoolTransactions: function(cb) {
+		stopListeningForPayment: function() {
 
-			var uri = this.getBlockExplorerUrl('/api/mempool');
-			$.get(uri).then(function(result) {
-				cb(null, result.data.txs);
-			}).fail(cb);
-		},
+			app.services.ctApi.unsubscribe(this.txsSubscriptionId)
+
+		}
 
 	});
 })();
