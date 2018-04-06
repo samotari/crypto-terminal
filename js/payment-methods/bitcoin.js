@@ -173,6 +173,8 @@ app.paymentMethods.bitcoin = (function() {
 
 		worker: app.createWorker('workers/bitcoin.js'),
 
+		ctApiSubscriptionId: null,
+
 		generatePaymentRequest: function(amount, cb) {
 
 			var ref = this.ref;
@@ -363,7 +365,6 @@ app.paymentMethods.bitcoin = (function() {
 			var rate = paymentRequest.rate;
 			var decimals = this.numberFormat.decimals;
 			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
-			var currency = this.chainSoCode;
 			var amountReceived = new BigNumber('0');
 
 			var done = _.bind(function() {
@@ -371,13 +372,17 @@ app.paymentMethods.bitcoin = (function() {
 				cb.apply(undefined, arguments);
 			}, this);
 
-			app.services['chain.so'].listenForTransactionsToAddress(address, currency, function(error, tx) {
+			var channel = 'address-balance-updates?' + querystring.stringify({
+				address: address,
+				method: this.ref,
+			});
 
-				if (error) {
-					return done(error);
-				}
+			this.ctApiSubscriptionId = app.services.ctApi.subscribe(channel, function(tx) {
 
-				amountReceived = amountReceived.plus(tx.amount_received);
+				// The amount in the tx object is in satoshis.
+				// Divide by 100 million to get the amount in whole bitcoin.
+				var txAmountReceived = (new BigNumber(tx.amount_received)).dividedBy(100000000);
+				amountReceived = amountReceived.plus(txAmountReceived);
 
 				if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
 					return done(null, true/* wasReceived */);
@@ -389,7 +394,7 @@ app.paymentMethods.bitcoin = (function() {
 
 		stopListeningForPayment: function() {
 
-			app.services['chain.so'].stopListening();
+			app.services.ctApi.unsubscribe(this.ctApiSubscriptionId);
 		}
 
 	});

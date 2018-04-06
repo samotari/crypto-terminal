@@ -27,7 +27,7 @@ app.services.ctApi = (function() {
 				done(error);
 			});
 			this.primus.on('data', _.bind(this.onData, this));
-			this.primus.on('reconnect', _.bind(this.onReconnect, this));
+			this.primus.on('reconnected', _.bind(this.onReconnected, this));
 		},
 
 		getUri: function(uri, params) {
@@ -58,8 +58,9 @@ app.services.ctApi = (function() {
 		},
 
 		// On reconnect, the client is responsible for re-establishing channel subscriptions.
-		onReconnect: function() {
-			_.each(_.keys(this.subscriptions), function(channel) {
+		onReconnected: function() {
+			var channels = _.chain(this.subscriptions).keys().uniq().value();
+			_.each(channels, function(channel) {
 				this.primus.write({
 					channel: channel,
 					action: 'join',
@@ -69,13 +70,19 @@ app.services.ctApi = (function() {
 
 		subscriptions: {},
 
+		hasSubscriptions: function(channel) {
+			return _.values(this.subscriptions[channel]).length > 0;
+		},
+
 		subscribe: function(channel, onData) {
 
 			if (!channel || !this.primus) return;
-			this.primus.write({
-				channel: channel,
-				action: 'join',
-			});
+			if (!this.hasSubscriptions(channel)) {
+				this.primus.write({
+					channel: channel,
+					action: 'join',
+				});
+			}
 			var subscriptionId = _.uniqueId('ct-api-subscription:' + channel + ':');
 			this.subscriptions[channel] = this.subscriptions[channel] || {};
 			this.subscriptions[channel][subscriptionId] = onData;
@@ -88,12 +95,14 @@ app.services.ctApi = (function() {
 			var parts = subscriptionId.split(':');
 			var channel = parts[1];
 			if (!channel || !this.primus) return;
-			this.primus.write({
-				channel: channel,
-				action: 'leave',
-			});
 			this.subscriptions[channel] = this.subscriptions[channel] || {};
 			delete this.subscriptions[channel][subscriptionId];
+			if (!this.hasSubscriptions(channel)) {
+				this.primus.write({
+					channel: channel,
+					action: 'leave',
+				});
+			}
 		},
 
 		getExchangeRates: function(currency, cb) {
