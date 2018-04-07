@@ -245,7 +245,8 @@ app.paymentMethods.monero = (function() {
 					}
 
 					var decoded = this.decodePublicAddress(address);
-					var paymentId = decoded.paymentId || this.generatePaymentId(8);
+					// Use 32 byte payment IDs until we can properly decrypt payment IDs in transactions.
+					var paymentId = decoded.paymentId || this.generatePaymentId(32);
 
 					var uri = this.uriScheme + ':' + address + '?' + querystring.stringify({
 						tx_payment_id: paymentId,
