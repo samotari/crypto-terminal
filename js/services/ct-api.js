@@ -127,6 +127,14 @@ app.services.ctApi = (function() {
 			return _.mapObject(rates, function(rate) {
 				return btcRate.times(rate).toString();
 			});
+		},
+
+		getMoneroOutputs: function(networkName, txObject, cb) {
+
+			var uri = this.getUri('/api/v1/monero/outputs', _.assign({ network: networkName }, txObject));
+			$.get(uri).then(function(result) {
+				cb(null, result);
+			}).catch(cb)
 		}
 	};
 
