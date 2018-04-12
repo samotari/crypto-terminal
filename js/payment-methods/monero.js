@@ -353,8 +353,12 @@ app.paymentMethods.monero = (function() {
 		},
 
 		listenForPayment: function(paymentRequest, cb) {
+
 			var networkName = this.getNetworkName();
 			var amount = paymentRequest.amount;
+			var rate = paymentRequest.rate;
+			var decimals = this.numberFormat.decimals;
+			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
 			var paymentId = paymentRequest.data.paymentId;
 			var channelName = 'get-monero-transactions?' + querystring.stringify({
 				networkName: networkName
@@ -392,7 +396,7 @@ app.paymentMethods.monero = (function() {
 						return done(error);
 					}
 
-					if (amountReceived.isGreaterThanOrEqualTo(amount)) {
+					if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
 						done(null, true/* wasReceived */)
 					}
 
