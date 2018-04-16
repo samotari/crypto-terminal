@@ -1,6 +1,6 @@
 # CryptoTerminal
 
-[![Build Status](https://travis-ci.org/Learn-by-doing/crypto-terminal.svg?branch=master)](https://travis-ci.org/Learn-by-doing/crypto-terminal) [![Status of Dependencies](https://david-dm.org/Learn-by-doing/crypto-terminal.svg)](https://david-dm.org/Learn-by-doing/crypto-terminal)
+[![Build Status](https://travis-ci.org/samotari/crypto-terminal.svg?branch=master)](https://travis-ci.org/samotari/crypto-terminal) [![Status of Dependencies](https://david-dm.org/samotari/crypto-terminal.svg)](https://david-dm.org/samotari/crypto-terminal)
 
 * [Requirements](#requirements)
 * [Getting Started](#getting-started)
@@ -35,7 +35,7 @@ The technology stack includes:
 
 Before continuing, be sure to download and install the project [requirements](#requirements).
 
-To get the project files and start working locally, you should first create a [fork](https://github.com/Learn-by-doing/crypto-terminal/fork). Then "clone" your fork of the project:
+To get the project files and start working locally, you should first create a [fork](https://github.com/samotari/crypto-terminal/fork). Then "clone" your fork of the project:
 ```bash
 git clone https://github.com/YOUR_USERNAME/crypto-terminal.git
 ```

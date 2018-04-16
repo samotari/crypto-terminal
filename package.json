@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Learn-by-doing/crypto-terminal.git"
+    "url": "git@github.com:samotari/crypto-terminal.git"
   },
   "author": {
     "name": "Charles Hill",
@@ -32,7 +32,7 @@
     }
   ],
   "license": "AGPL-3.0",
-  "homepage": "https://github.com/Learn-by-doing/crypto-terminal",
+  "homepage": "https://github.com/samotari/crypto-terminal",
   "dependencies": {
     "android-versions": "1.3.0",
     "async": "2.6.0",
@@ -67,7 +67,7 @@
     "load-grunt-config": "0.19.2",
     "mocha": "5.0.0",
     "moment": "2.20.1",
-    "open-sans-fontface": "https://github.com/Learn-by-doing/open-sans/archive/1.4.2.tar.gz",
+    "open-sans-fontface": "https://github.com/samotari/open-sans/archive/1.4.2.tar.gz",
     "phonegap-plugin-barcodescanner": "7.0.2",
     "puppeteer": "1.2.0",
     "pusher-js": "4.2.2",
