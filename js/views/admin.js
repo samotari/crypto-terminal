@@ -19,12 +19,58 @@ app.views.Admin = (function() {
 
 		sampleAddressesViews: {},
 
+		subPages: function() {
+
+			var subPages = [];
+
+			// General settings.
+			subPages.push({
+				key: 'general-settings',
+				label: app.i18n.t('admin.general-settings.label'),
+				ContentView: app.views.SettingsGeneral,
+				visible: true,
+			});
+
+			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies');
+
+			// Payment method settings.
+			_.each(app.paymentMethods, function(paymentMethod, key) {
+				subPages.push({
+					key: key,
+					label: _.result(paymentMethod, 'label'),
+					ContentView: app.views.SettingsPaymentMethod,
+					ContentViewOptions: { key: key },
+					visible: _.contains(configurableCryptoCurrencies, key),
+				});
+			}, this);
+
+			// Payment history.
+			subPages.push({
+				key: 'payment-history',
+				label: app.i18n.t('admin.payment-history.label'),
+				ContentView: app.views.PaymentHistory,
+				visible: true,
+			});
+
+			return subPages;
+		},
+
 		initialize: function() {
 
 			_.bindAll(this, 'setActiveMenuItem', 'toggleCryptoCurrency', 'goToSubPage');
 			this.toggleCryptoCurrency = _.debounce(this.toggleCryptoCurrency, 20);
 			this.goToSubPage = _.debounce(this.goToSubPage, 20);
-			this.options.page = this.options.page || 'general-settings';
+
+			if (!this.options.page) {
+				var defaultSubPage = this.getDefaultSubPage();
+				this.options.page = defaultSubPage && defaultSubPage.key || null;
+			}
+		},
+
+		getDefaultSubPage: function() {
+
+			var subPages = _.result(this, 'subPages');
+			return subPages && subPages[0] || null;
 		},
 
 		onKeyUpExtendedPublicKeyField: function(evt) {
@@ -38,30 +84,11 @@ app.views.Admin = (function() {
 		serializeData: function() {
 
 			var data = {};
+			var subPages = _.result(this, 'subPages');
 
-			data.paymentMethods = _.map(app.paymentMethods, function(paymentMethod, key) {
-				return {
-					key: key,
-					label: _.result(paymentMethod, 'label'),
-				};
+			data.menuItems = _.map(subPages, function(subPage) {
+				return _.pick(subPage, 'key', 'label', 'visible');
 			});
-
-			data.menuItems = [
-				{
-					key: 'general-settings',
-					label: app.i18n.t('admin.general-settings.label'),
-				}
-			].concat(_.map(data.paymentMethods, function(paymentMethod) {
-				return {
-					key: paymentMethod.key,
-					label: _.result(paymentMethod, 'label'),
-				};
-			}), [
-				{
-					key: 'payment-history',
-					label: app.i18n.t('admin.payment-history.label'),
-				}
-			]);
 
 			return data;
 		},
@@ -69,7 +96,7 @@ app.views.Admin = (function() {
 		onRender: function() {
 
 			this.$menuItems = this.$('.secondary-menu-item');
-			this.$menuItems.filter('.general-settings,.payment-history').addClass('visible');
+			this.setVisibilityOfMenuItems();
 			this.initializeSlider();
 			this.updateCryptoCurrencySettingsVisibility();
 
@@ -79,6 +106,14 @@ app.views.Admin = (function() {
 			}
 
 			this.updateSecondaryMenuWidth();
+		},
+
+		setVisibilityOfMenuItems: function() {
+
+			var subPages = _.result(this, 'subPages');
+			_.each(subPages, function(subPage) {
+				this.$menuItems.filter('.' + subPage.key).toggleClass('visible', subPage.visible);
+			}, this);
 		},
 
 		onQuickTouchNavMenuItem: function(evt) {
@@ -124,34 +159,21 @@ app.views.Admin = (function() {
 
 		initializeSlider: function() {
 
-			var items = [
-				{
-					key: 'general-settings',
-					contentView: new app.views.SettingsGeneral(),
-				}
-			];
-
-			_.each(_.keys(app.paymentMethods), function(key) {
-				items.push({
-					key: key,
-					contentView: new app.views.SettingsPaymentMethod({ key: key })
-				});
-			}, this);
-
-			items = items.concat([
-				{
-					key: 'payment-history',
-					contentView: new app.views.PaymentHistory(),
-				}
-			]);
+			var subPages = _.result(this, 'subPages');
+			var items = _.map(subPages, function(subPage) {
+				return {
+					key: subPage.key,
+					contentView: new subPage.ContentView(subPage.ContentViewOptions || {}),
+					visible: subPage.visible,
+				};
+			});
 
 			this.slider = new app.views.Slider({
 				el: this.$('.slider'),
-				items: items
+				items: items,
 			});
 
 			this.listenTo(this.slider, 'change:active', this.setActiveMenuItem);
-			this.slider.showItems('general-settings', 'payment-history');
 		},
 
 		setActiveMenuItem: function(key) {
@@ -247,9 +269,10 @@ app.views.Admin = (function() {
 
 		onBackButton: function() {
 
-			var page = app.mainView.currentView.options.page;
+			var page = this.options.page;
+			var defaultSubPage = this.getDefaultSubPage();
 
-			if (page === 'general-settings') {
+			if (defaultSubPage && page === defaultSubPage.key) {
 				app.router.navigate('pay', { trigger: true });
 			} else {
 				app.router.navigate('admin', { trigger: true });
