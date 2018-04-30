@@ -39,6 +39,8 @@ app.views.Slider = (function() {
 			this.$items = this.$('.slider-items');
 			this.$items.css('width', (100 * this.items.length) + '%');
 			_.each(this.items, this.addItem, this);
+			var visibleItemKeys = _.chain(this.options.items).where({ visible: true }).pluck('key').value();
+			this.showItems(visibleItemKeys);
 		},
 
 		onSwipe: function(evt, velocity) {
@@ -157,16 +159,20 @@ app.views.Slider = (function() {
 			return _.contains(this.visible, key);
 		},
 
-		showItems: function() {
+		showItems: function(keys) {
 
-			var keys = Array.prototype.slice.call(arguments);
+			if (!_.isArray(keys)) {
+				keys = Array.prototype.slice.call(arguments);
+			}
 			this.visible = _.uniq(this.visible.concat(keys));
 			this.updateItemElementsVisibility();
 		},
 
-		hideItems: function() {
+		hideItems: function(keys) {
 
-			var keys = Array.prototype.slice.call(arguments);
+			if (!_.isArray(keys)) {
+				keys = Array.prototype.slice.call(arguments);
+			}
 			this.visible = _.without(this.visible, keys);
 			this.updateItemElementsVisibility();
 		},
