@@ -6,7 +6,10 @@
 	width: 100%;
 }
 .form-row + .form-row {
-	margin-top: 1rem;
+	margin-top: 1.5rem;
+}
+.form-group + .form-group {
+	margin-top: 2rem;
 }
 .form-label {
 	display: block;
@@ -68,11 +71,6 @@
 .form-buttons {
 	text-align: right;
 	margin-top: 2rem;
-}
-.form-group + .form-group {
-	border-top: .1rem solid #efefef;
-	padding-top: 1rem;
-	margin-top: 1rem;
 }
 .form-error-message {
 	color: red;

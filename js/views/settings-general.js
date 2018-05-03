@@ -106,7 +106,7 @@ app.views.SettingsGeneral = (function() {
 
 			var enterPinView = new app.views.EnterPin({
 				title: app.requirePin() ? app.i18n.t('admin.pin.change-pin.title') : app.i18n.t('admin.pin.set-pin.title'),
-				closable: true,
+				closable: false,
 			});
 
 			this.listenTo(enterPinView, 'pin', function() {

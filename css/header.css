@@ -99,16 +99,3 @@ body.view-payment-status .header-button.pay {
 	text-align: center;
 	color: #ccc;
 }
-.header-button.language:after {
-	position: absolute;
-	left: 0;
-	top: 0;
-	content: ' ';
-	width: 3.1rem;
-	height: 3.1rem;
-	z-index: 10;
-	border: .1rem solid #efefef;
-	box-sizing: border-box;
-	border-radius: .5rem;
-	margin: .5rem;
-}

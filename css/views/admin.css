@@ -1,36 +1,6 @@
 .view.admin {
 	padding: 0;
 }
-.view.admin .button.payment-method {
-	float: left;
-	vertical-align: initial;
-	background-size: 3rem;
-	opacity: 0.5;
-	margin: 0 .4rem .4rem 0;
-	padding: 2rem;
-}
-.view.admin input[type="checkbox"] {
-	position: absolute;
-	top: 0;
-	left: -99999rem;
-	visibility: hidden;
-}
-.view.admin input[type="checkbox"]:checked + .button.payment-method {
-	opacity: 1;
-	background-color: #e6e6e6;
-}
-.view.admin .form-group.configurableCryptoCurrencies {
-	display: inline-block;
-	vertical-align: top;
-	padding-bottom: 1.6rem;
-}
-.view.admin .form-group.configurableCryptoCurrencies .form-group-label {
-	color: #111;
-	text-align: center;
-	font-style: normal;
-	font-size: 1.2rem;
-	margin-bottom: 1rem;
-}
 .view.admin .slider {
 	padding-top: 4rem;
 }
@@ -46,6 +16,47 @@
 .view.admin .slider-item.visible {
 	display: block;
 }
+
+/*  General Settings  */
+.view.admin .form-group.configurableCryptoCurrencies .button.payment-method {
+	float: left;
+	vertical-align: initial;
+	background-size: 3rem;
+	opacity: 0.5;
+	margin: 0 .4rem .4rem 0;
+	padding: 2rem;
+}
+.view.admin .form-group.configurableCryptoCurrencies input[type="checkbox"] {
+	position: absolute;
+	top: 0;
+	left: -99999rem;
+	visibility: hidden;
+}
+.view.admin .form-group.configurableCryptoCurrencies input[type="checkbox"]:checked + .button.payment-method {
+	opacity: 1;
+	background-color: #e6e6e6;
+}
+.view.admin .form-group.configurableCryptoCurrencies {
+	display: inline-block;
+	vertical-align: top;
+	padding-bottom: 1.6rem;
+}
+.view.admin .form-group.configurableCryptoCurrencies .form-group-label {
+	color: #111;
+	text-align: center;
+	font-style: normal;
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+}
+.view.admin .slider-item.general-settings .set-pin.button {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+/*  General Settings  */
+
+
+/*  Payment History  */
 .view.admin .slider-item.payment-history {
 	padding: 0;
 }
+/*  Payment History  */
