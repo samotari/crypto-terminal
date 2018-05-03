@@ -127,7 +127,7 @@ app.paymentMethods.bitcoin = (function() {
 					{
 						name: 'camera',
 						fn: function(value, cb) {
-							app.device.scanBarcodeWithCamera(cb);
+							app.device.scanQRCodeWithCamera(cb);
 						}
 					}
 				]
