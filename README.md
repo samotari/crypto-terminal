@@ -2,9 +2,22 @@
 
 [![Build Status](https://travis-ci.org/samotari/crypto-terminal.svg?branch=master)](https://travis-ci.org/samotari/crypto-terminal) [![Status of Dependencies](https://david-dm.org/samotari/crypto-terminal.svg)](https://david-dm.org/samotari/crypto-terminal)
 
+CryptoTerminal is an open-source terminal application with which merchants can accept in-person cryptocurrency payments.
+
+The high-level goals for the app include:
+* Easy to use for both merchants and customers.
+* Catch and resolve common gotcha's that happen everyday with most cryptocurrency payment solutions.
+* Keep you, the merchant, in control of your funds. It is impossible for your funds to be compromised by the app because it does not have access to your private keys.
+* Maintain the highest possible standards for both privacy and security.
+
+
+## Contributing
+
+If you would like to contribute to the project, the following should help get you started.
+
 * [Requirements](#requirements)
-* [Getting Started](#getting-started)
-* [Folder Structure](#folder-structure)
+* [Get the Code](#get-the-code)
+* [Technical Overview](#technical-overview)
 * [Developing with Cryptocurrencies](#developing-with-cryptocurrencies)
   * [Bitcoin](#bitcoin)
     * [Lightning Network](#lightning-network)
@@ -12,16 +25,10 @@
   * [Monero](#monero)
 * [Create Signed APK](#create-signed-apk)
 
-The goal of this project is to create a mobile application that merchants can use to accept cryptocurrency payments in a variety of cryptocurrencies. The focus is on ease-of-use, security, and privacy.
-
-The technology stack includes:
-* Standard web technologies (HTML, CSS, JavaScript).
-* [Backbone.js](http://backbonejs.org/) - A JavaScript library for developing complex web applications.
-* [cordova](https://cordova.apache.org/) - To wrap the web application and create builds for Android, iOS, and other mobile platforms.
-* [nodejs](https://nodejs.org/) - As a build tool.
-
 
 ## Requirements
+
+The following is a list of requirements needed to contribute to this project.
 
 * [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm). For Windows, use an [installer](https://nodejs.org/en/download/) from the nodejs website.
 * [grunt-cli](https://gruntjs.com/getting-started) - `npm install -g grunt-cli`
@@ -31,7 +38,7 @@ The technology stack includes:
   * [gradle](https://gradle.org/install/)
 
 
-## Getting Started
+## Get the Code
 
 Before continuing, be sure to download and install the project [requirements](#requirements).
 
@@ -50,17 +57,25 @@ grunt
 Open your browser and navigate to [localhost:3000](http://localhost:3000). You should see the settings screen the first time you open the app.
 
 
-## Folder Structure
+## Technical Overview
 
-Introduction to some of the less obvious folders:
+The technology stack includes:
+* Standard web technologies (HTML, CSS, JavaScript).
+* [Backbone.js](http://backbonejs.org/) - A JavaScript library for developing complex web applications.
+* [cordova](https://cordova.apache.org/) - To wrap the web application and create builds for Android, iOS, and other mobile platforms.
+* [nodejs](https://nodejs.org/) - As a build tool.
+
+Directory structure explained:
 * `build/` - Temporary files used during the build process by Grunt.
-* `css/` - CSS you should be modifying. Gets processed during the Grunt build.
+* `css/` - CSS source files.
 * `exports/` - Files that are processed by browserify, which processes node.js modules so that they can be run in a browser.
 * `grunt/` - Grunt task configuration files go here.
 * `html/` - Source HTML files go here (templates for example).
+* `js/` - JavaScript source files.
 * `scripts/` - Miscellaneous script files go here.
 * `tasks/` - Custom Grunt tasks live here.
-* `js/` - JavaScript you should be modifying. Gets processed during the Grunt build.
+* `third-party/` - Custom builds of third-party libraries.
+* `test/` - Automated tests are defined here. This project uses [mocha]().
 * `www/` - Final output from the build process. Minified and uglified, this is served in the app once you run it.
 
 
