@@ -6,7 +6,7 @@ app.device = (function() {
 
 	return {
 
-		scanBarcodeWithCamera: function(options, cb) {
+		scanQRCodeWithCamera: function(options, cb) {
 
 			if (_.isFunction(options)) {
 				cb = options;
@@ -19,15 +19,16 @@ app.device = (function() {
 			}
 
 			options = _.defaults(options || {}, {
-				preferFrontCamera: false,// iOS and Android 
-				showFlipCameraButton: true,// iOS and Android 
-				showTorchButton: true,// iOS and Android 
-				torchOn: false,// Android, launch with the torch switched on (if available) 
-				prompt: 'Place a barcode inside the scan area',// Android 
-				resultDisplayDuration: 0,// Android, display scanned text for X ms. 0 suppresses it entirely, default 1500 
-				formats: 'QR_CODE',// default: all but PDF_417 and RSS_EXPANDED 
-				// orientation: 'landscape',// Android only (portrait|landscape), default unset so it rotates with the device 
-				disableAnimations: true,// iOS 
+				preferFrontCamera: false,// iOS and Android
+				showFlipCameraButton: false,// iOS and Android
+				showTorchButton: false,// iOS and Android
+				torchOn: false,// Android, launch with the torch switched on (if available)
+				prompt: '',// Android
+				resultDisplayDuration: 0,// Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
+				formats: 'QR_CODE',// default: all but PDF_417 and RSS_EXPANDED
+				// orientation: 'landscape',// Android only (portrait|landscape), default unset so it rotates with the device
+				disableAnimations: true,// iOS
+				disableSuccessBeep: true,// iOS and Android
 			});
 
 			var onError = _.once(cb);
