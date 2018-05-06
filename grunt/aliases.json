@@ -5,11 +5,11 @@
 	],
 	"build": [
 		"newer:browserify",
-		"compileHtml:app",
+		"compileHtml",
 		"newer:cssmin",
 		"newer:uglify",
 		"newer:concat",
-		"newer:copy:app"
+		"newer:copy"
 	],
 	"test": [
 		"test:unit",

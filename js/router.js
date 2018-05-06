@@ -134,13 +134,14 @@ app.Router = (function() {
 
 			if (page) {
 
-				var possiblePages = [
-					'general-settings',
-					'payment-history',
-				].concat(app.settings.get('configurableCryptoCurrencies'));
+				var subPages = _.chain(app.views.Admin.prototype).result('subPages').pluck('key');
+				var defaultSubPage = app.views.Admin.prototype.getDefaultSubPage();
+				var defaultSubPageKey = defaultSubPage && defaultSubPage || null;
 
-				if (!_.contains(possiblePages, page)) {
-					this.navigate('admin/general-settings', { trigger: true });
+				var possiblePages = subPages.concat(app.settings.get('configurableCryptoCurrencies'));
+
+				if (!_.contains(possiblePages, page) && defaultSubPageKey) {
+					this.navigate('admin/' + defaultSubPageKey, { trigger: true });
 					return false;
 				}
 			}
