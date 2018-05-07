@@ -70,7 +70,8 @@ app.views.Admin = (function() {
 		getDefaultSubPage: function() {
 
 			var subPages = _.result(this, 'subPages');
-			return subPages && subPages[0] || null;
+			var visibleSubPages = _.where(subPages, {visible: true})
+			return visibleSubPages && visibleSubPages[0] || null;
 		},
 
 		onKeyUpExtendedPublicKeyField: function(evt) {
