@@ -133,13 +133,10 @@ app.Router = (function() {
 		admin: function(page) {
 
 			if (page) {
-
-				var subPages = _.chain(app.views.Admin.prototype).result('subPages').pluck('key');
+				var subPages = _.chain(app.views.Admin.prototype).result('subPages').pluck('key').value();
 				var defaultSubPage = app.views.Admin.prototype.getDefaultSubPage();
-				var defaultSubPageKey = defaultSubPage && defaultSubPage || null;
-
+				var defaultSubPageKey = defaultSubPage && defaultSubPage.key || null;
 				var possiblePages = subPages.concat(app.settings.get('configurableCryptoCurrencies'));
-
 				if (!_.contains(possiblePages, page) && defaultSubPageKey) {
 					this.navigate('admin/' + defaultSubPageKey, { trigger: true });
 					return false;
