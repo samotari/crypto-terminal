@@ -7,7 +7,6 @@ module.exports = function(grunt) {
 	var fs = require('fs');
 	var path = require('path');
 
-	var htmlDir = path.join(__dirname, '..', 'html');
 	var pkg = require('../package.json');
 	var target = process.env.TARGET || 'prod';
 	var config = require('../config')[target];
@@ -29,8 +28,9 @@ module.exports = function(grunt) {
 
 		var done = this.async();
 		var files = this.files;
+		var options = _.defaults(this.options(), {});
 
-		prepareData(function(error, data) {
+		prepareData(options, function(error, data) {
 
 			if (error) {
 				return done(error);
@@ -50,19 +50,38 @@ module.exports = function(grunt) {
 		});
 	});
 
-	var prepareData = function(cb) {
+	var deepExtend = function(target, source) {
+		for (var prop in source) {
+			if (prop in target) {
+				deepExtend(target[prop], source[prop]);
+			} else {
+				target[prop] = source[prop];
+			}
+		}
+		return target;
+	};
 
-		async.parallel({
-			htmlFiles: loadContents.bind(undefined, htmlDir),
-		}, function(error, results) {
+	var prepareData = function(options, cb) {
+
+		var fns = _.object(_.map(options.htmlDirs, function(htmlDir) {
+			return [htmlDir, loadContents.bind(undefined, htmlDir)];
+		}));
+
+		async.parallel(fns, function(error, results) {
 
 			if (error) {
 				return cb(error);
 			}
 
 			try {
+				results = _.mapObject(results, function(result, htmlDir) {
+					return prepareContents(result);
+				});
+				var html = _.reduce(results, function(result, memo) {
+					return deepExtend(memo, result)
+				}, {});
 				var data = _.extend({}, templateData, {
-					html: prepareContents(results.htmlFiles),
+					html:  html,
 				});
 			} catch(error) {
 				return cb(error);
