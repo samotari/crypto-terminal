@@ -20,10 +20,10 @@ If you would like to contribute to the project, the following should help get yo
 * [Technical Overview](#technical-overview)
 * [Developing with Cryptocurrencies](#developing-with-cryptocurrencies)
   * [Bitcoin](#bitcoin)
-    * [Lightning Network](#lightning-network)
   * [Litecoin](#litecoin)
   * [Monero](#monero)
-* [Create Signed APK](#create-signed-apk)
+* [Android Development](#android-development)
+  * [Create Signed APK](#create-signed-apk)
 
 
 ## Requirements
@@ -33,9 +33,11 @@ The following is a list of requirements needed to contribute to this project.
 * [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm). For Windows, use an [installer](https://nodejs.org/en/download/) from the nodejs website.
 * [grunt-cli](https://gruntjs.com/getting-started) - `npm install -g grunt-cli`
 * For Android development:
-  * [cordova](https://cordova.apache.org/#getstarted)
-  * [Android SDK](https://developer.android.com/studio/index.html)
+  * [cordova](https://cordova.apache.org/#getstarted) - `npm install -g cordova`
+  * [Java Development Kit (JDK)](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) version 8 or higher. Use your system's native package manager to install the JDK (if available).
+  * [Android SDK](https://developer.android.com/studio/index.html) - On Ubuntu 18.04 or later, it is possible to install Android Studio from Ubuntu Software Sources.
   * [gradle](https://gradle.org/install/)
+  * [adb](https://developer.android.com/studio/command-line/adb) - Not required, but is recommended.
 
 
 ## Get the Code
@@ -131,14 +133,18 @@ Public Address | `monero.publicAddress` | `9xmkWjzAB8JguD7JvkJxPHgMwkf7VP5v3Z5eS
 Private View Key | `monero.privateViewKey` | `136674e3e6868bb04d4ef2674f97c00166f5f7aa67185bdda97cde8ecfe4f609`
 
 
-### Lightning Network
-
-!! TODO !!
-
-
-## Create Signed APK
+## Android Development
 
 Before continuing, be sure you already have the [requirements](#requirements) for Android development.
+
+Add the Android platform to the project (via cordova):
+```bash
+cordova platform add android
+```
+This downloads the cordova plugins which are necessary to build the app for Android devices.
+
+
+### Create Signed APK
 
 Create your signing key:
 ```bash
