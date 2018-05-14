@@ -8,7 +8,7 @@ module.exports = {
 	},
 	prod: {
 		ctApi: {
-			baseUrl: 'https://ct-api.degreesofzero.com',
+			baseUrl: 'https://api.cryptoterminal.eu',
 		},
 	},
 };
