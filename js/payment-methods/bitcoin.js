@@ -123,6 +123,9 @@ app.paymentMethods.bitcoin = (function() {
 				validateAsync: function(value, cb) {
 					this.decodeExtendedPublicKey(value, cb);
 				},
+				onChange: function() {
+					this.renderSampleAddresses();
+				},
 				actions: [
 					{
 						name: 'camera',
@@ -148,6 +151,9 @@ app.paymentMethods.bitcoin = (function() {
 					if (value < 0) {
 						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.greater-than-or-equal-zero'));
 					}
+				},
+				onChange: function() {
+					this.renderSampleAddresses();
 				}
 			},
 			{
@@ -174,6 +180,56 @@ app.paymentMethods.bitcoin = (function() {
 		worker: app.createWorker('workers/bitcoin.js'),
 
 		ctApiSubscriptionId: null,
+		sampleAddressesView: null,
+
+		renderSampleAddresses: function() {
+
+			clearTimeout(this.renderSampleAddressesTimeout);
+
+			this.renderSampleAddressesTimeout = _.delay(_.bind(function() {
+
+				var $target = $(':input[name="' + this.ref + '.addressIndex"]');
+				var view = this.sampleAddressesView || null;
+
+				if (!view) {
+					view = new app.views.SampleAddresses();
+					this.sampleAddressesView = view;
+					$target.after(view.el);
+				}
+
+				this.generateSampleAddresses(_.bind(function(error, addresses) {
+					if (error) {
+						app.log(error);
+						view.close();
+						view = this.sampleAddressesView = null;
+					} else {
+						view.options.addresses = addresses;
+						view.render();
+					}
+				}, this));
+
+			}, this), 100);
+		},
+
+		generateSampleAddresses: function(cb) {
+
+			var extendedPublicKey = app.settings.get(this.ref + '.extendedPublicKey');
+			var startIndex = parseInt(app.settings.get(this.ref + '.addressIndex') || '0');
+			var derivationScheme = app.settings.get(this.ref + '.derivationScheme');
+
+			var iteratee = _.bind(function(index, next) {
+				var addressIndex = startIndex + index;
+				this.deriveAddress(extendedPublicKey, derivationScheme, addressIndex, function(error, address) {
+					if (error) return next(error);
+					next(null, {
+						index: addressIndex,
+						address: address,
+					});
+				});
+			}, this);
+
+			async.times(app.config.numberOfSampleAddressesToShow, iteratee, cb);
+		},
 
 		generatePaymentRequest: function(amount, cb) {
 

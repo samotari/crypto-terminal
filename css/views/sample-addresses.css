@@ -21,12 +21,12 @@
 }
 .sample-addresses-content-address {
 	position: relative;
-	padding-left: 1rem;
 }
 .sample-addresses-content-address-index {
-	position: absolute;
+	position: relative;
 	left: 0;
 	top: 0;
-	font-size: 0.65rem;
+	font-size: .65rem;
+	margin-right: .2rem;
 	color: #aaa;
 }
