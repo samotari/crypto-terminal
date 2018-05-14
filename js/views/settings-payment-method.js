@@ -13,6 +13,7 @@ app.views.SettingsPaymentMethod = (function() {
 
 		events: {
 			'quicktouch .form-field-action': 'onQuickTouchAction',
+			'change :input[name]': 'onInputChange',
 		},
 
 		initialize: function() {
@@ -40,6 +41,18 @@ app.views.SettingsPaymentMethod = (function() {
 				}
 				$input.val(newValue).trigger('change');
 			});
+		},
+
+		onInputChange: function(evt) {
+
+			var $target = $(evt.target);
+			var name = $target.attr('name');
+			if (!name) return;
+			var setting = _.findWhere(this.paymentMethod.settings, {
+				name: name.split('.').slice(1).join('.')
+			});
+			if (!setting || !setting.onChange) return;
+			setting.onChange.call(this.paymentMethod);
 		},
 
 		serializeData: function() {

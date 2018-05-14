@@ -14,10 +14,7 @@ app.views.Admin = (function() {
 		events: {
 			'quicktouch label[for^="settings-configurableCryptoCurrencies-"]': 'onQuickTouchCryptoCurrencyToggle',
 			'quicktouch .secondary-menu-item': 'onQuickTouchNavMenuItem',
-			'keyup input[name$=".extendedPublicKey"]': 'onKeyUpExtendedPublicKeyField',
 		},
-
-		sampleAddressesViews: {},
 
 		subPages: function() {
 
@@ -72,14 +69,6 @@ app.views.Admin = (function() {
 			var subPages = _.result(this, 'subPages');
 			var visibleSubPages = _.where(subPages, {visible: true})
 			return visibleSubPages && visibleSubPages[0] || null;
-		},
-
-		onKeyUpExtendedPublicKeyField: function(evt) {
-
-			// To prevent the sample addresses from being updated too quickly (ie. while the user is typing).
-			clearTimeout(this.updateSampleAddressesTimeout);
-			var updateSampleAddresses = _.bind(this.updateSampleAddresses, this, evt);
-			this.updateSampleAddressesTimeout = setTimeout(updateSampleAddresses, 400);
 		},
 
 		serializeData: function() {
@@ -229,43 +218,6 @@ app.views.Admin = (function() {
 			if (this.slider) {
 				this.slider.close();
 			}
-		},
-
-		updateSampleAddresses: function(evt) {
-
-			var $target = $(evt.target);
-			var fieldName = $target.attr('name');
-			var view = this.sampleAddressesViews[fieldName];
-
-			if (!view) {
-				view = new app.views.SampleAddresses();
-				this.sampleAddressesViews[fieldName] = view;
-				$target.after(view.el);
-			}
-
-			var key = fieldName.split('.')[0];
-			var paymentMethod = app.paymentMethods[key];
-			var derivationScheme = app.settings.get(paymentMethod.ref + '.derivationScheme');
-			var extendedPublicKey = $target.val();
-
-			async.times(app.config.numberOfSampleAddressesToShow, function(index, next) {
-				paymentMethod.deriveAddress(extendedPublicKey, derivationScheme, index, function(error, address) {
-					if (error) return next(error);
-					next(null, {
-						index: index,
-						address: address,
-					});
-				});
-			}, _.bind(function(error, addresses) {
-				if (error) {
-					app.log(error);
-					view.close();
-					view = this.sampleAddressesViews[fieldName] = null;
-				} else {
-					view.options.addresses = addresses;
-					view.render();
-				}
-			}, this));
 		},
 
 		onBackButton: function() {
