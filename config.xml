@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.github.samotari.cryptoterminal" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>CryptoTerminal</name>
-    <description>A merchant terminal app which allows payments by customers via multiple cryptocurrencies.</description>
+    <name short="cTerminal">CryptoTerminal</name>
+    <description>An open-source terminal application with which merchants can accept in-person cryptocurrency payments.</description>
     <icon src="images/favicon.png" />
     <access origin="https://*/*" />
     <platform name="android">
