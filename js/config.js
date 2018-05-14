@@ -66,7 +66,7 @@ app.config = (function() {
 				// Maximum percent of screen traveled for emitting "quicktouch" event.
 				maxMovement: 4,
 				// Time to show visual feedback; milliseconds.
-				uiFeedbackDuration: 60,
+				uiFeedbackDuration: 90,
 			},
 			long: {
 				// Delay before emitting "longtouch" event; milliseconds.
