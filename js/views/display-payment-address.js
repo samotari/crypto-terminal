@@ -13,8 +13,8 @@ app.views.DisplayPaymentAddress = (function() {
 		template: '#template-pay-address',
 
 		events: {
-			'quicktouch .cancel': 'cancel',
-			'quicktouch .back': 'back',
+			'click .cancel': 'cancel',
+			'click .back': 'back',
 		},
 
 		timerForTimeOut: null,

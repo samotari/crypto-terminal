@@ -1,41 +1,50 @@
 .button {
 	position: relative;
-	display: inline-block;
-	height: 42px;
-	min-width: 64px;
-	padding: .6rem 1.4rem;
-	vertical-align: top;
+	display: inline;
+	height: auto;
+	cursor: pointer;
 	color: #111;
-	font-size: 0.9rem;
+	font-size: .9rem;
 	font-weight: 400;
-	background-color: #f7f7f7;;
-	box-shadow: 0 5px 2px 0 rgba(0,0,0,.14),
-				0 3px 1px -2px rgba(0,0,0,.2),
-				0 1px 5px 0 rgba(0,0,0,.12);
+	background-color: #f7f7f7;
+	box-shadow: 0 .3rem .3rem 0 rgba(0,0,0,.14),
+				0 .45rem .15rem -.3rem rgba(0,0,0,.2),
+				0 .15rem .75rem 0 rgba(0,0,0,.12);
 	box-sizing: border-box;
 	outline: none;
-	cursor: pointer;
 	user-select: none;
+	-webkit-user-select: none;
+	padding: .5rem;
 }
-.button:active,
-.button.quicktouch {
+.button.touchstart {
 	text-decoration: none;
-	background-color: #e6e6e6;
-	box-shadow: 0 1px white;
-	transform: translateY(2px);
+	background-color: #efefef;
+	box-shadow: 0 .15rem .15rem 0 rgba(0,0,0,.14),
+				0 .225rem .075rem -.15rem rgba(0,0,0,.2),
+				0 .075rem .375rem 0 rgba(0,0,0,.12);
+	transform: translate(.075rem,.15rem);
 }
 .button.disabled {
-	opacity: 0.35;
 	cursor: not-allowed;
 }
-.button.disabled.pressed {
-	background-color: #efefef;
+.button.disabled.touchstart {
+	color: #111;
+	background-color: #f7f7f7;
+	box-shadow: 0 .3rem .3rem 0 rgba(0,0,0,.14),
+				0 .45rem .15rem -.3rem rgba(0,0,0,.2),
+				0 .15rem .75rem 0 rgba(0,0,0,.12);
+	transform: none;
 }
 .button.payment-method {
+	display: inline-block;
+	vertical-align: top;
+	width: 4.8rem;
+	height: 4.8rem;
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: 4.8rem;
-	padding: 3.2rem;
+	box-sizing: initial;
+	padding: 1rem;
 }
 .button.payment-method.bitcoin,
 .button.payment-method.bitcoinTestnet {

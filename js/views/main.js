@@ -19,22 +19,22 @@ app.views.Main = (function() {
 			'mousemove': 'onMouseMove',
 			'mouseup': 'onMouseUp',
 			'mouseleave': 'onMouseLeave',
-			'click': 'onClick',
-			'quicktouch .header-button.language': 'showLanguageMenu',
-			'quicktouch .header-button.more': 'showMoreMenu',
-			'quicktouch #language-menu .menu-item': 'changeLanguage',
-			'quicktouch a': 'onQuickTouchAnchor',
-			'quicktouch :input': 'onQuickTouchInput',
+			'click .header-button.language': 'showLanguageMenu',
+			'click .header-button.more': 'showMoreMenu',
+			'click #language-menu .menu-item': 'changeLanguage',
+			'click a': 'onClickAnchor',
 		},
 
 		currentView: null,
 		$interactTarget: null,
 		interaction: null,
+		isTouchDevice: false,
 
 		initialize: function() {
 
 			_.bindAll(this,
-				'onDocumentTouch',
+				'onDocumentClick',
+				'setTouchDeviceFlag',
 				'toggleIsUnlockedFlag',
 				'toggleRequirePinFlag',
 				'toggleConfiguredFlag',
@@ -52,7 +52,8 @@ app.views.Main = (function() {
 			this.initializeMoreMenu();
 			this.updateLanguageToggle();
 			this.reRenderView();
-			$(document).on('quicktouch', this.onDocumentTouch);
+			$(document).on('click', this.onDocumentClick);
+			$(document).one('touchstart', this.setTouchDeviceFlag);
 			$(window).on('beforeunload', this.onBeforeUnload);
 			this.listenTo(app.settings, 'change:lastUnlockTime', this.toggleIsUnlockedFlag);
 			this.listenTo(app.settings, 'change:settingsPin', this.toggleRequirePinFlag);
@@ -177,9 +178,9 @@ app.views.Main = (function() {
 			this.$moreMenu.removeClass('visible');
 		},
 
-		onDocumentTouch: function(evt) {
+		onDocumentClick: function(evt) {
 
-			app.log('onDocumentTouch');
+			app.log('onDocumentClick');
 			var $target = $(evt.target);
 			var isLanguageMenu = $target[0] === this.$languageMenuToggle[0];
 			var isMoreMenu = $target[0] === this.$moreMenuToggle[0];
@@ -199,6 +200,11 @@ app.views.Main = (function() {
 			this.hideMessage();
 		},
 
+		setTouchDeviceFlag: function(evt) {
+
+			this.isTouchDevice = true;
+		},
+
 		onTouchStart: function(evt) {
 
 			app.log('onTouchStart');
@@ -207,25 +213,22 @@ app.views.Main = (function() {
 				$target: $target,
 				startTime: Date.now(),
 				startPosition: this.getEventPosition(evt),
-				longTimeout: setTimeout(_.bind(this.onLongTouch, this, evt), app.config.touch.long.delay),
+				longTouchStartTimeout: setTimeout(_.bind(this.onLongTouchStart, this, evt), app.config.touch.long.delay),
 			};
+			$target.addClass('touchstart');
 		},
 
-		onLongTouch: function(evt) {
+		onLongTouchStart: function(evt) {
 
-			app.log('onLongTouch');
+			app.log('onLongTouchStart');
 			// Trigger a custom event.
-			var $target = $(evt.target);
-			$target.trigger('longtouch', evt);
+			$(evt.target).trigger('longtouchstart').addClass('longtouch');
 		},
 
 		onTouchMove: function(evt) {
 
 			if (this.interaction) {
 				var $target = $(evt.target);
-				if ($target[0] !== this.interaction.$target[0]) {
-					this.interaction.quick = false;
-				}
 				var previous = {
 					position: this.interaction.lastPosition || this.interaction.startPosition,
 					time: this.interaction.lastTime || this.interaction.startTime,
@@ -238,12 +241,12 @@ app.views.Main = (function() {
 					var moveY = this.interaction.startPosition.y - this.interaction.lastPosition.y;
 					var absoluteMoveX = Math.abs(moveX);
 					var absoluteMoveY = Math.abs(moveY);
-					var tolerance = (4 / 100) * $(window).width();
+					var tolerance = (app.config.touch.swipe.tolerance / 100) * $(window).width();
 					// If movement is more vertical than horizontal, the user is probably trying to scroll.
 					// Allow for some tolerance.
-					if (absoluteMoveY > (absoluteMoveX + tolerance)) {
+					if (absoluteMoveY > (absoluteMoveX - tolerance)) {
 						// Scroll.
-						this.resetInteraction();
+						this.resetInteraction(evt);
 					} else {
 						// Not scroll.
 						/*
@@ -268,8 +271,8 @@ app.views.Main = (function() {
 
 			app.log('onTouchEnd');
 			if (this.interaction) {
-				clearTimeout(this.interaction.longTimeout);
 				var $target = $(evt.target);
+				clearTimeout(this.interaction.longTouchStartTimeout);
 				var elapsedTime = Date.now() - this.interaction.startTime;
 				var lastPosition = this.interaction.lastPosition || this.interaction.startPosition;
 				var moveX = this.interaction.startPosition.x - lastPosition.x;
@@ -281,6 +284,7 @@ app.views.Main = (function() {
 					absoluteMoveY / $(window).height()
 				) * 100;
 				var isQuickTouch = (
+					this.isTouchDevice === true &&
 					this.interaction.quick !== false &&
 					$target[0] === this.interaction.$target[0] &&
 					elapsedTime <= app.config.touch.quick.maxTime &&
@@ -298,7 +302,7 @@ app.views.Main = (function() {
 							evt.preventDefault();
 							break;
 					}
-					this.onQuickTouch(evt);
+					$target.trigger('click');
 				}
 				var velocity = this.interaction.velocity;
 				if (velocity) {
@@ -310,20 +314,8 @@ app.views.Main = (function() {
 						this.onSwipe(evt, velocity);
 					}
 				}
-				this.resetInteraction();
 			}
-		},
-
-		onQuickTouch: function(evt) {
-
-			app.log('onQuickTouch');
-			var $target = $(evt.target);
-			$target.addClass('quicktouch');
-			_.delay(function() {
-				$target.removeClass('quicktouch');
-			}, app.config.touch.quick.uiFeedbackDuration);
-			// Trigger a custom event.
-			$target.trigger('quicktouch', evt);
+			this.resetInteraction(evt);
 		},
 
 		onSwipe: function(evt, velocity) {
@@ -336,14 +328,14 @@ app.views.Main = (function() {
 		onTouchCancel: function(evt) {
 
 			app.log('onTouchCancel');
-			this.resetInteraction();
+			this.resetInteraction(evt);
 		},
 
 		onMouseDown: function(evt) {
 
 			app.log('onMouseDown');
 			// Left-mouse button only.
-			if (evt && evt.which === 1) {
+			if (!this.isTouchDevice && evt && evt.which === 1) {
 				this.onTouchStart(evt);
 			}
 		},
@@ -351,14 +343,16 @@ app.views.Main = (function() {
 		onMouseMove: function(evt) {
 
 			app.log('onMouseMove');
-			this.onTouchMove(evt);
+			if (!this.isTouchDevice) {
+				this.onTouchMove(evt);
+			}
 		},
 
 		onMouseUp: function(evt) {
 
 			app.log('onMouseUp');
 			// Left-mouse button only.
-			if (evt && evt.which === 1) {
+			if (!this.isTouchDevice && evt && evt.which === 1) {
 				this.onTouchEnd(evt);
 			}
 		},
@@ -366,13 +360,17 @@ app.views.Main = (function() {
 		onMouseLeave: function(evt) {
 
 			app.log('onMouseLeave');
-			this.onTouchEnd(evt);
+			if (!this.isTouchDevice) {
+				this.onTouchEnd(evt);
+			}
 		},
 
-		resetInteraction: function() {
+		resetInteraction: function(evt) {
 
+			$('.touchstart').removeClass('touchstart');
+			$('.longtouch').removeClass('longtouch').trigger('longtouchend');
 			if (this.interaction) {
-				clearTimeout(this.interaction.longTimeout);
+				clearTimeout(this.interaction.longTouchStartTimeout);
 			}
 			this.interaction = null;
 		},
@@ -435,17 +433,9 @@ app.views.Main = (function() {
 			}, 500/* let the close animation finish */);
 		},
 
-		onClick: function(evt) {
+		onClickAnchor: function(evt) {
 
-			app.log('onClick');
-			if (evt && evt.preventDefault) {
-				evt.preventDefault();
-			}
-		},
-
-		onQuickTouchAnchor: function(evt) {
-
-			app.log('onQuickTouchAnchor');
+			app.log('onClickAnchor');
 			if (evt && evt.preventDefault) {
 				evt.preventDefault();
 			}

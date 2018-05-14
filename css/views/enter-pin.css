@@ -28,10 +28,14 @@
 .enter-pin .buttons {
 	margin-top: 2rem;
 }
-.enter-pin .button {
+.enter-pin .secondary-control {
 	float: right;
 	text-align: center;
 	box-sizing: border-box;
+}
+.enter-pin .secondary-control + .secondary-control {
+	margin-left: 0;
+	margin-right: 2%;
 }
 .enter-pin-instructions {
 	text-align: center;

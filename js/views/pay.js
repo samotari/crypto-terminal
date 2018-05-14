@@ -13,7 +13,7 @@ app.views.Pay = (function() {
 		template: '#template-pay-enter-amount',
 
 		events: {
-			'quicktouch .continue': 'continue',
+			'click .continue': 'continue',
 		},
 
 		initialize: function() {

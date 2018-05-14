@@ -26,7 +26,7 @@ html.loaded #header {
 	box-sizing: border-box;
 	cursor: pointer;
 }
-.header-button.quicktouch {
+.header-button.touchstart {
 	background-color: #e6e6e6;
 }
 .header-button.more {

@@ -13,8 +13,8 @@ app.views.ChoosePaymentMethod = (function() {
 		template: '#template-pay-choose-method',
 
 		events: {
-			'quicktouch .payment-method': 'continueWithChosenPaymentMethod',
-			'quicktouch .cancel': 'cancel',
+			'click .payment-method': 'continueWithChosenPaymentMethod',
+			'click .cancel': 'cancel',
 		},
 
 		serializeData: function() {

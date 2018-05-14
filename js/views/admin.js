@@ -12,8 +12,8 @@ app.views.Admin = (function() {
 		template: '#template-admin',
 
 		events: {
-			'quicktouch label[for^="settings-configurableCryptoCurrencies-"]': 'onQuickTouchCryptoCurrencyToggle',
-			'quicktouch .secondary-menu-item': 'onQuickTouchNavMenuItem',
+			'click label[for^="settings-configurableCryptoCurrencies-"]': 'onClickCryptoCurrencyToggle',
+			'click .secondary-menu-item': 'onClickNavMenuItem',
 		},
 
 		subPages: function() {
@@ -106,7 +106,7 @@ app.views.Admin = (function() {
 			}, this);
 		},
 
-		onQuickTouchNavMenuItem: function(evt) {
+		onClickNavMenuItem: function(evt) {
 
 			if (evt && evt.preventDefault) {
 				evt.preventDefault();
@@ -176,7 +176,7 @@ app.views.Admin = (function() {
 			app.router.navigate('#admin/' + encodeURIComponent(key), { trigger: false });
 		},
 
-		onQuickTouchCryptoCurrencyToggle: function(evt) {
+		onClickCryptoCurrencyToggle: function(evt) {
 
 			var $target = $(evt.target);
 			var key = $target.attr('data-key');
@@ -187,18 +187,7 @@ app.views.Admin = (function() {
 
 			var $input = this.$(':input[value="' + key + '"]');
 			var isChecked = $input.is(':checked');
-			$input.prop('checked', !isChecked).trigger('change');
-			this.setCryptoCurrencySettingsVisibility(key, !isChecked);
-			this.updateSecondaryMenuWidth();
-		},
-
-		updateCryptoCurrencySettingsVisibility: function() {
-
-			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies') || [];
-			_.each(_.keys(app.paymentMethods), function(key) {
-				var visible = _.contains(configurableCryptoCurrencies, key);
-				this.setCryptoCurrencySettingsVisibility(key, visible);
-			}, this);
+			this.setCryptoCurrencySettingsVisibility(key, isChecked);
 			this.updateSecondaryMenuWidth();
 		},
 
@@ -211,6 +200,16 @@ app.views.Admin = (function() {
 			} else {
 				this.slider.hideItems(key);
 			}
+		},
+
+		updateCryptoCurrencySettingsVisibility: function() {
+
+			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies') || [];
+			_.each(_.keys(app.paymentMethods), function(key) {
+				var visible = _.contains(configurableCryptoCurrencies, key);
+				this.setCryptoCurrencySettingsVisibility(key, visible);
+			}, this);
+			this.updateSecondaryMenuWidth();
 		},
 
 		onClose: function() {

@@ -12,7 +12,7 @@ app.views.PaymentStatus = (function() {
 		template: '#template-payment-status',
 
 		events: {
-			'quicktouch .done': 'done',
+			'click .done': 'done',
 		},
 
 		serializeData: function() {
