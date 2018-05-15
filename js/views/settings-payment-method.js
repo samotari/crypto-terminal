@@ -22,6 +22,12 @@ app.views.SettingsPaymentMethod = (function() {
 			this.paymentMethod = app.paymentMethods[this.options.key];
 		},
 
+		onRender: function() {
+			if (_.isFunction(this.paymentMethod.onSettingsRender)) {
+				this.paymentMethod.onSettingsRender();
+			}
+		},
+
 		onClickAction: function(evt) {
 
 			var $target = $(evt.target);

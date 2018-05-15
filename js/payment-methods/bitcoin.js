@@ -182,6 +182,10 @@ app.paymentMethods.bitcoin = (function() {
 		ctApiSubscriptionId: null,
 		sampleAddressesView: null,
 
+		onSettingsRender: function() {
+			this.renderSampleAddresses();
+		},
+
 		renderSampleAddresses: function() {
 
 			clearTimeout(this.renderSampleAddressesTimeout);
@@ -189,13 +193,11 @@ app.paymentMethods.bitcoin = (function() {
 			this.renderSampleAddressesTimeout = _.delay(_.bind(function() {
 
 				var $target = $(':input[name="' + this.ref + '.addressIndex"]');
-				var view = this.sampleAddressesView || null;
 
-				if (!view) {
-					view = new app.views.SampleAddresses();
-					this.sampleAddressesView = view;
-					$target.after(view.el);
-				}
+				var view = new app.views.SampleAddresses();
+				this.sampleAddressesView = view;
+				$target.after(view.el);
+
 
 				this.generateSampleAddresses(_.bind(function(error, addresses) {
 					if (error) {
@@ -217,6 +219,13 @@ app.paymentMethods.bitcoin = (function() {
 			var startIndex = parseInt(app.settings.get(this.ref + '.addressIndex') || '0');
 			var derivationScheme = app.settings.get(this.ref + '.derivationScheme');
 
+			var sampleAddressesCacheKey = extendedPublicKey + '-' + startIndex + '-' + derivationScheme;
+			var sampleAddresses = app.cache.get(sampleAddressesCacheKey);
+
+			if (sampleAddresses) {
+				cb(null, sampleAddresses);
+			}
+
 			var iteratee = _.bind(function(index, next) {
 				var addressIndex = startIndex + index;
 				this.deriveAddress(extendedPublicKey, derivationScheme, addressIndex, function(error, address) {
@@ -228,7 +237,16 @@ app.paymentMethods.bitcoin = (function() {
 				});
 			}, this);
 
-			async.times(app.config.numberOfSampleAddressesToShow, iteratee, cb);
+			// async.times(app.config.numberOfSampleAddressesToShow, iteratee, cb);
+
+			async.times(app.config.numberOfSampleAddressesToShow, iteratee, function(error, addresses) {
+				if (error) {
+					return cb(error);
+				}
+
+				app.cache.set(sampleAddressesCacheKey, addresses);
+				cb(null, addresses);
+			});
 		},
 
 		generatePaymentRequest: function(amount, cb) {
