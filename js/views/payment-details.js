@@ -17,7 +17,7 @@ app.views.PaymentDetails = (function() {
 
 		initialize: function() {
 
-			this.model = new app.paymentRequests.model({ id: this.options.paymentId });
+			this.model = app.paymentRequests.get(this.options.paymentId);
 			this.model.on('sync change', this.render);
 			this.model.fetch();
 		},
