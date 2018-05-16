@@ -17,6 +17,9 @@ app.config = (function() {
 
 	var config = {
 		debug: false,
+		cache: {
+			onAppStartClearOlderThan: 86400000,// milliseconds
+		},
 		ctApi: _.extend({}, {
 			baseUrl: 'http://localhost:3600',
 			primusPath: '/primus',

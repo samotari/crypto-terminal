@@ -14,24 +14,23 @@ app.cache = (function() {
 		return model;
 	})();
 
-	app.queues.onStart.push({
-		fn: function(done) {
-			model.fetch({
-				success: function() {
-					done();
-				},
-				error: done,
-			});
-		}
-	});
-
-	return {
+	var cache = {
 		model: model,
 		clear: function(key) {
 			this.model.set(key, null).save();
 		},
 		clearAll: function() {
 			this.model.clear().save();
+		},
+		clearOlderThan: function(maxAge) {
+			maxAge = maxAge || 0;
+			var now = Date.now();
+			var attributes = _.chain(this.model.toJSON()).map(function(item, key) {
+				var keep = !!item && (!_.isObject(item) || !item.timestamp || (now - item.timestamp) <= maxAge);
+				return keep ? [key, item] : null;
+			}).compact().object().value();
+			this.model.attributes = attributes;
+			this.model.save();
 		},
 		get: function(key, maxAge) {
 			var data;
@@ -51,5 +50,29 @@ app.cache = (function() {
 			}).save();
 		}
 	};
+
+	app.queues.onStart.push({
+		fn: function(done) {
+			model.fetch({
+				success: function() {
+					done();
+				},
+				error: done,
+			});
+		}
+	});
+
+	app.queues.onStart.push({
+		fn: function(done) {
+			try {
+				cache.clearOlderThan(app.config.cache.onAppStartClearOlderThan);
+			} catch (error) {
+				app.log(error);
+			}
+			done();
+		}
+	});
+
+	return cache;
 
 })();

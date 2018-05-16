@@ -182,30 +182,33 @@ app.paymentMethods.bitcoin = (function() {
 		ctApiSubscriptionId: null,
 		sampleAddressesView: null,
 
+		onSettingsRender: function() {
+			this.renderSampleAddresses();
+		},
+
 		renderSampleAddresses: function() {
 
 			clearTimeout(this.renderSampleAddressesTimeout);
 
 			this.renderSampleAddressesTimeout = _.delay(_.bind(function() {
 
-				var $target = $(':input[name="' + this.ref + '.addressIndex"]');
-				var view = this.sampleAddressesView || null;
-
-				if (!view) {
-					view = new app.views.SampleAddresses();
-					this.sampleAddressesView = view;
-					$target.after(view.el);
-				}
-
 				this.generateSampleAddresses(_.bind(function(error, addresses) {
-					if (error) {
-						app.log(error);
-						view.close();
-						view = this.sampleAddressesView = null;
-					} else {
-						view.options.addresses = addresses;
-						view.render();
+
+					if (this.sampleAddressesView) {
+						this.sampleAddressesView.close();
+						this.sampleAddressesView = null;
 					}
+
+					if (error) {
+						return app.log(error);
+					}
+
+					var $target = $(':input[name="' + this.ref + '.addressIndex"]');
+					var view = this.sampleAddressesView = new app.views.SampleAddresses();
+					$target.after(view.el);
+					view.options.addresses = addresses;
+					view.render();
+
 				}, this));
 
 			}, this), 100);
@@ -216,6 +219,12 @@ app.paymentMethods.bitcoin = (function() {
 			var extendedPublicKey = app.settings.get(this.ref + '.extendedPublicKey');
 			var startIndex = parseInt(app.settings.get(this.ref + '.addressIndex') || '0');
 			var derivationScheme = app.settings.get(this.ref + '.derivationScheme');
+			var sampleAddressesCacheKey = extendedPublicKey + '-' + startIndex + '-' + derivationScheme;
+			var sampleAddresses = app.cache.get(sampleAddressesCacheKey);
+
+			if (sampleAddresses) {
+				return cb(null, sampleAddresses);
+			}
 
 			var iteratee = _.bind(function(index, next) {
 				var addressIndex = startIndex + index;
@@ -228,7 +237,11 @@ app.paymentMethods.bitcoin = (function() {
 				});
 			}, this);
 
-			async.times(app.config.numberOfSampleAddressesToShow, iteratee, cb);
+			async.times(app.config.numberOfSampleAddressesToShow, iteratee, function(error, addresses) {
+				if (error) return cb(error);
+				app.cache.set(sampleAddressesCacheKey, addresses);
+				cb(null, addresses);
+			});
 		},
 
 		generatePaymentRequest: function(amount, cb) {
