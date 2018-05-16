@@ -12,7 +12,7 @@ app.views.PaymentHistory = (function() {
 		template: '#template-payment-history',
 		itemContainer: '.payment-history-items',
 		events: {
-			'quicktouch .payment-history-item': 'showPaymentDetails',
+			'click .payment-history-item': 'showPaymentDetails',
 			'scroll': 'onScroll',
 		},
 

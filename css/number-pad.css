@@ -3,7 +3,6 @@
 	display: inline-block;
 	vertical-align: top;
 	width: 100%;
-	background: #efefef;
 }
 .number-pad-wrap {
 	width: 15rem;
@@ -12,28 +11,21 @@
 }
 .number-pad-key {
 	float: left;
+	cursor: pointer;
 	display: block;
-	width: 33.3%;
+	width: 33.3333%;
 	height: 4rem;
 	line-height: 4rem;
-	color: #111;
-	font-weight: 100;
+	color: #666;
+	font-weight: 200;
+	font-size: 1rem;
 	text-align: center;
-	border: .1rem solid #ccc;
-	border-left: none;
-	box-sizing: border-box;
-	cursor: pointer;
+	border: .15rem solid #efefef;
+	box-shadow: .15rem .15rem .15rem 0 rgba(0,0,0,.14),
+				.3rem .3rem .15rem -.45rem rgba(0,0,0,.2),
+				.15rem .15rem .15rem 0 rgba(0,0,0,.12);
+	margin: 0;
 	padding: 0;
-}
-.number-pad-key.quicktouch {
-	text-decoration: none;
-	background: #e6e6e6;
-}
-.number-pad-key:nth-child(3n+1) {
-	border-left: .1rem solid #ccc;
-}
-.number-pad-key:nth-child(n+4) {
-	border-top: none;
 }
 .number-pad-key.decimal,
 .number-pad-key.backspace {
@@ -42,6 +34,8 @@
 .number-pad-key.disabled {
 	cursor: default;
 }
-.number-pad-key.disabled.quicktouch {
-	background: transparent;
+.number-pad-key.disabled.touchstart {
+	box-shadow: .15rem .15rem .15rem 0 rgba(0,0,0,.14),
+				.3rem .3rem .15rem -.45rem rgba(0,0,0,.2),
+				.15rem .15rem .15rem 0 rgba(0,0,0,.12);
 }

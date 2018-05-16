@@ -62,19 +62,18 @@ app.config = (function() {
 		touch: {
 			quick: {
 				// Maximum time between touchstart and touchend; milliseconds.
-				maxTime: 400,
-				// Maximum percent of screen traveled for emitting "quicktouch" event.
-				maxMovement: 4,
-				// Time to show visual feedback; milliseconds.
-				uiFeedbackDuration: 60,
+				maxTime: 300,
+				// Maximum percent of screen traveled for emitting "click" event.
+				maxMovement: 2.5,
 			},
 			long: {
-				// Delay before emitting "longtouch" event; milliseconds.
-				delay: 500,
+				// Delay before emitting "longtouchstart" event; milliseconds.
+				delay: 450,
 			},
 			swipe: {
 				minSpeed: 0.0025,// % of screen width / millisecond
-				minMovementX: 15,// % screen width
+				minMovementX: 12,// % screen width
+				tolerance: 4,// % screen width
 			},
 		},
 		// Preset amounts are displayed on the #pay screen as buttons.

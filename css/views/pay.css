@@ -2,9 +2,10 @@
 	display: flex;
 	align-items: center;
 	padding: 0;
-	padding-bottom: 4rem;/* height of buttons */
+	padding-bottom: 6rem;/* height of buttons */
 }
 .view.pay .page-description {
+	margin-top: 1rem;
 	margin-bottom: 1rem;
 }
 .view.pay .amount-wrap {

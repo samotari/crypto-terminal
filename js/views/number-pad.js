@@ -13,9 +13,9 @@ app.views.NumberPad = (function() {
 		template: '#template-number-pad',
 
 		events: {
-			'quicktouch .number-pad-key': 'onQuickTouchNumberKey',
-			'longtouch .number-pad-key': 'onLongTouchNumberKey',
-			'touchend .number-pad-key': 'onTouchEndNumberKey',
+			'click .number-pad-key': 'onClickNumberKey',
+			'longtouchstart .number-pad-key': 'onLongTouchStartNumberKey',
+			'longtouchend .number-pad-key': 'onLongTouchEndNumberKey',
 		},
 
 		initialize: function() {
@@ -43,12 +43,7 @@ app.views.NumberPad = (function() {
 			};
 		},
 
-		onTouchEndNumberKey: function(evt) {
-
-			this.longTouchNumberKey = false;
-		},
-
-		onLongTouchNumberKey: function(evt) {
+		onLongTouchStartNumberKey: function(evt) {
 
 			this.longTouchNumberKey = true;
 			var $target = $(evt.target);
@@ -72,7 +67,12 @@ app.views.NumberPad = (function() {
 			async.until(test, iteratee);
 		},
 
-		onQuickTouchNumberKey: function(evt) {
+		onLongTouchEndNumberKey: function(evt) {
+
+			this.longTouchNumberKey = false;
+		},
+
+		onClickNumberKey: function(evt) {
 
 			var $target = $(evt.target);
 			if ($target.hasClass('backspace')) {

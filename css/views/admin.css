@@ -19,12 +19,12 @@
 
 /*  General Settings  */
 .view.admin .form-group.configurableCryptoCurrencies .button.payment-method {
-	float: left;
-	vertical-align: initial;
-	background-size: 3rem;
+	width: 3.2rem;
+	height: 3.2rem;
+	background-size: 3.2rem;
 	opacity: 0.5;
 	margin: 0 .4rem .4rem 0;
-	padding: 2rem;
+	padding: .8rem;
 }
 .view.admin .form-group.configurableCryptoCurrencies input[type="checkbox"] {
 	position: absolute;
@@ -37,8 +37,8 @@
 	background-color: #e6e6e6;
 }
 .view.admin .form-group.configurableCryptoCurrencies {
-	display: inline-block;
-	vertical-align: top;
+	width: 100%;
+	text-align: center;
 	padding-bottom: 1.6rem;
 }
 .view.admin .form-group.configurableCryptoCurrencies .form-group-label {
@@ -49,8 +49,16 @@
 	margin-bottom: 1rem;
 }
 .view.admin .slider-item.general-settings .set-pin.button {
-	padding-left: 1rem;
-	padding-right: 1rem;
+}
+.view.admin select {
+	height: auto;
+	border: 0;
+	background-color: #f7f7f7;
+	font-size: .9rem;
+	box-shadow: 0 .2rem .2rem 0 rgba(0,0,0,.14),
+				0 .3rem .1rem -.2rem rgba(0,0,0,.2),
+				0 .1rem .5rem 0 rgba(0,0,0,.12);
+	padding: .5rem;
 }
 /*  General Settings  */
 

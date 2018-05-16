@@ -22,27 +22,10 @@
 .form-field-description {
 	margin-bottom: 0.5rem;
 }
-.form-field-link {
-	position: relative;
+.form-field-buttons .button {
 	display: inline-block;
 	vertical-align: top;
-	box-sizing: border-box;
-}
-.form-field-link + .form-field-link:before {
-	position: absolute;
-	left: 0;
-	top: 0;
-	content: '•';
-	width: 1rem;
-	color: #222;
-	font-weight: 100;
-	font-size: 1rem;
-	line-height: 1.3rem;
-	text-align: center;
-	margin: 0;
-}
-.form-field-link + .form-field-link {
-	padding-left: 1.2rem;
+	padding: .5rem 1rem;
 }
 .form-input {
 	width: 100%;
@@ -80,13 +63,15 @@
 	margin-top: .5rem;
 }
 .form-field-action {
-	width: 2.2rem;
-	height: 2rem;
+	display: inline-block;
+	vertical-align: top;
+	width: 1rem;
+	height: 1rem;
 	background-position: center center;
 	background-repeat: no-repeat;
-	background-size: 1.2rem;
+	background-size: 1rem;
 	box-sizing: border-box;
-	padding: 0;
+	padding: .8rem 1.1rem;
 }
 .form-field-action + .form-field-action {
 	margin-left: .2rem;

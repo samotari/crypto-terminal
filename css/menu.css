@@ -44,7 +44,7 @@
 .menu-item:nth-child(even) {
 	background-color: #eaeaea;
 }
-.menu-item.quicktouch {
+.menu-item.touchstart {
 	text-decoration: none;
 	background-color: #e5e5e5;
 }
@@ -87,7 +87,7 @@
 	text-align: center;
 	padding: 0 1rem;
 }
-.secondary-menu-item.quicktouch {
+.secondary-menu-item.touchstart {
 	text-decoration: none;
 }
 .secondary-menu-item.active {

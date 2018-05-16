@@ -13,8 +13,8 @@ app.views.SettingsGeneral = (function() {
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',
-			'quicktouch .set-pin': 'setPin',
-			'quicktouch .remove-pin': 'removePin',
+			'click .set-pin': 'setPin',
+			'click .remove-pin': 'removePin',
 		},
 
 		serializeData: function() {

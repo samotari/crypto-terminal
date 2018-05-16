@@ -12,7 +12,7 @@ app.views.PaymentDetails = (function() {
 		template: '#template-payment-details',
 
 		events: {
-			'quicktouch .back': 'back',
+			'click .back': 'back',
 		},
 
 		initialize: function() {

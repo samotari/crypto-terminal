@@ -13,19 +13,19 @@ app.views.EnterPin = (function() {
 		template: '#template-enter-pin',
 
 		events: {
-			'quicktouch .cancel': 'onCancel',
-			'quicktouch .submit': 'onSubmit',
+			'click .cancel': 'onCancel',
+			'click .submit': 'onSubmit',
 		},
 
 		initialize: function() {
 
-			_.bindAll(this, 'updateKeysDisplay', 'onDocumentTouch');
+			_.bindAll(this, 'updateKeysDisplay', 'onDocumentClick');
 			this.numberPadView = new app.views.NumberPad({ decimal: false });
 			this.listenTo(this.numberPadView.model, 'change:keys', this.updateKeysDisplay);
 			this.render().$el.appendTo($('body'));
 			_.defer(_.bind(function() {
 				// Defer the document event listener so that the view isn't closed immediately.
-				$(document).on('quicktouch', this.onDocumentTouch);
+				$(document).on('click', this.onDocumentClick);
 			}, this));
 		},
 
@@ -56,10 +56,6 @@ app.views.EnterPin = (function() {
 
 		onCancel: function(evt) {
 
-			if (evt && evt.preventDefault) {
-				evt.preventDefault();
-			}
-
 			this.trigger('cancel');
 			this.close();
 		},
@@ -74,7 +70,7 @@ app.views.EnterPin = (function() {
 			this.$keys.text(displayedKeys);
 		},
 
-		onDocumentTouch: function(evt) {
+		onDocumentClick: function(evt) {
 
 			if (this.options.closable) {
 
@@ -92,7 +88,7 @@ app.views.EnterPin = (function() {
 		onClose: function() {
 
 			this.numberPadView.close();
-			$(document).off('quicktouch', this.onDocumentTouch);
+			$(document).off('click', this.onDocumentClick);
 		}
 
 	});
