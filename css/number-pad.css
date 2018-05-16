@@ -5,8 +5,8 @@
 	width: 100%;
 }
 .number-pad-wrap {
-	width: 15rem;
-	max-width: 100%;
+	width: 20rem;
+	max-width: 90%;
 	margin: 0 auto;
 }
 .number-pad-key {
@@ -18,7 +18,7 @@
 	line-height: 4rem;
 	color: #666;
 	font-weight: 200;
-	font-size: 1rem;
+	font-size: 1.2rem;
 	text-align: center;
 	border: .15rem solid #efefef;
 	box-shadow: .15rem .15rem .15rem 0 rgba(0,0,0,.14),
