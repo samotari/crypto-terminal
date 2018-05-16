@@ -14,7 +14,12 @@ app.abstracts.BaseView = (function() {
 
 			this.options = options || {};
 
-			_.bindAll(this, 'close', 'render', 'onChangeLocale', 'resize');
+			_.bindAll(this,
+				'close',
+				'render',
+				'onResize',
+				'onChangeLocale'
+			);
 
 			Backbone.View.prototype.constructor.apply(this, arguments);
 
@@ -28,7 +33,7 @@ app.abstracts.BaseView = (function() {
 				See:
 				https://api.jquery.com/event.namespace/
 			*/
-			$(window).on('resize.' + this.cid, _.throttle(this.debounce, 1000));
+			$(window).on('resize.' + this.cid, _.throttle(this.onResize, 1000));
 		},
 
 		isRendered: function() {
@@ -91,11 +96,6 @@ app.abstracts.BaseView = (function() {
 
 			var html = $template && $template.html() || '';
 			return Handlebars.compile(html);
-		},
-
-		resize: function() {
-
-			this.onResize();
 		},
 
 		onResize: function() {
