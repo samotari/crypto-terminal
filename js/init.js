@@ -1,10 +1,5 @@
 var app = app || {};
 
-// document.addEventListener('DOMContentLoaded', function() {
-// 	// Initialize the FastClick library.
-// 	FastClick.attach(document.body);
-// });
-
 app.onDeviceReady(function() {
 
 	'use strict';
