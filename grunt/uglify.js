@@ -36,6 +36,11 @@ module.exports = {
 		src: 'build/ecurve.js',
 		dest: 'build/ecurve.min.js'
 	},
+	qrcode: {
+		nonull: true,
+		src: 'build/qrcode.js',
+		dest: 'build/qrcode.min.js'
+	},
 	querystring: {
 		nonull: true,
 		src: 'build/querystring.js',

@@ -36,6 +36,13 @@ module.exports = {
 		src: 'node_modules/ecurve/lib/index.js',
 		dest: 'build/ecurve.js'
 	},
+	qrcode: {
+		options: {
+			standalone: 'QRCode'
+		},
+		src: 'node_modules/qrcode/lib/browser.js',
+		dest: 'build/qrcode.js'
+	},
 	querystring: {
 		options: {
 			standalone: 'querystring'
