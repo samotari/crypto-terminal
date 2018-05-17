@@ -115,7 +115,7 @@ app.util = (function() {
 
 		getNumberFormatConfig: function(format) {
 
-			return app.config.numberFormats[format] || app.config.numberFormats['default'];
+			return _.defaults(app.config.numberFormats[format] || {}, app.config.numberFormats['default']);
 		},
 
 		formatDate: function(datetime, format) {
