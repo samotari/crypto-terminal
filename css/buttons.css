@@ -7,6 +7,7 @@
 	font-size: .9rem;
 	font-weight: 400;
 	background-color: #f7f7f7;
+	border: none;
 	box-shadow: 0 .3rem .3rem 0 rgba(0,0,0,.14),
 				0 .45rem .15rem -.3rem rgba(0,0,0,.2),
 				0 .15rem .75rem 0 rgba(0,0,0,.12);
