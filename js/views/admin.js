@@ -223,8 +223,11 @@ app.views.Admin = (function() {
 
 			var page = this.options.page;
 			var defaultSubPage = this.getDefaultSubPage();
+			var isConfigured = app.isConfigured();
 
-			if (defaultSubPage && page === defaultSubPage.key) {
+			if (defaultSubPage && page === defaultSubPage.key && !isConfigured) {
+				app.exit();
+			} else if (defaultSubPage && page === defaultSubPage.key) {
 				app.router.navigate('pay', { trigger: true });
 			} else {
 				app.router.navigate('admin', { trigger: true });
