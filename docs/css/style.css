@@ -1,0 +1,71 @@
+.header-flex-container {
+	display: flex;
+	max-height: 100%;
+	background: #2799b4;
+	background: linear-gradient(to bottom right, #2799b4, #68d1e9);
+	color: white;
+}
+.column {
+	flex: 1 0 auto;
+}
+.column.left {
+	width: 60%;
+}
+.column.right {
+	width: 40%;
+}
+.device-app {
+	margin: 0 auto;
+	width: 17rem;
+	padding: 5.6rem 13rem 4rem 0rem;
+}
+.device-app img {
+	width: 17rem;
+}
+.title-description-wrapper {
+	display: flex;
+	flex-direction: column;
+	padding-top: 11rem;
+}
+.description, .name {
+	padding-left: 8rem;
+}
+.name {
+	font-size: 3rem;
+	padding-left: 11rem;
+}
+.name img {
+	width: 5rem;
+	height: auto;
+	box-shadow: 0px 0px 5px black;
+}
+.name .logo {
+	display: inline-block;
+}
+.name .label {
+	display: inline-block;
+    position: absolute;
+    line-height: 5rem;
+    padding-left: 1rem;
+}
+.description {
+	font-size: 1.5rem;
+	padding-top: 1rem;
+}
+.info-links {
+	padding: 9rem 1rem 0 17rem;
+	display: flex;
+	align-items: center;
+}
+.info-links img {
+	width: 7rem;
+	height: auto;
+}
+@media screen and (max-width: 1024px)  {
+	.header-flex-container {
+		flex-direction: column;
+	}
+	.device-app {
+		padding: 5.6rem 13rem 4rem 17rem;
+	}
+}
