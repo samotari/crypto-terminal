@@ -1,71 +1,105 @@
-.header-flex-container {
-	display: flex;
-	max-height: 100%;
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.content {
+	width: 100%;
+	height: 100%;
+	max-height: 36rem;
+	color: #fff;
 	background: #2799b4;
 	background: linear-gradient(to bottom right, #2799b4, #68d1e9);
-	color: white;
 }
-.column {
-	flex: 1 0 auto;
+.content a {
+	color: #fff;
+	text-decoration: none;
 }
-.column.left {
-	width: 60%;
+.content a:hover {
+	text-decoration: none;
 }
-.column.right {
-	width: 40%;
+.wrap {
+	position: relative;
+	width: 100%;
 }
-.device-app {
-	margin: 0 auto;
-	width: 17rem;
-	padding: 5.6rem 13rem 4rem 0rem;
-}
-.device-app img {
-	width: 17rem;
-}
-.title-description-wrapper {
-	display: flex;
-	flex-direction: column;
-	padding-top: 11rem;
-}
-.description, .name {
-	padding-left: 8rem;
-}
-.name {
-	font-size: 3rem;
-	padding-left: 11rem;
-}
-.name img {
-	width: 5rem;
-	height: auto;
-	box-shadow: 0px 0px 5px black;
-}
-.name .logo {
-	display: inline-block;
-}
-.name .label {
-	display: inline-block;
-    position: absolute;
-    line-height: 5rem;
-    padding-left: 1rem;
-}
-.description {
-	font-size: 1.5rem;
-	padding-top: 1rem;
-}
-.info-links {
-	padding: 9rem 1rem 0 17rem;
-	display: flex;
-	align-items: center;
-}
-.info-links img {
-	width: 7rem;
-	height: auto;
-}
-@media screen and (max-width: 1024px)  {
-	.header-flex-container {
-		flex-direction: column;
+
+	/*  Main  */
+	.content.main .wrap {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		box-sizing: border-box;
+		padding: 0 3.5rem;
 	}
-	.device-app {
-		padding: 5.6rem 13rem 4rem 17rem;
+	.content.main .title-description-and-links {
+		float: left;
+		width: 60%;
 	}
-}
+	.content.main .title-description-and-logo {
+		display: flex;
+		align-content: center;
+		width: 100%;
+		padding-left: 3.75rem;/* half the logo image */
+	}
+	.content.main .logo {
+		display: block;
+		float: left;
+		width: 7.5rem;
+		height: 7.5rem;
+		box-shadow: 0 0 .5rem #000;
+		margin-right: 2.5rem;
+	}
+	.content.main .title {
+		font-size: 3rem;
+		font-weight: 400;
+	}
+	.content.main .description {
+		font-size: 1.4rem;
+		font-weight: 100;
+		margin-top: .5rem;
+	}
+	.content.main .links {
+		font-weight: 100;
+		padding-left: 13.25rem;/* align with the left edge of the title and description text */
+		margin-top: 4rem;
+	}
+	.content.main .link {
+		border-radius: .6rem;
+		background: rgba(255, 255, 255, .075);
+		padding: .5rem .75rem;
+	}
+	.content.main .link:hover {
+		background: rgba(255, 255, 255, .15);
+	}
+	.content.main .link-text {
+		display: inline-block;
+		vertical-align: top;
+		font-size: 1.1rem;
+		margin-right: .6rem;
+	}
+	.content.main .link.github {
+		line-height: 1.35rem;
+	}
+	.content.main .link.github .github-logo {
+		display: inline-block;
+		vertical-align: top;
+		width: auto;
+		height: 1.35rem;
+	}
+	.content.main .screenshots {
+		display: flex;
+		align-items: center;
+		float: left;
+		width: 40%;
+		height: 100%;
+	}
+	.content.main .screenshot {
+		display: block;
+		width: auto;
+		height: 100%;
+		max-height: 30rem;
+		box-sizing: border-box;
+		padding: 2rem 0;
+		margin: 0 auto;
+	}
+	/*  Main  */
