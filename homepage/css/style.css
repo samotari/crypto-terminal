@@ -58,10 +58,42 @@ html, body {
 		font-weight: 100;
 		margin-top: .5rem;
 	}
-	.content.main .links {
-		font-weight: 100;
+	.content.main .more-info {
 		padding-left: 13.25rem;/* align with the left edge of the title and description text */
 		margin-top: 4rem;
+	}
+	.content.main .supported-cryptocurrencies {
+		display: inline-block;
+		vertical-align: top;
+		width: 100%;
+	}
+	.content.main .supported-cryptocurrency {
+		float: left;
+		opacity: 0.85;
+		border: .1rem solid #fff;
+		border-radius: 50%;
+		box-shadow: 0 0 .4rem #000;
+	}
+	.content.main .supported-cryptocurrency-image {
+		display: inline-block;
+		vertical-align: top;
+		width: 3.6rem;
+		height: 3.6rem;
+	}
+	.content.main .supported-cryptocurrency:hover {
+		opacity: 1;
+	}
+	.content.main .supported-cryptocurrencies-text {
+		font-size: 1.1rem;
+		font-weight: 100;
+		margin-bottom: .6rem;
+	}
+	.content.main .supported-cryptocurrency + .supported-cryptocurrency {
+		margin-left: .5rem;
+	}
+	.content.main .links {
+		font-weight: 100;
+		margin-top: 3rem;
 	}
 	.content.main .link {
 		border-radius: .6rem;
@@ -97,9 +129,9 @@ html, body {
 		display: block;
 		width: auto;
 		height: 100%;
-		max-height: 30rem;
+		max-height: 36rem;
 		box-sizing: border-box;
-		padding: 2rem 0;
+		padding: 3rem 0;
 		margin: 0 auto;
 	}
 	/*  Main  */

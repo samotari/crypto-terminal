@@ -86,6 +86,17 @@ module.exports = {
 					'**/*'
 				],
 				dest: 'build/homepage/www/images/'
+			},
+			{
+				nonull: true,
+				expand: true,
+				flatten: true,
+				src: [
+					'images/bitcoin.svg',
+					'images/litecoin.svg',
+					'images/monero.svg'
+				],
+				dest: 'build/homepage/www/images/'
 			}
 		]
 	}
