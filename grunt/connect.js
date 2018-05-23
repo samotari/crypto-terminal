@@ -1,6 +1,14 @@
 'use strict';
 
 module.exports = {
+	homepage: {
+		options: {
+			port: 3003,
+			hostname: 'localhost',
+			base: 'build/homepage/www',
+			keepalive: true
+		}
+	},
 	static: {
 		options: {
 			port: 3000,

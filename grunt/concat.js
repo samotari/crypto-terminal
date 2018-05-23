@@ -143,5 +143,14 @@ module.exports = {
 			'build/js/init.min.js'
 		],
 		dest: 'build/all.min.js'
+	},
+	homepage_min_css: {
+		nonull: true,
+		src: [
+			'build/homepage/css/fonts.min.css',
+			'build/homepage/css/reset.min.css',
+			'build/homepage/css/style.min.css'
+		],
+		dest: 'build/homepage/all.min.css'
 	}
 };

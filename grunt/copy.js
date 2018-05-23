@@ -56,5 +56,37 @@ module.exports = {
 				dest: 'www/favicon.ico'
 			}
 		]
+	},
+	homepage: {
+		files: [
+			{
+				nonull: true,
+				src: 'homepage/index.html',
+				dest: 'build/homepage/www/index.html'
+			},
+			{
+				nonull: true,
+				src: 'build/homepage/all.min.css',
+				dest: 'build/homepage/www/css/all.min.css'
+			},
+			{
+				expand: true,
+				flatten: true,
+				cwd: 'node_modules/open-sans-fontface/',
+				src: [
+					'fonts/**/*.{ttf,eot,svg,woff,woff2}'
+				],
+				dest: 'build/homepage/www/fonts/OpenSans/'
+			},
+			{
+				expand: true,
+				flatten: false,
+				cwd: 'homepage/images/',
+				src: [
+					'**/*'
+				],
+				dest: 'build/homepage/www/images/'
+			}
+		]
 	}
 };
