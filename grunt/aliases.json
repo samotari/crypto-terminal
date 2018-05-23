@@ -11,6 +11,15 @@
 		"newer:concat",
 		"newer:copy"
 	],
+	"homepage": [
+		"build:homepage",
+		"connect:homepage"
+	],
+	"build:homepage": [
+		"newer:cssmin:homepage",
+		"newer:concat:homepage_min_css",
+		"newer:copy:homepage"
+	],
 	"test": [
 		"test:unit",
 		"test:code-style"

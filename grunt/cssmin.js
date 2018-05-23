@@ -9,5 +9,14 @@ module.exports = {
 			dest: 'build/css',
 			ext: '.min.css'
 		}]
+	},
+	homepage: {
+		files: [{
+			expand: true,
+			cwd: 'homepage/css',
+			src: ['**/*.css'],
+			dest: 'build/homepage/css',
+			ext: '.min.css'
+		}]
 	}
 };
