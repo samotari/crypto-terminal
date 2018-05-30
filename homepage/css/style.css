@@ -6,7 +6,6 @@ html, body {
 .content {
 	width: 100%;
 	height: 100%;
-	max-height: 36rem;
 	color: #fff;
 	background: #2799b4;
 	background: linear-gradient(to bottom right, #2799b4, #68d1e9);
