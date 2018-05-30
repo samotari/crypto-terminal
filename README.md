@@ -24,6 +24,7 @@ If you would like to contribute to the project, the following should help get yo
   * [Monero](#monero)
 * [Android Development](#android-development)
   * [Create Signed APK](#create-signed-apk)
+* [Homepage](#homepage) - [cryptoterminal.eu](https://cryptoterminal.eu)
 
 
 ## Requirements
@@ -159,3 +160,18 @@ If successful, it should have created a new `.apk` file at the following path:
 ```
 ./platforms/android/app/build/outputs/apk/release/app-release.apk
 ```
+
+
+## Homepage
+
+The homepage is hosted via [GitHub pages](https://pages.github.com/) at [cryptoterminal.eu](https://cryptoterminal.eu/). It is intended as a non-technical entry-point for merchants to find and learn about the app.
+
+The source files for the homepage are located in this project in the `homepage/` directory.
+
+To build and serve the homepage locally:
+```bash
+grunt homepage
+```
+Then open your browser to [localhost:3003](http://localhost:3003).
+
+To update the production build, copy the homepage build files from `build/homepage/www` to the `gh-pages` git branch in this project.
