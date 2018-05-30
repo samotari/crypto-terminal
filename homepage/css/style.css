@@ -24,7 +24,7 @@ html, body {
 
 	/*  Main  */
 	.content.main {
-		min-height: 36rem;
+		min-height: 30rem;
 	}
 	.content.main .wrap {
 		display: flex;
@@ -135,9 +135,7 @@ html, body {
 	.content.main .screenshot {
 		display: block;
 		width: auto;
-		max-width: 220px;
 		height: 100%;
-		max-width: 420px;
 		box-sizing: border-box;
 		padding: 3rem 0;
 		margin: 0 auto;
