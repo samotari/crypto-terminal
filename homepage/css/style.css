@@ -23,6 +23,9 @@ html, body {
 }
 
 	/*  Main  */
+	.content.main {
+		min-height: 36rem;
+	}
 	.content.main .wrap {
 		display: flex;
 		align-items: center;
@@ -30,15 +33,16 @@ html, body {
 		box-sizing: border-box;
 		padding: 0 3.5rem;
 	}
-	.content.main .title-description-and-links {
+	.content.main .title-description-and-logo {
 		float: left;
 		width: 60%;
 	}
-	.content.main .title-description-and-logo {
+	.content.main .title-description-and-logo-inner {
 		display: flex;
 		align-content: center;
 		width: 100%;
 		padding-left: 3.75rem;/* half the logo image */
+		padding-bottom: 7.5rem;/* give space for more-info */
 	}
 	.content.main .logo {
 		display: block;
@@ -53,13 +57,14 @@ html, body {
 		font-weight: 400;
 	}
 	.content.main .description {
-		font-size: 1.4rem;
+		font-size: 1.5rem;
 		font-weight: 100;
 		margin-top: .5rem;
 	}
 	.content.main .more-info {
-		padding-left: 13.25rem;/* align with the left edge of the title and description text */
-		margin-top: 4rem;
+		position: absolute;
+		left: 17.25rem;/* align with the left edge of the title and description text */
+		bottom: 4rem;
 	}
 	.content.main .supported-cryptocurrencies {
 		display: inline-block;
@@ -109,7 +114,10 @@ html, body {
 		margin-right: .6rem;
 	}
 	.content.main .link.github {
+		position: relative;
+		left: -.75rem;
 		line-height: 1.35rem;
+		white-space: nowrap;
 	}
 	.content.main .link.github .github-logo {
 		display: inline-block;
@@ -134,3 +142,118 @@ html, body {
 		margin: 0 auto;
 	}
 	/*  Main  */
+
+
+	/*  for phones  */
+	@media screen and (max-width: 840px) {
+		.content {
+			height: auto;
+			background: #2799b4;
+			overflow: hidden;
+		}
+		.content.main {
+			min-height: auto;
+		}
+		.content.main .wrap {
+			display: block;
+			align-items: initial;
+			height: auto;
+			padding: 2.5rem;
+		}
+		.content.main .title-description-and-logo {
+			position: relative;
+			float: none;
+			width: 100%;
+		}
+		.content.main .title-description-and-logo-inner {
+			display: block;
+			align-content: initial;
+			padding: 0;
+		}
+		.content.main .logo {
+			float: left;
+			display: block;
+			width: 3rem;
+			height: 3rem;
+			margin: 0 1rem 0 0;
+		}
+		.content.main .title {
+			font-size: 2rem;
+			line-height: 3rem;
+			text-align: left;
+			white-space: nowrap;
+		}
+		.content.main .description {
+			font-size: 1.2rem;
+			text-align: center;
+			margin-top: 1.2rem;
+		}
+		.content.main .more-info {
+			position: relative;
+			left: initial;
+			bottom: initial;
+			text-align: center;
+			padding-left: 0;
+			margin-top: 2.5rem;
+		}
+		.content.main .supported-cryptocurrencies {
+			text-align: center;
+		}
+		.content.main .supported-cryptocurrency {
+			display: inline-block;
+			vertical-align: top;
+			float: none;
+		}
+		.content.main .links {
+			margin-top: 2rem;
+		}
+		.content.main .link.github {
+			position: relative;
+			left: initial;
+			height: auto;
+			white-space: initial;
+		}
+		.content.main .link {
+			border-radius: none;
+			background: transparent;
+			padding: 0;
+		}
+		.content.main .link:hover {
+			background: transparent;
+		}
+		.content.main .link-text {
+			display: block;
+			margin: 0 0 .6rem 0;
+		}
+		.content.main .screenshots {
+			display: block;
+			align-items: initial;
+			float: none;
+			width: 100%;
+			height: auto;
+			margin-top: 2.5rem;
+		}
+		.content.main .screenshot {
+			width: 100%;
+			height: auto;
+			max-height: 100%;
+			padding: 0;
+		}
+	}
+	@media screen and (max-width: 720px) {
+		.content.main .title {
+			font-size: 1.75rem;
+		}
+		.content.main .description {
+			font-size: 1.3rem;
+		}
+	}
+	@media screen and (max-width: 580px) {
+		.content.main .title {
+			font-size: 1.6rem;
+		}
+		.content.main .description {
+			font-size: 1.2rem;
+		}
+	}
+	/*  for phones  */
