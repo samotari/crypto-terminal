@@ -394,13 +394,22 @@ app.views.Main = (function() {
 			// The hideMessage method is called because of the document event, which could happen after.
 			_.defer(_.bind(function() {
 
-				if (message.status === 0) {
-					this.$messageContent.text(app.i18n.t('main.message.status.0'));
-				} else {
-					this.$messageContent.text(message.message || message);
+				var messageText;
+
+				if (_.isString(message)) {
+					messageText = message;
+				} else if (message.status === 0) {
+					messageText = app.i18n.t('main.message.status.0');
+				} else if (message.message && _.isString(message.message)) {
+					messageText = message.message;
+				} else if (message.error && _.isString(message.error)) {
+					messageText = message.error;
 				}
 
-				this.$message.addClass('visible');
+				if (messageText) {
+					this.$messageContent.text(messageText);
+					this.$message.addClass('visible');
+				}
 
 			}, this));
 		},
