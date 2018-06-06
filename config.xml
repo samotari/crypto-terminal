@@ -22,4 +22,5 @@
         <variable name="ANDROID_SUPPORT_VERSION" value="26.+" />
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="2.0.2" />
+    <plugin name="cordova-plugin-network-information" spec="2.0.1" />
 </widget>

@@ -53,6 +53,23 @@ app.device = (function() {
 					}
 				}, false);
 			}
+		},
+
+		listenToNetworkInformation: function() {
+			// https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-network-information/
+
+			function onOffline() {
+				$('html').addClass('offline');
+			}
+
+			function onOnline() {
+				$('html').removeClass('offline');
+			}
+
+			if (app.isCordova()) {
+				document.addEventListener("offline", onOffline, false);
+				document.addEventListener("online", onOnline, false);
+			}
 		}
 
 	};

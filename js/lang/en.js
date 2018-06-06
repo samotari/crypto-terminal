@@ -30,6 +30,8 @@ app.lang['en'] = (function() {
 		'pay-address.description': 'Scan the QR code to pay',
 		'pay-address.cancel': 'Cancel',
 		'pay-address.back': 'Back',
+		'display-payment-address.message.offline1': '<strong>Warning!</strong> Device is offline.',
+		'display-payment-address.message.offline2': 'Cannot verify payment.',
 		'payment.status.pending': 'Pending',
 		'payment.status.canceled': 'Canceled',
 		'payment.status.unconfirmed': 'Unconfirmed',
