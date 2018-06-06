@@ -6,22 +6,6 @@ app.paymentMethods.bitcoin = (function() {
 
 	'use strict';
 
-	app.onReady(function() {
-		app.paymentRequests.on('add', function(model) {
-			var status = model.get('status');
-			if (status) {
-				// Only payment requests with a status are considered.
-				var paymentMethod = _.findWhere(app.paymentMethods, {
-					code: model.get('currency'),
-				});
-				if (paymentMethod) {
-					var settingPath = paymentMethod.ref + '.addressIndex';
-					var index = parseInt(app.settings.get(settingPath) || '0');
-					app.settings.set(settingPath, index + 1);
-				}
-			}
-		});
-	});
 
 	return app.abstracts.PaymentMethod.extend({
 
@@ -270,6 +254,16 @@ app.paymentMethods.bitcoin = (function() {
 			});
 		},
 
+		incrementAddressIndex: function(cb) {
+
+			var settingPath = this.ref + '.addressIndex';
+			var index = parseInt(app.settings.get(settingPath) || '0');
+			var nextIndex = index + 1;
+			app.settings.set(settingPath, nextIndex.toString());
+			// Defer the callback function so that it is async.
+			_.defer(cb);
+		},
+
 		deriveAddress: function(extendedPublicKey, derivationScheme, addressIndex, cb) {
 
 			var ref = this.ref;
@@ -436,9 +430,21 @@ app.paymentMethods.bitcoin = (function() {
 			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
 			var amountReceived = new BigNumber('0');
 
-			var done = _.bind(function() {
+			var done = _.bind(function(error, wasReceived) {
+
+				// Always stop listening for payment.
 				this.stopListeningForPayment();
-				cb.apply(undefined, arguments);
+
+				if (error) {
+					// Don't increment the address index in case of an error.
+					return cb(error);
+				}
+
+				// A payment was received, so increment the address index.
+				this.incrementAddressIndex(function() {
+					cb(null, wasReceived);
+				});
+
 			}, this);
 
 			var channel = 'address-balance-updates?' + querystring.stringify({
