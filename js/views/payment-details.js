@@ -17,9 +17,14 @@ app.views.PaymentDetails = (function() {
 
 		initialize: function() {
 
-			this.model = app.paymentRequests.get(this.options.paymentId);
+			this.model = this.initializeModel(this.options.paymentId);
 			this.model.on('sync change', this.render);
 			this.model.fetch();
+		},
+
+		initializeModel: function(paymentId) {
+
+			return app.paymentRequests.get(paymentId) || (new app.paymentRequests.model({ id: paymentId }));
 		},
 
 		serializeData: function() {
@@ -33,6 +38,7 @@ app.views.PaymentDetails = (function() {
 				app.log(error);
 			}
 			data.paymentMethod = _.pick(paymentMethod, 'code');
+			data.statusLabel = app.i18n.t('payment.status.' + data.status);
 			return data
 		},
 

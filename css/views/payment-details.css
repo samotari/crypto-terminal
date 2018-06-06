@@ -10,7 +10,6 @@
 	flex: 1;
 	justify-content: space-between;
 	box-sizing: border-box;
-	border: .1rem dashed rgba(210, 210, 210, 0.3);
 	border-left: none;
 	border-right: none;
 	padding: .8rem 1rem;
@@ -25,24 +24,30 @@
 .view.payment-detail .payment-details-info-item-value {
 	text-align: right;
 }
-.view.payment-detail .payment-details-info-item-value.status {
-	font-weight: bold;
-}
-.view.payment-detail.status-canceled .payment-details-info-item-value.status {
-	color: rgba(180, 180, 180, 0.6);
-}
-.view.payment-detail.status-timed-out .payment-details-info-item-value.status {
-	color: rgba(216, 0, 12, 1);
-}
-.view.payment-detail.status-confirmed .payment-details-info-item-value.status {
-	color: rgba(122, 193, 66, 1);
-}
 .view.payment-detail .payment-details-info-item-value-timestamp,
 .view.payment-detail .payment-details-amount-crypto {
-	font-size: 0.9rem;
+	font-size: .9rem;
 	font-weight: 100;
 	margin-top: .2rem;
 }
-.view.payment-detail .payment-details-info-item:nth-child(even) {
-	background-color: rgba(255, 255, 255, 0.25);
+.view.payment-detail .payment-details-info-item-value.status {
+	display: inline-block;
+	vertical-align: top;
+	font-size: 1.1rem;
+	font-weight: 100;
+	background-color: rgba(210, 210, 210, 0.5);
+	border-radius: .5rem;
+	padding: .5rem 1rem;
+}
+.view.payment-detail.status-canceled .payment-details-info-item-value.status {
+	opacity: .5;
+}
+.view.payment-detail.status-timed-out .payment-details-info-item-value.status {
+	background-color: rgba(216, 0, 12, 0.3);
+}
+.view.payment-detail.status-unconfirmed .payment-details-info-item-value.status {
+	background-color: rgba(122, 193, 66, 0.35);
+}
+.view.payment-detail.status-confirmed .payment-details-info-item-value.status {
+	background-color: rgba(122, 193, 66, 0.6);
 }
