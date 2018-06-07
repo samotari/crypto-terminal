@@ -38,6 +38,7 @@ app.onDeviceReady(function() {
 
 			$('html').addClass('loaded');
 			app.device.overrideBackButton();
+			app.device.listenToNetworkInformation();
 
 		}
 	});

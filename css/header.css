@@ -99,3 +99,13 @@ body.view-payment-status .header-button.pay {
 	text-align: center;
 	color: #ccc;
 }
+.header-button.offline {
+	/*
+		Hide the offline icon by default.
+	*/
+	display: none;
+	background-image: url('../images/offline.svg');
+}
+html.offline .header-button.offline {
+	display: block;
+}
