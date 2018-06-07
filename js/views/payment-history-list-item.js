@@ -28,6 +28,7 @@ app.views.PaymentHistoryListItem = (function() {
 				app.log(error);
 			}
 			data.paymentMethod = _.pick(paymentMethod, 'code');
+			data.statusLabel = app.i18n.t('payment.status.' + data.status);
 			return data;
 		},
 

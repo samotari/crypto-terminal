@@ -9,6 +9,9 @@ app.collections.PaymentRequests = (function() {
 	return app.abstracts.BaseCollection.extend({
 		model: app.models.PaymentRequest,
 		storeName: 'payment_requests',
+		comparator: function(model) {
+			return model.get('timestamp') * -1;
+		},
 	});
 
 })();

@@ -11,6 +11,16 @@
 		return _.result(Backbone, 'Deferred', false);
 	};
 
+	/*
+		!! TODO !!
+		This custom sync method doesn't work properly when fetching an individual record. Example:
+			this.model = new app.paymentRequests.model({ id: this.options.paymentId });
+			this.model.on('sync change', this.render);
+			this.model.fetch();
+
+		Suggested approach to find a fix is to copy the backbone-localstorage sync method here with added logging to determine the proper signature for callbacks.
+	*/
+
 	Backbone.sync = function(method, model, options) {
 
 		var sqliteStore = this.sqliteStore || this.collection && this.collection.sqliteStore;
