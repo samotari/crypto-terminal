@@ -1,14 +1,24 @@
-.view.display-payment-address .amount-wrap {
+.view.display-payment-address .info {
 	position: absolute;
 	left: 0;
-	top: 2rem;/* padding of the .view element */
+	top: 0;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 7.5rem;
+	box-sizing: border-box;
+}
+.view.display-payment-address .info-inner {
+	width: 100%;
+}
+.view.display-payment-address .amount-wrap {
 }
 .view.display-payment-address .address {
 	position: relative;
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
-	padding-top: 8.5rem;/* (height of the .amount-wrap element) + extra padding */
+	padding-top: 5.5rem;/* (height of the .amount-wrap element) + extra padding */
 	padding-bottom: 7.4rem;/* (height of the .amount-wrap element) + extra padding */
 }
 .view.display-payment-address .address-instructions {
@@ -29,18 +39,15 @@
 }
 .view.display-payment-address .message {
 	display: none;
-	position: absolute;
 	width: 100%;
-	margin: 0 auto;
-	left: 0;
-	top: 5.5rem;
-	text-align: center;
+	height: 2.5rem;
+	color: #222;
 	font-size: .9rem;
-	color: #000000;
-	background-color: #ff9800;
-	border-color: #faebcc;padding: 1rem 0;
-	border: 1px solid transparent;
-	border-radius: 4px;
+	line-height: 1.25rem;
+	text-align: center;
+	background-color: rgba(255, 152, 0, 0.7);
+	padding: .25rem 0;
+	margin: 0 auto;
 }
 .view.display-payment-address .message strong {
 	font-weight: 700;
