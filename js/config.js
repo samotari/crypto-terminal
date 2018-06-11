@@ -95,8 +95,6 @@ app.config = (function() {
 		paymentHistory: {
 			list: {
 				limit: 30,
-				offset: 0,
-				total: 0,
 			}
 		},
 		settings: [
