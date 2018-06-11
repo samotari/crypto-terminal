@@ -111,5 +111,9 @@ app.models.PaymentRequest = (function() {
 			return cryptoAmount.toString();
 		},
 
+		getStatuses: function() {
+			return statuses;
+		}
+
 	});
 })();
