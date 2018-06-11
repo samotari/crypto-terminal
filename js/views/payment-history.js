@@ -20,9 +20,9 @@ app.views.PaymentHistory = (function() {
 			return app.views.PaymentHistoryListItem;
 		},
 
-		limit: 10,
-		offset: 0,
-		total: 0,
+		limit: app.config.paymentHistory.list.limit,
+		offset: app.config.paymentHistory.list.offset,
+		total: app.config.paymentHistory.list.total,
 
 		initialize: function() {
 
