@@ -20,7 +20,6 @@ app.views.PaymentHistory = (function() {
 			return app.views.PaymentHistoryListItem;
 		},
 
-		limit: 10,
 		offset: 0,
 		total: 0,
 
@@ -37,7 +36,7 @@ app.views.PaymentHistory = (function() {
 			$el.addClass('loading');
 			window.requestAnimationFrame(_.bind(function() {
 				this.collection.fetch({
-					limit: this.limit,
+					limit: app.config.paymentHistory.list.limit,
 					offset: this.offset,
 					error: function() {
 						$el.removeClass('loading');
@@ -70,7 +69,7 @@ app.views.PaymentHistory = (function() {
 			var scrollHeightRemaining = this.getScrollHeightRemaining();
 			var threshold = $(window).height() / 3;
 			if (scrollHeightRemaining < threshold && this.hasMoreItemsToFetch()) {
-				this.offset += this.limit;
+				this.offset += app.config.paymentHistory.list.limit;
 				this.fetchPayments();
 			}
 		},

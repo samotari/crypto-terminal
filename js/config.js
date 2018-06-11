@@ -92,6 +92,11 @@ app.config = (function() {
 		paymentRequests: {
 			maxPendingTime: 5 * 60 * 1000,
 		},
+		paymentHistory: {
+			list: {
+				limit: 30,
+			}
+		},
 		settings: [
 			{
 				name: 'configurableCryptoCurrencies',
