@@ -9,6 +9,7 @@ app.Router = (function() {
 		// These are router function names, not URI hashes.
 		'about',
 		'admin',
+		'paymentDetails',
 	];
 
 	var pinProtected = [
