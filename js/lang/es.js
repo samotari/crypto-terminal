@@ -32,7 +32,7 @@ app.lang['es'] = (function() {
 		'pay-address.back': 'Regresar',
 		'payment.status.pending': 'Pendiente',
 		'payment.status.canceled': 'Cancelado',
-		'payment.status.unconfirmed': 'Sin confirmar',
+		'payment.status.unconfirmed': 'Aceptado',
 		'payment.status.confirmed': 'Confirmado',
 		'payment.status.timed-out': 'Caducado',
 		'payment-history.failed-to-get-payment-data': 'Fallo cargando el pago',
