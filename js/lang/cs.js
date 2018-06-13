@@ -32,7 +32,7 @@ app.lang['cs'] = (function() {
 		'pay-address.back': 'Zpět',
 		'payment.status.pending': 'Čekající',
 		'payment.status.canceled': 'Zrušeno',
-		'payment.status.unconfirmed': 'Nepotvrzený',
+		'payment.status.unconfirmed': 'Přijatý',
 		'payment.status.confirmed': 'Potvrzený',
 		'payment.status.timed-out': 'Čas vypršel',
 		'payment-history.failed-to-get-payment-data': 'Nepodařilo se načíst data o platbách',
