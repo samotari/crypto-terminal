@@ -197,6 +197,10 @@ app.views.Main = (function() {
 				this.hideMenuCover();
 			}
 
+			if (!$target.is(':input')) {
+				this.$(':input:focus').blur();
+			}
+
 			this.hideMessage();
 		},
 
