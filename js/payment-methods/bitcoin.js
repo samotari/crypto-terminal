@@ -124,7 +124,7 @@ app.paymentMethods.bitcoin = (function() {
 				label: function() {
 					return app.i18n.t('bitcoin.settings.addressIndex.label');
 				},
-				type: 'text',
+				type: 'number',
 				required: true,
 				default: '0',
 				validate: function(value) {

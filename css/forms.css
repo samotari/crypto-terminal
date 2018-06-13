@@ -37,7 +37,9 @@
 }
 
 /* Text input */
-.form-input.text-input {
+.form-input[type="text"],
+.form-input[type="password"],
+.form-input[type="number"] {
 	width: 100%;
 	font-size: 0.9rem;
 	padding: 0.9rem 0.9rem 0.9rem 0.4rem;
@@ -45,7 +47,9 @@
 	border: none;
 	border-bottom: 0.1rem solid #757575;
 }
-.form-input.text-input:focus {
+.form-input[type="text"]:focus,
+.form-input[type="password"]:focus,
+.form-input[type="number"]:focus {
 	outline:none;
 	border-bottom: 0.1rem solid #5264AE;
 }

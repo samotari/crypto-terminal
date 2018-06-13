@@ -6,11 +6,17 @@
 		{{/each}}
 	</select>
 	{{/case}}
+	{{#case "number" break=true}}
+	<input class="form-input" type="number" name="{{name}}" value="{{value}}">
+	{{/case}}
+	{{#case "integer" break=true}}
+	<input class="form-input" type="number" min="0" step="1" name="{{name}}" value="{{value}}">
+	{{/case}}
 	{{#case "password" break=true}}
 	<input class="form-input" type="password" name="{{name}}" value="{{value}}">
 	{{/case}}
 	{{#default}}
-	<input class="form-input text-input" type="text" name="{{name}}" value="{{value}}">
+	<input class="form-input" type="text" name="{{name}}" value="{{value}}">
 	{{/default}}
 {{/switch}}
 	<div class="form-error"></div>
