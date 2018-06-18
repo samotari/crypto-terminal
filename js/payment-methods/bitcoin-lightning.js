@@ -20,6 +20,7 @@ app.paymentMethods.bitcoinLightning = (function() {
 		lang: {
 			'en': {
 				'settings.apiUrl.label': 'API URL',
+				'settings.invoiceMacaroon.label': 'Invoice Macaroon',
 				'addInvoice.failed': 'Failed to generate invoice',
 			}
 		},
@@ -36,6 +37,15 @@ app.paymentMethods.bitcoinLightning = (function() {
 				default: 'http://localhost:8280',
 				label: function() {
 					return app.i18n.t('bitcoinLightning.settings.apiUrl.label');
+				},
+				type: 'text',
+				required: true
+			},
+			{
+				name: 'invoiceMacaroon',
+				default: '',
+				label: function() {
+					return app.i18n.t('bitcoinLightning.settings.invoiceMacaroon.label');
 				},
 				type: 'text',
 				required: true
@@ -80,7 +90,10 @@ app.paymentMethods.bitcoinLightning = (function() {
 			$.ajax({
 				url: uri,
 				method: 'POST',
-				contentType: 'application/json; charset=utf-8',
+				headers: {
+					'Content-Type': 'application/json',
+					'Grpc-Metadata-macaroon': app.settings.get(this.ref + '.invoiceMacaroon')
+				},
 				data: JSON.stringify(data),
 			}).then(function(result) {
 				cb(null, result);
@@ -101,10 +114,17 @@ app.paymentMethods.bitcoinLightning = (function() {
 			_.defer(_.bind(function() {
 				var id = (new Buffer(paymentRequest.data.r_hash, 'base64')).toString('hex');
 				var uri = this.getApiUrl('/v1/invoice/' + encodeURIComponent(id));
-				$.get(uri).then(function(result) {
+				$.ajax({
+					url: uri,
+					method: 'GET',
+					headers: {
+						'Grpc-Metadata-macaroon': app.settings.get(this.ref + '.invoiceMacaroon')
+					},
+				}).then(function(result) {
 					var wasReceived = result.settled === true;
 					cb(null, wasReceived);
 				}).fail(cb);
+
 			}, this));
 		}
 	});
