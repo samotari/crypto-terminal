@@ -1,3 +1,9 @@
+{{#if description}}
+<div class="payment-method-description">
+	{{{description}}}
+</div>
+{{/if}}
+
 <form>
 	<div class="form">
 		<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
@@ -7,6 +13,9 @@
 				<div class="form-label">
 					<label for="{{id}}">{{label}}</label>
 				</div>
+				{{#if description}}
+					<div class="form-description">{{description}}</div>
+				{{/if}}
 				<div class="form-field">
 					{{> formField .}}
 				</div>
