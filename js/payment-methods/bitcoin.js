@@ -18,9 +18,6 @@ app.paymentMethods.bitcoin = (function() {
 		// Used internally to reference itself:
 		ref: 'bitcoin',
 
-		// Used for chain.so API requests:
-		chainSoCode: 'BTC',
-
 		// Used to generate a payment request URI:
 		uriScheme: 'bitcoin',
 
@@ -45,6 +42,7 @@ app.paymentMethods.bitcoin = (function() {
 				'index-no-hardened': 'Hardened child keys are not supported',
 				'failed-to-derive-address': 'Failed to derive address',
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
+				'segwit-not-supported': 'Segwit addresses are not supported yet. If your wallet allows you to do so, please use a "legacy" extended public key (xpub) instead.',
 			},
 			'cs': {
 				'settings.addressIndex.label': 'Index adresy',
@@ -148,18 +146,56 @@ app.paymentMethods.bitcoin = (function() {
 			}
 		],
 
-		networks: [
-			{
-				// Pay to public key hash:
-				p2pkh: '00',
-				// Pay to script hash:
-				p2sh: '05',
-				bip32: {
-					public: '0488b21e',
-					private: '0488ade4',
-				},
+		/*
+			Network constants.
+		*/
+		network: {
+			wif: '80',
+			p2pkh: '00',
+			p2sh: '05',
+			bech32: 'bc',
+			/*
+				Extended-key constants. See:
+				https://github.com/spesmilo/electrum-docs/blob/master/xpub_version_bytes.rst
+				https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
+				https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
+				https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
+			*/
+			xpub: {
+				'p2pkh': [
+					'0488b21e',// xpub
+				],
+				'p2wpkh-p2sh': [
+					'049d7cb2',// ypub
+				],
+				'p2wsh-p2sh': [
+					'0295b43f',// Ypub
+				],
+				'p2wpkh': [
+					'04b24746',// zpub
+				],
+				'p2wsh': [
+					'02aa7ed3',// Zpub
+				],
 			},
-		],
+			xprv: {
+				'p2pkh': [
+					'0488ade4',// xprv
+				],
+				'p2wpkh-p2sh': [
+					'049d7878',// yprv
+				],
+				'p2wsh-p2sh': [
+					'0295b005',// Yprv
+				],
+				'p2wpkh': [
+					'04b2430c',// zprv
+				],
+				'p2wsh': [
+					'02aa7a99',// Zprv
+				],
+			},
+		},
 
 		worker: app.createWorker('workers/bitcoin.js'),
 
@@ -267,7 +303,7 @@ app.paymentMethods.bitcoin = (function() {
 		deriveAddress: function(extendedPublicKey, derivationScheme, addressIndex, cb) {
 
 			var ref = this.ref;
-			var networks = this.networks;
+			var network = this.network;
 			var deriveLastParentExtendedPublicKey = _.bind(this.deriveLastParentExtendedPublicKey, this);
 			var deriveChildKeyAtIndex = _.bind(this.deriveChildKeyAtIndex, this);
 			var encodePublicKey = _.bind(this.encodePublicKey, this);
@@ -275,7 +311,7 @@ app.paymentMethods.bitcoin = (function() {
 			async.seq(
 				deriveLastParentExtendedPublicKey,
 				function(lastParentExtendedPublicKey, next) {
-					deriveChildKeyAtIndex(lastParentExtendedPublicKey, addressIndex, networks, next);
+					deriveChildKeyAtIndex(lastParentExtendedPublicKey, addressIndex, network, next);
 				}
 			)(extendedPublicKey, derivationScheme, function(error, child) {
 
@@ -303,7 +339,7 @@ app.paymentMethods.bitcoin = (function() {
 				return;
 			}
 
-			var networks = this.networks;
+			var network = this.network;
 			var deriveChildKeyAtIndex = _.bind(this.deriveChildKeyAtIndex, this);
 			var indexes = this.parseDerivationScheme(derivationScheme);
 
@@ -312,7 +348,7 @@ app.paymentMethods.bitcoin = (function() {
 				var index = indexes.shift();
 				var extendedKey = lastParentExtendedPublicKey || extendedPublicKey;
 
-				deriveChildKeyAtIndex(extendedKey, index, networks, function(error, result) {
+				deriveChildKeyAtIndex(extendedKey, index, network, function(error, result) {
 
 					if (error) {
 						return next(error);
@@ -365,7 +401,7 @@ app.paymentMethods.bitcoin = (function() {
 		decodeExtendedPublicKey: function(extendedPublicKey, cb) {
 
 			var ref = this.ref;
-			this.worker.call('decodeExtendedPublicKey', [extendedPublicKey, this.networks], function(error) {
+			this.worker.call('decodeExtendedPublicKey', [extendedPublicKey, this.network], function(error) {
 				if (error) {
 					error = app.i18n.t(ref + '.' + error);
 					return cb(error);
@@ -374,10 +410,10 @@ app.paymentMethods.bitcoin = (function() {
 			});
 		},
 
-		deriveChildKeyAtIndex: function(extendedPublicKey, index, networks, cb) {
+		deriveChildKeyAtIndex: function(extendedPublicKey, index, network, cb) {
 
 			var ref = this.ref;
-			this.worker.call('deriveChildKeyAtIndex', [extendedPublicKey, index, networks], function(error) {
+			this.worker.call('deriveChildKeyAtIndex', [extendedPublicKey, index, network], function(error) {
 				if (error) {
 					error = app.i18n.t(ref + '.' + error);
 					return cb(error);
@@ -414,7 +450,7 @@ app.paymentMethods.bitcoin = (function() {
 		*/
 		encodePublicKey: function(publicKey, network) {
 
-			network || (network = _.first(this.networks));
+			network || (network = this.network);
 			var hash = this.hash160(publicKey);
 			var version = network.p2pkh;
 			var checksum = this.sha256sha256(version + hash).substr(0, 8);
