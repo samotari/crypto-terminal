@@ -81,3 +81,6 @@
 .form-field-action.camera {
 	background-image: url('../images/camera.svg');
 }
+.form-description {
+	font-size: .9rem;
+}

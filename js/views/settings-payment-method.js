@@ -66,7 +66,8 @@ app.views.SettingsPaymentMethod = (function() {
 			var key = this.options.key;
 			var data = {
 				key: key,
-				label: _.result(this.paymentMethod, 'label')
+				label: _.result(this.paymentMethod, 'label'),
+				description: _.result(this.paymentMethod, 'description'),
 			};
 			data.settings = _.map(this.paymentMethod.settings, function(setting) {
 				return _.extend(

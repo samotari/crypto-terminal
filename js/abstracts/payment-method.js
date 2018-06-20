@@ -14,6 +14,12 @@ app.abstracts.PaymentMethod = (function() {
 		// The `code` attribute is the short-name of the currency, typically used for reference purposes.
 		code: null,
 
+		config: {
+			listenForPayment: {
+				pollingDelay: 5000,
+			},
+		},
+
 		// The `settings` array will allow the end-user (merchant) to configure this cryptocurrency.
 		settings: [
 			// {
@@ -98,6 +104,45 @@ app.abstracts.PaymentMethod = (function() {
 
 				cb(null, rate);
 			});
+		},
+
+		listenForPayment: function(paymentRequest, cb) {
+
+			this.stopListeningForPayment();
+
+			var received = false;
+			var delay = this.config.listenForPayment.pollingDelay;
+			var iteratee = _.bind(function(next) {
+				this.checkPaymentReceived(paymentRequest, _.bind(function(error, wasReceived) {
+
+					if (error) {
+						return next(error);
+					}
+
+					if (wasReceived) {
+						received = true;
+						return next();
+					}
+
+					// Wait before checking again.
+					this._listenForPaymentTimeout = _.delay(next, delay);
+
+				}, this));
+			}, this);
+
+			async.until(function() { return received }, iteratee, function(error) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				cb(null, received);
+			});
+		},
+
+		stopListeningForPayment: function() {
+
+			clearTimeout(this._listenForPaymentTimeout);
 		},
 
 		extend: function() {

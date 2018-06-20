@@ -40,8 +40,8 @@ app.views.DisplayPaymentAddress = (function() {
 				if (this.paymentMethod.code !== currency) {
 					app.busy();
 					this.paymentMethod.getExchangeRate(currency, _.bind(function(error, rate) {
+						app.busy(false);
 						if (error) {
-							app.busy(false);
 							return app.mainView.showMessage(error);
 						}
 						this.model.set({ rate: rate });
@@ -177,13 +177,13 @@ app.views.DisplayPaymentAddress = (function() {
 				if (errorWhileWaiting) {
 					return next(errorWhileWaiting);
 				} else {
-					this.listenerTimeOut = _.delay(next, 100);
+					this.listenerTimeOut = _.delay(next, 50);
 				}
 			}, this);
 
 			this.timerForTimeOut = setTimeout(function() {
 				timedOut = true;
-			}, app.config.paymentRequests.maxPendingTime);
+			}, app.config.paymentRequests.timeout);
 
 			async.until(function() { return received || timedOut; }, iteratee, done);
 		},
