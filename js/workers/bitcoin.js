@@ -26,7 +26,7 @@ var functions = {
 
 		[ magic ][ depth ][ parent fingerprint ][ key index ][ chain code ][ key ]
 	*/
-	decodeExtendedPublicKey: function(extendedPublicKey, networks) {
+	decodeExtendedPublicKey: function(extendedPublicKey, network) {
 
 		var hex = bs58.decode(extendedPublicKey).toString('hex');
 
@@ -38,15 +38,27 @@ var functions = {
 		// Check version bytes.
 		var version = hex.substr(0, 8).toLowerCase();
 
-		var network = _.find(networks, function(network) {
-			if (version === network.bip32.private) {
+		// Check private key constants.
+		_.each(network.xprv, function(constants, type) {
+			var match = _.contains(constants, version);
+			if (match) {
+				// Don't allow private keys with this app.
 				throw new Error('private-keys-warning');
 			}
-			return version === network.bip32.public;
 		});
 
-		if (!network) {
+		// Check public key constants.
+		var type = _.findKey(network.xpub, function(constants) {
+			return _.contains(constants, version);
+		});
+
+		if (!type) {
 			throw new Error('invalid-network-byte');
+		}
+
+		var isSegwit = _.contains(['p2wpkh-p2sh', 'p2wsh-p2sh', 'p2wpkh', 'p2wsh'], type);
+		if (isSegwit) {
+			throw new Error('segwit-not-supported');
 		}
 
 		// Validate the checksum.
@@ -80,16 +92,17 @@ var functions = {
 			checksum: hex.substr(156, 8),
 			depth: depth,
 			index: index,
-			network: network,
 			parentFingerPrint: parentFingerPrint,
 			publicKey: compressedPublicKey,
+			type: type,
+			version: version,
 		};
 	},
 
 	/*
 		https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#public-parent-key--public-child-key
 	*/
-	deriveChildKeyAtIndex: function(extendedPublicKey, index, networks) {
+	deriveChildKeyAtIndex: function(extendedPublicKey, index, network) {
 
 		if (parseInt(index).toString() !== index.toString()) {
 			throw new Error('index-must-be-an-integer');
@@ -111,7 +124,7 @@ var functions = {
 			throw new Error('index-no-hardened');
 		}
 
-		var decoded = functions.decodeExtendedPublicKey(extendedPublicKey, networks);
+		var decoded = functions.decodeExtendedPublicKey(extendedPublicKey, network);
 
 		// I = HMAC-SHA512(Key = cpar, Data = serP(Kpar) || ser32(i))
 		var I = functions.hmacsha512(
@@ -131,7 +144,7 @@ var functions = {
 
 		// In case parse256(IL) >= n, proceed with the next value for i
 		if (pIL.compareTo(curve.n) >= 0) {
-			return functions.deriveChildKeyAtIndex(extendedPublicKey, index + 1, networks);
+			return functions.deriveChildKeyAtIndex(extendedPublicKey, index + 1, network);
 		}
 
 		// The returned child key is point(parse256(IL)) + Kpar.
@@ -139,13 +152,12 @@ var functions = {
 		var Ki = curve.G.multiply(pIL).add(Kpar);
 
 		if (curve.isInfinity(Ki)) {
-			return functions.deriveChildKeyAtIndex(extendedPublicKey, index + 1, networks);
+			return functions.deriveChildKeyAtIndex(extendedPublicKey, index + 1, network);
 		}
 
 		curve.validate(Ki);
 
-		var network = decoded.network;
-		var prefix = network.bip32.public;
+		var prefix = decoded.version;
 		// Left pad with a leading zero.
 		var depth = functions.leftPadHex((new BigNumber('0x' + decoded.depth)).toNumber() + 1, 2);
 		var parentFingerPrint = functions.hash160(decoded.publicKey).substr(0, 8);

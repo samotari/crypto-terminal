@@ -17,60 +17,59 @@ app.paymentMethods.litecoin = (function() {
 		// Used internally to reference itself:
 		ref: 'litecoin',
 
-		// Used for chain.so API requests:
-		chainSoCode: 'LTC',
-
 		// Used to generate a payment request URI:
 		uriScheme: 'litecoin',
 
 		/*
-			Litecoin mainnet network constants.
-
-				- Public key hash:
-					Used in the generation of addresses from public keys.
-					(mainnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L132
-
-				- Script hash:
-					Used in the generation of scripting addresses from public keys.
-					(mainnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L134
-
-				- WIF:
-					"Wallet Import Format"
-					Used to encode private keys in a way to be more easily copied.
-					(mainnet) https://github.com/litecoin-project/litecore-lib/blob/9c3b2712de14335d2a953a8772aee87e23be6cf6/lib/networks.js#L133
-
-				- BIP32 public/private key constants:
-					Used in the generation of child addresses from master public/private keys.
-					(mainnet) https://github.com/litecoin-project/litecoin/blob/ba8ed3a93be7e7a97db6bc00dd7280fa2f1548bc/src/chainparams.cpp#L137-L138
+			Network constants.
 		*/
-		networks: [
-			{
-				// Pay to public key hash:
-				p2pkh: '30',
-				// Pay to script hash:
-				p2sh: '32',
-				bip32: {
-					public: '019da462',
-					private: '019d9cfe',
-				},
-			},
+		network: {
+			wif: '80',
+			p2pkh: '30',
+			p2sh: '32',
+			bech32: 'ltc',
 			/*
-				Yes, two sets of network constants.
-
-				See:
-				https://www.reddit.com/r/litecoin/comments/48wd2e/why_arent_the_litecoin_bip32_serialization_values/
+				NOTE:
+				Some wallets use the same constants as Bitcoin-Mainnet, which is why they are included here.
 			*/
-			{
-				// Pay to public key hash:
-				p2pkh: '30',
-				// Pay to script hash:
-				p2sh: '32',
-				bip32: {
-					public: '0488b21e',
-					private: '00488ade4',
-				},
+			xpub: {
+				'p2pkh': [
+					'0488b21e',// xpub
+					'019da462',// Ltub
+				],
+				'p2wpkh-p2sh': [
+					'049d7cb2',// ypub
+					'01b26ef6',// Mtub
+				],
+				'p2wsh-p2sh': [
+					'0295b43f',// Ypub
+				],
+				'p2wpkh': [
+					'04b24746',// zpub
+				],
+				'p2wsh': [
+					'02aa7ed3',// Zpub
+				],
 			},
-		],
-
+			xprv: {
+				'p2pkh': [
+					'0488ade4',// xprv
+					'019d9cfe',// Ltpv
+				],
+				'p2wpkh-p2sh': [
+					'049d7878',// yprv
+					'01b26792',// Mtpv
+				],
+				'p2wsh-p2sh': [
+					'0295b005',// Yprv
+				],
+				'p2wpkh': [
+					'04b2430c',// zprv
+				],
+				'p2wsh': [
+					'02aa7a99',// Zprv
+				],
+			},
+		},
 	});
 })();
