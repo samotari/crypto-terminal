@@ -17,10 +17,17 @@ app.paymentMethods.bitcoinLightning = (function() {
 		// Used internally to reference itself:
 		ref: 'bitcoinLightning',
 
+		description: function() {
+			return app.i18n.t('bitcoinLightning.description');
+		},
+
 		lang: {
 			'en': {
+				'description': 'In order to use Bitcoin Lightning Network (LN) you have to run your own node. More info <a href="https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md">here</a>.',
 				'settings.apiUrl.label': 'API URL',
+				'settings.apiUrl.description': 'Full url to your LN node',
 				'settings.invoiceMacaroon.label': 'Invoice Macaroon',
+				'settings.invoiceMacaroon.description': 'Authentication code (hexadecimal)',
 				'addInvoice.failed': 'Failed to generate invoice',
 			}
 		},
@@ -39,7 +46,10 @@ app.paymentMethods.bitcoinLightning = (function() {
 					return app.i18n.t('bitcoinLightning.settings.apiUrl.label');
 				},
 				type: 'text',
-				required: true
+				required: true,
+				description: function() {
+					return app.i18n.t('bitcoinLightning.settings.apiUrl.description');
+				},
 			},
 			{
 				name: 'invoiceMacaroon',
@@ -48,7 +58,10 @@ app.paymentMethods.bitcoinLightning = (function() {
 					return app.i18n.t('bitcoinLightning.settings.invoiceMacaroon.label');
 				},
 				type: 'text',
-				required: true
+				required: true,
+				description: function() {
+					return app.i18n.t('bitcoinLightning.settings.invoiceMacaroon.description');
+				},
 			},
 		],
 
