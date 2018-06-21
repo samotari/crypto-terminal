@@ -20,8 +20,7 @@ app.config = (function() {
 		cache: {
 			onAppStartClearOlderThan: 86400000,// milliseconds
 		},
-		ctApi: _.extend({}, {
-			baseUrl: 'http://localhost:3600',
+		ctApi: _.extend({
 			primusPath: '/primus',
 		}, app.config.ctApi),
 		sqlite: {
