@@ -8,6 +8,7 @@ plugins/
 www/
 android-build-config.json
 android.keystore
+config.xml
 npm-debug.log
 .DS_Store
 .vscode

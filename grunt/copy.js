@@ -1,5 +1,7 @@
 'use strict';
 
+var Handlebars = require('handlebars');
+
 module.exports = {
 	app: {
 		files: [
@@ -56,6 +58,23 @@ module.exports = {
 				dest: 'www/favicon.ico'
 			}
 		]
+	},
+	cordovaConfig: {
+		src: 'config-template.xml',
+		dest: 'config.xml',
+		options: {
+			process: function(content) {
+				var template = Handlebars.compile(content);
+				var pkg = require('../package.json');
+				var data = {
+					description: pkg.description,
+					name: pkg.app.name,
+					shortName: pkg.app.shortName,
+					version: pkg.version,
+				};
+				return template(data);
+			},
+		},
 	},
 	homepage: {
 		files: [
