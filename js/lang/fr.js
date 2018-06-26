@@ -27,7 +27,7 @@ app.lang['fr'] = (function () {
 		'pay-enter-amount.greater-than-zero': 'Le montant doit être supérieur à zéro.',
 		'pay-choose-method.description': 'Choisissez votre méthode de paiement',
 		'pay-choose-method.cancel': 'Annuler',
-		'pay-address.description': 'Scanner le code QR pour payer',
+		'pay-address.description': 'Scanner le code QR',
 		'pay-address.cancel': 'Annuler',
 		'pay-address.back': 'Retourner',
 		'payment.status.pending': 'En attendant',
