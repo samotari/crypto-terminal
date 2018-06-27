@@ -60,9 +60,10 @@ app.abstracts.PaymentMethod = (function() {
 
 		/*
 			`paymentRequest` .. A cryptocurrency payment request object
-			`cb(error, wasReceived)`:
+			`cb(error, wasReceived, paymentData)`:
 				`error` .. An error object or NULL
 				`wasReceived` .. TRUE or FALSE
+				'paymentData'  An object containing payment information
 		*/
 		checkPaymentReceived: function(paymentRequest, cb) {
 			_.defer(function() {
@@ -112,8 +113,9 @@ app.abstracts.PaymentMethod = (function() {
 
 			var received = false;
 			var delay = this.config.listenForPayment.pollingDelay;
+			var data;
 			var iteratee = _.bind(function(next) {
-				this.checkPaymentReceived(paymentRequest, _.bind(function(error, wasReceived) {
+				this.checkPaymentReceived(paymentRequest, _.bind(function(error, wasReceived, paymentData) {
 
 					if (error) {
 						return next(error);
@@ -121,6 +123,7 @@ app.abstracts.PaymentMethod = (function() {
 
 					if (wasReceived) {
 						received = true;
+						data = paymentData;
 						return next();
 					}
 
@@ -135,8 +138,8 @@ app.abstracts.PaymentMethod = (function() {
 				if (error) {
 					return cb(error);
 				}
-
-				cb(null, received);
+				// Passing payment data so it can be stored.
+				cb(null, data);
 			});
 		},
 

@@ -397,7 +397,9 @@ app.paymentMethods.monero = (function() {
 					}
 
 					if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
-						done(null, true/* wasReceived */)
+						var paymentData = _.chain(txs).first().pick('tx_hash').value();
+						// Passing paymentData so it can be stored.
+						done(null, paymentData);
 					}
 
 					// Continue listening..

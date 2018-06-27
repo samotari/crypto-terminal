@@ -150,12 +150,14 @@ app.views.DisplayPaymentAddress = (function() {
 			var received = false;
 			var timedOut = false;
 			var errorWhileWaiting;
+			var data;
 
-			this.paymentMethod.listenForPayment(paymentRequest, function(error, wasReceived) {
+			this.paymentMethod.listenForPayment(paymentRequest, function(error, paymentData) {
 				if (error) {
 					errorWhileWaiting = error;
 				} else {
-					received = wasReceived === true;
+					data = paymentData;
+					received = true;
 				}
 			});
 
@@ -168,7 +170,20 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 
 				var status = received ? 'unconfirmed' : 'timed-out';
-				this.model.save({ status: status });
+				this.model.save(
+					_.extend(
+						{},
+						paymentRequest,
+						{
+							status: status,
+							data: _.extend(
+								{},
+								paymentRequest.data,
+								data || {}
+							)
+						}
+					)
+				);
 				app.router.navigate('payment-status/' + status, { trigger: true });
 
 			}, this);
