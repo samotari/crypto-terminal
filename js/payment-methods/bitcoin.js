@@ -466,7 +466,7 @@ app.paymentMethods.bitcoin = (function() {
 			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
 			var amountReceived = new BigNumber('0');
 
-			var done = _.bind(function(error, wasReceived) {
+			var done = _.bind(function(error, tx) {
 
 				// Always stop listening for payment.
 				this.stopListeningForPayment();
@@ -478,25 +478,27 @@ app.paymentMethods.bitcoin = (function() {
 
 				// A payment was received, so increment the address index.
 				this.incrementAddressIndex(function() {
-					cb(null, wasReceived);
+					cb(null, tx);
 				});
 
 			}, this);
 
-			var channel = 'address-balance-updates?' + querystring.stringify({
+			var channel = 'v1/new-txs?' + querystring.stringify({
 				address: address,
-				method: this.ref,
+				network: this.ref,
 			});
 
 			this.ctApiSubscriptionId = app.services.ctApi.subscribe(channel, function(tx) {
 
 				// The amount in the tx object is in satoshis.
 				// Divide by 100 million to get the amount in whole bitcoin.
-				var txAmountReceived = (new BigNumber(tx.amount_received)).dividedBy(100000000);
+				var txAmountReceived = (new BigNumber(tx.amount)).dividedBy(100000000);
 				amountReceived = amountReceived.plus(txAmountReceived);
 
 				if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
-					return done(null, true/* wasReceived */);
+					// Passing transaction data so it can be stored.
+					var txData = _.pick(tx, 'txid');
+					return done(null, txData);
 				}
 
 				// Continue listening..

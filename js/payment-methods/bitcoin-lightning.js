@@ -135,7 +135,9 @@ app.paymentMethods.bitcoinLightning = (function() {
 					},
 				}).then(function(result) {
 					var wasReceived = result.settled === true;
-					cb(null, wasReceived);
+					var paymentData = _.pick(result, 'settle_date');
+					// Passing paymentData so it can be stored.
+					cb(null, wasReceived, paymentData);
 				}).fail(cb);
 
 			}, this));
