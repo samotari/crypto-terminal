@@ -1,6 +1,9 @@
+'use strict';
+
 var _ = require('underscore');
 var expect = require('chai').expect;
-var manager = require('../manager');
+var manager = require('../../manager');
+require('../global-hooks');
 
 describe('paymentMethods.bitcoinTestnet', function() {
 
