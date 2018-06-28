@@ -44,7 +44,23 @@ describe('#display-payment-address', function() {
 	});
 
 	it('QR code rendered', function(done) {
-		manager.page.waitFor('.view.display-payment-address .address-qr-code').then(function() {
+		manager.page.waitFor(function() {
+			return new Promise(function(resolve, reject) {
+				try {
+					async.until(function() {
+						var $el = $('.view.display-payment-address .address-qr-code');
+						var backgroundImage = $el.css('background-image');
+						return backgroundImage.indexOf('url("data:image/jpeg;base64,') !== -1;
+					}, function(next) {
+						_.delay(next, 5);
+					}, function() {
+						resolve(true);
+					});
+				} catch (error) {
+					return reject(error);
+				}
+			});
+		}).then(function() {
 			manager.page.$eval('.view.display-payment-address .address-qr-code', function(el) {
 				return el.style['background-image'];
 			}).then(function(backgroundImage) {

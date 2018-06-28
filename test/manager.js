@@ -20,10 +20,18 @@ var manager = module.exports = {
 		}
 
 		options = _.defaults({}, options || {}, {
-			headless: false,
-			slowMo: 50,
+			headless: true,
+			slowMo: 0,
 			timeout: 10000
 		});
+
+		/*
+			See:
+			https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-on-travis-ci
+		*/
+		if (process.env.TRAVIS_CI) {
+			options.args = ['--no-sandbox'];
+		}
 
 		puppeteer.launch(options).then(function(browser) {
 			manager.browser = browser;
