@@ -21,7 +21,7 @@ var manager = module.exports = {
 
 		options = _.defaults({}, options || {}, {
 			headless: false,
-			slowMo: 0,
+			slowMo: 50,
 			timeout: 10000
 		});
 
@@ -61,7 +61,8 @@ var manager = module.exports = {
 	evaluateInPageContext: function(fn, done) {
 
 		manager.page.evaluate(fn).then(function() {
-			done();
+			var args = Array.prototype.slice.call(arguments);
+			done.apply(undefined, [null].concat(args));
 		}).catch(done);
 	},
 

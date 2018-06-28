@@ -2,6 +2,7 @@
 
 var _ = require('underscore');
 var expect = require('chai').expect;
+var helpers = require('../helpers');
 var manager = require('../../manager');
 require('../global-hooks');
 
@@ -23,33 +24,6 @@ describe('#pay', function() {
 		manager.navigate('/#pay', done);
 	});
 
-	var pressNumberPadKey = function(key) {
-		var selector;
-		if (key === 'backspace') {
-			selector = '.number-pad .button.backspace';
-		} else if (key === 'decimal') {
-			selector = '.number-pad .button.decimal';
-		} else {
-			selector = '.number-pad .button[data-key="' + key + '"]';
-		}
-		return manager.page.click(selector);
-	};
-
-	var checkValue = function(expectedValue) {
-		return new Promise(function(resolve, reject) {
-			manager.page.$eval('.amount-value', function(el) {
-				return el.textContent;
-			}).then(function(value) {
-				try {
-					expect(value).to.equal(expectedValue);
-				} catch (error) {
-					return reject(error);
-				}
-				resolve();
-			}).catch(reject);
-		});
-	};
-
 	it('number pad exists', function(done) {
 		manager.page.waitFor('.view.pay .number-pad').then(function() {
 			done();
@@ -63,6 +37,9 @@ describe('#pay', function() {
 			}).catch(done);
 		}).catch(done);
 	});
+
+	var checkValue = helpers['#pay'].checkValue;
+	var pressNumberPadKey = helpers['#pay'].pressNumberPadKey;
 
 	it('using number pad', function(done) {
 		pressNumberPadKey('2').then(function() {
@@ -90,7 +67,16 @@ describe('#pay', function() {
 				manager.page.click('.button.continue').then(function() {
 					var hash = manager.getPageLocationHash();
 					expect(hash).to.equal('choose-payment-method');
-					done();
+					manager.evaluateInPageContext(function() {
+						var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
+						return Promise.resolve(paymentRequest && paymentRequest.toJSON() || null);
+					}, function(error, paymentRequest) {
+						if (error) return done(error);
+						expect(paymentRequest).to.not.equal(null);
+						expect(paymentRequest).to.be.an('object');
+						expect(paymentRequest.amount).to.equal('25');
+						done();
+					});
 				}).catch(done);
 			}).catch(done);
 		}).catch(done);
