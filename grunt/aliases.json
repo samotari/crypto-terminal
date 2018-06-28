@@ -21,11 +21,22 @@
 		"newer:copy:homepage"
 	],
 	"test": [
-		"test:unit",
+		"test:setup",
+		"mochaTest:unit",
+		"mochaTest:e2e",
 		"test:code-style"
 	],
 	"test:code-style": [
 		"eslint"
+	],
+	"test:setup": [
+		"build",
+		"connect:test"
+	],
+	"test:e2e": [
+		"build",
+		"connect:test",
+		"mochaTest:e2e"
 	],
 	"test:unit": [
 		"build",

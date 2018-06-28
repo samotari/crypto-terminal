@@ -3,7 +3,7 @@
 module.exports = {
 	e2e: {
 		src: [
-			'test/e2e/*.js'
+			'test/e2e/**/*.js'
 		],
 		options: {
 			reporter: 'spec',
