@@ -14,7 +14,9 @@
     "test": "grunt test",
     "gh-pages-commit": "grunt build:homepage && { git checkout gh-pages || git checkout -b gh-pages upstream/gh-pages; } && rm -r css fonts images index.html && cp -r build/homepage/www/* ./ && git commit -a",
     "build-signed-apk": "./scripts/build-signed-apk.sh",
-    "generate-android-signing-key": "keytool -genkey -v -keystore android.keystore -alias cryptoTerminalKey -keyalg RSA -keysize 2048 -validity 10000"
+    "generate-android-signing-key": "keytool -genkey -v -keystore android.keystore -alias cryptoTerminalKey -keyalg RSA -keysize 2048 -validity 10000",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -74,7 +76,8 @@
     "puppeteer": "1.5.0",
     "qrcode": "1.2.0",
     "time-grunt": "1.4.0",
-    "underscore": "1.9.1"
+    "underscore": "1.9.1",
+    "snyk": "^1.88.0"
   },
   "cordova": {
     "platforms": [
@@ -91,5 +94,6 @@
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-network-information": {}
     }
-  }
+  },
+  "snyk": true
 }
