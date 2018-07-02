@@ -1,50 +1,53 @@
 html, body {
 	position: relative;
 	width: 100%;
-	height: 100%;
-}
-.content {
-	width: 100%;
-	height: 100%;
-	color: #fff;
-	background: #2799b4;
-	background: linear-gradient(to bottom right, #2799b4, #68d1e9);
-}
-.content a {
-	color: #fff;
-	text-decoration: none;
-}
-.content a:hover {
-	text-decoration: none;
 }
 .wrap {
 	position: relative;
 	width: 100%;
 }
 
-	/*  Main  */
-	.content.main {
+	/*  Home page  */
+	html.index,
+	html.index body {
+		height: 100%;
+	}
+	html.index .content {
+		width: 100%;
+		height: 100%;
+		color: #fff;
+		background: #2799b4;
+		background: linear-gradient(to bottom right, #2799b4, #68d1e9);
+	}
+	html.index .content a {
+		color: #fff;
+		text-decoration: none;
+	}
+	html.index .content a:hover {
+		text-decoration: none;
+	}
+	html.index .content.main {
 		min-height: 30rem;
 	}
-	.content.main .wrap {
+	html.index .content.main .wrap {
 		display: flex;
 		align-items: center;
 		height: 100%;
 		box-sizing: border-box;
 		padding: 0 3.5rem;
 	}
-	.content.main .title-description-and-logo {
+	html.index .content.main .title-description-and-logo {
 		float: left;
 		width: 60%;
 	}
-	.content.main .title-description-and-logo-inner {
+	html.index .content.main .title-description-and-logo-inner {
 		display: flex;
 		align-content: center;
 		width: 100%;
 		padding-left: 3.75rem;/* half the logo image */
 		padding-bottom: 7.5rem;/* give space for more-info */
 	}
-	.content.main .logo {
+	html.index .content.main .logo {
 		display: block;
 		float: left;
 		width: 7.5rem;
@@ -52,87 +55,87 @@ html, body {
 		box-shadow: 0 0 .5rem #000;
 		margin-right: 2.5rem;
 	}
-	.content.main .title {
+	html.index .content.main .title {
 		font-size: 3rem;
 		font-weight: 400;
 	}
-	.content.main .description {
+	html.index .content.main .description {
 		font-size: 1.5rem;
 		font-weight: 100;
 		margin-top: .5rem;
 	}
-	.content.main .more-info {
+	html.index .content.main .more-info {
 		position: absolute;
 		left: 17.25rem;/* align with the left edge of the title and description text */
 		bottom: 4rem;
 	}
-	.content.main .supported-cryptocurrencies {
+	html.index .content.main .supported-cryptocurrencies {
 		display: inline-block;
 		vertical-align: top;
 		width: 100%;
 	}
-	.content.main .supported-cryptocurrency {
+	html.index .content.main .supported-cryptocurrency {
 		float: left;
 		opacity: 0.85;
 		border: .1rem solid #fff;
 		border-radius: 50%;
 		box-shadow: 0 0 .4rem #000;
 	}
-	.content.main .supported-cryptocurrency-image {
+	html.index .content.main .supported-cryptocurrency-image {
 		display: inline-block;
 		vertical-align: top;
 		width: 3.6rem;
 		height: 3.6rem;
 	}
-	.content.main .supported-cryptocurrency:hover {
+	html.index .content.main .supported-cryptocurrency:hover {
 		opacity: 1;
 	}
-	.content.main .supported-cryptocurrencies-text {
+	html.index .content.main .supported-cryptocurrencies-text {
 		font-size: 1.1rem;
 		font-weight: 100;
 		margin-bottom: .6rem;
 	}
-	.content.main .supported-cryptocurrency + .supported-cryptocurrency {
+	html.index .content.main .supported-cryptocurrency + .supported-cryptocurrency {
 		margin-left: .5rem;
 	}
-	.content.main .links {
+	html.index .content.main .links {
 		font-weight: 100;
 		margin-top: 3rem;
 	}
-	.content.main .link {
+	html.index .content.main .link {
 		border-radius: .6rem;
 		background: rgba(255, 255, 255, .075);
 		padding: .5rem .75rem;
 	}
-	.content.main .link:hover {
+	html.index .content.main .link:hover {
 		background: rgba(255, 255, 255, .15);
 	}
-	.content.main .link-text {
+	html.index .content.main .link-text {
 		display: inline-block;
 		vertical-align: top;
 		font-size: 1.1rem;
 		margin-right: .6rem;
 	}
-	.content.main .link.github {
+	html.index .content.main .link.github {
 		position: relative;
 		left: -.75rem;
 		line-height: 1.35rem;
 		white-space: nowrap;
 	}
-	.content.main .link.github .github-logo {
+	html.index .content.main .link.github .github-logo {
 		display: inline-block;
 		vertical-align: top;
 		width: auto;
 		height: 1.35rem;
 	}
-	.content.main .screenshots {
+	html.index .content.main .screenshots {
 		display: flex;
 		align-items: center;
 		float: left;
 		width: 40%;
 		height: 100%;
 	}
-	.content.main .screenshot {
+	html.index .content.main .screenshot {
 		display: block;
 		width: auto;
 		height: 100%;
@@ -140,47 +143,47 @@ html, body {
 		padding: 3rem 0;
 		margin: 0 auto;
 	}
-	/*  Main  */
+	/*  Home page  */
 
 
 	/*  for phones  */
 	@media screen and (max-width: 800px) {
-		.content {
+		html.index .content {
 			height: auto;
 			background: #2799b4;
 			overflow: hidden;
 		}
-		.content.main {
+		html.index .content.main {
 			min-height: auto;
 		}
-		.content.main .wrap {
+		html.index .content.main .wrap {
 			display: block;
 			align-items: initial;
 			height: auto;
 			padding: 2.5rem 0;
 		}
-		.content.main .title-description-and-logo {
+		html.index .content.main .title-description-and-logo {
 			position: relative;
 			float: none;
 			width: 100%;
 		}
-		.content.main .title-description-and-logo-inner {
+		html.index .content.main .title-description-and-logo-inner {
 			display: block;
 			align-content: initial;
 			text-align: center;
 			padding: 0;
 		}
-		.content.main .logo {
+		html.index .content.main .logo {
 			float: none;
 			display: inline;
 			width: 3rem;
 			height: 3rem;
 			margin: 0;
 		}
-		.content.main .title-and-description {
+		html.index .content.main .title-and-description {
 			display: inline;
 		}
-		.content.main .title {
+		html.index .content.main .title {
 			display: inline-block;
 			vertical-align: top;
 			font-size: 2rem;
@@ -189,14 +192,14 @@ html, body {
 			white-space: nowrap;
 			margin-left: .6rem;
 		}
-		.content.main .description {
+		html.index .content.main .description {
 			display: block;
 			font-size: 1.2rem;
 			text-align: center;
 			margin-top: 1.2rem;
 			padding: 0 2.5rem;
 		}
-		.content.main .more-info {
+		html.index .content.main .more-info {
 			position: relative;
 			left: initial;
 			bottom: initial;
@@ -204,36 +207,36 @@ html, body {
 			margin-top: 2.5rem;
 			padding: 0 2.5rem;
 		}
-		.content.main .supported-cryptocurrencies {
+		html.index .content.main .supported-cryptocurrencies {
 			text-align: center;
 		}
-		.content.main .supported-cryptocurrency {
+		html.index .content.main .supported-cryptocurrency {
 			display: inline-block;
 			vertical-align: top;
 			float: none;
 		}
-		.content.main .links {
+		html.index .content.main .links {
 			margin-top: 2rem;
 		}
-		.content.main .link.github {
+		html.index .content.main .link.github {
 			position: relative;
 			left: initial;
 			height: auto;
 			white-space: initial;
 		}
-		.content.main .link {
+		html.index .content.main .link {
 			border-radius: none;
 			background: transparent;
 			padding: 0;
 		}
-		.content.main .link:hover {
+		html.index .content.main .link:hover {
 			background: transparent;
 		}
-		.content.main .link-text {
+		html.index .content.main .link-text {
 			display: block;
 			margin: 0 0 .6rem 0;
 		}
-		.content.main .screenshots {
+		html.index .content.main .screenshots {
 			display: block;
 			align-items: initial;
 			float: none;
@@ -243,7 +246,7 @@ html, body {
 			margin-top: 2.5rem;
 			padding: 0 2.5rem;
 		}
-		.content.main .screenshot {
+		html.index .content.main .screenshot {
 			width: 100%;
 			max-width: 220px;
 			height: auto;
@@ -251,19 +254,107 @@ html, body {
 		}
 	}
 	@media screen and (max-width: 450px) {
-		.content.main .title {
+		html.index .content.main .title {
 			font-size: 1.75rem;
 		}
-		.content.main .description {
+		html.index .content.main .description {
 			font-size: 1.3rem;
 		}
 	}
 	@media screen and (max-width: 300px) {
-		.content.main .title {
+		html.index .content.main .title {
 			font-size: 1.6rem;
 		}
-		.content.main .description {
+		html.index .content.main .description {
 			font-size: 1.2rem;
 		}
 	}
 	/*  for phones  */
+
+
+	/*  Privacy Policy  */
+	html.privacy-policy body {
+		padding-bottom: 3rem;
+	}
+	html.privacy-policy .wrap {
+		max-width: 75rem;
+		box-sizing: border-box;
+		padding: 0 5rem;
+		margin: 0 auto;
+	}
+	html.privacy-policy .content h1 {
+		font-size: 2.4rem;
+		margin-bottom: 2rem;
+	}
+	html.privacy-policy .content h2 {
+		font-size: 1.8rem;
+	}
+	html.privacy-policy .content ul {
+		margin-left: 2rem;
+	}
+	html.privacy-policy .content ul + p,
+	html.privacy-policy .content ul + h2,
+	html.privacy-policy .content p + h2 {
+		margin-top: 2rem;
+	}
+	html.privacy-policy .content p + ul,
+	html.privacy-policy .content p + p,
+	html.privacy-policy .content h2 + ul,
+	html.privacy-policy .content h2 + p {
+		margin-top: 1rem;
+	}
+	html.privacy-policy .content .title-description-and-logo-inner {
+		display: flex;
+		align-content: center;
+		width: 100%;
+		padding: 3rem 0;
+	}
+	html.privacy-policy .content .logo {
+		display: block;
+		float: left;
+		width: 7.5rem;
+		height: 7.5rem;
+		box-shadow: 0 0 .5rem #000;
+		margin-right: 2.5rem;
+	}
+	html.privacy-policy .content .title {
+		font-size: 3rem;
+		font-weight: 400;
+	}
+	html.privacy-policy .content .description {
+		font-size: 1.5rem;
+		font-weight: 100;
+		margin-top: .5rem;
+	}
+	@media screen and (max-width: 800px) {
+		html.privacy-policy .content.app-info {
+			margin-bottom: 1rem;
+		}
+		html.privacy-policy .wrap {
+			padding: 0 1rem;
+		}
+		html.privacy-policy .content .title-description-and-logo-inner {
+			padding: 1rem 0;
+		}
+		html.privacy-policy .content .logo {
+			display: none;
+		}
+		html.privacy-policy .content .title {
+			font-size: 2rem;
+		}
+		html.privacy-policy .content .description {
+			font-size: 1.2rem;
+		}
+		html.privacy-policy .content h1 {
+			font-size: 1.8rem;
+		}
+		html.privacy-policy .content h2 {
+			font-size: 1.3rem;
+		}
+	}
+	@media screen and (max-width: 450px) {
+	}
+	@media screen and (max-width: 300px) {
+	}
+	/*  Privacy Policy  */
+

@@ -80,8 +80,10 @@ module.exports = {
 		files: [
 			{
 				nonull: true,
-				src: 'homepage/index.html',
-				dest: 'build/homepage/www/index.html'
+				expand: true,
+				flatten: true,
+				src: 'homepage/*.html',
+				dest: 'build/homepage/www/'
 			},
 			{
 				nonull: true,
