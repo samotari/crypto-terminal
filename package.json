@@ -12,7 +12,7 @@
     "android-device": "grunt build && cordova run android --device",
     "start": "grunt",
     "test": "grunt test",
-    "gh-pages-commit": "grunt build:homepage && { git checkout gh-pages || git checkout -b gh-pages upstream/gh-pages; } && rm -r css fonts images index.html && cp -r build/homepage/www/* ./ && git commit -a",
+    "gh-pages-commit": "grunt build:homepage && { git checkout gh-pages || git checkout -b gh-pages upstream/gh-pages; } && rm -r css fonts images index.html && cp -r build/homepage/www/* ./ && git add . && git commit -a",
     "build-signed-apk": "./scripts/build-signed-apk.sh",
     "android-generate-signing-key": "keytool -keystore android.keystore -genkey -v -alias cryptoterminal -keyalg RSA -keysize 2048 -validity 10000",
     "android-export-public-signing-key": "keytool -keystore android.keystore -list -rfc -alias cryptoterminal"
