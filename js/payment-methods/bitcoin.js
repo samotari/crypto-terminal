@@ -464,12 +464,12 @@ app.paymentMethods.bitcoin = (function() {
 			var rate = paymentRequest.rate;
 			var decimals = this.numberFormat.decimals;
 			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
-			var amountReceived = new BigNumber('0');
+			var incrementAddressIndex = _.bind(this.incrementAddressIndex, this);
+			var stopListeningForPayment = _.bind(this.stopListeningForPayment, this);
 
-			var done = _.bind(function(error, tx) {
+			var done = _.once(function(error, tx) {
 
-				// Always stop listening for payment.
-				this.stopListeningForPayment();
+				stopListeningForPayment();
 
 				if (error) {
 					// Don't increment the address index in case of an error.
@@ -477,23 +477,21 @@ app.paymentMethods.bitcoin = (function() {
 				}
 
 				// A payment was received, so increment the address index.
-				this.incrementAddressIndex(function() {
+				incrementAddressIndex(function() {
 					cb(null, tx);
 				});
-
-			}, this);
+			});
 
 			var channel = 'v1/new-txs?' + querystring.stringify({
 				address: address,
 				network: this.ref,
 			});
 
-			this.ctApiSubscriptionId = app.services.ctApi.subscribe(channel, function(tx) {
+			var listener = function(tx) {
 
 				// The amount in the tx object is in satoshis.
 				// Divide by 100 million to get the amount in whole bitcoin.
-				var txAmountReceived = (new BigNumber(tx.amount)).dividedBy(100000000);
-				amountReceived = amountReceived.plus(txAmountReceived);
+				var amountReceived = (new BigNumber(tx.amount)).dividedBy(100000000);
 
 				if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
 					// Passing transaction data so it can be stored.
@@ -502,13 +500,21 @@ app.paymentMethods.bitcoin = (function() {
 				}
 
 				// Continue listening..
-			});
+			};
+
+			app.services.ctApi.subscribe(channel, listener);
+			this.listening = { channel: channel, listener: listener };
 		},
 
 		stopListeningForPayment: function() {
 
-			app.services.ctApi.unsubscribe(this.ctApiSubscriptionId);
-		}
+			if (this.listening) {
+				var channel = this.listening.channel;
+				var listener = this.listening.listener;
+				app.services.ctApi.unsubscribe(channel, listener);
+				this.listening = null;
+			}
+		},
 
 	});
 

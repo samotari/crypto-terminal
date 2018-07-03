@@ -6,31 +6,38 @@ app.services.ctApi = (function() {
 
 	'use strict';
 
-	var ctApi = {
+	var service = _.extend({
 
 		// Setup a websocket connection to the CT-API server.
 		connect: function(cb) {
 
 			var done = _.once(cb);
+
 			if (typeof Primus === 'undefined' || this.primus) {
 				// If Primus doesn't exist, then we can't connect.
 				// Or, if a primus instance already exists then we are already connected.
 				_.defer(done);
 				return;
 			}
+
 			var uri = this.getUri(app.config.ctApi.primusPath);
+
 			this.primus = Primus.connect(uri);
+
 			this.primus.once('open', function() {
 				done();
 			});
+
 			this.primus.once('error', function(error) {
 				done(error);
 			});
+
 			this.primus.on('data', _.bind(this.onData, this));
 			this.primus.on('reconnected', _.bind(this.onReconnected, this));
 		},
 
 		getUri: function(uri, params) {
+
 			var url = app.config.ctApi.baseUrl + uri;
 			if (!_.isEmpty(params)) {
 				url += '?' + querystring.stringify(params);
@@ -49,17 +56,15 @@ app.services.ctApi = (function() {
 		*/
 		onData: function(data) {
 
-			app.log('socket.data', data);
-			if (!_.isObject(data) || !data.channel) return;
-			var listeners = this.subscriptions[data.channel] || {};
-			_.each(listeners, function(fn) {
-				fn(data.data);
-			});
+			app.log('ct-api.data', data);
+			this.trigger(data.channel, data.data);
 		},
 
 		// On reconnect, the client is responsible for re-establishing channel subscriptions.
 		onReconnected: function() {
-			var channels = _.chain(this.subscriptions).keys().uniq().value();
+
+			app.log('ct-api.reconnected');
+			var channels = this.listSubscribedChannels();
 			_.each(channels, function(channel) {
 				this.primus.write({
 					channel: channel,
@@ -68,36 +73,83 @@ app.services.ctApi = (function() {
 			}, this);
 		},
 
-		subscriptions: {},
+		listSubscribedChannels: function() {
 
-		hasSubscriptions: function(channel) {
-			return _.values(this.subscriptions[channel]).length > 0;
+			return _.keys(this._events);
 		},
 
-		subscribe: function(channel, onData) {
+		isSubscribed: function(channel) {
 
-			if (!channel || !this.primus) return;
-			if (!this.hasSubscriptions(channel)) {
+			var listeners = this._events && this._events[channel] || [];
+			return listeners.length > 0;
+		},
+
+		isValidChannel: function(channel) {
+
+			return _.isString(channel);
+		},
+
+		subscribe: function(channel, listener) {
+
+			app.log('ct-api.subscribe', channel, listener);
+
+			if (!channel) {
+				throw new Error('ct-api.channel.required');
+			}
+
+			if (!this.isValidChannel(channel)) {
+				throw new Error('ct-api.channel.invalid');
+			}
+
+			if (!listener) {
+				throw new Error('ct-api.listener.required');
+			}
+
+			if (!_.isFunction(listener)) {
+				throw new Error('ct-api.listener.invalid');
+			}
+
+			if (!this.primus) {
+				throw new Error('ct-api.no-socket-connection');
+			}
+
+			if (!this.isSubscribed(channel)) {
 				this.primus.write({
 					channel: channel,
 					action: 'join',
 				});
 			}
-			var subscriptionId = _.uniqueId('ct-api-subscription:' + channel + ':');
-			this.subscriptions[channel] = this.subscriptions[channel] || {};
-			this.subscriptions[channel][subscriptionId] = onData;
-			return subscriptionId;
+
+			this.on(channel, listener);
 		},
 
-		unsubscribe: function(subscriptionId) {
+		unsubscribe: function(channel, listener) {
 
-			if (!subscriptionId || subscriptionId.indexOf(':') === -1) return;
-			var parts = subscriptionId.split(':');
-			var channel = parts[1];
-			if (!channel || !this.primus) return;
-			this.subscriptions[channel] = this.subscriptions[channel] || {};
-			delete this.subscriptions[channel][subscriptionId];
-			if (!this.hasSubscriptions(channel)) {
+			app.log('ct-api.unsubscribe', channel, listener);
+
+			if (!channel) {
+				throw new Error('ct-api.channel.required');
+			}
+
+			if (!this.isValidChannel(channel)) {
+				throw new Error('ct-api.channel.invalid');
+			}
+
+			if (!listener) {
+				throw new Error('ct-api.listener.required');
+			}
+
+			if (!_.isFunction(listener)) {
+				throw new Error('ct-api.listener.invalid');
+			}
+
+			if (!this.primus) {
+				throw new Error('ct-api.no-socket-connection');
+			}
+
+			this.off(channel, listener);
+
+			if (!this.isSubscribed(channel)) {
 				this.primus.write({
 					channel: channel,
 					action: 'leave',
@@ -106,6 +158,7 @@ app.services.ctApi = (function() {
 		},
 
 		getExchangeRates: function(currency, cb) {
+
 			_.defer(_.bind(function() {
 				var cacheKey = 'exchange-rates';
 				var rates = app.cache.get(cacheKey);
@@ -122,6 +175,7 @@ app.services.ctApi = (function() {
 		// Exchange rates from the API server are BTC-centric.
 		// To get make a nice object of rates for another currency, we need to do some magic.
 		convertExchangeRates: function(rates, currency) {
+
 			// Convert from SOMETHING->BTC rate to SOMETHING->CURRENCY.
 			var btcRate = (new BigNumber(1)).dividedBy(rates[currency]);
 			return _.mapObject(rates, function(rate) {
@@ -135,19 +189,24 @@ app.services.ctApi = (function() {
 			$.get(uri).then(function(result) {
 				cb(null, result);
 			}).catch(cb)
-		}
-	};
+		},
+
+	}, Backbone.Events);
 
 	app.queues.onStart.push({
-		fn: _.bind(ctApi.connect, ctApi),
+		fn: _.bind(service.connect, service),
 	});
 
 	app.onReady(function() {
-		ctApi.subscribe('exchange-rates', function(data) {
-			app.cache.set('exchange-rates', data);
-		});
+		try {
+			service.subscribe('exchange-rates', function(data) {
+				app.cache.set('exchange-rates', data);
+			});
+		} catch (error) {
+			app.log('ct-api', error);
+		}
 	});
 
-	return ctApi;
+	return service;
 
 })();

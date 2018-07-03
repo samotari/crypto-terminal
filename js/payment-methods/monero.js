@@ -360,27 +360,28 @@ app.paymentMethods.monero = (function() {
 			var decimals = this.numberFormat.decimals;
 			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
 			var paymentId = paymentRequest.data.paymentId;
-			var channelName = 'get-monero-transactions?' + querystring.stringify({
+			var channel = 'get-monero-transactions?' + querystring.stringify({
 				networkName: networkName
 			});
+			var stopListeningForPayment = _.bind(this.stopListeningForPayment, this);
+			var checkRemainingTransactions = _.bind(this.checkRemainingTransactions, this);
 
-			var done = _.bind(function() {
-				this.stopListeningForPayment();
+			var done = _.once(function() {
+				stopListeningForPayment();
 				cb.apply(undefined, arguments);
-			}, this);
+			});
 
-			this.txsSubscriptionId = app.services.ctApi.subscribe(channelName, _.bind(function(txs) {
+			var listener = _.bind(function(txs) {
 
 				// Filter out transactions that don't have the correct payment ID.
 				txs = _.filter(txs, function(tx) {
 					return !!tx.payment_id && tx.payment_id === paymentId;
 				});
 
-				this.checkRemainingTransactions(txs, function(error, txsRemaining) {
+				checkRemainingTransactions(txs, function(error, txsRemaining) {
 
 					if (error) {
-						app.log(error);
-						return;
+						return done(error);
 					}
 
 					try {
@@ -392,28 +393,34 @@ app.paymentMethods.monero = (function() {
 						});
 						amountReceived = amountReceived.times('10e-12');
 					} catch (error) {
-						app.log(error);
 						return done(error);
 					}
 
 					if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
-						var paymentData = _.chain(txs).first().pick('tx_hash').value();
-						// Passing paymentData so it can be stored.
-						done(null, paymentData);
+						// Passing transaction data so that it can be stored.
+						var txData = _.chain(txs).first().pick('tx_hash').value();
+						return done(null, txData);
 					}
 
 					// Continue listening..
 
 				});
 
-			}, this));
+			}, this);
+
+			app.services.ctApi.subscribe(channel, listener);
+			this.listening = { channel: channel, listener: listener };
 		},
 
 		stopListeningForPayment: function() {
 
-			app.services.ctApi.unsubscribe(this.txsSubscriptionId)
-
-		}
+			if (this.listening) {
+				var channel = this.listening.channel;
+				var listener = this.listening.listener;
+				app.services.ctApi.unsubscribe(channel, listener);
+				this.listening = null;
+			}
+		},
 
 	});
 })();
