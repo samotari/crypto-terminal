@@ -4,6 +4,7 @@
 		"connect:static"
 	],
 	"build": [
+		"clean:build",
 		"newer:browserify",
 		"compileHtml",
 		"newer:cssmin",

@@ -5,6 +5,7 @@
     <icon src="images/favicon.png" />
     <access origin="https://*/*" />
     <platform name="android">
+        <preference name="android-minSdkVersion" value="19" />
         <hook src="scripts/copy-build-extras-gradle-to-platform-dir.js" type="before_prepare" />
         <icon density="ldpi" src="images/favicon/favicon-android-ldpi.png" />
         <icon density="mdpi" src="images/favicon/favicon-android-mdpi.png" />
