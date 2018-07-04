@@ -50,7 +50,7 @@ app.lang['cs'] = (function() {
 		'payment-status.timed-out.done': 'OK',
 		'sample-addresses.label': 'Vzorové adresy:',
 		'enter-pin.cancel': 'Zrušit',
-		'enter-pin.submit': 'Zadit',
+		'enter-pin.submit': 'Vstoupit',
 		'pin-required.title': 'Kód je vyžadován',
 		'pin-required.instructions': 'Pokud chcete pokračovat, zadejte kód',
 		'pin-required.incorrect': 'Kód byl nesprávný',

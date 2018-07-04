@@ -29,6 +29,12 @@ app.paymentMethods.bitcoinLightning = (function() {
 				'settings.invoiceMacaroon.label': 'Invoice Macaroon',
 				'settings.invoiceMacaroon.description': 'Authentication code (hexadecimal)',
 				'addInvoice.failed': 'Failed to generate invoice',
+			},
+			'es': {
+				'description': 'Para usar Bitcoin Lightning Network (LN) tiene que correr su propio nodo. Más información <a href="https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md">aquí</a>.',
+				'settings.apiUrl.description': 'URL completa de su nodo LN',
+				'settings.invoiceMacaroon.description': 'Código de autentificación (hexadecimal)',
+				'addInvoice.failed': 'Fallo al crear factura',
 			}
 		},
 
