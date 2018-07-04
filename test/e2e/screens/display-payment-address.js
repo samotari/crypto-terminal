@@ -8,8 +8,20 @@ require('../global-hooks');
 
 describe('#display-payment-address', function() {
 
+	var socketServer;
+	beforeEach(function() {
+		socketServer = manager.socketServer();
+	})
+
 	beforeEach(function(done) {
 		manager.onAppLoaded(done);
+	});
+
+	beforeEach(function() {
+		socketServer.primus.write({
+			channel: 'exchange-rates',
+			data: {'BTC':1.00000000,'CZK':142155.31,'EUR':5467.50,'LTC':77.85130401,'USD':6389.06,'XMR':49.66476285075738763347},
+		});
 	});
 
 	beforeEach(function(done) {
@@ -41,6 +53,10 @@ describe('#display-payment-address', function() {
 			expect(hash).to.equal('display-payment-address');
 			done();
 		}).catch(done);
+	});
+
+	afterEach(function() {
+		socketServer.close();
 	});
 
 	it('QR code rendered', function(done) {

@@ -17,7 +17,6 @@ app.views.DisplayPaymentAddress = (function() {
 			'click .back': 'back',
 		},
 
-		timerForTimeOut: null,
 		listenerTimeOut: null,
 		savePaymentRequestTimeout: null,
 
@@ -148,7 +147,6 @@ app.views.DisplayPaymentAddress = (function() {
 
 			var paymentRequest = this.model.toJSON();
 			var received = false;
-			var timedOut = false;
 			var errorWhileWaiting;
 			var data;
 
@@ -196,11 +194,12 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 			}, this);
 
-			this.timerForTimeOut = setTimeout(function() {
-				timedOut = true;
-			}, app.config.paymentRequests.timeout);
-
-			async.until(function() { return received || timedOut; }, iteratee, done);
+			var startTime = Date.now();
+			async.until(function() {
+				var elapsedTime = Date.now() - startTime;
+				var timedOut = elapsedTime > app.config.paymentRequests.timeout;
+				return received || timedOut;
+			}, iteratee, done);
 		},
 
 		stopListeningForPayment: function() {
@@ -209,7 +208,6 @@ app.views.DisplayPaymentAddress = (function() {
 				this.paymentMethod.stopListeningForPayment();
 			}
 			clearTimeout(this.listenerTimeOut);
-			clearTimeout(this.timerForTimeOut);
 		},
 
 		cancel: function(evt) {

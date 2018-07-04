@@ -8,27 +8,36 @@ module.exports = function(grunt) {
 	var path = require('path');
 
 	var pkg = require('../package.json');
-	var target = process.env.TARGET || 'prod';
-	var config = require('../config')[target];
-	var templateData = {
-		config: config,
-		target: target,
-		info: _.extend({}, _.pick(pkg,
-			'author',
-			'contributors',
-			'description',
-			'homepage',
-			'version'
-		), {
-			name: pkg.app.name,
-		}),
-	};
+	var templateData;
+
+	var prepareTemplateData = function() {
+
+		if (_.isEmpty(templateData)) {
+			var target = process.env.TARGET || 'prod';
+			var config = require('../config')[target];
+
+			templateData = {
+				config: config,
+				target: target,
+				info: _.extend({}, _.pick(pkg,
+					'author',
+					'contributors',
+					'description',
+					'homepage',
+					'version'
+				), {
+					name: pkg.app.name,
+				}),
+			};
+		}
+	}
 
 	grunt.registerMultiTask('compileHtml', function() {
 
 		var done = this.async();
 		var files = this.files;
 		var options = _.defaults(this.options(), {});
+		prepareTemplateData();
 
 		prepareData(options, function(error, data) {
 
