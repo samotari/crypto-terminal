@@ -73,7 +73,15 @@ app.paymentMethods.monero = (function() {
 				required: true,
 				validate: function(value) {
 					this.validatePublicAddress(value);
-				}
+				},
+				actions: [
+					{
+						name: 'camera',
+						fn: function(value, cb) {
+							app.device.scanQRCodeWithCamera(cb);
+						}
+					}
+				]
 			},
 			{
 				name: 'privateViewKey',
@@ -84,7 +92,15 @@ app.paymentMethods.monero = (function() {
 				required: true,
 				validate: function(value) {
 					this.validatePrivateViewKey(value);
-				}
+				},
+				actions: [
+					{
+						name: 'camera',
+						fn: function(value, cb) {
+							app.device.scanQRCodeWithCamera(cb);
+						}
+					}
+				]
 			}
 		],
 
