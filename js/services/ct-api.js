@@ -159,17 +159,36 @@ app.services.ctApi = (function() {
 
 		getExchangeRates: function(currency, cb) {
 
-			_.defer(_.bind(function() {
-				var cacheKey = 'exchange-rates';
-				var rates = app.cache.get(cacheKey);
-				if (!rates) {
-					return cb(new Error(app.i18n.t('ct-api.missing-exchange-rates')));
+			var convertExchangeRates = _.bind(this.convertExchangeRates, this);
+			var maxWaitTime = app.config.ctApi.exchangeRates.timeout;
+			var startTime = Date.now();
+			var rates;
+
+			async.until(function() {
+				rates = app.cache.get('exchange-rates');
+				return !!rates;
+			}, function(next) {
+
+				var elapsedTime = Date.now() - startTime;
+
+				if (elapsedTime > maxWaitTime) {
+					return next(new Error(app.i18n.t('ct-api.missing-exchange-rates')))
 				}
+
+				_.delay(next, 20);
+
+			}, function(error) {
+
+				if (error) {
+					return cb(error);
+				}
+
 				if (currency !== 'BTC') {
-					rates = this.convertExchangeRates(rates, currency);
+					rates = convertExchangeRates(rates, currency);
 				}
+
 				cb(null, rates);
-			}, this));
+			});
 		},
 
 		// Exchange rates from the API server are BTC-centric.

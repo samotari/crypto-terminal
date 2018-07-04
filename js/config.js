@@ -22,6 +22,9 @@ app.config = (function() {
 		},
 		ctApi: _.extend({
 			primusPath: '/primus',
+			exchangeRates: {
+				timeout: 10000,
+			},
 		}, app.config.ctApi),
 		sqlite: {
 			name: 'crypto-terminal.db',
