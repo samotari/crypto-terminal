@@ -1,7 +1,9 @@
 'use strict';
 
 var _ = require('underscore');
+var express = require('express');
 var puppeteer = require('puppeteer');
+var Primus = require('primus');
 
 var gruntConfig = {
 	connect: require('../grunt/connect'),
@@ -95,6 +97,31 @@ var manager = module.exports = {
 		var parts = pageUrl.indexOf('#') !== -1 ? pageUrl.split('#') : [];
 		return parts[1] || '';
 	},
+
+	socketServer : function(serverConfig) {
+
+		serverConfig = _.defaults(serverConfig || {}, {
+			port: 3601,
+			pathname: '/primus',
+			transformer: 'uws',
+			pingInterval: 5000,
+		})
+
+		var tmpApp = express();
+		tmpApp.server = tmpApp.listen(serverConfig.port, 'localhost');
+		var primus = new Primus(tmpApp.server, serverConfig);
+
+		return {
+			primus: primus,
+			close: function() {
+				primus.destroy();
+				tmpApp.server.close();
+				tmpApp = null;
+				primus = null;
+			}
+		};
+	},
+
 };
 
 before(function(done) {

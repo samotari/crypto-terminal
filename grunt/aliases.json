@@ -31,17 +31,16 @@
 		"eslint"
 	],
 	"test:setup": [
+		"env:test",
 		"build",
 		"connect:test"
 	],
 	"test:e2e": [
-		"build",
-		"connect:test",
+		"test:setup",
 		"mochaTest:e2e"
 	],
 	"test:unit": [
-		"build",
-		"connect:test",
+		"test:setup",
 		"mochaTest:unit"
 	]
 }
