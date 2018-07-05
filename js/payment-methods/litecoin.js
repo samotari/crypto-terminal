@@ -26,7 +26,8 @@ app.paymentMethods.litecoin = (function() {
 			Network constants.
 		*/
 		network: {
-			wif: '80',
+			messagePrefix: '\x18Litecoin Signed Message:\n',
+			wif: 'b0',
 			p2pkh: '30',
 			p2sh: '32',
 			bech32: 'ltc',

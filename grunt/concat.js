@@ -48,6 +48,7 @@ module.exports = {
 		nonull: true,
 		src: [
 			// Dependencies:
+			'node_modules/core-js/client/shim.js',
 			'node_modules/async/dist/async.js',
 			'node_modules/bignumber.js/bignumber.js',
 			'node_modules/jquery/dist/jquery.js',
@@ -60,6 +61,7 @@ module.exports = {
 			'build/base-x.js',
 			'build/bech32.js',
 			'build/bigi.js',
+			'build/bitcoin.js',
 			'build/bs58.js',
 			'build/buffer.js',
 			'build/ecurve.js',
@@ -77,6 +79,7 @@ module.exports = {
 			'js/util.js',
 			'js/device.js',
 			'js/screen-saver.js',
+			'js/nfc.js',
 			'js/sqlite.js',
 			'js/lang/*.js',
 			'js/abstracts/*.js',
@@ -104,6 +107,7 @@ module.exports = {
 		nonull: true,
 		src: [
 			// Dependencies:
+			'node_modules/core-js/client/shim.min.js',
 			'node_modules/async/dist/async.min.js',
 			'node_modules/bignumber.js/bignumber.min.js',
 			'node_modules/jquery/dist/jquery.min.js',
@@ -116,6 +120,7 @@ module.exports = {
 			'build/base-x.min.js',
 			'build/bech32.min.js',
 			'build/bigi.min.js',
+			'build/bitcoin.min.js',
 			'build/bs58.min.js',
 			'build/buffer.min.js',
 			'build/ecurve.min.js',
@@ -133,6 +138,7 @@ module.exports = {
 			'build/js/util.min.js',
 			'build/js/device.min.js',
 			'build/js/screen-saver.min.js',
+			'build/js/nfc.min.js',
 			'build/js/sqlite.min.js',
 			'build/js/lang/*.min.js',
 			'build/js/abstracts/*.min.js',

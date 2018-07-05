@@ -125,3 +125,11 @@ body.view-getting-started .header-button.language {
 	*/
 	display: block;
 }
+.header-button.qrcode {
+	display: none;
+	float: right;
+	background-image: url('../images/qrcode.svg');
+}
+.header-button.qrcode.visible {
+	display: block;
+}

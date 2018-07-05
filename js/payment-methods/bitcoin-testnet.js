@@ -25,6 +25,7 @@ app.paymentMethods.bitcoinTestnet = (function() {
 			Network constants.
 		*/
 		network: {
+			messagePrefix: '\x18Bitcoin Signed Message:\n',
 			wif: 'ef',
 			p2pkh: '6f',
 			p2sh: 'c4',

@@ -22,6 +22,14 @@ module.exports = {
 		src: 'node_modules/bigi/lib/index.js',
 		dest: 'build/bigi.js'
 	},
+	bitcoin: {
+		options: {
+			standalone: 'bitcoin',
+			transform: [['babelify', { presets: ['es2015'] }]]
+		},
+		src: 'node_modules/bitcoinjs-lib/src/index.js',
+		dest: 'build/bitcoin.js'
+	},
 	bs58: {
 		options: {
 			standalone: 'bs58'

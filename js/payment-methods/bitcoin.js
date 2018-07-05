@@ -50,6 +50,8 @@ app.paymentMethods.bitcoin = (function() {
 				'index-must-be-less-than': 'Index must be less than 2^32',
 				'failed-to-derive-address': 'Failed to derive address',
 				'address-type-not-supported': 'Address type ("{{type}}") not supported',
+				'insufficient-funds-to-make-payment': 'Not enough funds to make payment.',
+				'invalid-wif': 'Invalid private key. Are you sure it is for {{paymentMethodLabel}}?',
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
 			},
 			'cs': {
@@ -106,10 +108,10 @@ app.paymentMethods.bitcoin = (function() {
 			{
 				name: 'extendedPublicKey',
 				label: function() {
-					return app.i18n.t('bitcoin.settings.extendedPublicKey.label');
+					return app.i18n.t(this.ref + '.settings.extendedPublicKey.label');
 				},
 				description: function() {
-					return app.i18n.t('bitcoin.settings.extendedPublicKey.description');
+					return app.i18n.t(this.ref + '.settings.extendedPublicKey.description');
 				},
 				type: 'text',
 				required: true,
@@ -128,10 +130,10 @@ app.paymentMethods.bitcoin = (function() {
 			{
 				name: 'addressIndex',
 				label: function() {
-					return app.i18n.t('bitcoin.settings.addressIndex.label');
+					return app.i18n.t(this.ref + '.settings.addressIndex.label');
 				},
 				description: function() {
-					return app.i18n.t('bitcoin.settings.addressIndex.description');
+					return app.i18n.t(this.ref + '.settings.addressIndex.description');
 				},
 				type: 'number',
 				required: true,
@@ -139,10 +141,10 @@ app.paymentMethods.bitcoin = (function() {
 				validate: function(value, data) {
 					value = parseInt(value);
 					if (_.isNaN(value)) {
-						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.integer-required'));
+						throw new Error(app.i18n.t(this.ref + '.settings.addressIndex.integer-required'));
 					}
 					if (value < 0) {
-						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.greater-than-or-equal-zero'));
+						throw new Error(app.i18n.t(this.ref + '.settings.addressIndex.greater-than-or-equal-zero'));
 					}
 				}
 			},
@@ -158,6 +160,7 @@ app.paymentMethods.bitcoin = (function() {
 			Network constants.
 		*/
 		network: {
+			messagePrefix: '\x18Bitcoin Signed Message:\n',
 			wif: '80',
 			p2pkh: '00',
 			p2sh: '05',
@@ -204,6 +207,8 @@ app.paymentMethods.bitcoin = (function() {
 				],
 			},
 		},
+
+		addressTypes: ['p2pkh', 'p2wpkh-p2sh', 'p2wpkh'],
 
 		OP_ZERO: '00',
 
@@ -262,13 +267,9 @@ app.paymentMethods.bitcoin = (function() {
 
 		generatePaymentRequest: function(amount, cb) {
 
-			var ref = this.ref;
 			var uriScheme = this.uriScheme;
-			var extendedPublicKey = app.settings.get(ref + '.extendedPublicKey');
-			var derivationScheme = app.settings.get(ref + '.derivationScheme');
-			var index = parseInt(app.settings.get(ref + '.addressIndex') || '0');
 
-			this.deriveAddress(extendedPublicKey, derivationScheme, index, function(error, address) {
+			this.getReceivingAddress(function(error, address) {
 
 				if (error) {
 					return cb(error);
@@ -284,6 +285,14 @@ app.paymentMethods.bitcoin = (function() {
 
 				cb(null, paymentRequest);
 			});
+		},
+
+		getReceivingAddress: function(cb) {
+
+			var extendedPublicKey = app.settings.get(this.ref + '.extendedPublicKey');
+			var derivationScheme = app.settings.get(this.ref + '.derivationScheme');
+			var index = parseInt(app.settings.get(this.ref + '.addressIndex') || '0');
+			this.deriveAddress(extendedPublicKey, derivationScheme, index, cb);
 		},
 
 		incrementAddressIndex: function(cb) {
@@ -302,16 +311,13 @@ app.paymentMethods.bitcoin = (function() {
 			var network = this.network;
 			var deriveLastParentExtendedPublicKey = _.bind(this.deriveLastParentExtendedPublicKey, this);
 			var deriveChildKeyAtIndex = _.bind(this.deriveChildKeyAtIndex, this);
-			var publicKeyTo = _.mapObject(this.publicKeyTo, function(fn) {
-				return fn.bind(this);
-			}, this);
 
 			async.seq(
 				deriveLastParentExtendedPublicKey,
 				function(lastParentExtendedPublicKey, next) {
 					deriveChildKeyAtIndex(lastParentExtendedPublicKey, addressIndex, network, next);
 				}
-			)(extendedPublicKey, derivationScheme, function(error, child) {
+			)(extendedPublicKey, derivationScheme, _.bind(function(error, child) {
 
 				if (error) {
 					return cb(error);
@@ -321,18 +327,20 @@ app.paymentMethods.bitcoin = (function() {
 					return cb(new Error(app.i18n.t(ref + '.failed-to-derive-address')));
 				}
 
-				if (!publicKeyTo[child.type]) {
+				var type = child.type;
+
+				if (!_.contains(this.addressTypes, type) || !this[type] || !_.isFunction(this[type])) {
 					return cb(new Error(app.i18n.t(ref + '.address-type-not-supported', { type: child.type })));
 				}
 
 				try {
-					var address = publicKeyTo[child.type](child.key, child.network);
+					var address = this[type](child.key, child.network);
 				} catch (error) {
 					return cb(error);
 				}
 
 				cb(null, address);
-			});
+			}, this));
 		},
 
 		deriveLastParentExtendedPublicKey: function(extendedPublicKey, derivationScheme, cb) {
@@ -459,49 +467,47 @@ app.paymentMethods.bitcoin = (function() {
 			);
 		},
 
-		publicKeyTo: {
-			/*
-				See:
-				https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses#How_to_create_Bitcoin_Address
-			*/
-			'p2pkh': function(publicKey, network) {
+		/*
+			See:
+			https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses#How_to_create_Bitcoin_Address
+		*/
+		p2pkh: function(publicKey, network) {
 
-				network || (network = this.network);
-				var hash = this.hash160(publicKey);
-				var version = network.p2pkh;
-				return this.base58check(version + hash);
-			},
-			/*
-				See:
-				https://bitcoincore.org/en/segwit_wallet_dev/#creation-of-p2sh-p2wpkh-address
-				https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
-			*/
-			'p2wpkh-p2sh': function(publicKey, network) {
+			network || (network = this.network);
+			var hash = this.hash160(publicKey);
+			var version = network.p2pkh;
+			return this.base58check(version + hash);
+		},
+		/*
+			See:
+			https://bitcoincore.org/en/segwit_wallet_dev/#creation-of-p2sh-p2wpkh-address
+			https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
+		*/
+		'p2wpkh-p2sh': function(publicKey, network) {
 
-				network || (network = this.network);
-				var publicKeyHash = this.hash160(publicKey);
-				var scriptSig = [
-					this.OP_ZERO,
-					(new Buffer([publicKeyHash.length / 2])).toString('hex'),
-					publicKeyHash,
-				].join('');
-				var scriptHash = this.hash160(scriptSig);
-				var version = network.p2sh;
-				return this.base58check(version + scriptHash);
-			},
+			network || (network = this.network);
+			var publicKeyHash = this.hash160(publicKey);
+			var scriptSig = [
+				this.OP_ZERO,
+				(new Buffer([publicKeyHash.length / 2])).toString('hex'),
+				publicKeyHash,
+			].join('');
+			var scriptHash = this.hash160(scriptSig);
+			var version = network.p2sh;
+			return this.base58check(version + scriptHash);
+		},
 
-			/*
-				See:
-				https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
-			*/
-			p2wpkh: function(publicKey, network) {
+		/*
+			See:
+			https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
+		*/
+		p2wpkh: function(publicKey, network) {
 
-				network || (network = this.network);
-				var version = 0;
-				var prefix = network.bech32;
-				var witnessProgram = this.hash160(publicKey.toLowerCase());
-				return this.bech32(witnessProgram, prefix, version);
-			},
+			network || (network = this.network);
+			var version = 0;
+			var prefix = network.bech32;
+			var witnessProgram = this.hash160(publicKey.toLowerCase());
+			return this.bech32(witnessProgram, prefix, version);
 		},
 
 		bech32: function(data, prefix, version) {
@@ -516,13 +522,26 @@ app.paymentMethods.bitcoin = (function() {
 			return bs58.encode(Buffer.from(data + checksum, 'hex'));
 		},
 
+		toBaseUnit: function(value) {
+
+			return Math.ceil((new BigNumber(value)).times(1e8).toNumber());
+		},
+
+		convertAmount: function(amount, rate) {
+
+			var decimals = this.numberFormat.decimals;
+			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
+			return this.toBaseUnit(cryptoAmount);
+		},
+
 		listenForPayment: function(paymentRequest, cb) {
 
 			var address = paymentRequest.data && paymentRequest.data.address;
-			var amount = paymentRequest.amount;
-			var rate = paymentRequest.rate;
-			var decimals = this.numberFormat.decimals;
-			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
+			// NOTE: The amount in the payment request is denominated in the display currency.
+			var expectedValue = this.convertAmount(
+				paymentRequest.amount,
+				paymentRequest.rate
+			);
 			var incrementAddressIndex = _.bind(this.incrementAddressIndex, this);
 			var stopListeningForPayment = _.bind(this.stopListeningForPayment, this);
 
@@ -548,11 +567,7 @@ app.paymentMethods.bitcoin = (function() {
 
 			var listener = function(tx) {
 
-				// The amount in the tx object is in satoshis.
-				// Divide by 100 million to get the amount in whole bitcoin.
-				var amountReceived = (new BigNumber(tx.amount)).dividedBy(100000000);
-
-				if (amountReceived.isGreaterThanOrEqualTo(cryptoAmount)) {
+				if (tx.amount >= expectedValue) {
 					// Passing transaction data so it can be stored.
 					var txData = _.pick(tx, 'txid');
 					return done(null, txData);
@@ -563,6 +578,232 @@ app.paymentMethods.bitcoin = (function() {
 
 			app.services.ctApi.subscribe(channel, listener);
 			this.listening = { channel: channel, listener: listener };
+		},
+
+		prepareBitcoinJSNetworkConstants: function() {
+
+			var wif = this.network.wif;
+
+			if (!_.isArray(wif)) {
+				wif = [wif];
+			}
+
+			var constants = {
+				messagePrefix: this.network.messagePrefix,
+				bech32: this.network.bech32,
+				pubKeyHash: parseInt(this.network.p2pkh, 16),
+				scriptHash: parseInt(this.network.p2sh, 16),
+				bip32: {
+					private: parseInt(this.network.xprv.p2pkh, 16),
+					public: parseInt(this.network.xpub.p2pkh, 16),
+				},
+			};
+
+			// There could be more than one valid WIF byte (e.g Litecoin).
+			// So create an array of possible network constants for bitcoinjs-lib.
+			// Later we try each set of network constants until a valid set is found.
+			return _.map(wif, function(hex) {
+				return _.extend({}, constants, {
+					wif: parseInt(hex, 16),
+				});
+			});
+		},
+
+		buildTx: function(receivingAddress, value, source, feeRate) {
+
+			var changeAddress = source.address;
+			var network = source.keyPair.network;
+			var p2wpkh = bitcoin.payments.p2wpkh({ pubkey: source.keyPair.publicKey, network: network });
+			var p2sh = bitcoin.payments.p2sh({ redeem: p2wpkh, network: network });
+			var sumOfOutputs = _.reduce(source.utxo, function(memo, output) {
+				return memo + parseInt(output.value);
+			}, 0);
+			var ref = this.ref;
+
+			var createRawTxWithFee = function(fee) {
+				fee = Math.ceil(fee || 0);
+				var txb = new bitcoin.TransactionBuilder(network);
+				_.each(source.utxo, function(output) {
+					var txid = output.tx_hash;
+					var n = output.tx_pos;
+					if (source.type === 'p2wpkh') {
+						// p2wpkh:
+						txb.addInput(txid, n, null, p2wpkh.output);
+					} else {
+						// p2pkh and p2wpkh-p2sh:
+						txb.addInput(txid, n);
+					}
+				});
+				var changeValue = (sumOfOutputs - value) - fee;
+				if (changeValue < 0) {
+					throw new Error(app.i18n.t(ref + '.insufficient-funds-to-make-payment'));
+				}
+				txb.addOutput(receivingAddress, value);
+				txb.addOutput(changeAddress, changeValue);
+				// Sign each input.
+				_.each(source.utxo, function(output, index) {
+					if (source.type === 'p2pkh') {
+						// p2pkh:
+						txb.sign(index, source.keyPair);
+					} else if (source.type === 'p2wpkh-p2sh') {
+						// p2wpkh-p2sh:
+						txb.sign(index, source.keyPair, p2sh.redeem.output, null, output.value);
+					} else {
+						// p2wpkh:
+						txb.sign(index, source.keyPair, null, null, output.value);
+					}
+				});
+				return txb.build().toHex();
+			};
+			// Build a sample tx so that we can calculate the fee.
+			var sampleTx = createRawTxWithFee(0);
+			// Calculate the size of the sample tx (in kilobytes).
+			var size = sampleTx.length / 2000;
+			// The fee rate is satoshis/kilobyte.
+			var fee = size * feeRate;
+			return createRawTxWithFee(fee);
+		},
+
+		payRequestFromPaperWallet: function(paymentRequest, paperWalletData, cb) {
+
+			var receivingAddress = paymentRequest.data.address;
+			// NOTE: The amount in the payment request is denominated in the display currency.
+			var value = this.convertAmount(
+				paymentRequest.amount,
+				paymentRequest.rate
+			);
+			var wif = paperWalletData;
+			this.payToAddressFromWIF(receivingAddress, value, wif, cb);
+		},
+
+		keyPairFromWIF: function(wif) {
+
+			// Try each possible set of network constants.
+			// Use the first one that works with the given WIF.
+			try {
+				var constants = this.prepareBitcoinJSNetworkConstants();
+				var keyPair = bitcoin.ECPair.fromWIF(wif, constants);
+			} catch (error) {
+				app.log(error);
+			}
+
+			if (!keyPair) {
+				throw new Error(app.i18n.t(this.ref + '.invalid-wif', {
+					paymentMethodLabel: this.label,
+				}));
+			}
+
+			return keyPair || null;
+		},
+
+		payToAddressFromWIF: function(receivingAddress, value, wif, cb) {
+
+			try {
+				var keyPair = this.keyPairFromWIF(wif);
+				var publicKey = (new Buffer(keyPair.publicKey)).toString('hex');
+				var buildTx = _.bind(this.buildTx, this);
+				var broadcastRawTx = _.bind(this.broadcastRawTx, this);
+				var ref = this.ref;
+			} catch (error) {
+				return cb(error);
+			}
+
+			var getAddressWithFundsGreaterThanOrEqualTo = _.bind(this.getAddressWithFundsGreaterThanOrEqualTo, this);
+
+			async.parallel({
+				source: function(next) {
+					getAddressWithFundsGreaterThanOrEqualTo(publicKey, value, next);
+				},
+				feeRate: function(next) {
+					app.services.ctApi.getFeeRate(ref, next);
+				},
+			}, function(error, results) {
+
+				if (error) {
+					return cb(error);
+				}
+
+				var source = results.source;
+
+				if (!source) {
+					return cb(new Error(app.i18n.t(ref + '.insufficient-funds-to-make-payment')));
+				}
+
+				try {
+					source.keyPair = keyPair;
+					var feeRate = results.feeRate;
+					var rawTx = buildTx(receivingAddress, value, source, feeRate);
+				} catch (error) {
+					return cb(error);
+				}
+
+				broadcastRawTx(rawTx, function(error, result) {
+
+					if (error) {
+						return cb(error);
+					}
+
+					if (result && result.txid) {
+						var txData = _.pick(result, 'txid');
+						return cb(null, txData);
+					}
+
+					cb();
+				});
+			});
+		},
+
+		getUnspentTxOutputs: function(publicKey, cb) {
+
+			var addressToType = _.chain(this.addressTypes).map(function(type) {
+				return [this[type](publicKey), type];
+			}, this).object().value();
+			var addresses = _.keys(addressToType);
+
+			app.services.ctApi.getUnspentTxOutputs(this.ref, addresses, function(error, results) {
+				if (error) return cb(error);
+				results = _.map(results, function(result) {
+					result.type = addressToType[result.address];
+					return result;
+				});
+				cb(null, results);
+			});
+		},
+
+		getAddressWithFundsGreaterThanOrEqualTo: function(publicKey, value, cb) {
+
+			var getUnspentTxOutputs = _.bind(this.getUnspentTxOutputs, this, publicKey);
+			var pickAddress = _.bind(this.pickAddressWithFundsGreaterThanOrEqualTo, this);
+
+			async.seq(
+				getUnspentTxOutputs,
+				function(addresses, next) {
+					try {
+						var address = pickAddress(addresses, value);
+					} catch (error) {
+						return next(error);
+					}
+					next(null, address);
+				}
+			)(cb);
+		},
+
+		pickAddressWithFundsGreaterThanOrEqualTo: function(addresses, value) {
+
+			return _.chain(addresses).compact().map(function(address) {
+				address.unspent = _.reduce(address.utxo, function(memo, output) {
+					return memo + parseInt(output.value);
+				}, 0);
+				if (address.unspent < value) return;
+				return address;
+			}).compact().sortBy(function(address) {
+				return address.unspent * -1;
+			}).first().value();
+		},
+
+		broadcastRawTx: function(rawTx, cb) {
+
+			app.services.ctApi.broadcastRawTx(this.ref, rawTx, cb);
 		},
 
 		stopListeningForPayment: function() {

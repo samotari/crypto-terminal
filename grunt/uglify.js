@@ -28,6 +28,16 @@ module.exports = {
 		src: 'build/bigi.js',
 		dest: 'build/bigi.min.js'
 	},
+	bitcoin: {
+		nonull: true,
+		options: {
+			mangle: {
+				reserved: ['BigInteger', 'ECPair', 'Point'],
+			},
+		},
+		src: 'build/bitcoin.js',
+		dest: 'build/bitcoin.min.js'
+	},
 	bs58: {
 		src: 'build/bs58.js',
 		dest: 'build/bs58.min.js'
