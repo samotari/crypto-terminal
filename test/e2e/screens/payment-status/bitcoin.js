@@ -2,11 +2,11 @@
 
 var _ = require('underscore');
 var async = require('async');
-var helpers = require('../helpers');
-var manager = require('../../manager');
-require('../global-hooks');
+var helpers = require('../../helpers');
+var manager = require('../../../manager');
+require('../../global-hooks');
 
-describe('#payment-status', function() {
+describe('#payment-status [bitcoin]', function() {
 
 	var socketServer;
 	beforeEach(function() {
