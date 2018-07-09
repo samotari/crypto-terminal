@@ -53,12 +53,11 @@ app.views.PaymentHistory = (function() {
 		onRender: function() {
 
 			app.log('paymentHistory.onRender');
-			if (!(this.collection.length > 0)) {
+			if (this.collection.length < app.config.paymentHistory.list.limit) {
 				this.fetchPayments();
 			} else {
 				this.renderItems();
 			}
-
 			this.$items = this.$('.payment-history-items');
 			this.$items.on('scroll', this.onScroll);
 		},
@@ -67,7 +66,7 @@ app.views.PaymentHistory = (function() {
 
 			app.log('paymentHistory.onScroll');
 			var scrollHeightRemaining = this.getScrollHeightRemaining();
-			var threshold = $(window).height() / 3;
+			var threshold = $(window).height();
 			if (scrollHeightRemaining < threshold && this.hasMoreItemsToFetch()) {
 				this.offset += app.config.paymentHistory.list.limit;
 				this.fetchPayments();
