@@ -45,6 +45,7 @@ app.views.Slider = (function() {
 
 		onSwipe: function(evt, velocity) {
 
+			if (this.options.canSwipe === false) return;
 			var currentIndex = this.index || 0;
 			// Positive velocity is left-to-right.
 			// Negative velocity is right-to-left.
@@ -152,6 +153,23 @@ app.views.Slider = (function() {
 		getMaxVisibleIndex: function() {
 
 			return this.getNumberVisibleItems() - 1;
+		},
+
+		getPreviousVisibleItem: function() {
+
+			var currentIndex = this.index || 0;
+			var previousIndex = currentIndex - 1;
+			if (previousIndex < 0) return null;
+			return this.getVisibleItemAtIndex(previousIndex);
+		},
+
+		getNextVisibleItem: function() {
+
+			var currentIndex = this.index || 0;
+			var maxVisibleIndex = this.getMaxVisibleIndex();
+			var nextIndex = currentIndex + 1;
+			if (nextIndex > maxVisibleIndex) return null;
+			return this.getVisibleItemAtIndex(nextIndex);
 		},
 
 		isVisible: function(key) {

@@ -52,6 +52,8 @@ app.Router = (function() {
 			'admin': 'admin',
 			'admin/:page': 'admin',
 			'about': 'about',
+			'getting-started': 'gettingStarted',
+			'getting-started/:page': 'gettingStarted',
 
 			// For un-matched route, default to:
 			'*notFound': 'notFound'
@@ -115,12 +117,29 @@ app.Router = (function() {
 				}
 			}
 
-			if (!app.isConfigured() && !isAllowedWhenNotConfigured(name)) {
-				this.navigate('admin', { trigger: true });
-				return false;
+			if (!app.isConfigured()) {
+
+				if (!app.hasCompletedGettingStarted()) {
+					// Must complete the Getting Started steps.
+					if (name !== 'gettingStarted') {
+						this.navigate('getting-started', { trigger: true });
+						// Return false here prevents the current route's handler function from firing.
+						return false;
+					}
+					// Do nothing else here.
+					// Continue to getting started screen.
+				} else if (!isAllowedWhenNotConfigured(name)) {
+					// Getting Started was completed.
+					// But not yet configured.
+					// Redirect to admin area.
+					this.navigate('admin', { trigger: true });
+					// Return false here prevents the current route's handler function from firing.
+					return false;
+				}
 			}
 
 			if (callback) {
+				// This is what calls the router function (below).
 				callback.apply(this, args);
 			}
 		},
@@ -145,6 +164,22 @@ app.Router = (function() {
 			}
 
 			app.mainView.renderView('Admin', { page: page });
+		},
+
+		gettingStarted: function(page) {
+
+			if (page) {
+				var subPages = _.chain(app.views.GettingStarted.prototype).result('subPages').pluck('key').value();
+				var defaultSubPage = app.views.GettingStarted.prototype.getDefaultSubPage();
+				var defaultSubPageKey = defaultSubPage && defaultSubPage.key || null;
+				var possiblePages = subPages.concat(app.settings.get('configurableCryptoCurrencies'));
+				if (!_.contains(possiblePages, page) && defaultSubPageKey) {
+					this.navigate('getting-started/' + defaultSubPageKey, { trigger: true });
+					return false;
+				}
+			}
+
+			app.mainView.renderView('GettingStarted', { page: page });
 		},
 
 		paymentDetails: function(paymentId) {

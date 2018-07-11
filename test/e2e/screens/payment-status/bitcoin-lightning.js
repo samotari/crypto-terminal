@@ -47,6 +47,7 @@ describe('#payment-status [bitcoin-lightning]', function() {
 
 	beforeEach(function(done) {
 		manager.evaluateInPageContext(function() {
+			app.markGettingStartedAsComplete();
 			app.settings.set('configurableCryptoCurrencies', ['bitcoinLightning']);
 			app.settings.set('bitcoinLightning.apiUrl', 'http://localhost:3700');
 			app.settings.set('bitcoinLightning.invoiceMacaroon', '12345679');
