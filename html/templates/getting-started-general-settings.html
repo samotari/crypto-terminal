@@ -1,0 +1,25 @@
+<div class="getting-started-page">
+	<h1 class="getting-started-page-title">{{title}}</h1>
+	<p class="getting-started-page-instructions">{{instructions}}</p>
+	<form>
+		<div class="form">
+			{{#each settings}}{{#if visible}}
+			<div class="form-row form-row-type--{{type}}">
+				<div class="form-label">
+					<label for="{{id}}">{{label}}</label>
+				</div>
+				{{#if description}}
+					<div class="form-description">{{description}}</div>
+				{{/if}}
+				<div class="form-field">
+					{{> formField .}}
+				</div>
+			</div>
+			{{/if}}{{/each}}
+		</div>
+	</form>
+	<div class="getting-started-page-buttons">
+		<button class="button back">{{i18n "getting-started.buttons.back"}}</button>
+		<button class="button next">{{i18n "getting-started.buttons.next"}}</button>
+	</div>
+</div>
