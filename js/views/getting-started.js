@@ -194,11 +194,18 @@ app.views.GettingStarted = (function() {
 		setCryptoCurrencyVisibility: function(key, visible) {
 
 			visible = visible === true;
-			this.$menuItems.filter('[data-key="' + key + '"]').toggleClass('visible', visible);
+			var itemKeys = [
+				'payment-method-settings-' + key,
+				'payment-method-verify-' + key,
+			];
+			var filter = _.map(itemKeys, function(itemKey) {
+				return '[data-key="' + itemKey + '"]';
+			}).join(',');
+			this.$menuItems.filter(filter).toggleClass('visible', visible);
 			if (visible) {
-				this.slider.showItems(key);
+				this.slider.showItems(itemKeys);
 			} else {
-				this.slider.hideItems(key);
+				this.slider.hideItems(itemKeys);
 			}
 		},
 
