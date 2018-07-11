@@ -43,6 +43,13 @@ app.views.Slider = (function() {
 			this.showItems(visibleItemKeys);
 		},
 
+		serializeData: function() {
+
+			return {
+				canSwipe: this.options.canSwipe !== false,
+			};
+		},
+
 		onSwipe: function(evt, velocity) {
 
 			if (this.options.canSwipe === false) return;
