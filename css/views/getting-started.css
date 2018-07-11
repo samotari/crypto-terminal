@@ -26,3 +26,37 @@
 		padding: .5rem 0;
 	}
 	/*  Welcome  */
+
+	/*  Choose payment methods  */
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method {
+		width: 3.2rem;
+		height: 3.2rem;
+		background-size: 3.2rem;
+		opacity: 0.5;
+		margin: 0 .4rem .4rem 0;
+		padding: .8rem;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies input[type="checkbox"] {
+		position: absolute;
+		top: 0;
+		left: -99999rem;
+		visibility: hidden;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies input[type="checkbox"]:checked + .button.payment-method {
+		opacity: 1;
+		background-color: #e6e6e6;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies {
+		width: 100%;
+		text-align: center;
+		padding-bottom: 1.6rem;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .form-group-label {
+		color: #111;
+		text-align: center;
+		font-style: normal;
+		font-size: 1.2rem;
+		margin-bottom: 1rem;
+	}
+	/*  Choose payment methods  */
+
