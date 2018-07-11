@@ -123,21 +123,21 @@ app.views.GettingStarted = (function() {
 			}, this);
 		},
 
-		back: function(evt) {
+		back: function() {
 
 			var previousItem = this.slider.getPreviousVisibleItem();
 			if (!previousItem) return;
 			this.goToSubPage(previousItem.key);
 		},
 
-		next: function(evt) {
+		next: function() {
 
 			var nextItem = this.slider.getNextVisibleItem();
 			if (!nextItem) return;
 			this.goToSubPage(nextItem.key);
 		},
 
-		skip: function(evt) {
+		skip: function() {
 
 			app.markGettingStartedAsComplete();
 			app.router.navigate('admin', { trigger: true });
@@ -188,10 +188,10 @@ app.views.GettingStarted = (function() {
 
 			var $input = this.$(':input[value="' + key + '"]');
 			var isChecked = $input.is(':checked');
-			this.setCryptoCurrencySettingsVisibility(key, isChecked);
+			this.setCryptoCurrencyVisibility(key, isChecked);
 		},
 
-		setCryptoCurrencySettingsVisibility: function(key, visible) {
+		setCryptoCurrencyVisibility: function(key, visible) {
 
 			visible = visible === true;
 			this.$menuItems.filter('[data-key="' + key + '"]').toggleClass('visible', visible);
@@ -207,7 +207,7 @@ app.views.GettingStarted = (function() {
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies') || [];
 			_.each(_.keys(app.paymentMethods), function(key) {
 				var visible = _.contains(configurableCryptoCurrencies, key);
-				this.setCryptoCurrencySettingsVisibility(key, visible);
+				this.setCryptoCurrencyVisibility(key, visible);
 			}, this);
 		},
 
@@ -227,7 +227,7 @@ app.views.GettingStarted = (function() {
 			if (defaultSubPage && page === defaultSubPage.key && !isConfigured) {
 				app.exit();
 			} else {
-				app.router.navigate('getting-started', { trigger: true });
+				this.back();
 			}
 		}
 	});
