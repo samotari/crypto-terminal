@@ -35,14 +35,14 @@ app.views.GettingStarted = (function() {
 
 			subPages.push({
 				key: 'welcome',
-				label: app.i18n.t('getting-started.page.welcome.title'),
+				label: app.i18n.t('getting-started.welcome.title'),
 				ContentView: app.views.GettingStartedWelcome,
 				visible: true,
 			});
 
 			subPages.push({
 				key: 'choose-payment-methods',
-				label: app.i18n.t('getting-started.page.choose-payment-methods.title'),
+				label: app.i18n.t('getting-started.choose-payment-methods.title'),
 				ContentView: app.views.GettingStartedChoosePaymentMethods,
 				visible: true,
 			});
@@ -68,14 +68,14 @@ app.views.GettingStarted = (function() {
 
 			subPages.push({
 				key: 'general-settings',
-				label: app.i18n.t('getting-started.page.general-settings.title'),
+				label: app.i18n.t('getting-started.general-settings.title'),
 				ContentView: app.views.GettingStartedGeneralSettings,
 				visible: true,
 			});
 
 			subPages.push({
 				key: 'done',
-				label: app.i18n.t('getting-started.page.done.title'),
+				label: app.i18n.t('getting-started.done.title'),
 				ContentView: app.views.GettingStartedDone,
 				visible: true,
 			});
