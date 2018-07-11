@@ -22,7 +22,7 @@ app.lang['en'] = (function() {
 		'getting-started.welcome.title': 'Hi there!',
 		'getting-started.welcome.instructions': 'CryptoTerminal is designed to be used in conjuction with your existing wallet application(s). For example, if you have a Trezor or Ledger hardware wallet, you will import the extended public keys from one of your accounts to this app.',
 		'getting-started.welcome.start': 'Start',
-		'getting-started.welcome.skip': 'Skip',
+		'getting-started.welcome.skip': 'Skip the guided setup process',
 
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
