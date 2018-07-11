@@ -1,0 +1,28 @@
+.view.getting-started .getting-started-steps {
+	height: 4rem;
+}
+.view.getting-started .slider {
+	padding-top: 4rem;
+}
+.view.getting-started .getting-started-step {
+	display: none;
+}
+.view.getting-started .getting-started-step.visible {
+	display: block;
+}
+.view.getting-started .getting-started-page {
+	padding: 2rem;
+}
+
+	/*  Welcome  */
+	.view.getting-started .getting-started-welcome .skip-getting-started {
+		position: absolute;
+		left: 0;
+		bottom: 6rem/* height of secondary-controls */;
+		width: 100%;
+		font-size: .9rem;
+		text-align: center;
+		box-sizing: border-box;
+		padding: .5rem 0;
+	}
+	/*  Welcome  */

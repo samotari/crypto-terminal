@@ -1,19 +1,14 @@
 .view.admin {
 	padding: 0;
 }
-.view.admin .slider {
-	padding-top: 4rem;
-}
 .view.admin .slider-item {
 	box-sizing: border-box;
 	padding: 2rem;
 }
-.view.admin .secondary-menu-item,
-.view.admin .slider-item {
+.view.admin .secondary-menu-item {
 	display: none;
 }
-.view.admin .secondary-menu-item.visible,
-.view.admin .slider-item.visible {
+.view.admin .secondary-menu-item.visible {
 	display: block;
 }
 
