@@ -7,6 +7,7 @@ app.lang['en'] = (function() {
 	return {
 		'self.label': 'English',
 		'main.message.status.0': 'Error: Network seems to be down',
+
 		'admin.general-settings.label': 'General settings',
 		'admin.payment-history.label': 'Payment History',
 		'admin.pin.label': 'Admin PIN',
@@ -17,6 +18,12 @@ app.lang['en'] = (function() {
 		'admin.pin.change': 'Change PIN',
 		'admin.pin.remove': 'Remove PIN',
 		'admin.pin.min-length': 'PIN must be at least {{minLength}} digit(s)',
+
+		'getting-started.welcome.title': 'Hi there!',
+		'getting-started.welcome.instructions': 'CryptoTerminal is designed to be used in conjuction with your existing wallet application(s). For example, if you have a Trezor or Ledger hardware wallet, you will import the extended public keys from one of your accounts to this app.',
+		'getting-started.welcome.start': 'Start',
+		'getting-started.welcome.skip': 'Skip',
+
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
 		'settings.accept-crypto-currencies.label': 'Which currencies do you want to accept?',

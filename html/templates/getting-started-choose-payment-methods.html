@@ -1,0 +1,19 @@
+<div class="getting-started-page">
+	<h1 class="getting-started-page-title">{{i18n "getting-started.choose-payment-methods.title"}}</h1>
+	<p class="getting-started-page-instructions">{{i18n "getting-started.choose-payment-methods.instructions"}}</p>
+	<form>
+		<div class="form">
+			<div class="form-group configurableCryptoCurrencies">
+				{{#each paymentMethods}}
+				<input id="configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
+				<label for="configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}" data-key="{{key}}"></label>
+				{{/each}}
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</form>
+	<div class="getting-started-page-buttons">
+		<button class="button back">{{i18n "getting-started.buttons.back"}}</button>
+		<button class="button next">{{i18n "getting-started.buttons.next"}}</button>
+	</div>
+</div>

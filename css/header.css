@@ -60,9 +60,16 @@ html.is-unlocked .header-button.admin:after {
 html.require-pin .header-button.admin:after {
 	display: block;
 }
-body.view-admin .header-button.admin {
+body.view-admin .header-button.admin,
+body.view-getting-started .header-button.admin {
 	/*
-		Hide the admin button while viewing the admin screens.
+		Hide the admin button while viewing the admin or getting-started screens.
+	*/
+	display: none;
+}
+body.view-getting-started .header-button.more {
+	/*
+		Hide the more menu toggle while viewing the getting-started screens.
 	*/
 	display: none;
 }
