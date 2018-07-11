@@ -28,6 +28,8 @@ app.lang['en'] = (function() {
 		'getting-started.choose-payment-methods.title': 'Choose payment methods',
 		'getting-started.choose-payment-methods.instructions': 'Choose the payment methods you want to support and click next',
 		'getting-started.done.ok': 'OK',
+		'getting-started.general-settings.title': 'General settings',
+		'getting-started.general-settings.instructions': 'Choose the display currency and date format',
 
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
