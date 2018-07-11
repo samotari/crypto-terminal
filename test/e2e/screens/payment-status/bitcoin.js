@@ -2,6 +2,8 @@
 
 var _ = require('underscore');
 var async = require('async');
+var querystring = require('querystring');
+
 var helpers = require('../../helpers');
 var manager = require('../../../manager');
 require('../../global-hooks');
@@ -56,16 +58,17 @@ describe('#payment-status [bitcoin]', function() {
 	describe('unconfirmed', function() {
 
 		it('should accept payment', function(done) {
+			var address = 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY';
+			var channel = 'v1/new-txs?' + querystring.stringify({
+				address: address,
+				network: 'bitcoinTestnet',
+			});
 			manager.page.waitFor('.address-qr-code').then(function() {
-
-				var channel = 'v1/new-txs?address=mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY&network=bitcoinTestnet';
-
-				manager.page.waitFor(function() {
+				manager.page.waitFor(function(channel) {
 					return new Promise(function(resolve, reject) {
 						try {
 							async.until(function() {
-								var appIsSubscribed = app.services.ctApi.isSubscribed('v1/new-txs?address=mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY&network=bitcoinTestnet');
-								return appIsSubscribed;
+								return app.services.ctApi.isSubscribed(channel);
 							}, function(next) {
 								_.delay(next, 5);
 							}, function() {
@@ -75,11 +78,11 @@ describe('#payment-status [bitcoin]', function() {
 							return reject(error);
 						}
 					});
-				}).then(function() {
+				}, {}/* options */, channel).then(function() {
 					socketServer.primus.write({
 						channel: channel,
 						data: {
-							address: 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY',
+							address: address,
 							amount: 100000000,
 							txid: 'this-is-a-testing-transaction-id',
 						}
@@ -87,26 +90,24 @@ describe('#payment-status [bitcoin]', function() {
 					manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
 						manager.page.waitFor('.payment-status-message').then(function() {
 							done();
-						})
+						}).catch(done);
 					}).catch(done);
 				}).catch(done);
-			})
-		})
+			}).catch(done);
+		});
 	});
 
 	describe('timed-out', function() {
 
-		it('should timed-out', function(done) {
-			manager.page.waitFor('.address-qr-code').then(function() {
-				manager.evaluateInPageContext(function() {
-					app.config.paymentRequests.timeout = 100;
-					return
-				}, function(error) {
-					if (error) return done(error);
-					manager.page.waitFor('.view.payment-status.timed-out').then(function() {
-						done();
-					})
-				})
+		beforeEach(function(done) {
+			manager.evaluateInPageContext(function() {
+				app.config.paymentRequests.timeout = 20;
+			}, done);
+		});
+
+		it('should time-out', function(done) {
+			manager.page.waitFor('.view.payment-status.timed-out').then(function() {
+				done();
 			}).catch(done);
 		});
 	});
