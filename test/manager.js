@@ -112,6 +112,7 @@ var manager = module.exports = {
 		var primus = new Primus(tmpApp.server, serverConfig);
 
 		return {
+			tmpApp: tmpApp,
 			primus: primus,
 			close: function() {
 				primus.destroy();
