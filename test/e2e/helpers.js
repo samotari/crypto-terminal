@@ -14,7 +14,9 @@ var helpers = module.exports = {
 			} else {
 				selector = '.number-pad .button[data-key="' + key + '"]';
 			}
-			return manager.page.click(selector);
+			return manager.page.waitFor(selector).then(function() {
+				return manager.page.click(selector);
+			});
 		},
 		checkValue: function(expectedValue) {
 			return new Promise(function(resolve, reject) {

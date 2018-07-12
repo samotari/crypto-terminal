@@ -16,6 +16,10 @@ app.views.GettingStartedPaymentMethodSettings = (function() {
 				instructions: app.i18n.t('getting-started.payment-method-settings.' + key + '.instructions'),
 			};
 		},
+		isComplete: function() {
+			var paymentMethod = app.paymentMethods[this.options.key];
+			return paymentMethod.isConfigured();
+		},
 	});
 
 })();
