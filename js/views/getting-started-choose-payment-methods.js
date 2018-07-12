@@ -18,8 +18,6 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 		serializeData: function() {
 
 			var data = {
-				title: app.i18n.t('getting-started.choose-payment-methods.title'),
-				instructions: app.i18n.t('getting-started.choose-payment-methods.instructions'),
 				isComplete: this.isComplete(),
 			};
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies');

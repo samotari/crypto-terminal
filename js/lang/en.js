@@ -28,10 +28,10 @@ app.lang['en'] = (function() {
 		'getting-started.choose-payment-methods.title': 'Choose payment methods',
 		'getting-started.choose-payment-methods.instructions': 'Which payment methods would you like to accept?',
 		'getting-started.done.title': 'Yay!',
-		'getting-started.done.instructions': 'Your CryptoTerminal is now ready to use. If you have any trouble or would like to provide feedback, you can reach us directly at the email address shown below.',
+		'getting-started.done.app-is-ready': 'Your CryptoTerminal is now ready to use.',
+		'getting-started.done.contact-below': 'If you have any trouble or would like to provide feedback, you can reach us directly at the email address shown below.',
 		'getting-started.done.ok': 'OK',
 		'getting-started.general-settings.title': 'General settings',
-		'getting-started.general-settings.instructions': 'Choose the display currency and date format',
 
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',

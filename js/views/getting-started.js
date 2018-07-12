@@ -166,6 +166,11 @@ app.views.GettingStarted = (function() {
 
 		goToSubPage: function(key) {
 
+			if (!this.slider.isVisible(key)) {
+				var defaultSubPage = this.getDefaultSubPage();
+				this.goToSubPage(defaultSubPage.key);
+			}
+
 			this.slider.switchToItem(key);
 			this.setActiveMenuItem(key);
 			this.toggleCurrentItemCompletedFlag();

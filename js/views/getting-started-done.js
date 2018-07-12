@@ -17,8 +17,6 @@ app.views.GettingStartedDone = (function() {
 
 		serializeData: function() {
 			return {
-				title: app.i18n.t('getting-started.done.title'),
-				instructions: app.i18n.t('getting-started.done.instructions'),
 				supportEmail: app.config.supportEmail,
 			};
 		},

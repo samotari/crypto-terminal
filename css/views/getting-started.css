@@ -2,16 +2,16 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	display: none;
 }
 .view.getting-started .getting-started-steps {
-	height: 4rem;
 	display: flex;
 	justify-content: center;
+	height: 2rem;
 }
 .view.getting-started[data-subpage=welcome] .getting-started-steps.getting-started-steps,
 .view.getting-started[data-subpage=done] .getting-started-steps.getting-started-steps {
 	display: none;
 }
 .view.getting-started .slider {
-	padding-top: 4rem;
+	padding-top: 2rem;
 }
 .view.getting-started[data-subpage=welcome] .slider,
 .view.getting-started[data-subpage=done] .slider {
@@ -34,7 +34,13 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 .view.getting-started .getting-started-page-title {
 	font-size: 1.6rem;
 	font-weight: bold;
-	margin-bottom: .5rem;
+	text-align: center;
+	margin-bottom: 2rem;
+}
+.view.getting-started .getting-started-page p {
+	font-size: 1.2rem;
+	line-height: 2rem;
+	margin-bottom: 1rem;
 }
 .view.getting-started .slider-item-content .getting-started {
 	height: 100%;
@@ -54,6 +60,9 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	/*  Welcome  */
 
 	/*  Choose payment methods  */
+	.view.getting-started .getting-started-choose-payment-methods p {
+		text-align: center;
+	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies {
 		margin-top: 1rem;
 	}
