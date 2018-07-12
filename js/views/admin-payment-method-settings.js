@@ -123,8 +123,7 @@ app.views.AdminPaymentMethodSettings = (function() {
 
 		validate: function(data, done) {
 
-			var paymentMethod = app.paymentMethods[this.options.key];
-			app.settings.doValidation(paymentMethod.settings, data, done);
+			app.settings.doValidation(this.paymentMethod.settings, data, done);
 		},
 
 		save: function(data) {
