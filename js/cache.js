@@ -20,7 +20,10 @@ app.cache = (function() {
 			this.model.set(key, null).save();
 		},
 		clearAll: function() {
-			this.model.clear().save();
+			this.model.attributes = _.mapObject(this.model.toJSON(), function(item, key) {
+				return null;
+			});
+			this.model.save();
 		},
 		clearOlderThan: function(maxAge) {
 			maxAge = maxAge || 0;
