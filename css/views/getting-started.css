@@ -24,12 +24,20 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	display: block;
 }
 .view.getting-started .getting-started-page {
-	padding: 2rem;
+	height: 100%;
+	padding: 2rem 2rem 8rem 2rem;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	box-sizing: border-box;
+	padding: 2rem 2rem 6rem 2rem;
 }
 .view.getting-started .getting-started-page-title {
 	font-size: 1.6rem;
 	font-weight: bold;
 	margin-bottom: .5rem;
+}
+.view.getting-started .slider-item-content .getting-started {
+	height: 100%;
 }
 
 	/*  Welcome  */
