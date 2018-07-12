@@ -26,7 +26,7 @@ app.lang['en'] = (function() {
 		'getting-started.welcome.start': 'Start',
 		'getting-started.welcome.skip': 'Skip the guided setup process',
 		'getting-started.choose-payment-methods.title': 'Choose payment methods',
-		'getting-started.choose-payment-methods.instructions': 'Choose the payment methods you want to support and click next',
+		'getting-started.choose-payment-methods.instructions': 'Which payment methods would you like to accept?',
 		'getting-started.done.ok': 'OK',
 		'getting-started.general-settings.title': 'General settings',
 		'getting-started.general-settings.instructions': 'Choose the display currency and date format',

@@ -13,6 +13,11 @@
 .view.getting-started .getting-started-page {
 	padding: 2rem;
 }
+.view.getting-started .getting-started-page-title {
+	font-size: 1.6rem;
+	font-weight: bold;
+	margin-bottom: .5rem;
+}
 
 	/*  Welcome  */
 	.view.getting-started .getting-started-welcome .skip-getting-started {
@@ -28,6 +33,9 @@
 	/*  Welcome  */
 
 	/*  Choose payment methods  */
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies {
+		margin-top: 1rem;
+	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method {
 		width: 3.2rem;
 		height: 3.2rem;
