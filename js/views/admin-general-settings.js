@@ -2,14 +2,14 @@ var app = app || {};
 
 app.views = app.views || {};
 
-app.views.SettingsGeneral = (function() {
+app.views.AdminGeneralSettings = (function() {
 
 	'use strict';
 
 	return app.views.utility.Form.extend({
 
-		className: 'settings-general',
-		template: '#template-settings-general',
+		className: 'admin-general-settings',
+		template: '#template-admin-general-settings',
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',

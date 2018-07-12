@@ -105,9 +105,6 @@ app.paymentMethods.bitcoin = (function() {
 				validateAsync: function(value, cb) {
 					this.decodeExtendedPublicKey(value, cb);
 				},
-				onChange: function() {
-					this.renderSampleAddresses();
-				},
 				actions: [
 					{
 						name: 'camera',
@@ -133,9 +130,6 @@ app.paymentMethods.bitcoin = (function() {
 					if (value < 0) {
 						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.greater-than-or-equal-zero'));
 					}
-				},
-				onChange: function() {
-					this.renderSampleAddresses();
 				}
 			},
 			{
@@ -199,39 +193,25 @@ app.paymentMethods.bitcoin = (function() {
 
 		worker: app.createWorker('workers/bitcoin.js'),
 
-		ctApiSubscriptionId: null,
-		sampleAddressesView: null,
+		createVerificationView: function(cb) {
 
-		onSettingsRender: function() {
-			this.renderSampleAddresses();
-		},
+			this.generateSampleAddresses(_.bind(function(error, addresses) {
 
-		renderSampleAddresses: function() {
+				if (error) {
+					return cb(error);
+				}
 
-			clearTimeout(this.renderSampleAddressesTimeout);
+				try {
+					var view = new app.views.SampleAddresses({
+						addresses: addresses,
+					});
+				} catch (error) {
+					return cb(error);
+				}
 
-			this.renderSampleAddressesTimeout = _.delay(_.bind(function() {
+				cb(null, view);
 
-				this.generateSampleAddresses(_.bind(function(error, addresses) {
-
-					if (this.sampleAddressesView) {
-						this.sampleAddressesView.close();
-						this.sampleAddressesView = null;
-					}
-
-					if (error) {
-						return app.log(error);
-					}
-
-					var $target = $(':input[name="' + this.ref + '.addressIndex"]');
-					var view = this.sampleAddressesView = new app.views.SampleAddresses();
-					$target.after(view.el);
-					view.options.addresses = addresses;
-					view.render();
-
-				}, this));
-
-			}, this), 100);
+			}, this));
 		},
 
 		generateSampleAddresses: function(cb) {

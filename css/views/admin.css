@@ -1,6 +1,9 @@
 .view.admin {
 	padding: 0;
 }
+.view.admin .slider {
+	padding-top: 4rem;
+}
 .view.admin .slider-item {
 	box-sizing: border-box;
 	padding: 2rem;

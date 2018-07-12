@@ -24,7 +24,7 @@ app.views.Admin = (function() {
 			subPages.push({
 				key: 'general-settings',
 				label: app.i18n.t('admin.general-settings.label'),
-				ContentView: app.views.SettingsGeneral,
+				ContentView: app.views.AdminGeneralSettings,
 				visible: true,
 			});
 
@@ -35,7 +35,7 @@ app.views.Admin = (function() {
 				subPages.push({
 					key: key,
 					label: _.result(paymentMethod, 'label'),
-					ContentView: app.views.SettingsPaymentMethod,
+					ContentView: app.views.AdminPaymentMethodSettings,
 					ContentViewOptions: { key: key },
 					visible: _.contains(configurableCryptoCurrencies, key),
 				});
