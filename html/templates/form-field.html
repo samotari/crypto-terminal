@@ -2,7 +2,7 @@
 	{{#case "select" break=true}}
 	<select class="form-input" id="{{id}}" name="{{name}}">
 		{{#each options}}
-		<option{{#if selected}} selected{{/if}} value="{{key}}">{{label}}</option>
+		<option{{#if selected}} selected{{/if}}{{#if disabled}} disabled{{/if}}{{#if key}} value="{{key}}"{{/if}}>{{label}}</option>
 		{{/each}}
 	</select>
 	{{/case}}

@@ -28,9 +28,11 @@ app.views.SettingsGeneral = (function() {
 					{ key: key }
 				);
 				paymentMethod.settings = _.map(paymentMethod.settings, function(setting) {
+					var options = _.result(setting, 'options') || null;
 					return _.extend(
 						{},
 						setting,
+						{ options: options },
 						{
 							id: ['settings', key, setting.name].join('-'),
 							name: [key, setting.name].join('.'),
@@ -44,6 +46,8 @@ app.views.SettingsGeneral = (function() {
 
 			// Prepare general settings for the template.
 			data.settings = _.map(app.config.settings, function(setting) {
+				setting = _.clone(setting);
+				setting.options = _.result(setting, 'options') || null;
 				switch (setting.type) {
 					case 'select':
 						setting.options = _.map(setting.options || [], function(option) {

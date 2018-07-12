@@ -124,6 +124,13 @@ app.util = (function() {
 			return moment(datetime).format(format);
 		},
 
+		getSupportedDisplayCurrencies: function() {
+
+			var exchangeRates = app.cache.get('exchange-rates');
+			if (!exchangeRates) return [];
+			return _.keys(exchangeRates);
+		},
+
 	};
 
 })();

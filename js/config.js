@@ -4,17 +4,6 @@ app.config = (function() {
 
 	'use strict';
 
-	var displayCurrencies = [].concat(
-		// Supported cryptocurrencies:
-		_.chain(app.paymentMethods).values().pluck('code').uniq().value(),
-		// Other currencies:
-		[
-			'EUR',
-			'CZK',
-			'USD',
-		]
-	);
-
 	var config = {
 		debug: false,
 		cache: {
@@ -111,14 +100,20 @@ app.config = (function() {
 					return app.i18n.t('settings.display-currency.label');
 				},
 				type: 'select',
-				default: 'CZK',
+				default: 'BTC',
 				required: true,
-				options: _.chain(displayCurrencies).map(function(code) {
-					return {
-						key: code,
-						label: code
-					};
-				}).value(),
+				options: function() {
+					var supportedDisplayCurrencies = app.util.getSupportedDisplayCurrencies();
+					var sticky = ['BTC', 'CZK', 'EUR', 'GBP', 'LTC', 'USD', 'XMR'];
+					var rest = _.difference(supportedDisplayCurrencies, sticky);
+					return _.map([].concat(sticky, [''], rest), function(code) {
+						return {
+							key: code,
+							label: code,
+							disabled: !code,
+						};
+					});
+				},
 			},
 			{
 				name: 'dateFormat',
@@ -154,8 +149,6 @@ app.config = (function() {
 			visible: setting.visible !== false,
 		});
 	});
-
-	config.supportedDisplayCurrencies = _.clone(displayCurrencies);
 
 	_.each(app.paymentMethods, function(paymentMethod) {
 		if (paymentMethod.numberFormat) {
