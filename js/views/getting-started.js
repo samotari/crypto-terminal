@@ -95,10 +95,16 @@ app.views.GettingStarted = (function() {
 
 			var data = {};
 			var subPages = _.result(this, 'subPages');
+			var subPagesNotIncludedInMenu = [
+				'welcome',
+				'done'
+			];
 
-			data.menuItems = _.map(subPages, function(subPage) {
+			data.menuItems = _.chain(subPages).filter(function(subPage) {
+				return !_.contains(subPagesNotIncludedInMenu, subPage.key);
+			}).map(function(subPage) {
 				return _.pick(subPage, 'key', 'label', 'visible');
-			});
+			}).value();
 
 			return data;
 		},
@@ -132,12 +138,16 @@ app.views.GettingStarted = (function() {
 
 		next: function() {
 
+
 			var currentItem = this.slider.getCurrentItem();
+			var currentItemKey = currentItem.key;
 
 			if (currentItem.contentView && _.isFunction(currentItem.contentView.isComplete)) {
 				// If the current step is incomplete, don't go to the next step.
 				if (!currentItem.contentView.isComplete()) return;
 			}
+
+			app.cache.set('getting-started-' + currentItemKey, 1);
 
 			var nextItem = this.slider.getNextVisibleItem();
 			if (!nextItem) return;
@@ -155,6 +165,7 @@ app.views.GettingStarted = (function() {
 			this.slider.switchToItem(key);
 			this.setActiveMenuItem(key);
 			this.toggleCurrentItemCompletedFlag();
+			this.toggleMenuItemsCompletedFlag();
 		},
 
 		initializeSlider: function() {
@@ -181,6 +192,7 @@ app.views.GettingStarted = (function() {
 
 			this.options.page = key;
 			this.$menuItems.removeClass('active');
+			$('.view.getting-started').attr('data-subpage', key);
 			this.$menuItems.filter('[data-key="' + key + '"]').addClass('active');
 			app.router.navigate('#getting-started/' + encodeURIComponent(key), { trigger: false });
 		},
@@ -238,6 +250,20 @@ app.views.GettingStarted = (function() {
 				var isComplete = !_.isFunction(currentItem.contentView.isComplete) || currentItem.contentView.isComplete();
 				currentItem.contentView.$('.button.next').toggleClass('disabled', !isComplete);
 			}
+		},
+
+		toggleMenuItemsCompletedFlag: function() {
+
+			var menuItems = this.slider.getVisibleItems();
+
+			_.each(menuItems, function(menuItem) {
+				var isComplete = app.cache.get('getting-started-' + menuItem.key);
+				if (isComplete) {
+					var itemKey = menuItem.key;
+					$('li[data-key=' + itemKey +']').addClass('completed');
+				}
+			})
+
 		},
 
 		onClose: function() {
