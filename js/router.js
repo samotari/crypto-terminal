@@ -117,25 +117,22 @@ app.Router = (function() {
 				}
 			}
 
-			if (!app.isConfigured()) {
-
-				if (!app.hasCompletedGettingStarted()) {
-					// Must complete the Getting Started steps.
-					if (name !== 'gettingStarted') {
-						this.navigate('getting-started', { trigger: true });
-						// Return false here prevents the current route's handler function from firing.
-						return false;
-					}
-					// Do nothing else here.
-					// Continue to getting started screen.
-				} else if (!isAllowedWhenNotConfigured(name)) {
-					// Getting Started was completed.
-					// But not yet configured.
-					// Redirect to admin area.
-					this.navigate('admin', { trigger: true });
+			if (!app.hasCompletedGettingStarted()) {
+				// Must complete the Getting Started steps.
+				if (name !== 'gettingStarted') {
+					this.navigate('getting-started', { trigger: true });
 					// Return false here prevents the current route's handler function from firing.
 					return false;
 				}
+				// Do nothing else here.
+				// Continue to getting started screen.
+			} else if (!app.isConfigured() && !isAllowedWhenNotConfigured(name)) {
+				// Getting Started was completed.
+				// But not yet configured.
+				// Redirect to admin area.
+				this.navigate('admin', { trigger: true });
+				// Return false here prevents the current route's handler function from firing.
+				return false;
 			}
 
 			if (callback) {
