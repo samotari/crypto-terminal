@@ -425,7 +425,7 @@ app.views.Main = (function() {
 
 		updateLanguageToggle: function() {
 
-			var locale = app.settings.get('locale') || app.config.defaultLocale;
+			var locale = app.i18n.getCurrentLocale() || app.i18n.getDefaultLocale();
 			this.$languageMenuToggle.text(locale);
 		},
 
