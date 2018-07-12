@@ -14,8 +14,6 @@ app.views.GettingStartedGeneralSettings = (function() {
 		serializeData: function() {
 
 			var data = {
-				title: app.i18n.t('getting-started.general-settings.title'),
-				instructions: app.i18n.t('getting-started.general-settings.instructions'),
 				isComplete: this.isComplete(),
 			};
 

@@ -204,7 +204,7 @@ app.views.Slider = (function() {
 			if (!_.isArray(keys)) {
 				keys = Array.prototype.slice.call(arguments);
 			}
-			this.visible = _.without(this.visible, keys);
+			this.visible = _.difference(this.visible, keys);
 			this.updateItemElementsVisibility();
 		},
 
