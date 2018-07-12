@@ -1,8 +1,18 @@
 .view.getting-started .getting-started-steps {
 	height: 4rem;
+	display: flex;
+	justify-content: center;
+}
+.view.getting-started[data-subpage=welcome] .getting-started-steps.getting-started-steps,
+.view.getting-started[data-subpage=done] .getting-started-steps.getting-started-steps {
+	display: none;
 }
 .view.getting-started .slider {
 	padding-top: 4rem;
+}
+.view.getting-started[data-subpage=welcome] .slider,
+.view.getting-started[data-subpage=done] .slider {
+	padding-top: 0;
 }
 .view.getting-started .getting-started-step {
 	display: none;
@@ -68,3 +78,47 @@
 	}
 	/*  Choose payment methods  */
 
+	/*  Getting Started Steps  */
+	.getting-started-steps .getting-started-step {
+		list-style-type: none;
+		width: 25%;
+		float: left;
+		position: relative;
+		color: #7d7d7d;
+	}
+	.getting-started-steps .getting-started-step:before {
+		position: absolute;
+		width: calc(100% - .6rem);
+		height: .05rem;
+		content: '';
+		background-color: #7d7d7d;
+		top: .35rem;
+		left: calc(50% + .3rem);
+		z-index: 1;
+	}
+	.getting-started-steps .getting-started-step:after {
+		width: .6rem;
+		height: .6rem;
+		content: '';
+		border: 0.1rem solid #7d7d7d;
+		display: block;
+		margin: 0 auto .2rem auto;
+		border-radius: 50%;
+		z-index: 2;
+	}
+	.getting-started-steps .getting-started-step:last-child:before {
+		content: none;
+	}
+	.getting-started-steps .getting-started-step.visible.active {
+		color: #017AA9;
+	}
+	.getting-started-steps .getting-started-step.active:after,
+	.getting-started-steps .getting-started-step.visible.completed.active:after {
+		border-color: #017AA9;
+		background-color: #017AA9;
+	}
+	.getting-started-steps .getting-started-step.visible.completed:after {
+		border-color: rgba(122, 193, 66, 0.25);;
+		background-color: rgba(122, 193, 66, 0.7);
+	}
+	/*  Getting Started Steps  */
