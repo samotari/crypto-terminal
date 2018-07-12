@@ -1,0 +1,9 @@
+.view.getting-started .getting-started-payment-method-verify .sample-addresses-label {
+	display: none;
+}
+.view.getting-started .getting-started-payment-method-verify .sample-addresses-content {
+	font-size: .9rem;
+}
+.view.getting-started .getting-started-payment-method-verify .sample-addresses-content-address-index {
+	font-size: .8rem;
+}
