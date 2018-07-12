@@ -40,6 +40,7 @@ app.views.GettingStartedPaymentMethodVerify = (function() {
 		renderVerificationView: function() {
 
 			if (!_.isFunction(this.paymentMethod.createVerificationView)) return;
+			if (!this.isRendered()) return;
 
 			this.closeVerificationView();
 

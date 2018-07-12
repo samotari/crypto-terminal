@@ -20,7 +20,7 @@ app.views.GettingStarted = (function() {
 
 		initialize: function() {
 
-			_.bindAll(this, 'setActiveMenuItem', 'toggleCryptoCurrency', 'goToSubPage');
+			_.bindAll(this, 'setActiveMenuItem', 'toggleCryptoCurrency', 'goToSubPage', 'toggleCurrentItemCompletedFlag');
 			this.toggleCryptoCurrency = _.debounce(this.toggleCryptoCurrency, 20);
 			this.goToSubPage = _.debounce(this.goToSubPage, 20);
 
@@ -28,6 +28,8 @@ app.views.GettingStarted = (function() {
 				var defaultSubPage = this.getDefaultSubPage();
 				this.options.page = defaultSubPage && defaultSubPage.key || null;
 			}
+
+			this.listenTo(app.settings, 'change', this.toggleCurrentItemCompletedFlag);
 		},
 
 		subPages: function() {
@@ -119,6 +121,8 @@ app.views.GettingStarted = (function() {
 			if (this.options.page) {
 				this.goToSubPage(this.options.page);
 			}
+
+			this.toggleMenuItemsCompletedFlag();
 		},
 
 		setVisibilityOfMenuItems: function() {
@@ -254,16 +258,11 @@ app.views.GettingStarted = (function() {
 
 		toggleMenuItemsCompletedFlag: function() {
 
-			var menuItems = this.slider.getVisibleItems();
-
-			_.each(menuItems, function(menuItem) {
-				var isComplete = app.cache.get('getting-started-' + menuItem.key);
-				if (isComplete) {
-					var itemKey = menuItem.key;
-					$('li[data-key=' + itemKey +']').addClass('completed');
-				}
-			})
-
+			var items = this.slider.getVisibleItems();
+			_.each(items, function(item) {
+				var isComplete = !!app.cache.get('getting-started-' + item.key);
+				this.$menuItems.filter('[data-key=' + item.key +']').toggleClass('completed', isComplete);
+			}, this);
 		},
 
 		onClose: function() {
