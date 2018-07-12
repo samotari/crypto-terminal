@@ -1,3 +1,6 @@
+html.keyboard-visible .view.getting-started .secondary-controls {
+	display: none;
+}
 .view.getting-started .getting-started-steps {
 	height: 4rem;
 	display: flex;
