@@ -179,6 +179,12 @@ app.views.Slider = (function() {
 			return this.getVisibleItemAtIndex(nextIndex);
 		},
 
+		getCurrentItem: function() {
+
+			var currentIndex = this.index || 0;
+			return this.getVisibleItemAtIndex(currentIndex) || null;
+		},
+
 		isVisible: function(key) {
 
 			return _.contains(this.visible, key);

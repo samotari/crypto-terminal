@@ -7,6 +7,7 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 	'use strict';
 
 	return app.views.utility.Form.extend({
+
 		className: 'getting-started getting-started-choose-payment-methods',
 		template: '#template-getting-started-choose-payment-methods',
 
@@ -19,6 +20,7 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 			var data = {
 				title: app.i18n.t('getting-started.choose-payment-methods.title'),
 				instructions: app.i18n.t('getting-started.choose-payment-methods.instructions'),
+				isComplete: this.isComplete(),
 			};
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies');
 			data.paymentMethods = _.map(_.keys(app.paymentMethods), function(key) {
@@ -55,6 +57,12 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 			}
 
 			app.settings.set(data);
+		},
+
+		isComplete: function() {
+
+			var data = this.getFormData();
+			return !_.isEmpty(data.configurableCryptoCurrencies);
 		},
 
 	});
