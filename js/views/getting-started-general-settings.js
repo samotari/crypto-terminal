@@ -7,10 +7,17 @@ app.views.GettingStartedGeneralSettings = (function() {
 	'use strict';
 
 	return app.views.utility.Form.extend({
+
 		className: 'getting-started getting-started-general-settings',
 		template: '#template-getting-started-general-settings',
 
 		serializeData: function() {
+
+			var data = {
+				title: app.i18n.t('getting-started.general-settings.title'),
+				instructions: app.i18n.t('getting-started.general-settings.instructions'),
+				isComplete: this.isComplete(),
+			};
 
 			// Prepare general settings for the template.
 			var settings = _.map(app.config.settings, function(setting) {
@@ -33,16 +40,21 @@ app.views.GettingStartedGeneralSettings = (function() {
 				return setting;
 			});
 
-			return {
-				settings: settings,
-				title: app.i18n.t('getting-started.general-settings.title'),
-				instructions: app.i18n.t('getting-started.general-settings.instructions')
-			};
+			data.settings = settings;
+
+			return data;
 		},
 
 		save: function(data) {
+
 			app.settings.set(data);
 		},
+
+		isComplete: function() {
+
+			return true;
+		},
+
 	});
 
 })();

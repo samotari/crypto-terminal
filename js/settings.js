@@ -89,14 +89,9 @@ app.settings = (function() {
 		},
 		getAcceptedCryptoCurrencies: function() {
 			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];
-			var data = this.getAll();
 			return _.filter(configurableCryptoCurrencies, function(key) {
 				var paymentMethod = app.paymentMethods[key];
-				if (!paymentMethod) return false;
-				// A cryptocurrency is "accepted" if it has all its required settings set.
-				return _.every(paymentMethod.settings, function(setting) {
-					return setting.required !== true || !!data[setting.path];
-				});
+				return paymentMethod && paymentMethod.isConfigured();
 			});
 		},
 		getAll: function() {

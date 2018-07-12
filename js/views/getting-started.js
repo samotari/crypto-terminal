@@ -15,6 +15,7 @@ app.views.GettingStarted = (function() {
 			'click .button.next': 'next',
 			'click .skip': 'skip',
 			'click label[for^="configurableCryptoCurrencies-"]': 'onClickCryptoCurrencyToggle',
+			'change :input': 'onChangeInput',
 		},
 
 		initialize: function() {
@@ -110,8 +111,7 @@ app.views.GettingStarted = (function() {
 			this.updateCryptoCurrencySettingsVisibility();
 
 			if (this.options.page) {
-				this.slider.switchToItem(this.options.page);
-				this.setActiveMenuItem(this.options.page);
+				this.goToSubPage(this.options.page);
 			}
 		},
 
@@ -132,6 +132,13 @@ app.views.GettingStarted = (function() {
 
 		next: function() {
 
+			var currentItem = this.slider.getCurrentItem();
+
+			if (currentItem.contentView && _.isFunction(currentItem.contentView.isComplete)) {
+				// If the current step is incomplete, don't go to the next step.
+				if (!currentItem.contentView.isComplete()) return;
+			}
+
 			var nextItem = this.slider.getNextVisibleItem();
 			if (!nextItem) return;
 			this.goToSubPage(nextItem.key);
@@ -147,6 +154,7 @@ app.views.GettingStarted = (function() {
 
 			this.slider.switchToItem(key);
 			this.setActiveMenuItem(key);
+			this.toggleCurrentItemCompletedFlag();
 		},
 
 		initializeSlider: function() {
@@ -218,6 +226,20 @@ app.views.GettingStarted = (function() {
 			}, this);
 		},
 
+		onChangeInput: function() {
+
+			this.toggleCurrentItemCompletedFlag();
+		},
+
+		toggleCurrentItemCompletedFlag: function() {
+
+			var currentItem = this.slider.getCurrentItem();
+			if (currentItem) {
+				var isComplete = !_.isFunction(currentItem.contentView.isComplete) || currentItem.contentView.isComplete();
+				currentItem.contentView.$('.button.next').toggleClass('disabled', !isComplete);
+			}
+		},
+
 		onClose: function() {
 
 			if (this.slider) {
@@ -236,7 +258,8 @@ app.views.GettingStarted = (function() {
 			} else {
 				this.back();
 			}
-		}
+		},
+
 	});
 
 })();
