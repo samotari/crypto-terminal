@@ -2,29 +2,61 @@ var app = app || {};
 
 app.views = app.views || {};
 
-app.views.SettingsPaymentMethod = (function() {
+app.views.AdminPaymentMethodSettings = (function() {
 
 	'use strict';
 
 	return app.views.utility.Form.extend({
 
-		className: 'settings-payment-method',
-		template: '#template-settings-payment-method',
+		className: 'admin-payment-method-settings',
+		template: '#template-admin-payment-method-settings',
 
 		events: {
 			'change :input[name]': 'onInputChange',
 			'click .form-field-action': 'onClickAction',
 		},
 
+		verificationView: null,
+
 		initialize: function() {
 
 			app.views.utility.Form.prototype.initialize.apply(this, arguments);
+			_.bindAll(this, 'renderVerificationView');
+			this.renderVerificationView = _.throttle(this.renderVerificationView, 100, { leading: false });
 			this.paymentMethod = app.paymentMethods[this.options.key];
 		},
 
 		onRender: function() {
-			if (_.isFunction(this.paymentMethod.onSettingsRender)) {
-				this.paymentMethod.onSettingsRender();
+
+			this.$verification = this.$('.verification');
+			this.renderVerificationView();
+		},
+
+		renderVerificationView: function() {
+
+			if (!_.isFunction(this.paymentMethod.createVerificationView)) return;
+
+			this.closeVerificationView();
+
+			this.paymentMethod.createVerificationView(_.bind(function(error, view) {
+
+				if (error) {
+					app.log('Failed to create verification view', error);
+					return;
+				}
+
+				this.verificationView = view;
+				this.$verification.append(view.el);
+				view.render();
+
+			}, this));
+		},
+
+		closeVerificationView: function() {
+
+			if (this.verificationView) {
+				this.verificationView.close();
+				this.verificationView = null;
 			}
 		},
 
@@ -54,11 +86,16 @@ app.views.SettingsPaymentMethod = (function() {
 			var $target = $(evt.target);
 			var name = $target.attr('name');
 			if (!name) return;
+
 			var setting = _.findWhere(this.paymentMethod.settings, {
 				name: name.split('.').slice(1).join('.')
 			});
-			if (!setting || !setting.onChange) return;
-			setting.onChange.call(this.paymentMethod);
+
+			this.renderVerificationView();
+
+			if (setting && _.isFunction(setting.onChange)) {
+				setting.onChange.call(this.paymentMethod);
+			}
 		},
 
 		serializeData: function() {
@@ -98,7 +135,12 @@ app.views.SettingsPaymentMethod = (function() {
 		onBackButton: function() {
 
 			app.router.navigate('admin', { trigger: true });
-		}
+		},
+
+		onClose: function() {
+
+			this.closeVerificationView();
+		},
 
 	});
 
