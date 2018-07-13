@@ -4,14 +4,6 @@ app.onDeviceReady(function() {
 
 	'use strict';
 
-	/*
-		See:
-		https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-inappbrowser/
-	*/
-	if (app.isCordova()) {
-		window.open = cordova.InAppBrowser.open;
-	}
-
 	$('html').removeClass('no-js');
 
 	// Register partial templates with handlebars.

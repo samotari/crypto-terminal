@@ -460,7 +460,11 @@ app.views.Main = (function() {
 					// Internal navigation.
 					app.router.navigate(href, { trigger: true });
 				} else if (app.isCordova()) {
-					cordova.InAppBrowser.open(href);
+					/*
+						See:
+						https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-inappbrowser/
+					*/
+					cordova.InAppBrowser.open(href, '_system');
 				} else {
 					window.open(href, '_blank');
 				}
