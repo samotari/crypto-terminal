@@ -3,7 +3,7 @@
  */
 
 (function(repetitions) {
-	var currencies = app.config.supportedDisplayCurrencies;
+	var currencies = app.util.getSupportedDisplayCurrencies();
 	var statuses = app.models.PaymentRequest.prototype.getStatuses();
 
 	var takeRandomItem = function (items) {
