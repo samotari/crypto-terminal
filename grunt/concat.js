@@ -60,7 +60,7 @@ module.exports = {
 			'build/ecurve.js',
 			'build/querystring.js',
 			'third-party/sjcl/sjcl.min.js',
-			'node_modules/moment/moment.js',
+			'node_modules/moment/min/moment-with-locales.js',
 
 			// Application files:
 			'js/jquery.extend/*',
@@ -112,7 +112,7 @@ module.exports = {
 			'build/ecurve.min.js',
 			'build/querystring.min.js',
 			'third-party/sjcl/sjcl.min.js',
-			'node_modules/moment/min/moment.min.js',
+			'node_modules/moment/min/moment-with-locales.min.js',
 
 			// Application files:
 			'build/js/jquery.extend/*',

@@ -122,24 +122,26 @@ app.config = (function() {
 				},
 				type: 'select',
 				required: true,
-				options: [
-					{
-						key: 'DD/MM/YYYY hh:mm:ss',
-						label: moment().format('DD/MM/YYYY hh:mm:ss')
-					},
-					{
-						key: 'MMMM Do YYYY, h:mm:ss A',
-						label: moment().format('MMMM Do YYYY, h:mm:ss A')
-					},
-					{
-						key: 'lll',
-						label: moment().format('lll')
-					},
-					{
-						key: 'LLLL',
-						label: moment().format('LLLL')
-					},
-				],
+				options: function() {
+					return [
+						{
+							key: 'DD/MM/YYYY hh:mm:ss',
+							label: moment().format('DD/MM/YYYY hh:mm:ss')
+						},
+						{
+							key: 'MMMM Do YYYY, h:mm:ss A',
+							label: moment().format('MMMM Do YYYY, h:mm:ss A')
+						},
+						{
+							key: 'lll',
+							label: moment().format('lll')
+						},
+						{
+							key: 'LLLL',
+							label: moment().format('LLLL')
+						},
+					];
+				},
 			},
 		],
 	};
