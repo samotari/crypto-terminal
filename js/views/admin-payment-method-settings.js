@@ -106,18 +106,7 @@ app.views.AdminPaymentMethodSettings = (function() {
 				label: _.result(this.paymentMethod, 'label'),
 				description: _.result(this.paymentMethod, 'description'),
 			};
-			data.settings = _.map(this.paymentMethod.settings, function(setting) {
-				return _.extend(
-					{},
-					setting,
-					{
-						id: ['settings', key, setting.name].join('-'),
-						name: [key, setting.name].join('.'),
-						value: app.settings.get(key + '.' + setting.name) || setting.default,
-						visible: setting.visible !== false,
-					}
-				);
-			});
+			data.settings = this.preparePaymentMethodSettings(this.paymentMethod.settings, key);
 			return data;
 		},
 
@@ -140,6 +129,21 @@ app.views.AdminPaymentMethodSettings = (function() {
 
 			this.closeVerificationView();
 		},
+
+		preparePaymentMethodSettings: function(paymentMethodSettings, key) {
+			return _.map(paymentMethodSettings, function(setting) {
+				return _.extend(
+					{},
+					setting,
+					{
+						id: ['settings', key, setting.name].join('-'),
+						name: [key, setting.name].join('.'),
+						value: app.settings.get(key + '.' + setting.name) || setting.default,
+						visible: setting.visible !== false,
+					}
+				);
+			});
+		}
 
 	});
 

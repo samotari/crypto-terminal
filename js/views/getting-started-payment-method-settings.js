@@ -31,18 +31,7 @@ app.views.GettingStartedPaymentMethodSettings = (function() {
 				title: _.result(this.paymentMethod, 'label'),
 				description: _.result(this.paymentMethod, 'description'),
 			};
-			data.settings = _.map(this.paymentMethod.settings, function(setting) {
-				return _.extend(
-					{},
-					setting,
-					{
-						id: ['settings', key, setting.name].join('-'),
-						name: [key, setting.name].join('.'),
-						value: app.settings.get(key + '.' + setting.name) || setting.default,
-						visible: setting.visible !== false,
-					}
-				);
-			});
+			data.settings = app.views.AdminPaymentMethodSettings.prototype.preparePaymentMethodSettings(this.paymentMethod.settings, key);
 			return data;
 		},
 
