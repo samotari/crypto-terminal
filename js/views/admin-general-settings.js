@@ -43,25 +43,7 @@ app.views.AdminGeneralSettings = (function() {
 			});
 
 			// Prepare general settings for the template.
-			data.settings = _.map(app.config.settings, function(setting) {
-				switch (setting.type) {
-					case 'select':
-						setting.options = _.map(setting.options || [], function(option) {
-							return {
-								key: option.key,
-								label: _.result(option, 'label'),
-								selected: app.settings.get(setting.name) === option.key
-							}
-						});
-						break;
-
-					default:
-						setting.value = app.settings.get(setting.name);
-						break;
-				}
-				setting.id = ['settings', setting.name].join('-');
-				return setting;
-			});
+			data.settings = this.prepareGenearalSettings();
 
 			data.hasPin = app.requirePin();
 
@@ -149,6 +131,28 @@ app.views.AdminGeneralSettings = (function() {
 			app.clearPin();
 			// Re-render the general settings screen.
 			this.render();
+		},
+
+		prepareGenearalSettings: function() {
+			return _.map(app.config.settings, function(setting) {
+				switch (setting.type) {
+					case 'select':
+						setting.options = _.map(setting.options || [], function(option) {
+							return {
+								key: option.key,
+								label: _.result(option, 'label'),
+								selected: app.settings.get(setting.name) === option.key
+							}
+						});
+						break;
+
+					default:
+						setting.value = app.settings.get(setting.name);
+						break;
+				}
+				setting.id = ['settings', setting.name].join('-');
+				return setting;
+			})
 		}
 
 	});
