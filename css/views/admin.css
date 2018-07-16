@@ -22,7 +22,14 @@
 	background-size: 3.2rem;
 	opacity: 0.5;
 	margin: 0 .4rem .4rem 0;
-	padding: .8rem;
+	padding: .5rem;
+}
+.view.admin .form-group.configurableCryptoCurrencies .button.payment-method.bitcoinLightning:after {
+	right: -.8rem;
+	bottom: -.8rem;
+	width: 2.4rem;
+	height: 2.4rem;
+	background-size: 2.4rem;
 }
 .view.admin .form-group.configurableCryptoCurrencies input[type="checkbox"] {
 	position: absolute;

@@ -40,49 +40,6 @@
 .button.payment-method {
 	display: inline-block;
 	vertical-align: top;
-	width: 4.8rem;
-	height: 4.8rem;
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-size: 4.8rem;
 	box-sizing: initial;
-	padding: 1rem;
-}
-.button.payment-method.bitcoin,
-.button.payment-method.bitcoinTestnet,
-.button.payment-method.bitcoinLightning {
-	background-image: url('../images/bitcoin.svg');
-}
-.button.payment-method.litecoin,
-.button.payment-method.litecoinTestnet {
-	background-image: url('../images/litecoin.svg');
-}
-.button.payment-method.monero {
-	background-image: url('../images/monero.svg');
-}
-.button.payment-method.bitcoinTestnet:after,
-.button.payment-method.litecoinTestnet:after {
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	content: 'testnet';
-	color: red;
-	font-weight: 700;
-	text-align: center;
-}
-.button.payment-method.bitcoinLightning:after {
-	position: absolute;
-	right: -0.7rem;
-	bottom: -0.7rem;
-	z-index: 20;
-	content: ' ';
-	display: block;
-	width: 3.2rem;
-	height: 3.2rem;
-	background-color: transparent;
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-size: 3.2rem;
-	background-image: url(../images/lightning.svg);
+	padding: .5rem;
 }

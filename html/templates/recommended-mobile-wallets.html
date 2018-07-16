@@ -1,0 +1,21 @@
+<div class="page">
+	<h1>{{i18n "recommended-mobile-wallets.title"}}</h1>
+	<p>{{i18n "recommended-mobile-wallets.description"}}</p>
+	<p>{{i18n "recommended-mobile-wallets.instructions"}}</p>
+	{{#if recommendations}}
+		{{#each recommendations}}
+	<div class="recommendations-group">
+		<h2 class="recommendations-group-title">{{title}}</h2>
+		<div class="recommendations-group-items">{{#each mobileWallets}}
+			<div class="recommendations-group-item">
+				<div class="recommendations-group-item-qr-code" data-url="{{url}}"></div>
+				<h3 class="recommendations-group-item-name">{{name}}</h3>
+				<div class="recommendations-group-item-payment-methods">{{#each paymentMethods}}
+					<span class="payment-method {{.}}"></span>{{/each}}
+				</div>
+			</div>{{/each}}
+		</div>
+	</div>
+		{{/each}}
+	{{/if}}
+</div>

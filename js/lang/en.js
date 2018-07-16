@@ -8,6 +8,10 @@ app.lang['en'] = (function() {
 		'self.label': 'English',
 		'main.message.status.0': 'Error: Network seems to be down',
 
+		'about.version': 'Version',
+		'about.repo-url': 'Source code and issue tracker',
+		'about.support-email': 'Support email',
+
 		'admin.general-settings.label': 'General settings',
 		'admin.payment-history.label': 'Payment History',
 		'admin.pin.label': 'Admin PIN',
@@ -76,8 +80,16 @@ app.lang['en'] = (function() {
 		'pin-required.instructions': 'Enter the admin PIN to continue',
 		'pin-required.incorrect': 'The PIN you entered was incorrect',
 		'device.camera.not-available': 'Device camera not available',
-		'more-menu.about': 'About',
+
+		'more-menu.about': 'About this app',
+		'more-menu.recommended-mobile-wallets': 'Recommended mobile wallets',
+
 		'ct-api.missing-exchange-rates': 'Missing exchange rates data',
+		'recommended-mobile-wallets.title': 'Recommended Mobile Wallets',
+		'recommended-mobile-wallets.description': 'The following are the mobile wallet applications that we recommend to our customers.',
+		'recommended-mobile-wallets.instructions': 'Scan a QR code with your mobile device to navigate to that app\'s Play or App store listing.',
+		'recommended-mobile-wallets.section-title.android': 'For Android devices',
+		'recommended-mobile-wallets.section-title.ios': 'For iOS devices',
 	};
 
 })();

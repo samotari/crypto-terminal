@@ -1,0 +1,40 @@
+.view.recommended-mobile-wallets .recommendations-group {
+	margin-top: 2.5rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-items {
+	display: flex;
+}
+.view.recommended-mobile-wallets .recommendations-group-item + .recommendations-group-item {
+	margin-left: 2rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-item-name {
+	font-size: 1.1rem;
+	text-align: center;
+	margin-top: .4rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-item-qr-code {
+	width: 10rem;
+	height: 10rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-item-payment-methods {
+	text-align: center;
+	margin-top: .4rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-item-payment-methods .payment-method {
+	width: 1.8rem;
+	height: 1.8rem;
+	background-size: 1.8rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-item-payment-methods .payment-method.bitcoinTestnet {
+	font-size: .6rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-item-payment-methods .payment-method.bitcoinTestnet:after {
+	left: -.15rem;
+}
+.view.recommended-mobile-wallets .recommendations-group-item-payment-methods .payment-method.bitcoinLightning:after {
+	right: -.3rem;
+	bottom: -.3rem;
+	width: 1.2rem;
+	height: 1.2rem;
+	background-size: 1.2rem;
+}
