@@ -16,9 +16,8 @@ app.i18n = (function() {
 		// Returns a localized language string for the given language string key.
 		// `data` object is optional and allows find-and-replace in the language string.
 		t: function(key, data) {
-			// Get the current locale from the settings.
-			var locale = app.settings && app.settings.get('locale') || null;
-			var defaultLocale = app.config.defaultLocale;
+			var locale = this.getCurrentLocale();
+			var defaultLocale = this.getDefaultLocale();
 			var text;
 			if (!!app.lang[locale] && app.lang[locale][key]) {
 				// Try the configured language first.
@@ -35,13 +34,27 @@ app.i18n = (function() {
 			// Parse the template with the given data object.
 			return template(data);
 		},
+		getCurrentLocale: function() {
+			// Get the current locale from the settings.
+			// Fallback to locale from the browser.
+			return (app.settings && app.settings.get('locale')) || this.getLocaleFromBrowser() || null;
+		},
+		getLocaleFromBrowser: function() {
+			if (!navigator.language) return null;
+			if (navigator.language.indexOf('-') === -1) return navigator.language || null;
+			return navigator.language.split('-')[0];
+		},
+		getDefaultLocale: function() {
+			return app.config.defaultLocale;
+		},
 		getMissingAll: function() {
 			var locales = _.keys(app.lang);
+			var defaultLocale = this.getDefaultLocale();
 			var nonDefaultLocales = _.filter(locales, function(locale) {
-				return locale !== app.config.defaultLocale;
+				return locale !== defaultLocale;
 			});
 			return _.object(_.map(nonDefaultLocales, function(locale) {
-				var missingKeys = _.filter(_.keys(app.lang[app.config.defaultLocale]), function(key) {
+				var missingKeys = _.filter(_.keys(app.lang[defaultLocale]), function(key) {
 					return !app.lang[locale][key];
 				});
 				return [locale, missingKeys];
