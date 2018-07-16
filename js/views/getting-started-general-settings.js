@@ -17,26 +17,7 @@ app.views.GettingStartedGeneralSettings = (function() {
 				isComplete: this.isComplete(),
 			};
 
-			// Prepare general settings for the template.
-			var settings = _.map(app.config.settings, function(setting) {
-				switch (setting.type) {
-					case 'select':
-						setting.options = _.map(setting.options || [], function(option) {
-							return {
-								key: option.key,
-								label: _.result(option, 'label'),
-								selected: app.settings.get(setting.name) === option.key
-							}
-						});
-						break;
-
-					default:
-						setting.value = app.settings.get(setting.name);
-						break;
-				}
-				setting.id = ['settings', setting.name].join('-');
-				return setting;
-			});
+			var settings = app.views.AdminGeneralSettings.prototype.prepareGenearalSettings();
 
 			data.settings = settings;
 
