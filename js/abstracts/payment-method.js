@@ -156,6 +156,13 @@ app.abstracts.PaymentMethod = (function() {
 			});
 		},
 
+		createVerificationView: null,
+
+		hasVerificationView: function() {
+
+			return !!this.createVerificationView && _.isFunction(this.createVerificationView);
+		},
+
 		extend: function() {
 			var args = Array.prototype.slice.call(arguments);
 			return app.util.extend.apply(undefined, [this].concat(args));

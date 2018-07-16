@@ -37,9 +37,14 @@ app.views.GettingStartedPaymentMethodVerify = (function() {
 			this.renderVerificationView();
 		},
 
+		onRenderVerificationView: function() {
+
+			this.trigger('completed');
+		},
+
 		renderVerificationView: function() {
 
-			if (!_.isFunction(this.paymentMethod.createVerificationView)) return;
+			if (!this.paymentMethod.hasVerificationView()) return;
 			if (!this.isRendered()) return;
 
 			this.closeVerificationView();
@@ -54,8 +59,19 @@ app.views.GettingStartedPaymentMethodVerify = (function() {
 				this.verificationView = view;
 				this.$verification.append(view.el);
 				view.render();
+				this.onRenderVerificationView();
 
 			}, this));
+		},
+
+		verificationViewIsRendered: function() {
+
+			return this.verificationView && this.verificationView.isRendered();
+		},
+
+		isComplete: function() {
+
+			return !this.paymentMethod.hasVerificationView() || this.verificationViewIsRendered();
 		},
 
 		closeVerificationView: function() {

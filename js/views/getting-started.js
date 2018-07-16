@@ -53,6 +53,7 @@ app.views.GettingStarted = (function() {
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies');
 
 			_.each(app.paymentMethods, function(paymentMethod, key) {
+
 				subPages.push({
 					key: 'payment-method-settings-' + key,
 					label: _.result(paymentMethod, 'label'),
@@ -60,14 +61,17 @@ app.views.GettingStarted = (function() {
 					ContentViewOptions: { key: key },
 					visible: _.contains(configurableCryptoCurrencies, key),
 				});
-				subPages.push({
-					key: 'payment-method-verify-' + key,
-					label: _.result(paymentMethod, 'label'),
-					ContentView: app.views.GettingStartedPaymentMethodVerify,
-					ContentViewOptions: { key: key },
-					visible: _.contains(configurableCryptoCurrencies, key),
-				});
-			}, this);
+
+				if (paymentMethod.hasVerificationView()) {
+					subPages.push({
+						key: 'payment-method-verify-' + key,
+						label: _.result(paymentMethod, 'label'),
+						ContentView: app.views.GettingStartedPaymentMethodVerify,
+						ContentViewOptions: { key: key },
+						visible: _.contains(configurableCryptoCurrencies, key),
+					});
+				}
+			});
 
 			subPages.push({
 				key: 'general-settings',
@@ -195,6 +199,10 @@ app.views.GettingStarted = (function() {
 			});
 
 			this.listenTo(this.slider, 'change:active', this.setActiveMenuItem);
+
+			_.each(this.slider.items, function(item) {
+				this.listenTo(item.contentView, 'completed', this.toggleCurrentItemCompletedFlag);
+			}, this);
 		},
 
 		setActiveMenuItem: function(key) {
