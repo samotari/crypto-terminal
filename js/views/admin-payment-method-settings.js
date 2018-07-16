@@ -104,7 +104,8 @@ app.views.AdminPaymentMethodSettings = (function() {
 			var data = {
 				key: key,
 				label: _.result(this.paymentMethod, 'label'),
-				description: _.result(this.paymentMethod, 'description'),
+				instructions: _.result(this.paymentMethod, 'instructions'),
+				links: _.result(this.paymentMethod, 'links'),
 			};
 			data.settings = this.preparePaymentMethodSettings(this.paymentMethod.settings, key);
 			return data;

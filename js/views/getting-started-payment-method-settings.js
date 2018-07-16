@@ -29,7 +29,8 @@ app.views.GettingStartedPaymentMethodSettings = (function() {
 			var key = this.options.key;
 			var data = {
 				title: _.result(this.paymentMethod, 'label'),
-				description: _.result(this.paymentMethod, 'description'),
+				instructions: _.result(this.paymentMethod, 'instructions'),
+				links: _.result(this.paymentMethod, 'links'),
 			};
 			data.settings = app.views.AdminPaymentMethodSettings.prototype.preparePaymentMethodSettings(this.paymentMethod.settings, key);
 			return data;

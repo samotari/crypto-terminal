@@ -145,6 +145,18 @@ app.config = (function() {
 				},
 			},
 		],
+		recommendations: {
+			hardwareWallets: [
+				{
+					name: 'Trezor',
+					url: 'https://trezor.io/',
+				},
+				{
+					name: 'Ledger Wallet',
+					url: 'https://www.ledgerwallet.com/',
+				},
+			],
+		},
 	};
 
 	config.settings = _.map(config.settings, function(setting) {

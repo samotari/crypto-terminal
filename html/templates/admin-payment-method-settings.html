@@ -1,6 +1,11 @@
-{{#if description}}
-<div class="payment-method-description">
-	{{{description}}}
+{{#if instructions}}
+<div class="payment-method-instructions">
+	<p>{{instructions}}</p>
+	{{#if links}}
+	<ul>{{#each links}}
+		<li><a href="{{url}}">{{label}}</a></li>{{/each}}
+	</ul>
+	{{/if}}
 </div>
 {{/if}}
 
@@ -9,17 +14,7 @@
 		<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
 			{{#each settings}}
 				{{#if visible}}
-			<div class="form-row form-row-type--{{type}}">
-				<div class="form-label">
-					<label for="{{id}}">{{label}}</label>
-				</div>
-				{{#if description}}
-					<div class="form-description">{{description}}</div>
-				{{/if}}
-				<div class="form-field">
-					{{> formField .}}
-				</div>
-			</div>
+					{{> formFieldRow .}}
 				{{/if}}
 			{{/each}}
 		</div>

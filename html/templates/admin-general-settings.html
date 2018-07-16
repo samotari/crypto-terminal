@@ -17,14 +17,7 @@
 			</div>
 			{{#each settings}}
 				{{#if visible}}
-				<div class="form-row form-row-type--{{type}}">
-					<div class="form-label">
-						<label for="{{id}}">{{label}}</label>
-					</div>
-					<div class="form-field">
-						{{> formField .}}
-					</div>
-				</div>
+					{{> formFieldRow .}}
 				{{/if}}
 			{{/each}}
 		</div>

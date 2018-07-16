@@ -1,21 +1,22 @@
 <div class="getting-started-page">
 	<h1 class="getting-started-page-title">{{title}}</h1>
-	<p class="getting-started-page-instructions">{{instructions}}</p>
+{{#if instructions}}
+	<div class="getting-started-page-instructions">
+		<p>{{instructions}}</p>
+		{{#if links}}
+		<ul>{{#each links}}
+			<li><a href="{{url}}">{{label}}</a></li>{{/each}}
+		</ul>
+		{{/if}}
+	</div>
+{{/if}}
 	<form>
 		<div class="form">
-			{{#each settings}}{{#if visible}}
-			<div class="form-row form-row-type--{{type}}">
-				<div class="form-label">
-					<label for="{{id}}">{{label}}</label>
-				</div>
-				{{#if description}}
-					<div class="form-description">{{description}}</div>
+			{{#each settings}}
+				{{#if visible}}
+					{{> formFieldRow .}}
 				{{/if}}
-				<div class="form-field">
-					{{> formField .}}
-				</div>
-			</div>
-			{{/if}}{{/each}}
+			{{/each}}
 		</div>
 	</form>
 </div>

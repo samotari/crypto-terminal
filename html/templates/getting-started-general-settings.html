@@ -2,19 +2,11 @@
 	<h1 class="getting-started-page-title">{{i18n "getting-started.general-settings.title"}}</h1>
 	<form>
 		<div class="form">
-			{{#each settings}}{{#if visible}}
-			<div class="form-row form-row-type--{{type}}">
-				<div class="form-label">
-					<label for="{{id}}">{{label}}</label>
-				</div>
-				{{#if description}}
-					<div class="form-description">{{description}}</div>
+			{{#each settings}}
+				{{#if visible}}
+					{{> formFieldRow .}}
 				{{/if}}
-				<div class="form-field">
-					{{> formField .}}
-				</div>
-			</div>
-			{{/if}}{{/each}}
+			{{/each}}
 		</div>
 	</form>
 </div>
