@@ -102,7 +102,7 @@ describe('#payment-status [monero]', function () {
 							]
 						});
 						manager.page.waitFor('.view.payment-status.unconfirmed').then(function () {
-							manager.page.waitFor('.payment-status-message').then(function () {
+							manager.page.waitFor('.result-indicator').then(function () {
 								done();
 							}).catch(done);
 						}).catch(done);
