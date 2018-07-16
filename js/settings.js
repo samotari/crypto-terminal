@@ -160,6 +160,11 @@ app.settings = (function() {
 		});
 	});
 
+	settings.on('change:locale', function(value) {
+		var locale = value === 'en' ? 'en-US' : value;
+		moment.locale(locale);
+	});
+
 	return settings;
 
 })();
