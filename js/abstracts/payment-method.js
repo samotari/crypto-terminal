@@ -148,6 +148,21 @@ app.abstracts.PaymentMethod = (function() {
 			clearTimeout(this._listenForPaymentTimeout);
 		},
 
+		isConfigured: function() {
+
+			var data = app.settings.getAll();
+			return _.every(this.settings || [], function(setting) {
+				return setting.required !== true || !!data[setting.path];
+			});
+		},
+
+		createVerificationView: null,
+
+		hasVerificationView: function() {
+
+			return !!this.createVerificationView && _.isFunction(this.createVerificationView);
+		},
+
 		extend: function() {
 			var args = Array.prototype.slice.call(arguments);
 			return app.util.extend.apply(undefined, [this].concat(args));

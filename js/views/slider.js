@@ -43,8 +43,16 @@ app.views.Slider = (function() {
 			this.showItems(visibleItemKeys);
 		},
 
+		serializeData: function() {
+
+			return {
+				canSwipe: this.options.canSwipe !== false,
+			};
+		},
+
 		onSwipe: function(evt, velocity) {
 
+			if (this.options.canSwipe === false) return;
 			var currentIndex = this.index || 0;
 			// Positive velocity is left-to-right.
 			// Negative velocity is right-to-left.
@@ -154,6 +162,29 @@ app.views.Slider = (function() {
 			return this.getNumberVisibleItems() - 1;
 		},
 
+		getPreviousVisibleItem: function() {
+
+			var currentIndex = this.index || 0;
+			var previousIndex = currentIndex - 1;
+			if (previousIndex < 0) return null;
+			return this.getVisibleItemAtIndex(previousIndex);
+		},
+
+		getNextVisibleItem: function() {
+
+			var currentIndex = this.index || 0;
+			var maxVisibleIndex = this.getMaxVisibleIndex();
+			var nextIndex = currentIndex + 1;
+			if (nextIndex > maxVisibleIndex) return null;
+			return this.getVisibleItemAtIndex(nextIndex);
+		},
+
+		getCurrentItem: function() {
+
+			var currentIndex = this.index || 0;
+			return this.getVisibleItemAtIndex(currentIndex) || null;
+		},
+
 		isVisible: function(key) {
 
 			return _.contains(this.visible, key);
@@ -173,7 +204,7 @@ app.views.Slider = (function() {
 			if (!_.isArray(keys)) {
 				keys = Array.prototype.slice.call(arguments);
 			}
-			this.visible = _.without(this.visible, keys);
+			this.visible = _.difference(this.visible, keys);
 			this.updateItemElementsVisibility();
 		},
 

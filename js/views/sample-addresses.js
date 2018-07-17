@@ -11,7 +11,10 @@ app.views.SampleAddresses = (function() {
 		className: 'sample-addresses',
 		template: '#template-sample-addresses',
 
+		success: true,
+
 		serializeData: function() {
+
 			return {
 				addresses: this.options.addresses,
 			};

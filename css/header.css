@@ -109,3 +109,16 @@ body.view-payment-status .header-button.pay {
 html.offline .header-button.offline {
 	display: block;
 }
+body.view-getting-started .header-button,
+html.configured body.view-getting-started .header-button.pay {
+	/*
+		Hide all header buttons while viewing the getting-started screens.
+	*/
+	display: none;
+}
+body.view-getting-started .header-button.language {
+	/*
+		Show only the language toggle while viewing the getting-started screens.
+	*/
+	display: block;
+}

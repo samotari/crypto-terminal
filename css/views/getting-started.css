@@ -1,0 +1,157 @@
+html.keyboard-visible .view.getting-started .secondary-controls {
+	display: none;
+}
+.view.getting-started .getting-started-steps {
+	position: relative;
+	z-index: 10;
+	display: flex;
+	justify-content: center;
+	height: 2rem;
+	background: #fff;
+}
+.view.getting-started[data-subpage=welcome] .getting-started-steps.getting-started-steps,
+.view.getting-started[data-subpage=done] .getting-started-steps.getting-started-steps {
+	display: none;
+}
+.view.getting-started .slider {
+	padding-top: 2rem;
+}
+.view.getting-started[data-subpage=welcome] .slider,
+.view.getting-started[data-subpage=done] .slider {
+	padding-top: 0;
+}
+.view.getting-started .getting-started-step {
+	display: none;
+}
+.view.getting-started .getting-started-step.visible {
+	display: block;
+}
+.view.getting-started .getting-started-page {
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	box-sizing: border-box;
+	padding: 2rem 2rem 8rem 2rem;
+}
+.view.getting-started .getting-started-page-title {
+	font-size: 1.6rem;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 2rem;
+}
+.view.getting-started .getting-started-page p {
+	font-size: 1.2rem;
+	line-height: 2rem;
+	margin-bottom: 1rem;
+}
+.view.getting-started .getting-started-page ul {
+	display: block;
+	list-style: none;
+	font-size: 1.1rem;
+	line-height: 1.7rem;
+	margin-left: .5rem;
+	margin-bottom: 1rem;
+}
+.view.getting-started .getting-started-page-instructions {
+	margin-bottom: 2rem;
+}
+.view.getting-started .slider-item-content .getting-started {
+	height: 100%;
+}
+
+	/*  Welcome  */
+	.view.getting-started .getting-started-welcome .skip-getting-started {
+		position: absolute;
+		left: 0;
+		bottom: 6rem/* height of secondary-controls */;
+		width: 100%;
+		font-size: .9rem;
+		text-align: center;
+		box-sizing: border-box;
+		padding: .5rem 0;
+	}
+	/*  Welcome  */
+
+	/*  Choose payment methods  */
+	.view.getting-started .getting-started-choose-payment-methods p {
+		text-align: center;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies {
+		margin-top: 1rem;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method {
+		width: 3.2rem;
+		height: 3.2rem;
+		background-size: 3.2rem;
+		opacity: 0.5;
+		margin: 0 .4rem .4rem 0;
+		padding: .8rem;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies input[type="checkbox"] {
+		position: absolute;
+		top: 0;
+		left: -99999rem;
+		visibility: hidden;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies input[type="checkbox"]:checked + .button.payment-method {
+		opacity: 1;
+		background-color: #e6e6e6;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies {
+		width: 100%;
+		text-align: center;
+		padding-bottom: 1.6rem;
+	}
+	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .form-group-label {
+		color: #111;
+		text-align: center;
+		font-style: normal;
+		font-size: 1.2rem;
+		margin-bottom: 1rem;
+	}
+	/*  Choose payment methods  */
+
+	/*  Getting Started Steps  */
+	.getting-started-steps .getting-started-step {
+		list-style-type: none;
+		width: 25%;
+		float: left;
+		position: relative;
+		color: #7d7d7d;
+	}
+	.getting-started-steps .getting-started-step:before {
+		position: absolute;
+		width: calc(100% - .6rem);
+		height: .05rem;
+		content: '';
+		background-color: #7d7d7d;
+		top: .35rem;
+		left: calc(50% + .3rem);
+		z-index: 1;
+	}
+	.getting-started-steps .getting-started-step:after {
+		width: .6rem;
+		height: .6rem;
+		content: '';
+		border: 0.1rem solid #7d7d7d;
+		display: block;
+		margin: 0 auto .2rem auto;
+		border-radius: 50%;
+		z-index: 2;
+	}
+	.getting-started-steps .getting-started-step:last-child:before {
+		content: none;
+	}
+	.getting-started-steps .getting-started-step.visible.active {
+		color: #017AA9;
+	}
+	.getting-started-steps .getting-started-step.active:after,
+	.getting-started-steps .getting-started-step.visible.completed.active:after {
+		border-color: #017AA9;
+		background-color: #017AA9;
+	}
+	.getting-started-steps .getting-started-step.visible.completed:after {
+		border-color: rgba(122, 193, 66, 0.25);;
+		background-color: rgba(122, 193, 66, 0.7);
+	}
+	/*  Getting Started Steps  */

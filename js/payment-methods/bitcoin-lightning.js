@@ -17,21 +17,33 @@ app.paymentMethods.bitcoinLightning = (function() {
 		// Used internally to reference itself:
 		ref: 'bitcoinLightning',
 
-		description: function() {
-			return app.i18n.t('bitcoinLightning.description');
+		instructions: function() {
+			return app.i18n.t(this.ref + '.instructions');
+		},
+
+		links: function() {
+			return [
+				{
+					label: app.i18n.t(this.ref + '.links.configure.label'),
+					url: 'https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md',
+				},
+			];
 		},
 
 		lang: {
 			'en': {
-				'description': 'In order to use Bitcoin Lightning Network (LN) you have to run your own node. More info <a href="https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md">here</a>.',
-				'settings.apiUrl.label': 'API URL',
-				'settings.apiUrl.description': 'Full url to your LN node',
+				'instructions': 'To use the Lightning Network (LN) you must run your own node. For more information:',
+				'links.configure.label': 'How to configure for Lightning Network',
+				'settings.apiUrl.label': 'Lightning Node URL',
+				'settings.apiUrl.description': 'The full URL to your LN node. Should include the protocol (e.g "https://").',
 				'settings.invoiceMacaroon.label': 'Invoice Macaroon',
-				'settings.invoiceMacaroon.description': 'Authentication code (hexadecimal)',
+				'settings.invoiceMacaroon.description': 'Used to authenticate requests to your LN node. Should be in hexadecimal.',
 				'addInvoice.failed': 'Failed to generate invoice',
+				'getting-started.verify.message.success': 'Ok',
+				'getting-started.verify.message.failed': 'Failed',
 			},
 			'es': {
-				'description': 'Para usar Bitcoin Lightning Network (LN) tiene que correr su propio nodo. Más información <a href="https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md">aquí</a>.',
+				'instructions': 'Para usar Lightning Network (LN) tiene que correr su propio nodo. Más información <a href="https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md">aquí</a>.',
 				'settings.apiUrl.description': 'URL completa de su nodo LN',
 				'settings.invoiceMacaroon.description': 'Código de autentificación (hexadecimal)',
 				'addInvoice.failed': 'Fallo al crear factura',
@@ -71,6 +83,43 @@ app.paymentMethods.bitcoinLightning = (function() {
 			},
 		],
 
+		createVerificationView: function(cb) {
+
+			var verificationAmount = 0.00000001;
+			var options = {
+				maxInvoiceAgeInSeconds: 5,
+				memo: 'Test to verify connection from: ' + app.info.name,
+			}
+
+			app.busy(true);
+			this.addInvoice(verificationAmount, options, function(error, result) {
+
+				app.busy(false);
+				var message = function() {
+					return app.i18n.t('bitcoinLightning.getting-started.verify.message.success');
+				}
+
+				var verificationSuccess = !_.isError(error) && _.has(result, 'payment_request') && _.has(result, 'r_hash');
+
+				if (!verificationSuccess) {
+					message = function() {
+						return app.i18n.t('bitcoinLightning.getting-started.verify.message.failed');
+					}
+				}
+
+				try {
+					var view = new app.views.ApiVerify({
+						message: message,
+						status: verificationSuccess ? 'success' : 'failed',
+					})
+				} catch (error) {
+					return cb(error);
+				}
+
+				cb(null, view);
+			})
+		},
+
 		generatePaymentRequest: function(amount, cb) {
 
 			this.addInvoice(amount, _.bind(function(error, response) {
@@ -92,16 +141,26 @@ app.paymentMethods.bitcoinLightning = (function() {
 			},this));
 		},
 
-		addInvoice: function(amount, cb) {
+		addInvoice: function(amount, options, cb) {
+
+			if (_.isFunction(options)) {
+				cb = options;
+				options = null;
+			}
+
+			options = _.defaults(options || {}, {
+				maxInvoiceAgeInSeconds: Math.floor(app.config.paymentRequests.timeout / 1000),
+				memo: app.info.name,
+			});
 
 			// Convert the amount to whole satoshis.
 			var value = (new BigNumber(amount)).times('100000000').toFixed(0, BigNumber.ROUND_CEIL);
 			var apiUrl = app.settings.get(this.ref + '.apiUrl');
-			var maxInvoiceAgeInSeconds = Math.floor(app.config.paymentRequests.timeout / 1000);
 			var uri = apiUrl + '/v1/invoices';
 			var data = {
-				expiry: maxInvoiceAgeInSeconds,
+				expiry: options.maxInvoiceAgeInSeconds,
 				value: value,
+				memo: options.memo,
 			};
 
 			cb = _.once(cb);

@@ -58,6 +58,14 @@ var app = app || {};
 		return typeof mocha !== 'undefined';
 	};
 
+	app.hasCompletedGettingStarted = function() {
+		return app.settings.get('getting-started-complete') === true;
+	};
+
+	app.markGettingStartedAsComplete = function() {
+		app.settings.set('getting-started-complete', true);
+	};
+
 	app.isConfigured = function() {
 		return !_.isEmpty(app.settings.getAcceptedCryptoCurrencies());
 	};

@@ -19,11 +19,15 @@
 .slider-item {
 	position: relative;
 	float: left;
+	display: none;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	-webkit-transition: -webkit-transform 0.2s ease-out;
 	transition: -webkit-transform 0.2s ease-out, transform 0.2s ease-out;
+}
+.slider-item.visible {
+	display: block;
 }
 .slider-item-content {
 	position: relative;

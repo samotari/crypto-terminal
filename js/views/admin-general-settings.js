@@ -2,14 +2,14 @@ var app = app || {};
 
 app.views = app.views || {};
 
-app.views.SettingsGeneral = (function() {
+app.views.AdminGeneralSettings = (function() {
 
 	'use strict';
 
 	return app.views.utility.Form.extend({
 
-		className: 'settings-general',
-		template: '#template-settings-general',
+		className: 'admin-general-settings',
+		template: '#template-admin-general-settings',
 
 		events: {
 			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',
@@ -44,29 +44,7 @@ app.views.SettingsGeneral = (function() {
 				return paymentMethod;
 			});
 
-			// Prepare general settings for the template.
-			data.settings = _.map(app.config.settings, function(setting) {
-				setting = _.clone(setting);
-				setting.options = _.result(setting, 'options') || null;
-				switch (setting.type) {
-					case 'select':
-						setting.options = _.map(setting.options || [], function(option) {
-							return {
-								key: option.key,
-								label: _.result(option, 'label'),
-								selected: app.settings.get(setting.name) === option.key
-							}
-						});
-						break;
-
-					default:
-						setting.value = app.settings.get(setting.name);
-						break;
-				}
-				setting.id = ['settings', setting.name].join('-');
-				return setting;
-			});
-
+			data.settings = this.prepareGenearalSettings();
 			data.hasPin = app.requirePin();
 
 			return data;
@@ -153,6 +131,31 @@ app.views.SettingsGeneral = (function() {
 			app.clearPin();
 			// Re-render the general settings screen.
 			this.render();
+		},
+
+		prepareGenearalSettings: function() {
+			// Prepare general settings for the template.
+			return _.map(app.config.settings, function(setting) {
+				setting = _.clone(setting);
+				setting.options = _.result(setting, 'options') || null;
+				switch (setting.type) {
+					case 'select':
+						setting.options = _.map(setting.options || [], function(option) {
+							return {
+								key: option.key,
+								label: _.result(option, 'label'),
+								selected: app.settings.get(setting.name) === option.key
+							}
+						});
+						break;
+
+					default:
+						setting.value = app.settings.get(setting.name);
+						break;
+				}
+				setting.id = ['settings', setting.name].join('-');
+				return setting;
+			})
 		}
 
 	});

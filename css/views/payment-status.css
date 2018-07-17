@@ -7,66 +7,9 @@
 	padding: 0;
 	padding-bottom: 4rem;
 }
-.view.payment-status .payment-status-message {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	width: 16rem;
-	height: 16rem;
-	max-width: 90%;
-	max-height: 90%;
-	background-color: #ccc;
-	border-radius: 50%;
-	-webkit-animation: paymentStatusScale .5s ease-in-out;
-	animation: paymentStatusScale .5s ease-in-out;
-	margin: 0 auto;
-}
-.view.payment-status.unconfirmed .payment-status-message {
+.view.payment-status.unconfirmed .result-indicator {
 	background-color: #7ac142;
 }
-.view.payment-status.timed-out .payment-status-message {
+.view.payment-status.timed-out .result-indicator {
 	background-color: #d8000c;
-}
-.view.payment-status .payment-status-message-inner {
-	color: #fff;
-	font-size: 2.2rem;
-	font-weight: 100;
-	text-align: center;
-}
-@-webkit-keyframes paymentStatusScale {
-	0% {
-		-webkit-transform: scale(0) translateZ(0);
-		transform: scale(0) translateZ(0);
-	}
-	20% {
-		-webkit-transform: scale(1.5) translateZ(0);
-		transform: scale(1.5) translateZ(0);
-	}
-	60% {
-		-webkit-transform: scale(0.75) translateZ(0);
-		transform: scale(0.75) translateZ(0);
-	}
-	100% {
-		-webkit-transform: scale(1) translateZ(0);
-		transform: scale(1) translateZ(0);
-	}
-}
-@keyframes paymentStatusScale {
-	0% {
-		-webkit-transform: scale(0) translateZ(0);
-		transform: scale(0) translateZ(0);
-	}
-	20% {
-		-webkit-transform: scale(1.5) translateZ(0);
-		transform: scale(1.5) translateZ(0);
-	}
-	60% {
-		-webkit-transform: scale(0.75) translateZ(0);
-		transform: scale(0.75) translateZ(0);
-	}
-	100% {
-		-webkit-transform: scale(1) translateZ(0);
-		transform: scale(1) translateZ(0);
-	}
 }

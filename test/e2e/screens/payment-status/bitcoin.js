@@ -28,6 +28,7 @@ describe('#payment-status [bitcoin]', function() {
 
 	beforeEach(function(done) {
 		manager.evaluateInPageContext(function() {
+			app.markGettingStartedAsComplete();
 			app.settings.set('configurableCryptoCurrencies', ['bitcoinTestnet']);
 			app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
 			app.settings.set('displayCurrency', 'EUR');
@@ -88,7 +89,7 @@ describe('#payment-status [bitcoin]', function() {
 						}
 					});
 					manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
-						manager.page.waitFor('.payment-status-message').then(function() {
+						manager.page.waitFor('.result-indicator').then(function() {
 							done();
 						}).catch(done);
 					}).catch(done);

@@ -6,6 +6,7 @@ app.config = (function() {
 
 	var config = {
 		debug: false,
+		supportEmail: 'cryptoterminal.eu@gmail.com',
 		cache: {
 			onAppStartClearOlderThan: 86400000,// milliseconds
 		},
@@ -144,6 +145,18 @@ app.config = (function() {
 				},
 			},
 		],
+		recommendations: {
+			hardwareWallets: [
+				{
+					name: 'Trezor',
+					url: 'https://trezor.io/',
+				},
+				{
+					name: 'Ledger Wallet',
+					url: 'https://www.ledgerwallet.com/',
+				},
+			],
+		},
 	};
 
 	config.settings = _.map(config.settings, function(setting) {

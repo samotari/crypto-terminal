@@ -66,9 +66,19 @@ app.device = (function() {
 				$('html').removeClass('offline');
 			}
 
+			function keyboardVisible() {
+				$('html').addClass('keyboard-visible');
+			}
+
+			function keyboardNotVisible() {
+				$('html').removeClass('keyboard-visible');
+			}
+
 			if (app.isCordova()) {
 				document.addEventListener("offline", onOffline, false);
 				document.addEventListener("online", onOnline, false);
+				window.addEventListener('keyboardWillShow', keyboardVisible, false);
+				window.addEventListener('keyboardWillHide', keyboardNotVisible, false);
 			}
 		}
 

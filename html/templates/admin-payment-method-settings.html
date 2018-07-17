@@ -1,0 +1,24 @@
+{{#if instructions}}
+<div class="payment-method-instructions">
+	<p>{{instructions}}</p>
+	{{#if links}}
+	<ul>{{#each links}}
+		<li><a href="{{url}}">{{label}}</a></li>{{/each}}
+	</ul>
+	{{/if}}
+</div>
+{{/if}}
+
+<form>
+	<div class="form">
+		<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
+			{{#each settings}}
+				{{#if visible}}
+					{{> formFieldRow .}}
+				{{/if}}
+			{{/each}}
+		</div>
+	</div>
+</form>
+
+<div class="verification"></div>

@@ -7,6 +7,7 @@ app.lang['en'] = (function() {
 	return {
 		'self.label': 'English',
 		'main.message.status.0': 'Error: Network seems to be down',
+
 		'admin.general-settings.label': 'General settings',
 		'admin.payment-history.label': 'Payment History',
 		'admin.pin.label': 'Admin PIN',
@@ -17,6 +18,22 @@ app.lang['en'] = (function() {
 		'admin.pin.change': 'Change PIN',
 		'admin.pin.remove': 'Remove PIN',
 		'admin.pin.min-length': 'PIN must be at least {{minLength}} digit(s)',
+
+		'getting-started.buttons.back': 'Back',
+		'getting-started.buttons.next': 'Next',
+		'getting-started.welcome.title': 'Hi there!',
+		'getting-started.welcome.instructions': 'CryptoTerminal is designed to be used with your existing wallet application. This enables you to easily receive payments while keeping the private keys that secure your funds stored safely offline or in a hardware wallet. We recommend that you use one of the following hardware wallets to secure your funds:',
+		'getting-started.welcome.ready?': 'Once you have your cryptocurrency wallet prepared, you can begin the setup process by pressing the "Start" button below.',
+		'getting-started.welcome.start': 'Start',
+		'getting-started.welcome.skip': 'Skip the guided setup process',
+		'getting-started.choose-payment-methods.title': 'Choose payment methods',
+		'getting-started.choose-payment-methods.instructions': 'Which payment methods would you like to accept?',
+		'getting-started.done.title': 'Yay!',
+		'getting-started.done.app-is-ready': 'Your CryptoTerminal is now ready to use.',
+		'getting-started.done.contact-below': 'If you have any trouble or would like to provide feedback, you can reach us directly at the email address shown below.',
+		'getting-started.done.ok': 'OK',
+		'getting-started.general-settings.title': 'General settings',
+
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
 		'settings.accept-crypto-currencies.label': 'Which currencies do you want to accept?',

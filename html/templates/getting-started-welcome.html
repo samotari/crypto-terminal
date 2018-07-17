@@ -1,0 +1,16 @@
+<div class="getting-started-page">
+	<h1 class="getting-started-page-title">{{i18n "getting-started.welcome.title"}}</h1>
+	<p>{{i18n "getting-started.welcome.instructions"}}</p>
+	{{#if recommendedHardwareWallets}}
+	<ul>{{#each recommendedHardwareWallets}}
+		<li><a href="{{url}}">{{name}}</a></li>{{/each}}
+	</ul>
+	{{/if}}
+	<p>{{i18n "getting-started.welcome.ready?"}}</p>
+</div>
+<div class="skip-getting-started">
+	<a class="skip">{{i18n "getting-started.welcome.skip"}}</a>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button next">{{i18n "getting-started.welcome.start"}}</a>
+</div>

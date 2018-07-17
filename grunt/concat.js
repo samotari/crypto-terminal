@@ -16,7 +16,8 @@ module.exports = {
 			'build/css/number-pad.min.css',
 			'build/css/slider.min.css',
 			'build/css/views/*.min.css',
-			'build/css/responsive.min.css'
+			'build/css/responsive.min.css',
+			'build/css/result-indicator.min.css',
 		],
 		dest: 'build/all.min.css'
 	},

@@ -2,19 +2,21 @@ var app = app || {};
 
 app.views = app.views || {};
 
-app.views.SettingsPaymentMethod = (function() {
+app.views.GettingStartedPaymentMethodSettings = (function() {
 
 	'use strict';
 
 	return app.views.utility.Form.extend({
 
-		className: 'settings-payment-method',
-		template: '#template-settings-payment-method',
+		className: 'getting-started getting-started-payment-method-settings',
+		template: '#template-getting-started-payment-method-settings',
 
 		events: {
 			'change :input[name]': 'onInputChange',
 			'click .form-field-action': 'onClickAction',
 		},
+
+		verificationView: null,
 
 		initialize: function() {
 
@@ -22,10 +24,16 @@ app.views.SettingsPaymentMethod = (function() {
 			this.paymentMethod = app.paymentMethods[this.options.key];
 		},
 
-		onRender: function() {
-			if (_.isFunction(this.paymentMethod.onSettingsRender)) {
-				this.paymentMethod.onSettingsRender();
-			}
+		serializeData: function() {
+
+			var key = this.options.key;
+			var data = {
+				title: _.result(this.paymentMethod, 'label'),
+				instructions: _.result(this.paymentMethod, 'instructions'),
+				links: _.result(this.paymentMethod, 'links'),
+			};
+			data.settings = app.views.AdminPaymentMethodSettings.prototype.preparePaymentMethodSettings(this.paymentMethod.settings, key);
+			return data;
 		},
 
 		onClickAction: function(evt) {
@@ -54,40 +62,19 @@ app.views.SettingsPaymentMethod = (function() {
 			var $target = $(evt.target);
 			var name = $target.attr('name');
 			if (!name) return;
+
 			var setting = _.findWhere(this.paymentMethod.settings, {
 				name: name.split('.').slice(1).join('.')
 			});
-			if (!setting || !setting.onChange) return;
-			setting.onChange.call(this.paymentMethod);
-		},
 
-		serializeData: function() {
-
-			var key = this.options.key;
-			var data = {
-				key: key,
-				label: _.result(this.paymentMethod, 'label'),
-				description: _.result(this.paymentMethod, 'description'),
-			};
-			data.settings = _.map(this.paymentMethod.settings, function(setting) {
-				return _.extend(
-					{},
-					setting,
-					{
-						id: ['settings', key, setting.name].join('-'),
-						name: [key, setting.name].join('.'),
-						value: app.settings.get(key + '.' + setting.name) || setting.default,
-						visible: setting.visible !== false,
-					}
-				);
-			});
-			return data;
+			if (setting && _.isFunction(setting.onChange)) {
+				setting.onChange.call(this.paymentMethod);
+			}
 		},
 
 		validate: function(data, done) {
 
-			var paymentMethod = app.paymentMethods[this.options.key];
-			app.settings.doValidation(paymentMethod.settings, data, done);
+			app.settings.doValidation(this.paymentMethod.settings, data, done);
 		},
 
 		save: function(data) {
@@ -95,10 +82,10 @@ app.views.SettingsPaymentMethod = (function() {
 			app.settings.set(data);
 		},
 
-		onBackButton: function() {
-
-			app.router.navigate('admin', { trigger: true });
-		}
+		isComplete: function() {
+			var paymentMethod = app.paymentMethods[this.options.key];
+			return paymentMethod.isConfigured();
+		},
 
 	});
 
