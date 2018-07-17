@@ -71,7 +71,7 @@ app.views.GettingStartedPaymentMethodVerify = (function() {
 
 		isComplete: function() {
 
-			return !this.paymentMethod.hasVerificationView() || this.verificationViewIsRendered();
+			return (!this.paymentMethod.hasVerificationView() || this.verificationViewIsRendered()) && this.verificationView.success === true;
 		},
 
 		closeVerificationView: function() {
