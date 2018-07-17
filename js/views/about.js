@@ -13,8 +13,10 @@ app.views.About = (function() {
 
 		serializeData: function() {
 
-			return _.clone(app.info);
-		}
+			var data = _.clone(app.info);
+			data.supportEmail = app.config.supportEmail;
+			return data;
+		},
 
 	});
 

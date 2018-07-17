@@ -11,6 +11,8 @@ module.exports = {
 			'build/css/forms.min.css',
 			'build/css/header.min.css',
 			'build/css/menu.min.css',
+			'build/css/page.min.css',
+			'build/css/payment-method.min.css',
 			'build/css/amount.min.css',
 			'build/css/secondary-controls.min.css',
 			'build/css/number-pad.min.css',

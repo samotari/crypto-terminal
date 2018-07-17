@@ -1,0 +1,17 @@
+.page h1 {
+	font-size: 1.8rem;
+	font-weight: 100;
+	margin-bottom: 1rem;
+}
+.page h2 {
+	font-size: 1.2rem;
+	font-weight: bold;
+	margin-bottom: .5rem;
+}
+.page p {
+	font-size: 1rem;
+	margin-bottom: .5rem;
+}
+.page p + h2 {
+	margin-top: 1.5rem;
+}

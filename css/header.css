@@ -31,7 +31,7 @@ html.loaded #header {
 }
 .header-button.more {
 	float: right;
-	background-image: url('../images/vertical-dot-menu.svg');
+	background-image: url('../images/question.svg');
 	background-size: 1.8rem 1.8rem;
 }
 .header-button.admin {

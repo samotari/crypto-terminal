@@ -20,13 +20,11 @@ module.exports = function(grunt) {
 				config: config,
 				target: target,
 				info: _.extend({}, _.pick(pkg,
-					'author',
-					'contributors',
 					'description',
-					'homepage',
 					'version'
 				), {
 					name: pkg.app.name,
+					repoUrl: pkg.homepage,
 				}),
 			};
 		}

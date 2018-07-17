@@ -54,6 +54,7 @@ app.Router = (function() {
 			'about': 'about',
 			'getting-started': 'gettingStarted',
 			'getting-started/:page': 'gettingStarted',
+			'recommended-mobile-wallets': 'recommendedMobileWallets',
 
 			// For un-matched route, default to:
 			'*notFound': 'notFound'
@@ -189,6 +190,11 @@ app.Router = (function() {
 		about: function() {
 
 			app.mainView.renderView('About');
+		},
+
+		recommendedMobileWallets: function() {
+
+			app.mainView.renderView('RecommendedMobileWallets');
 		},
 
 		pay: function() {
