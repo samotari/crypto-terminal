@@ -9,6 +9,7 @@ app.onDeviceReady(function() {
 	// Register partial templates with handlebars.
 	Handlebars.registerPartial('amount', $('#template-amount').html());
 	Handlebars.registerPartial('formField', $('#template-form-field').html());
+	Handlebars.registerPartial('formFieldRow', $('#template-form-field-row').html());
 	Handlebars.registerPartial('slider', $('#template-slider').html());
 
 	// Initialize collections and models.

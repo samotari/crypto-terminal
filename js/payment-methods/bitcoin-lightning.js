@@ -21,13 +21,23 @@ app.paymentMethods.bitcoinLightning = (function() {
 			return app.i18n.t(this.ref + '.instructions');
 		},
 
+		links: function() {
+			return [
+				{
+					label: app.i18n.t(this.ref + '.links.configure.label'),
+					url: 'https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md',
+				},
+			];
+		},
+
 		lang: {
 			'en': {
-				'instructions': 'To use the Lightning Network (LN) you must run your own node. For more information please see <a href="https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md">this detailed guide</a>.',
-				'settings.apiUrl.label': 'API URL',
-				'settings.apiUrl.description': 'Full url to your LN node',
+				'instructions': 'To use the Lightning Network (LN) you must run your own node. For more information:',
+				'links.configure.label': 'How to configure for Lightning Network',
+				'settings.apiUrl.label': 'Lightning Node URL',
+				'settings.apiUrl.description': 'The full URL to your LN node. Should include the protocol (e.g "https://").',
 				'settings.invoiceMacaroon.label': 'Invoice Macaroon',
-				'settings.invoiceMacaroon.description': 'Authentication code (hexadecimal)',
+				'settings.invoiceMacaroon.description': 'Used to authenticate requests to your LN node. Should be in hexadecimal.',
 				'addInvoice.failed': 'Failed to generate invoice',
 				'getting-started.verify.message.success': 'Ok',
 				'getting-started.verify.message.failed': 'Failed',

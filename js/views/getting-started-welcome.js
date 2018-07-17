@@ -9,6 +9,11 @@ app.views.GettingStartedWelcome = (function() {
 	return app.abstracts.BaseView.extend({
 		className: 'getting-started getting-started-welcome',
 		template: '#template-getting-started-welcome',
+		serializeData: function() {
+			return {
+				recommendedHardwareWallets: app.config.recommendations.hardwareWallets,
+			};
+		},
 	});
 
 })();
