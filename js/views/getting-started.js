@@ -127,6 +127,7 @@ app.views.GettingStarted = (function() {
 			}
 
 			this.toggleMenuItemsCompletedFlag();
+			this.toggleStepsVisibility();
 		},
 
 		setVisibilityOfMenuItems: function() {
@@ -179,6 +180,14 @@ app.views.GettingStarted = (function() {
 			this.setActiveMenuItem(key);
 			this.toggleCurrentItemCompletedFlag();
 			this.toggleMenuItemsCompletedFlag();
+			this.toggleStepsVisibility();
+		},
+
+		toggleStepsVisibility: function() {
+
+			var currentItem = this.slider.getCurrentItem();
+			var visible = !!currentItem && !_.contains(['welcome', 'done'], currentItem.key);
+			this.$('.getting-started-steps').toggleClass('visible', visible);
 		},
 
 		initializeSlider: function() {

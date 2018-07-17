@@ -4,14 +4,13 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 .view.getting-started .getting-started-steps {
 	position: relative;
 	z-index: 10;
-	display: flex;
+	display: none;
 	justify-content: center;
 	height: 2rem;
 	background: #fff;
 }
-.view.getting-started[data-subpage=welcome] .getting-started-steps.getting-started-steps,
-.view.getting-started[data-subpage=done] .getting-started-steps.getting-started-steps {
-	display: none;
+.view.getting-started .getting-started-steps.visible {
+	display: flex;
 }
 .view.getting-started .slider {
 	padding-top: 2rem;
@@ -64,11 +63,13 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 		position: absolute;
 		left: 0;
 		bottom: 6rem/* height of secondary-controls */;
+		z-index: 5;
 		width: 100%;
 		font-size: .9rem;
 		text-align: center;
+		background: #fff;
 		box-sizing: border-box;
-		padding: .5rem 0;
+		padding: 1.5rem 0 .5rem 0;
 	}
 	/*  Welcome  */
 
