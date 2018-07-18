@@ -85,6 +85,13 @@ app.paymentMethods.bitcoinLightning = (function() {
 
 		createVerificationView: function(cb) {
 
+			// Allowing this view only to render during getting started.
+			// TODO: find a different approach to work with admin view.
+			var isGettingStartedView = app.mainView.currentView.$el.hasClass('getting-started');
+			if (!isGettingStartedView) {
+				return;
+			}
+
 			var verificationAmount = 0.00000001;
 			var options = {
 				maxInvoiceAgeInSeconds: 5,
