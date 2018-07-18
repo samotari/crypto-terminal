@@ -1,6 +1,6 @@
 # Changelog
 
-* TBD:
+* v1.1.0:
   * Added a guided setup after first installing the app
   * Added recommended mobile wallets page
   * Added support for more display currencies

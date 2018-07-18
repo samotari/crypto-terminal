@@ -1,6 +1,6 @@
 {
   "name": "crypto-terminal",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "An open-source terminal application with which merchants can accept in-person cryptocurrency payments",
   "private": true,
   "app": {
@@ -15,7 +15,8 @@
     "gh-pages-commit": "grunt build:homepage && { git checkout gh-pages || git checkout -b gh-pages upstream/gh-pages; } && rm -r css fonts images index.html && cp -r build/homepage/www/* ./ && git add . && git commit -a",
     "build-signed-apk": "grunt build && ./scripts/build-signed-apk.sh",
     "android-generate-signing-key": "keytool -keystore android.keystore -genkey -v -alias cryptoterminal -keyalg RSA -keysize 2048 -validity 10000",
-    "android-export-public-signing-key": "keytool -keystore android.keystore -list -rfc -alias cryptoterminal"
+    "android-export-signing-certificate": "keytool -keystore android.keystore -alias cryptoterminal -exportcert -rfc -file cryptoterminal.crt",
+    "android-export-public-signing-key": "rm -rf cryptoterminal.crt; npm run android-export-signing-certificate | openssl x509 -pubkey -noout -in cryptoterminal.crt"
   },
   "repository": {
     "type": "git",
