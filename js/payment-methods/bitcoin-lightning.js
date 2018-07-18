@@ -43,10 +43,12 @@ app.paymentMethods.bitcoinLightning = (function() {
 				'getting-started.verify.message.failed': 'Failed',
 			},
 			'es': {
-				'instructions': 'Para usar Lightning Network (LN) tiene que correr su propio nodo. Más información <a href="https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md">aquí</a>.',
+				'instructions': 'Para usar Lightning Network (LN) tiene que correr su propio nodo. Más información:',
+				'links.configure.label': 'Cómo configurar Lightning Network',
 				'settings.apiUrl.description': 'URL completa de su nodo LN',
 				'settings.invoiceMacaroon.description': 'Código de autentificación (hexadecimal)',
 				'addInvoice.failed': 'Fallo al crear factura',
+				'getting-started.verify.message.failed': 'Fallo',
 			}
 		},
 
