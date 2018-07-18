@@ -45,7 +45,7 @@ html, body {
 		align-content: center;
 		width: 100%;
 		padding-left: 3.75rem;/* half the logo image */
-		padding-bottom: 7.5rem;/* give space for more-info */
+		padding-bottom: 15rem;/* give space for more-info */
 	}
 	html.index .content.main .logo {
 		display: block;
@@ -100,7 +100,7 @@ html, body {
 	}
 	html.index .content.main .links {
 		font-weight: 100;
-		margin-top: 3rem;
+		margin-top: 2rem;
 	}
 	html.index .content.main .link {
 		border-radius: .6rem;
@@ -127,6 +127,15 @@ html, body {
 		vertical-align: top;
 		width: auto;
 		height: 1.35rem;
+	}
+	html.index .content.main .app-store-links {
+		display: flex;
+		margin-top: 2rem;
+	}
+	html.index .content.main .app-store-link img {
+		display: block;
+		max-width: 10rem;
+		height: auto;
 	}
 	html.index .content.main .screenshots {
 		display: flex;
@@ -215,9 +224,6 @@ html, body {
 			vertical-align: top;
 			float: none;
 		}
-		html.index .content.main .links {
-			margin-top: 2rem;
-		}
 		html.index .content.main .link.github {
 			position: relative;
 			left: initial;
@@ -235,6 +241,9 @@ html, body {
 		html.index .content.main .link-text {
 			display: block;
 			margin: 0 0 .6rem 0;
+		}
+		html.index .content.main .app-store-links {
+			justify-content: center;
 		}
 		html.index .content.main .screenshots {
 			display: block;
