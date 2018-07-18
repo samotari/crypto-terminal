@@ -1,4 +1,8 @@
-.view.admin-payment-method-settings .payment-method-instructions {
+.view.admin .payment-method-instructions {
 	font-size: 1rem;
-	margin-bottom: 1rem;
+	margin-bottom: 1.5rem;
+}
+.view.admin .payment-method-instructions ul {
+	list-style: none;
+	margin: .5rem 0 0 .5rem;
 }
