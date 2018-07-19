@@ -130,7 +130,7 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	.getting-started-steps .getting-started-step:before {
 		position: absolute;
 		width: calc(100% - .6rem);
-		height: .05rem;
+		height: .1rem;
 		content: '';
 		background-color: #7d7d7d;
 		top: .35rem;
