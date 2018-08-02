@@ -149,11 +149,11 @@ app.config = (function() {
 			hardwareWallets: [
 				{
 					name: 'Trezor',
-					url: 'https://trezor.io/',
+					url: 'https://shop.trezor.io?a=cryptoterminal.eu',
 				},
 				{
 					name: 'Ledger Wallet',
-					url: 'https://www.ledgerwallet.com/',
+					url: 'https://www.ledgerwallet.com/r/285ab5ed6cb2',
 				},
 			],
 			mobileWallets: {
