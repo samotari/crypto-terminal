@@ -12,8 +12,6 @@
 .view.display-payment-address .info-inner {
 	width: 100%;
 }
-.view.display-payment-address .amount-wrap {
-}
 .view.display-payment-address .address {
 	position: relative;
 	width: 100%;
@@ -53,6 +51,9 @@
 .view.display-payment-address .message strong {
 	font-weight: 700;
 }
-html.offline .view.display-payment-address .message {
+html.offline .view.display-payment-address .message.warning-offline {
+	display: block;
+}
+.view.display-payment-address.payment-method-inactive .message.warning-payment-method-inactive {
 	display: block;
 }
