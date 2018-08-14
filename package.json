@@ -81,8 +81,7 @@
     "puppeteer": "1.5.0",
     "qrcode": "1.2.0",
     "time-grunt": "1.4.0",
-    "underscore": "1.9.1",
-    "uws": "^10.148.1"
+    "underscore": "1.9.1"
   },
   "cordova": {
     "platforms": [

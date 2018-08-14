@@ -103,7 +103,7 @@ var manager = module.exports = {
 		serverConfig = _.defaults(serverConfig || {}, {
 			port: 3601,
 			pathname: '/primus',
-			transformer: 'uws',
+			transformer: 'websockets',
 			pingInterval: 5000,
 		})
 
