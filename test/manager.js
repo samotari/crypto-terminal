@@ -115,10 +115,14 @@ var manager = module.exports = {
 			tmpApp: tmpApp,
 			primus: primus,
 			close: function() {
-				primus.destroy();
-				tmpApp.server.close();
-				tmpApp = null;
-				primus = null;
+				if (primus) {
+					primus.destroy();
+					primus = null;
+				}
+				if (tmpApp) {
+					tmpApp.server.close();
+					tmpApp = null;
+				}
 			}
 		};
 	},
