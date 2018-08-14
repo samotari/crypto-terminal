@@ -19,6 +19,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 		listenerTimeOut: null,
 		savePaymentRequestTimeout: null,
+		statusListener: null,
 
 		initialize: function() {
 
@@ -96,6 +97,7 @@ app.views.DisplayPaymentAddress = (function() {
 				});
 				this.renderQrCode();
 				this.startListeningForPayment();
+				this.startListeningForStatus();
 				this.savePaymentRequestTimeout = _.delay(_.bind(function() {
 					this.model.save();
 				}, this), 5000);
@@ -210,6 +212,30 @@ app.views.DisplayPaymentAddress = (function() {
 			clearTimeout(this.listenerTimeOut);
 		},
 
+		startListeningForStatus: function() {
+			var paymentRequest = this.model.toJSON();
+			var paymentMethod = paymentRequest.method;
+			this.statusListener = {};
+			this.statusListener.channel = 'status-check?' + querystring.stringify({
+				network: paymentMethod,
+			});
+			this.statusListener.listener = function(status) {
+				var paymentMethodActive = status[paymentMethod] || false;
+				$('.view.display-payment-address').toggleClass('payment-method-inactive', !paymentMethodActive);
+			}
+
+			app.services.ctApi.subscribe(this.statusListener.channel, this.statusListener.listener);
+		},
+
+		stopListeningForStatus: function() {
+
+			if (this.statusListener && this.statusListener.channel && this.statusListener.listener) {
+				var channel = this.statusListener.channel;
+				var listener = this.statusListener.listener;
+				app.services.ctApi.unsubscribe(channel, listener);
+			}
+		},
+
 		cancel: function(evt) {
 
 			if (evt && evt.preventDefault) {
@@ -241,6 +267,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 			clearTimeout(this.savePaymentRequestTimeout);
 			this.stopListeningForPayment();
+			this.stopListeningForStatus();
 		},
 
 		onBackButton: function() {

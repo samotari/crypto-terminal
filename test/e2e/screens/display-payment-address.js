@@ -4,6 +4,7 @@ var _ = require('underscore');
 var expect = require('chai').expect;
 var helpers = require('../helpers');
 var manager = require('../../manager');
+var querystring = require('querystring');
 require('../global-hooks');
 
 describe('#display-payment-address', function() {
@@ -122,5 +123,40 @@ describe('#display-payment-address', function() {
 				done();
 			});
 		}).catch(done);
+	});
+
+	describe('warning: payment-method-inactive', function() {
+
+		var selector = '.warning-payment-method-inactive';
+		var active = true;
+		var sendStatusInterval;
+		beforeEach(function() {
+			sendStatusInterval = setInterval(function() {
+				socketServer.primus.write({
+					channel: 'status-check?' + querystring.stringify({
+						network: 'bitcoinTestnet',
+					}),
+					data: { bitcoinTestnet: active },
+				});
+			}, 5);
+		});
+
+		afterEach(function() {
+			clearInterval(sendStatusInterval);
+		});
+
+		it('not visible when active', function(done) {
+			active = true;
+			manager.page.waitFor(selector, { visible: false }).then(function() {
+				done();
+			}).catch(done);
+		});
+
+		it('visible when inactive', function(done) {
+			active = false;
+			manager.page.waitFor(selector, { visible: true }).then(function() {
+				done();
+			}).catch(done);
+		});
 	});
 });

@@ -1,9 +1,13 @@
 <div class="info">
 	<div class="info-inner">
 		{{> amount}}
-		<div class="message">
-			<p>{{{i18n "display-payment-address.message.offline1"}}}</p>
-			<p>{{{i18n "display-payment-address.message.offline2"}}}</p>
+		<div class="message warning-offline">
+			<h4>{{i18n "display-payment-address.message.warning"}}</h4>
+			<p>{{i18n "display-payment-address.message.offline"}}</p>
+		</div>
+		<div class="message warning-payment-method-inactive">
+			<h4>{{i18n "display-payment-address.message.warning"}}</h4>
+			<p>{{i18n "display-payment-address.message.cannot-verify-payment"}}</p>
 		</div>
 	</div>
 </div>
