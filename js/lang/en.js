@@ -52,8 +52,8 @@ app.lang['en'] = (function() {
 		'pay-address.cancel': 'Cancel',
 		'pay-address.back': 'Back',
 
-		'display-payment-address.message.warning-offline': '<strong>Warning!</strong> Device is offline.',
-		'display-payment-address.message.warning-server-error': '<strong>Warning!</strong> Error in the server.',
+		'display-payment-address.message.warning': 'Warning!',
+		'display-payment-address.message.offline': 'Device is offline.',
 		'display-payment-address.message.cannot-verify-payment': 'Cannot verify payment.',
 
 		'payment.status.pending': 'Pending',
