@@ -1,5 +1,7 @@
 # Changelog
 
+* v1.2.0:
+  * A warning will now be displayed if the app is unable to verify a payment for the specified payment method.
 * v1.1.0:
   * Added a guided setup after first installing the app
   * Added recommended mobile wallets page
