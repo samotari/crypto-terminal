@@ -47,19 +47,25 @@ app.i18n = (function() {
 		getDefaultLocale: function() {
 			return app.config.defaultLocale;
 		},
-		getMissingAll: function() {
+		getMissingTranslationsAll: function() {
 			var locales = _.keys(app.lang);
 			var defaultLocale = this.getDefaultLocale();
 			var nonDefaultLocales = _.filter(locales, function(locale) {
 				return locale !== defaultLocale;
 			});
-			return _.object(_.map(nonDefaultLocales, function(locale) {
-				var missingKeys = _.filter(_.keys(app.lang[defaultLocale]), function(key) {
-					return !app.lang[locale][key];
-				});
-				return [locale, missingKeys];
-			}));
-		}
+			return _.chain(nonDefaultLocales).map(function(locale) {
+				return [locale, this.getMissingTranslations(locale)];
+			}, this).object().value();
+		},
+		getMissingTranslations: function(locale) {
+			var defaultLocale = this.getDefaultLocale();
+			var keys = _.keys(app.lang[defaultLocale]);
+			return _.chain(keys).filter(function(key) {
+				return !app.lang[locale][key];
+			}).map(function(key) {
+				return [key, app.lang[defaultLocale][key]];
+			}).object().value();
+		},
 	};
 
 })();
