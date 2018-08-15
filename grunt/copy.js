@@ -114,6 +114,7 @@ module.exports = {
 				flatten: true,
 				src: [
 					'images/bitcoin.svg',
+					'images/lightning.svg',
 					'images/litecoin.svg',
 					'images/monero.svg'
 				],

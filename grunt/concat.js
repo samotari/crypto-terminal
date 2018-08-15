@@ -152,7 +152,8 @@ module.exports = {
 		src: [
 			'build/homepage/css/fonts.min.css',
 			'build/homepage/css/reset.min.css',
-			'build/homepage/css/style.min.css'
+			'build/homepage/css/style.min.css',
+			'build/homepage/css/pages/*.min.css'
 		],
 		dest: 'build/homepage/all.min.css'
 	}

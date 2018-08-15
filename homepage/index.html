@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="css/all.min.css">
 </head>
 <body>
-	<div class="content main">
+	<div id="main" class="content main">
 		<div class="wrap">
 			<div class="title-description-and-logo">
 				<div class="title-description-and-logo-inner">
@@ -25,11 +25,23 @@
 				<img class="screenshot" src="images/device-app-qr-code.svg" alt="">
 			</div>
 			<div class="more-info">
+				<a class="learn-more link" href="#features">Learn More</a>
 				<div class="supported-cryptocurrencies">
-					<p class="supported-cryptocurrencies-text">Supported cryptocurrencies:</p>
-					<a class="supported-cryptocurrency" href="https://bitcoin.org/"><img class="supported-cryptocurrency-image" src="images/bitcoin.svg" alt="BTC"></a>
-					<a class="supported-cryptocurrency" href="https://litecoin.org/"><img class="supported-cryptocurrency-image" src="images/litecoin.svg" alt="LTC"></a>
-					<a class="supported-cryptocurrency" href="https://getmonero.org/"><img class="supported-cryptocurrency-image" src="images/monero.svg" alt="XMR"></a>
+					<p class="supported-cryptocurrencies-text">Supported payment methods:</p>
+					<ol class="supported-cryptocurrencies-list">
+						<li class="supported-cryptocurrency bitcoin">
+							<a href="https://bitcoin.org/"><img src="images/bitcoin.svg" alt="Bitcoin" title="Bitcoin"></a>
+						</li>
+						<li class="supported-cryptocurrency ln">
+							<a href="https://dev.lightning.community/overview/"><img src="images/lightning.svg" alt="Lightning network" title="Lightning Network"></a>
+						</li>
+						<li class="supported-cryptocurrency litecoin">
+							<a href="https://litecoin.org/"><img src="images/litecoin.svg" alt="Litecoin" title="Litecoin"></a>
+						</li>
+						<li class="supported-cryptocurrency monero">
+							<a href="https://getmonero.org/"><img src="images/monero.svg" alt="Monero" title="Monero"></a>
+						</li>
+					</ol>
 				</div>
 				<div class="app-store-links">
 					<a class="app-store-link play" href="https://play.google.com/store/apps/details?id=com.github.samotari.cryptoterminal"><img src="images/playstore-badge.png" width="568" height="164"></a>
@@ -38,6 +50,39 @@
 					<a class="link github" href="https://github.com/samotari/crypto-terminal"><span class="link-text">Powered by open source on</span><img class="github-logo" alt="" src="images/GitHub_Logo_White.png"></a>
 				</div>
 			</div>
+		</div>
+	</div>
+	<div id="features" class="content features">
+		<div class="wrap">
+			<ul class="feature-list">
+				<li class="feature-list-item secure">
+					<h3>Safe and Secure</h3>
+					<p>Your keys, your bitcoin. Not your keys, not your bitcoin. With CryptoTerminal paired with your own hardware wallet, you will be able to easily receive funds without compromising the security of your funds.</p>
+				</li>
+				<li class="feature-list-item android">
+					<h3>Use an Existing Device</h3>
+					<p>No need to purchase any specialized hardware. CryptoTerminal is installable from the PlayStore directly on your existing Android devices.</p>
+				</li>
+				<li class="feature-list-item design">
+					<h3>Simple, Intuitive Design</h3>
+					<p>With an easy-to-navigate interface, your customers won't need any hand-holding to enter the exciting new world of cryptocurrency payments.</p>
+				</li>
+				<li class="feature-list-item time">
+					<h3>Real-Time Payments</h3>
+					<p>Payments are verified on your device as soon as they are broadcast to the selected payment network - no waiting.</p>
+				</li>
+				<li class="feature-list-item recommendations">
+					<h3>Recommendations</h3>
+					<p>We have thoroughly reviewed the available mobile wallet apps to create a list of recommendations that you can feel confident in suggesting to your customers.</p>
+				</li>
+				<li class="feature-list-item roadmap">
+					<h3>... the road ahead</h3>
+					<p>For a detailed list of the features we plan to implement in the near future, have a look at our roadmap.</p>
+					<div class="feature-list-item-links">
+						<a href="#roadmap" class="link">Read more</a>
+					</div>
+				</li>
+			</ul>
 		</div>
 	</div>
 </body>
