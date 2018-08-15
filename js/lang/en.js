@@ -71,10 +71,12 @@ app.lang['en'] = (function() {
 		'payment-details.label.timestamp': 'Date',
 		'payment-details.label.amount': 'Amount',
 		'payment-details.back': 'Back',
+
 		'payment-request.crypto-amount.field-missing': 'Cannot convert to cryptocurrency amount without "{{field}}"',
 		'payment-request.crypto-amount.unknown-method': 'Cannot convert to cryptocurrency amount because the payment method does not exist',
 		'payment-request.data.invalid': '"data" field invalid',
 		'payment-request.status.invalid': '"status" field invalid',
+
 		'payment-status.unconfirmed.message': 'Thanks!',
 		'payment-status.unconfirmed.done': 'Done',
 		'payment-status.timed-out.message': 'Timed out',
