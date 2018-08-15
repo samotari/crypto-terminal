@@ -40,14 +40,17 @@ app.lang['en'] = (function() {
 
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
-		'settings.accept-crypto-currencies.label': 'Which currencies do you want to accept?',
+		'settings.accept-crypto-currencies.label': 'Which payment methods would you like to accept?',
 		'settings.field-required': '{{label}} is required',
+
 		'pay-enter-amount.description': 'Enter amount to be paid',
 		'pay-enter-amount.continue': 'Continue',
 		'pay-enter-amount.valid-number': 'Amount must be a number',
 		'pay-enter-amount.greater-than-zero': 'Amount must be greater than zero.',
+
 		'pay-choose-method.description': 'Select payment method',
 		'pay-choose-method.cancel': 'Cancel',
+
 		'pay-address.description': 'Scan the QR code to pay',
 		'pay-address.cancel': 'Cancel',
 		'pay-address.back': 'Back',
