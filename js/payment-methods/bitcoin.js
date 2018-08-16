@@ -68,10 +68,13 @@ app.paymentMethods.bitcoin = (function() {
 				'private-keys-warning': 'UPOZORNĚNÍ: Nepoužívejte s touto aplikací soukromé klíče!',
 			},
 			'es': {
+				'verificationInstructions': 'Compare las siguentes direcciones con las que genera su monedero',
 				'settings.addressIndex.label': 'Indice de direcciones',
+				'settings.addressIndex.description': 'Número de inicio desde el cual las direcciones van a ser derivadas',
 				'settings.addressIndex.integer-required': 'Debe ser un entero',
 				'settings.addressIndex.greater-than-or-equal-zero': 'Debe ser mayor o igual que cero',
 				'settings.extendedPublicKey.label': 'Clave Pública Extendida',
+				'settings.extendedPublicKey.description': 'Usada para derivar una nueva direción cada vez que genere una solicitud de pago',
 				'incorrect-number-of-bytes': 'Número incorrecto de bytes',
 				'invalid-checksum': 'Suma de comprobación inválida',
 				'invalid-derivation-scheme': 'Esquema de derivación no válido',
@@ -82,6 +85,7 @@ app.paymentMethods.bitcoin = (function() {
 				'index-no-hardened': 'Las claves secundarias reforzadas no son compatibles',
 				'failed-to-derive-address': 'No se pudo derivar la dirección',
 				'private-keys-warning': '¡ADVERTENCIA: NO utilice claves privadas en esta aplicación!',
+				'segwit-not-supported': 'Direcciones segwit no son todavia acceptadas. Si su monedero lo permite utilice "legacy" clave pública extendida (xpub)',
 			},
 			'fr': {
 				'settings.addressIndex.label': 'Indice d\'adresse',
