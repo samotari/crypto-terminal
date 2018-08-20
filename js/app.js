@@ -54,6 +54,14 @@ var app = app || {};
 		}
 	};
 
+	app.isDeveloperMode = function() {
+		return app.settings.get('developer') === true;
+	};
+
+	app.setDeveloperMode = function(enabled) {
+		app.settings.set('developer', enabled === true);
+	};
+
 	app.isTest = function() {
 		return typeof mocha !== 'undefined';
 	};

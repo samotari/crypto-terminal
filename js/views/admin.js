@@ -32,6 +32,8 @@ app.views.Admin = (function() {
 
 			// Payment method settings.
 			_.each(app.paymentMethods, function(paymentMethod, key) {
+				var enabled = _.result(paymentMethod, 'enabled') === true;
+				if (!enabled) return;
 				subPages.push({
 					key: key,
 					label: _.result(paymentMethod, 'label'),

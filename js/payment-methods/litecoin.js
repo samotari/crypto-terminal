@@ -8,6 +8,8 @@ app.paymentMethods.litecoin = (function() {
 
 	return app.paymentMethods.bitcoin.extend({
 
+		enabled: true,
+
 		// The name of the cryptocurrency shown in the UI:
 		label: 'Litecoin',
 
