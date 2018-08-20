@@ -1,11 +1,14 @@
 .view.recommended-mobile-wallets .recommendations-group {
-	margin-top: 2.5rem;
+	margin-top: 2rem;
 }
 .view.recommended-mobile-wallets .recommendations-group-items {
-	display: flex;
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
 }
-.view.recommended-mobile-wallets .recommendations-group-item + .recommendations-group-item {
-	margin-left: 2rem;
+.view.recommended-mobile-wallets .recommendations-group-item {
+	float: left;
+	margin: 0 1rem 1rem 0;
 }
 .view.recommended-mobile-wallets .recommendations-group-item-name {
 	font-size: 1.1rem;
@@ -13,6 +16,8 @@
 	margin-top: .4rem;
 }
 .view.recommended-mobile-wallets .recommendations-group-item-qr-code {
+	display: flex;
+	flex-shrink: 2;
 	width: 10rem;
 	height: 10rem;
 }
