@@ -8,6 +8,10 @@ app.paymentMethods.bitcoinTestnet = (function() {
 
 	return app.paymentMethods.bitcoin.extend({
 
+		enabled: function() {
+			return app.isDeveloperMode();
+		},
+
 		// The name of the cryptocurrency shown in the UI:
 		label: 'Bitcoin (testnet)',
 

@@ -8,6 +8,8 @@ app.paymentMethods.bitcoinLightning = (function() {
 
 	return app.abstracts.PaymentMethod.extend({
 
+		enabled: true,
+
 		// The name of the cryptocurrency shown in the UI:
 		label: 'Bitcoin (LN)',
 

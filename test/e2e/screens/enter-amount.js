@@ -14,6 +14,7 @@ describe('#pay', function() {
 
 	beforeEach(function(done) {
 		manager.evaluateInPageContext(function() {
+			app.setDeveloperMode(true);
 			app.markGettingStartedAsComplete();
 			app.settings.set('configurableCryptoCurrencies', ['bitcoinTestnet']);
 			app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');

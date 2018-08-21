@@ -54,6 +54,9 @@ app.views.GettingStarted = (function() {
 
 			_.each(app.paymentMethods, function(paymentMethod, key) {
 
+				var enabled = _.result(paymentMethod, 'enabled') === true;
+				if (!enabled) return;
+
 				subPages.push({
 					key: 'payment-method-settings-' + key,
 					label: _.result(paymentMethod, 'label'),
