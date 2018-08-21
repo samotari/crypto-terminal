@@ -18,6 +18,11 @@ module.exports = {
 		src: 'build/base-x.js',
 		dest: 'build/base-x.min.js'
 	},
+	bech32: {
+		nonull: true,
+		src: 'build/bech32.js',
+		dest: 'build/bech32.min.js'
+	},
 	bigi: {
 		nonull: true,
 		src: 'build/bigi.js',

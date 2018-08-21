@@ -8,6 +8,13 @@ module.exports = {
 		src: 'node_modules/base-x/index.js',
 		dest: 'build/base-x.js'
 	},
+	bech32: {
+		options: {
+			standalone: 'bech32'
+		},
+		src: 'node_modules/bech32/index.js',
+		dest: 'build/bech32.js'
+	},
 	bigi: {
 		options: {
 			standalone: 'BigInteger'

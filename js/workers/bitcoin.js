@@ -56,11 +56,6 @@ var functions = {
 			throw new Error('invalid-network-byte');
 		}
 
-		var isSegwit = _.contains(['p2wpkh-p2sh', 'p2wsh-p2sh', 'p2wpkh', 'p2wsh'], type);
-		if (isSegwit) {
-			throw new Error('segwit-not-supported');
-		}
-
 		// Validate the checksum.
 		var checksum = hex.substr(156, 8);
 		var hash = functions.sha256sha256(hex.substr(0, 156));
@@ -117,11 +112,6 @@ var functions = {
 		if (index.isGreaterThanOrEqualTo(0x100000000)) {
 			// Maximum number of child keys is 2^32.
 			throw new Error('index-must-be-less-than');
-		}
-
-		if (index.isGreaterThanOrEqualTo(0x80000000)) {
-			// Hardened child keys start at index 2^31.
-			throw new Error('index-no-hardened');
 		}
 
 		var decoded = functions.decodeExtendedPublicKey(extendedPublicKey, network);
@@ -185,6 +175,7 @@ var functions = {
 			key: compressedKey,
 			network: network,
 			parentFingerPrint: parentFingerPrint,
+			type: decoded.type,
 		};
 	},
 
