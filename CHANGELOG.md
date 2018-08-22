@@ -1,5 +1,8 @@
 # Changelog
 
+* TBD:
+  * Segwit support (native and backwards compatible addresses)
+  * Hide testnet payment methods by default
 * v1.2.0:
   * A warning will now be displayed if the app is unable to verify a payment for the specified payment method.
 * v1.1.0:
