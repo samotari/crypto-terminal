@@ -38,6 +38,9 @@ app.paymentMethods.monero = (function() {
 				'invalid-checksum': 'Invalid checksum',
 				'invalid-length': 'Invalid length',
 				'invalid-network-byte': 'Invalid network byte',
+				'invalid-secret.length': 'Invalid secret key length. Are you sure that you copied or typed the whole key?',
+				'public-address-needed-to-check-private-view-key': 'Public Address is required to check the Private View Key',
+				'private-view-key-public-address-mismatch': 'Incorrect Private View Key: Does not pair with the Public Address provided.',
 			},
 			'cs': {
 				'settings.public-address.label': 'Veřejná adresa',
@@ -73,7 +76,7 @@ app.paymentMethods.monero = (function() {
 				},
 				type: 'text',
 				required: true,
-				validate: function(value) {
+				validate: function(value, data) {
 					this.validatePublicAddress(value);
 				},
 				actions: [
@@ -92,8 +95,8 @@ app.paymentMethods.monero = (function() {
 				},
 				type: 'text',
 				required: true,
-				validate: function(value) {
-					this.validatePrivateViewKey(value);
+				validate: function(value, data) {
+					this.validatePrivateViewKey(value, data[this.ref + '.publicAddress']);
 				},
 				actions: [
 					{
@@ -130,6 +133,11 @@ app.paymentMethods.monero = (function() {
 			var alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 			return basex(alphabet);
 		})(),
+
+		KEY_SIZE: 32,
+		STRUCT_SIZES: {
+			GE_P3: 160,
+		},
 
 		getNetwork: function(version) {
 
@@ -245,11 +253,42 @@ app.paymentMethods.monero = (function() {
 			return decoded;
 		},
 
-		validatePrivateViewKey: function(privateViewKey) {
+		validatePrivateViewKey: function(privateViewKey, publicAddress) {
 
-			// !! TODO !!
-			// Are there any sanity checks that can be done to validate a private view key?
-			return true;
+			if (!publicAddress) {
+				throw new Error(app.i18n.t(this.ref + '.public-address-needed-to-check-private-view-key'));
+			}
+
+			var decoded = this.decodePublicAddress(publicAddress);
+			var publicViewKey = this.secretKeyToPublicKey(privateViewKey);
+
+			if (publicViewKey !== decoded.publicViewKey) {
+				throw new Error(app.i18n.t(this.ref + '.private-view-key-public-address-mismatch'));
+			}
+		},
+
+		secretKeyToPublicKey: function(secretKey) {
+
+			var input = Buffer.from(secretKey, 'hex');
+
+			if (input.length !== 32) {
+				throw new Error(app.i18n.t(this.ref + '.invalid-secret.length'));
+			}
+
+			var Module = MoneroCrypto;
+			var KEY_SIZE = this.KEY_SIZE;
+			var STRUCT_SIZES = this.STRUCT_SIZES;
+			var input_mem = Module._malloc(KEY_SIZE);
+			Module.HEAPU8.set(input, input_mem);
+			var ge_p3 = Module._malloc(STRUCT_SIZES.GE_P3);
+			var out_mem = Module._malloc(KEY_SIZE);
+			Module.ccall('ge_scalarmult_base', 'void', ['number', 'number'], [ge_p3, input_mem]);
+			Module.ccall('ge_p3_tobytes', 'void', ['number', 'number'], [out_mem, ge_p3]);
+			var output = Module.HEAPU8.subarray(out_mem, out_mem + KEY_SIZE);
+			Module._free(ge_p3);
+			Module._free(input_mem);
+			Module._free(out_mem);
+			return (new Buffer(output)).toString('hex');
 		},
 
 		generatePaymentRequest: function(amount, cb) {

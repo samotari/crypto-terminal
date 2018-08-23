@@ -39,15 +39,15 @@ describe('paymentMethods.monero', function() {
 				}
 				return results;
 			}, fixtures)
-			.then(function(results) {
-				expect(results).to.have.length(fixtures.length);
-				_.each(fixtures, function(fixture, index) {
-					var result = results[index];
-					expect(result).to.equal(fixture.hex);
-				});
-				done();
-			})
-			.catch(done);
+				.then(function(results) {
+					expect(results).to.have.length(fixtures.length);
+					_.each(fixtures, function(fixture, index) {
+						var result = results[index];
+						expect(result).to.equal(fixture.hex);
+					});
+					done();
+				})
+				.catch(done);
 		});
 	});
 
@@ -94,16 +94,52 @@ describe('paymentMethods.monero', function() {
 				}
 				return results;
 			}, fixtures)
-			.then(function(results) {
-				expect(results).to.have.length(fixtures.length);
-				_.each(fixtures, function(fixture, index) {
-					var result = results[index];
-					result = _.pick(result, _.keys(fixture.decoded));
-					expect(result).to.deep.equal(fixture.decoded);
+				.then(function(results) {
+					expect(results).to.have.length(fixtures.length);
+					_.each(fixtures, function(fixture, index) {
+						var result = results[index];
+						result = _.pick(result, _.keys(fixture.decoded));
+						expect(result).to.deep.equal(fixture.decoded);
+					});
+					done();
+				})
+				.catch(done);
+		});
+	});
+
+	describe('secretKeyToPublicKey(secretKey)', function() {
+
+		it('should derive the public key correctly', function(done) {
+
+			var fixtures = [
+				{
+					secretKey: '136674e3e6868bb04d4ef2674f97c00166f5f7aa67185bdda97cde8ecfe4f609',
+					publicKey: '2fa6a37e5095f4c1ffe34726694ce9f948adc587dc224c6155905c58eeaba6ef',
+				},
+				{
+					secretKey: '2cc9626dc6647c96c93e1714036a696b75472c38a6aef56df4d7903782531603',
+					publicKey: '0cc13af67c5546628fc7b507758be423572db4ad2bc8a274c07bb2c7b3272a52',
+				},
+				{
+					secretKey: '5e00fe01b4b16c2a29ba043379238d3bad90ce2840aae5e873d761b6eaf7fc08',
+					publicKey: '672d72b1dc13010d91d85833858191198c1be5b440f2721813458a0d99f98d3e',
+				},
+			];
+
+			manager.page.evaluate(function(fixtures) {
+				return _.map(fixtures, function(fixture) {
+					return app.paymentMethods.monero.secretKeyToPublicKey(fixture.secretKey);
 				});
-				done();
-			})
-			.catch(done);
+			}, fixtures)
+				.then(function(results) {
+					expect(results).to.have.length(fixtures.length);
+					_.each(fixtures, function(fixture, index) {
+						var result = results[index];
+						expect(result).to.equal(fixture.publicKey);
+					});
+					done();
+				})
+				.catch(done);
 		});
 	});
 });

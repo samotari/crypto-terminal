@@ -113,7 +113,7 @@ app.paymentMethods.bitcoin = (function() {
 				},
 				type: 'text',
 				required: true,
-				validateAsync: function(value, cb) {
+				validateAsync: function(value, data, cb) {
 					this.decodeExtendedPublicKey(value, cb);
 				},
 				actions: [
@@ -136,7 +136,7 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'number',
 				required: true,
 				default: '0',
-				validate: function(value) {
+				validate: function(value, data) {
 					value = parseInt(value);
 					if (_.isNaN(value)) {
 						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.integer-required'));
