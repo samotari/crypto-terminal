@@ -32,23 +32,18 @@ app.views.DisplayPaymentAddress = (function() {
 		queryRate: function() {
 
 			var currency = this.model.get('currency');
-			var rate = this.model.get('rate');
 
-			if (!_.isNull(rate)) {
-				this.onChangeRate();
+			if (this.paymentMethod.code !== currency) {
+				app.busy();
+				this.paymentMethod.getExchangeRate(currency, _.bind(function(error, rate) {
+					app.busy(false);
+					if (error) {
+						return app.mainView.showMessage(error);
+					}
+					this.model.set({ rate: rate });
+				}, this));
 			} else {
-				if (this.paymentMethod.code !== currency) {
-					app.busy();
-					this.paymentMethod.getExchangeRate(currency, _.bind(function(error, rate) {
-						app.busy(false);
-						if (error) {
-							return app.mainView.showMessage(error);
-						}
-						this.model.set({ rate: rate });
-					}, this));
-				} else {
-					this.model.set({ rate: '1' });
-				}
+				this.model.set({ rate: '1' });
 			}
 		},
 
