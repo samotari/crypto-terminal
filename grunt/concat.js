@@ -65,6 +65,7 @@ module.exports = {
 			'build/ecurve.js',
 			'build/querystring.js',
 			'third-party/sjcl/sjcl.min.js',
+			'third-party/monero/crypto.js',
 			'node_modules/moment/min/moment-with-locales.js',
 
 			// Application files:
@@ -118,6 +119,7 @@ module.exports = {
 			'build/ecurve.min.js',
 			'build/querystring.min.js',
 			'third-party/sjcl/sjcl.min.js',
+			'third-party/monero/crypto.js',
 			'node_modules/moment/min/moment-with-locales.min.js',
 
 			// Application files:

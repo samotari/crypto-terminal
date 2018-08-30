@@ -48,7 +48,7 @@ app.settings = (function() {
 
 				if (setting.validate) {
 					try {
-						setting.validate(value);
+						setting.validate(value, data);
 					} catch (error) {
 						errors.push({
 							field: setting.path,
@@ -62,7 +62,7 @@ app.settings = (function() {
 				}
 
 				try {
-					setting.validateAsync(value, function(error) {
+					setting.validateAsync(value, data, function(error) {
 						if (error) {
 							errors.push({
 								field: setting.path,

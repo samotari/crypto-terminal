@@ -27,7 +27,7 @@ app.abstracts.PaymentMethod = (function() {
 			// 	label: 'Some Field (for Humans)',
 			// 	type: 'text',
 			// 	required: true,
-			// 	validate: function(value) {
+			// 	validate: function(value, data) {
 			// 		// For checking the form value for this field.
 			// 		// Throw an error if the value is invalid. Like this:
 			// 		throw new Error('Some field is invalid!');
