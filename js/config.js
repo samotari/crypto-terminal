@@ -94,6 +94,21 @@ app.config = (function() {
 		},
 		settings: [
 			{
+				name: 'debug',
+				visible: false,
+				default: false,
+			},
+			{
+				name: 'developer',
+				visible: false,
+				default: false,
+			},
+			{
+				name: 'getting-started-complete',
+				visible: false,
+				default: false,
+			},
+			{
 				name: 'configurableCryptoCurrencies',
 				visible: false,
 				default: [],
@@ -146,6 +161,17 @@ app.config = (function() {
 						},
 					];
 				},
+			},
+			{
+				name: 'inAppAudio',
+				label: function() {
+					return app.i18n.t('settings.in-app-audio.label');
+				},
+				description: function() {
+					return app.i18n.t('settings.in-app-audio.description');
+				},
+				type: 'checkbox',
+				default: true,
 			},
 		],
 		recommendations: {

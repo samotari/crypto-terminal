@@ -29,6 +29,17 @@ app.views.PaymentStatus = (function() {
 		onRender: function() {
 
 			this.$el.addClass(this.options.status);
+			this.playSound();
+		},
+
+		playSound: function() {
+
+			var status = this.options.status;
+			switch (status) {
+				case 'unconfirmed':
+					app.sound.play('pay-success-01');
+					break;
+			}
 		},
 
 		done: function(evt) {

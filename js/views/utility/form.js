@@ -80,7 +80,6 @@ app.views.utility.Form = (function() {
 			this.validate(data, _.bind(function(error, validationErrors) {
 
 				if (error) {
-					app.error(error);
 					return app.mainView.showMessage(error);
 				}
 
@@ -92,7 +91,7 @@ app.views.utility.Form = (function() {
 						// Try saving.
 						this.save(data);
 					} catch (error) {
-						app.error(error);
+						app.log(error);
 						return app.mainView.showMessage(error);
 					}
 				}

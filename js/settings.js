@@ -87,6 +87,16 @@ app.settings = (function() {
 				done(null, errors);
 			});
 		},
+		doSave: function(settings, data) {
+			_.each(settings, function(setting) {
+				var path = setting.path;
+				var type = setting.type;
+				if (type === 'checkbox') {
+					data[path] = !!data[path];
+				}
+			});
+			this.set(data);
+		},
 		getAcceptedCryptoCurrencies: function() {
 			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];
 			return _.filter(configurableCryptoCurrencies, function(key) {
@@ -102,11 +112,16 @@ app.settings = (function() {
 		},
 		get: function(key) {
 			var model = this.collection.findWhere({ key: key });
-			var value = model && model.get('value') || null;
-			return !_.isNull(value) && value || defaults[key] || null;
+			var value;
+			if (model) {
+				value = model.get('value');
+			}
+			if (_.isUndefined(value) && !_.isUndefined(defaults[key])) {
+				value = defaults[key];
+			}
+			return value;
 		},
 		set: function(keyOrValues, value) {
-
 			if (_.isObject(keyOrValues)) {
 				_.each(keyOrValues, function(value, key) {
 					this.set(key, value);
@@ -114,13 +129,19 @@ app.settings = (function() {
 			} else {
 				var key = keyOrValues;
 				var model = this.collection.findWhere({ key: key });
-				if (model) {
-					model.set('value', value).save();
+				if (_.isNull(value)) {
+					if (model) {
+						model.destroy();
+					}
 				} else {
-					this.collection.add({
-						key: key,
-						value: value,
-					}).save();
+					if (model) {
+						model.set('value', value).save();
+					} else {
+						this.collection.add({
+							key: key,
+							value: value,
+						}).save();
+					}
 				}
 			}
 

@@ -26,7 +26,7 @@ app.views.GettingStartedGeneralSettings = (function() {
 
 		save: function(data) {
 
-			app.settings.set(data);
+			app.settings.doSave(app.config.settings, data);
 		},
 
 		isComplete: function() {

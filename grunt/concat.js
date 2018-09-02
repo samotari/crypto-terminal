@@ -93,6 +93,7 @@ module.exports = {
 			'js/config.js',
 			'js/cache.js',
 			'js/settings.js',
+			'js/sound.js',
 			'js/i18n.js',
 			'js/router.js',
 			'js/init.js'
@@ -148,6 +149,7 @@ module.exports = {
 			'build/js/config.min.js',
 			'build/js/cache.min.js',
 			'build/js/settings.min.js',
+			'build/js/sound.min.js',
 			'build/js/i18n.min.js',
 			'build/js/router.min.js',
 			'build/js/init.min.js'
