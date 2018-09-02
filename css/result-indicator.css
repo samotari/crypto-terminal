@@ -11,6 +11,7 @@
 	border-radius: 50%;
 	-webkit-animation: resultIndicatorScale .5s ease-in-out;
 	animation: resultIndicatorScale .5s ease-in-out;
+	will-change: transform;
 	margin: 0 auto;
 }
 .result-indicator.success {
