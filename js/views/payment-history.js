@@ -15,6 +15,13 @@ app.views.PaymentHistory = (function() {
 			'click .payment-history-item': 'showPaymentDetails',
 		},
 
+		initialize: function() {
+
+			_.bindAll(this, 'exportPaymentHistory');
+			this.$exportPaymentHistory = app.mainView.$('.header-button.export');
+			this.$exportPaymentHistory .on('click', this.exportPaymentHistory);
+		},
+
 		collection: function() {
 			return app.paymentRequests;
 		},
@@ -29,6 +36,8 @@ app.views.PaymentHistory = (function() {
 			var collection = _.result(this, 'collection');
 			var total = _.result(collection, 'total');
 			this.$el.toggleClass('empty', total === 0);
+			// Add a class to body tag in order to show specific buttons in header.
+			$('body').addClass('payment-history');
 		},
 
 		showPaymentDetails: function(evt) {
@@ -49,24 +58,18 @@ app.views.PaymentHistory = (function() {
 			}
 		},
 
-		exportPaymentDetails: function() {
+		exportPaymentHistory: function() {
 
-			var fileName = app.config.paymentHistory.export.fileName;
-
-			var history = _.filter(_.map(this.collection.models, function (model) {
-				return model.attributes;
-			}));
-
-			app.services.exportPayments.exportPaymentDetails(history, fileName, function(error) {
-
+			app.busy(true);
+			app.exportPayments.exportPaymentDetails(function(error) {
+				app.busy(false);
 				if (error) {
-					return alert(app.i18n.t('payment-history.export.fail'));
+					return app.mainView.showMessage(app.i18n.t('payment-history.export.fail'));
 				}
 
-				alert(app.i18n.t('payment-history.export.success'));
+				app.mainView.showMessage(app.i18n.t('payment-history.export.success'));
 
-			})
-			
+			});
 		}
 	});
 })();

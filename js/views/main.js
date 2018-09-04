@@ -23,7 +23,6 @@ app.views.Main = (function() {
 			'click .header-button.more': 'showMoreMenu',
 			'click #language-menu .menu-item': 'changeLanguage',
 			'click a': 'onClickAnchor',
-			'click .export': 'exportPaymentHistory',
 		},
 
 		views: {},
@@ -524,10 +523,6 @@ app.views.Main = (function() {
 		close: function() {
 			// Do not close this view.
 		},
-
-		exportPaymentHistory: function() {
-			
-		}
 
 	});
 

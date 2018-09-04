@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('underscore');
 var expect = require('chai').expect;
 var helpers = require('../helpers');
 var manager = require('../../manager');
