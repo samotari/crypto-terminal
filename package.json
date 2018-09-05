@@ -1,6 +1,6 @@
 {
   "name": "crypto-terminal",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "An open-source terminal application with which merchants can accept in-person cryptocurrency payments",
   "private": true,
   "app": {

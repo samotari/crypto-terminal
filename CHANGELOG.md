@@ -1,6 +1,6 @@
 # Changelog
 
-* TBD:
+* v1.3.0:
   * Segwit support (native and backwards compatible addresses)
   * Hide testnet payment methods by default
 * v1.2.0:
