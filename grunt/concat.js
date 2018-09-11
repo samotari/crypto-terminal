@@ -76,6 +76,7 @@ module.exports = {
 			'js/queues.js',
 			'js/util.js',
 			'js/device.js',
+			'js/screen-saver.js',
 			'js/sqlite.js',
 			'js/lang/*.js',
 			'js/abstracts/*.js',
