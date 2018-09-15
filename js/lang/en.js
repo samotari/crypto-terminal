@@ -83,6 +83,12 @@ app.lang['en'] = (function() {
 		'payment-status.unconfirmed.done': 'Done',
 		'payment-status.timed-out.message': 'Timed out',
 		'payment-status.timed-out.done': 'OK',
+
+		'payment-replaceable.accept': 'Accept',
+		'payment-replaceable.reject': 'Reject',
+		'payment-replaceable.message': 'Replaceable by Fee',
+		'payment-replaceable.info': 'This transaction can be replaced by higher fee, do you want to accept it?',
+
 		'sample-addresses.label': 'Sample Addresses:',
 		'enter-pin.cancel': 'Cancel',
 		'enter-pin.submit': 'Enter',

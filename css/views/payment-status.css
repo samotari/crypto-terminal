@@ -13,3 +13,6 @@
 .view.payment-status.timed-out .result-indicator {
 	background-color: #d8000c;
 }
+.view.payment-status.replaceable .result-indicator {
+	background-color: #d89e00;
+}

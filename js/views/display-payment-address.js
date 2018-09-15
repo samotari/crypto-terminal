@@ -107,6 +107,12 @@ app.views.DisplayPaymentAddress = (function() {
 			this.startListeningForStatus();
 			this.startListeningForPayment();
 			_.defer(this.queryRate);
+
+			// When payment is rejected the model already has rate.
+			var rate = this.model.get('rate');
+			if (rate) {
+				_.defer(this.onChangeRate);
+			}
 		},
 
 		generatePaymentRequest: function() {
@@ -199,10 +205,22 @@ app.views.DisplayPaymentAddress = (function() {
 					return app.mainView.showMessage(error);
 				}
 
-				this.updatePaymentRequest({
-					status: 'unconfirmed',
-					data: paymentData,
-				});
+				var isReplaceable = paymentData && paymentData.isReplaceable || false;
+
+				if (isReplaceable) {
+					this.updatePaymentRequest({
+						data: paymentData,
+					});
+					// Special case for RBF feature in bitcoin and litecoin.
+					// Show a warning dialogue where user can accept or reject the payment.
+					app.router.navigate('payment-replaceable', { trigger: true });
+				} else {
+					this.updatePaymentRequest({
+						status: 'unconfirmed',
+						data: paymentData,
+					});
+					app.router.navigate('payment-status/' + status, { trigger: true });
+				}
 
 			}, this));
 

@@ -2,6 +2,7 @@
 
 * TBD:
   * Pay by scanning a paper wallet (using camera or NFC)
+  * Show warning if received payment uses Replace-by-fee (RBF)
 * v1.3.0:
   * Segwit support (native and backwards compatible addresses)
   * Hide testnet payment methods by default

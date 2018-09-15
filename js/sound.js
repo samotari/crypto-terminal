@@ -22,6 +22,19 @@ app.sound = (function() {
 					},
 				],
 			},
+			{
+				name: 'pay-fail-01',
+				src: [
+					{
+						url: 'sounds/pay-fail-01.ogg',
+						type: 'audio/ogg',
+					},
+					{
+						url: 'sounds/pay-fail-01.mp3',
+						type: 'audio/mp3',
+					},
+				],
+			},
 		],
 
 		preloadAll: function(done) {

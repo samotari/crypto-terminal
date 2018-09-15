@@ -1,0 +1,16 @@
+.view.payment-replaceable {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	box-sizing: border-box;
+	padding: 0;
+	padding-bottom: 4rem;
+}
+.view.payment-replaceable .result-indicator {
+	background-color: #d89e00;
+}
+.view.payment-replaceable .info {
+	padding: 2rem;
+    text-align: center;
+}
