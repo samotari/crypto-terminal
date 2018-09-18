@@ -53,11 +53,10 @@ app.views.PaymentHistory = (function() {
 		onRender: function() {
 
 			app.log('paymentHistory.onRender');
-			if (this.collection.length < app.config.paymentHistory.list.limit) {
-				this.fetchPayments();
-			} else {
-				this.renderItems();
-			}
+
+			this.fetchPayments();
+			this.renderItems();
+
 			this.$items = this.$('.payment-history-items');
 			this.$items.on('scroll', this.onScroll);
 		},
@@ -101,8 +100,12 @@ app.views.PaymentHistory = (function() {
 			}
 		},
 
-		onClose: function() {
+		onClose: function(ev) {
 
+			// Reseting collection if longer than limit, for performance in the rest of the app.
+			if (this.collection.length > app.config.paymentHistory.list.limit) {
+				this.collection.reset();
+			}
 			this.$items.off('scroll', this.onScroll);
 		},
 
