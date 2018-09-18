@@ -54,6 +54,9 @@ app.config = (function() {
 		numberPad: {
 			keysMaxLength: 12,
 		},
+		screenSaver: {
+			idleTime: 3 * 60 * 1000,
+		},
 		touch: {
 			quick: {
 				// Maximum time between touchstart and touchend; milliseconds.

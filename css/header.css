@@ -12,6 +12,9 @@
 html.loaded #header {
 	display: inline-block;
 }
+html.screen-saver-on #header {
+	display: none;
+}
 .header-button {
 	position: relative;
 	z-index: 20;
