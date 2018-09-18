@@ -5,51 +5,47 @@ app.screenSaver = (function() {
 	'use strict';
 
 	app.onReady(function() {
-
 		app.screenSaver.initialize();
-
 	});
 
 	return {
 
-		screenSaverActive: false,
+		idleTimeout: null,
 
 		initialize: function() {
 
+			_.bindAll(this,
+				'hide',
+				'resetTimer',
+				'show'
+			);
 			this.startTimer();
-
-			$(document).click(_.bind(this.resetTimer, this));
+			$(document).click(this.resetTimer);
 		},
 
 		resetTimer: function() {
 
-			clearTimeout(this.mouseTimeOut);
-
-			if (this.screenSaverActive) {
-				this.hideScreenSaver();
-			}
-
+			clearTimeout(this.idleTimeout);
+			this.hide();
 			this.startTimer();
 		},
 
 		startTimer: function() {
 
-			this.mouseTimeOut = setTimeout(_.bind(function(){
-				this.showScreenSaver();
-			}, this), app.config.screenSaver.idleTime);
+			this.idleTimeout = setTimeout(this.show, app.config.screenSaver.idleTime);
 		},
 
-		showScreenSaver: function() {
+		show: function() {
 
+			$('#cover-text').text(app.i18n.t('screen-saver.instructions'));
 			$('html').addClass('screen-saver-on');
-			this.screenSaverActive = true;
 		},
 
-		hideScreenSaver: function() {
+		hide: function() {
 
 			$('html').removeClass('screen-saver-on');
-			this.screenSaverActive = false;
-		}
+			$('#cover-text').text('');
+		},
 
 	};
 

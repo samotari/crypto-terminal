@@ -131,6 +131,7 @@ module.exports = {
 			'build/js/queues.min.js',
 			'build/js/util.min.js',
 			'build/js/device.min.js',
+			'build/js/screen-saver.min.js',
 			'build/js/sqlite.min.js',
 			'build/js/lang/*.min.js',
 			'build/js/abstracts/*.min.js',

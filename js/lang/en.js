@@ -98,6 +98,8 @@ app.lang['en'] = (function() {
 		'recommended-mobile-wallets.instructions': 'Scan a QR code with your mobile device to navigate to that app\'s Play or App store listing.',
 		'recommended-mobile-wallets.section-title.android': 'For Android devices',
 		'recommended-mobile-wallets.section-title.ios': 'For iOS devices',
+
+		'screen-saver.instructions': '(tap anywhere to activate)',
 	};
 
 })();

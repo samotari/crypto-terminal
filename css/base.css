@@ -118,6 +118,13 @@ html.screen-saver-on #view {
 	background-image: url('../images/app-loading.svg');
 	margin: 0 auto;
 }
+#cover-text {
+	position: relative;
+	top: -1rem;
+	font-weight: 100;
+	font-style: italic;
+	text-align: center;
+}
 html.loaded #cover {
 	display: none;
 }
@@ -127,9 +134,6 @@ html.loaded.busy #cover {
 html.loaded.busy #cover-image {
 	background-size: 120px;
 	background-image: url('../images/busy.gif');
-}
-html.screen-saver-on #cover-image {
-	display: flex;
 }
 html.screen-saver-on #cover {
 	display: flex;
