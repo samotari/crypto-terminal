@@ -56,7 +56,16 @@ module.exports = {
 				nonull: true,
 				src: 'images/favicon/favicon.ico',
 				dest: 'www/favicon.ico'
-			}
+			},
+			{
+				expand: true,
+				flatten: false,
+				cwd: 'sounds/',
+				src: [
+					'**/*'
+				],
+				dest: 'www/sounds/'
+			},
 		]
 	},
 	cordovaConfig: {

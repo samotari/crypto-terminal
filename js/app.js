@@ -41,6 +41,10 @@ var app = app || {};
 		return typeof cordova !== 'undefined';
 	};
 
+	app.isAndroid = function() {
+		return this.isCordova() && cordova.platformId === 'android';
+	};
+
 	app.cleanUpPendingPaymentRequest = function() {
 
 		app.log('cleanUpPendingPaymentRequest');
