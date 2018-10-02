@@ -32,6 +32,7 @@ describe('#display-payment-address', function() {
 			app.settings.set('configurableCryptoCurrencies', ['bitcoinTestnet']);
 			app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
 			app.settings.set('displayCurrency', 'EUR');
+			app.config.paymentRequests.saveDelay = 0;
 		}, done);
 	});
 
@@ -113,8 +114,18 @@ describe('#display-payment-address', function() {
 			var hash = manager.getPageLocationHash();
 			expect(hash).to.equal('pay');
 			manager.evaluateInPageContext(function() {
-				var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
-				return Promise.resolve(paymentRequest && paymentRequest.toJSON() || null);
+				return new Promise(function(resolve, reject) {
+					var paymentRequest;
+					async.until(function() {
+						paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
+						return !!paymentRequest;
+					}, function(next) {
+						setTimeout(next, 5);
+					}, function(error) {
+						if (error) return reject(error);
+						resolve(paymentRequest && paymentRequest.toJSON() || null);
+					});
+				});
 			}, function(error, paymentRequest) {
 				if (error) return done(error);
 				expect(paymentRequest).to.not.equal(null);

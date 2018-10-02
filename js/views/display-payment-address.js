@@ -17,16 +17,47 @@ app.views.DisplayPaymentAddress = (function() {
 			'click .back': 'back',
 		},
 
-		listenerTimeOut: null,
-		savePaymentRequestTimeout: null,
-		statusListener: null,
+		timers: {
+			listener: null,
+			savePaymentRequest: null,
+		},
+
+		ctApiListeners: {},
+		payingFromPaperWallet: false,
 
 		initialize: function() {
 
-			_.bindAll(this, 'queryRate', 'onChangeRate');
+			_.bindAll(this,
+				'generatePaymentRequest',
+				'onStatusChange',
+				'payFromPaperWallet',
+				'queryRate',
+				'renderCryptoAmount',
+				'renderQrCode',
+				'scanAndPayFromPaperWallet',
+				'startListeningForPayment'
+			);
 			var method = this.model.get('method');
 			this.paymentMethod = app.paymentMethods[method];
-			this.listenTo(this.model, 'change:rate', this.onChangeRate);
+			this.listenTo(this.model, 'change:amount change:rate', this.generatePaymentRequest);
+			this.listenTo(this.model, 'change:status', this.onStatusChange);
+			this.listenTo(this.model, 'change:amount change:rate', this.renderCryptoAmount);
+			this.listenTo(this.model, 'change:uri', this.renderQrCode);
+			this.listenTo(this.model, 'change:uri', this.startListeningForPayment);
+			this.$scanAndPayFromPaperWallet = app.mainView.$('.header-button.qrcode');
+			this.$scanAndPayFromPaperWallet.on('click', this.scanAndPayFromPaperWallet);
+			if (this.canPayFromPaperWallet()) {
+				this.nfcStartReading = app.nfc.startReading(app.log);
+				app.nfc.on('read', this.payFromPaperWallet);
+			}
+		},
+
+		onStatusChange: function() {
+
+			var status = this.model.get('status');
+			if (status !== 'pending') {
+				return app.router.navigate('payment-status/' + status, { trigger: true });
+			}
 		},
 
 		queryRate: function() {
@@ -70,14 +101,17 @@ app.views.DisplayPaymentAddress = (function() {
 			this.$address = this.$('.address');
 			this.$addressQrCode = this.$('.address-qr-code');
 			this.$cryptoAmount = this.$('.crypto.amount');
+			this.toggleQrCodeHeaderIconVisibility();
+			this.renderCryptoAmount();
+			this.renderQrCode();
+			this.startListeningForStatus();
+			this.startListeningForPayment();
 			_.defer(this.queryRate);
 		},
 
-		onChangeRate: function() {
+		generatePaymentRequest: function() {
 
 			var cryptoAmount = this.model.getCryptoAmount();
-
-			this.renderCryptoAmount(cryptoAmount);
 
 			this.paymentMethod.generatePaymentRequest(cryptoAmount, _.bind(function(error, paymentRequest) {
 
@@ -90,39 +124,42 @@ app.views.DisplayPaymentAddress = (function() {
 					uri: paymentRequest.uri,
 					status: 'pending',
 				});
-				this.renderQrCode();
-				this.startListeningForPayment();
-				this.startListeningForStatus();
-				this.savePaymentRequestTimeout = _.delay(_.bind(function() {
+
+				this.timers.savePaymentRequest = _.delay(_.bind(function() {
 					this.model.save();
-				}, this), 5000);
+				}, this), app.config.paymentRequests.saveDelay);
 
 			}, this));
 		},
 
-		renderCryptoAmount: function(cryptoAmount) {
+		renderCryptoAmount: function() {
 
+			var amount = this.model.get('amount');
 			var currency = this.model.get('currency');
+			var rate = this.model.get('rate');
 			var paymentMethod = this.paymentMethod;
+			var isDisplayCurrency = paymentMethod.code === currency;
 
-			if (paymentMethod.code === currency) {
+			if (isDisplayCurrency || !amount || !rate) {
 				this.$cryptoAmount.find('.amount-value').text('');
 				this.$cryptoAmount.removeClass('visible');
 			} else {
+				var cryptoAmount = this.model.getCryptoAmount();
 				var formattedAmount = app.util.formatNumber(cryptoAmount, paymentMethod.code);
 				this.$cryptoAmount.find('.amount-value').text(formattedAmount);
 				this.$cryptoAmount.addClass('visible');
 			}
 		},
 
-		renderQrCode: function(done) {
+		renderQrCode: function() {
+
+			var data = this.model.get('uri');
+			if (!data) return;
 
 			var width = Math.min(
 				this.$address.width(),
 				this.$address.height()
 			);
-
-			var data = this.model.get('uri');
 
 			app.busy();
 
@@ -132,71 +169,45 @@ app.views.DisplayPaymentAddress = (function() {
 
 				app.busy(false);
 
-				done && done();
-
 				if (error) {
 					return app.mainView.showMessage(error);
 				}
 			});
 		},
 
+		updatePaymentRequest: function(changes) {
+
+			if (changes.data) {
+				var data = this.model.get('data');
+				changes.data = _.extend({}, data, changes.data);
+			}
+
+			this.model.set(changes).save();
+		},
+
 		startListeningForPayment: function() {
 
+			this.stopListeningForPayment();
+
+			if (!this.model.get('uri')) return;
+
 			var paymentRequest = this.model.toJSON();
-			var received = false;
-			var errorWhileWaiting;
-			var data;
 
-			this.paymentMethod.listenForPayment(paymentRequest, function(error, paymentData) {
-				if (error) {
-					errorWhileWaiting = error;
-				} else {
-					data = paymentData;
-					received = true;
-				}
-			});
-
-			var done = _.bind(function(error) {
-
-				this.stopListeningForPayment();
+			this.paymentMethod.listenForPayment(paymentRequest, _.bind(function(error, paymentData) {
 
 				if (error) {
 					return app.mainView.showMessage(error);
 				}
 
-				var status = received ? 'unconfirmed' : 'timed-out';
-				this.model.save(
-					_.extend(
-						{},
-						paymentRequest,
-						{
-							status: status,
-							data: _.extend(
-								{},
-								paymentRequest.data,
-								data || {}
-							)
-						}
-					)
-				);
-				app.router.navigate('payment-status/' + status, { trigger: true });
+				this.updatePaymentRequest({
+					status: 'unconfirmed',
+					data: paymentData,
+				});
 
-			}, this);
+			}, this));
 
-			var iteratee = _.bind(function(next) {
-				if (errorWhileWaiting) {
-					return next(errorWhileWaiting);
-				} else {
-					this.listenerTimeOut = _.delay(next, 50);
-				}
-			}, this);
-
-			var startTime = Date.now();
-			async.until(function() {
-				var elapsedTime = Date.now() - startTime;
-				var timedOut = elapsedTime > app.config.paymentRequests.timeout;
-				return received || timedOut;
-			}, iteratee, done);
+			this.startPaymentRequestTimeoutTimer();
+			this.toggleQrCodeHeaderIconVisibility();
 		},
 
 		stopListeningForPayment: function() {
@@ -204,31 +215,98 @@ app.views.DisplayPaymentAddress = (function() {
 			if (this.paymentMethod) {
 				this.paymentMethod.stopListeningForPayment();
 			}
-			clearTimeout(this.listenerTimeOut);
+		},
+
+		startPaymentRequestTimeoutTimer: function() {
+
+			var startTime = Date.now();
+			var checkElapsedTime = _.bind(function() {
+				clearTimeout(this.timers.paymentRequestTimeout);
+				var elapsedTime = Date.now() - startTime;
+				var timedOut = elapsedTime > app.config.paymentRequests.timeout;
+				if (!timedOut) {
+					this.timers.paymentRequestTimeout = _.delay(checkElapsedTime, 20);
+				} else {
+					this.updatePaymentRequest({ status: 'timed-out' });
+				}
+			}, this);
+			checkElapsedTime();
 		},
 
 		startListeningForStatus: function() {
-			var paymentRequest = this.model.toJSON();
-			var paymentMethod = paymentRequest.method;
-			this.statusListener = {};
-			this.statusListener.channel = 'status-check?' + querystring.stringify({
-				network: paymentMethod,
-			});
-			this.statusListener.listener = function(status) {
-				var paymentMethodActive = status[paymentMethod] || false;
-				$('.view.display-payment-address').toggleClass('payment-method-inactive', !paymentMethodActive);
-			}
 
-			app.services.ctApi.subscribe(this.statusListener.channel, this.statusListener.listener);
+			var method = this.model.get('method');
+			var channel = 'status-check?' + querystring.stringify({
+				network: method,
+			});
+			var listener = function(status) {
+				var isActive = status[method] || false;
+				$('.view.display-payment-address').toggleClass('payment-method-inactive', !isActive);
+			};
+			this.ctApiListeners.status = {
+				channel: channel,
+				listener: listener,
+			};
+			app.services.ctApi.subscribe(channel, listener);
 		},
 
-		stopListeningForStatus: function() {
+		payFromPaperWallet: function(walletData) {
 
-			if (this.statusListener && this.statusListener.channel && this.statusListener.listener) {
-				var channel = this.statusListener.channel;
-				var listener = this.statusListener.listener;
-				app.services.ctApi.unsubscribe(channel, listener);
+			// Only pay from paper wallet one at a time.
+			if (this.payingFromPaperWallet) return;
+			this.payingFromPaperWallet = true;
+			app.busy(true);
+
+			var done = _.bind(function(error, paymentData) {
+
+				this.payingFromPaperWallet = false;
+				app.busy(false);
+
+				if (error) {
+					return app.mainView.showMessage(error);
+				}
+
+				// Payment successful.
+				this.updatePaymentRequest({
+					status: 'unconfirmed',
+					data: paymentData,
+				});
+
+			}, this);
+
+			var paymentRequest = this.model.toJSON();
+			this.paymentMethod.payRequestFromPaperWallet(paymentRequest, walletData, done);
+		},
+
+		scanAndPayFromPaperWallet: function() {
+
+			var payFromPaperWallet = _.bind(this.payFromPaperWallet, this);
+
+			app.device.scanQRCodeWithCamera(function(error, data) {
+
+				if (error) {
+					return app.mainView.showMessage(error);
+				}
+
+				if (data) {
+					payFromPaperWallet(data);
+				}
+			});
+		},
+
+		toggleQrCodeHeaderIconVisibility: function(visible) {
+
+			if (_.isUndefined(visible)) {
+				visible = this.canPayFromPaperWallet();
 			}
+
+			this.$scanAndPayFromPaperWallet.toggleClass('visible', visible);
+		},
+
+		canPayFromPaperWallet: function() {
+
+			var payRequestFromPaperWallet = this.paymentMethod.payRequestFromPaperWallet;
+			return !!payRequestFromPaperWallet && _.isFunction(payRequestFromPaperWallet);
 		},
 
 		cancel: function(evt) {
@@ -249,8 +327,25 @@ app.views.DisplayPaymentAddress = (function() {
 				evt.preventDefault();
 			}
 
+			this.stopListening();
+
 			// Navigate back to the choose payment method screen.
 			app.router.navigate('choose-payment-method', { trigger: true });
+		},
+
+		stopTimers: function() {
+
+			_.each(this.timers, function(timer) {
+				clearTimeout(timer);
+			});
+		},
+
+		unsubscribeAllCtApiListeners: function() {
+
+			_.chain(this.ctApiListeners).compact().each(function(listener) {
+				app.services.ctApi.unsubscribe(listener.channel, listener.listener);
+			});
+			this.ctApiListeners = {};
 		},
 
 		onResize: function() {
@@ -260,9 +355,17 @@ app.views.DisplayPaymentAddress = (function() {
 
 		onClose: function() {
 
-			clearTimeout(this.savePaymentRequestTimeout);
-			this.stopListeningForPayment();
-			this.stopListeningForStatus();
+			this.stopTimers();
+			app.nfc.stopReading();
+			app.nfc.off('read', this.payFromPaperWallet);
+			this.unsubscribeAllCtApiListeners();
+
+			if (this.nfcStartReading && this.nfcStartReading.cancel) {
+				this.nfcStartReading.cancel();
+			}
+
+			this.toggleQrCodeHeaderIconVisibility(false);
+			this.$scanAndPayFromPaperWallet.off('click', this.scanAndPayFromPaperWallet);
 		},
 
 		onBackButton: function() {

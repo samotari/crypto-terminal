@@ -86,6 +86,7 @@ app.config = (function() {
 		},
 		paymentRequests: {
 			timeout: 5 * 60 * 1000,
+			saveDelay: 5000,
 		},
 		paymentHistory: {
 			list: {

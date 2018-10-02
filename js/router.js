@@ -219,9 +219,6 @@ app.Router = (function() {
 				return false;
 			}
 
-			// Reset the method.
-			paymentRequest.set({ method: null });
-
 			app.mainView.renderView('ChoosePaymentMethod', { model: paymentRequest });
 		},
 

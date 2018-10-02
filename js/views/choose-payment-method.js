@@ -17,6 +17,16 @@ app.views.ChoosePaymentMethod = (function() {
 			'click .cancel': 'cancel',
 		},
 
+		initialize: function() {
+
+			this.model.set({
+				data: {},
+				method: null,
+				rate: null,
+				uri: null,
+			});
+		},
+
 		serializeData: function() {
 
 			var data = {};

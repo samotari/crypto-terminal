@@ -210,6 +210,39 @@ app.services.ctApi = (function() {
 			}).catch(cb)
 		},
 
+		getFeeRate: function(network, cb) {
+
+			var uri = this.getUri('/api/v1/fee-rate', {
+				network: network,
+			});
+			$.get(uri).then(function(result) {
+				cb(null, result);
+			}).catch(cb)
+		},
+
+		getUnspentTxOutputs: function(network, addresses, cb) {
+
+			var uri = this.getUri('/api/v1/utxo', {
+				addresses: addresses.join(','),
+				network: network,
+			});
+			$.get(uri).then(function(result) {
+				cb(null, result);
+			}).catch(cb)
+		},
+
+		broadcastRawTx: function(network, rawTx, cb) {
+
+			var uri = this.getUri('/api/v1/raw-tx');
+			var data = {
+				network: network,
+				rawTx: rawTx,
+			};
+			$.post(uri, data).then(function(result) {
+				cb(null, result);
+			}).catch(cb)
+		},
+
 	}, Backbone.Events);
 
 	app.queues.onStart.push({
