@@ -51,6 +51,17 @@ app.paymentMethods.bitcoinLightning = (function() {
 				'settings.invoiceMacaroon.description': 'Código de autentificación (hexadecimal)',
 				'addInvoice.failed': 'Fallo al crear factura',
 				'getting-started.verify.message.failed': 'Fallo',
+			},
+			'fr': {
+				'instructions': 'Pour utiliser le Lightning Network (LN) vous devez lancer votre propre nœud. Pour plus d\'informations:',
+				'links.configure.label': 'Comment configurer le Lightning Network',
+				'settings.apiUrl.label': 'URL du nœud Lightning',
+				'settings.apiUrl.description': 'L\'URL complète de votre nœud Lightning Network. Inclure le protocole (ex: "https://").',
+				'settings.invoiceMacaroon.label': 'Facture Macaroon',
+				'settings.invoiceMacaroon.description': 'Utilisé pour authentifier les requêtes de votre nœud Lightning Network. Cela doit être en hexadécimal.',
+				'addInvoice.failed': 'Impossible de générer la facture',
+				'getting-started.verify.message.success': 'Ok',
+				'getting-started.verify.message.failed': 'Échec',
 			}
 		},
 
