@@ -84,7 +84,7 @@ app.lang['es'] = (function() {
 
 		'payment-replaceable.accept': 'Aceptar',
 		'payment-replaceable.reject': 'Rechazar',
-		'payment-replaceable.message': 'Reemplazable por tasa',
+		'payment-replaceable.message': '¡Advertencia!',
 		'payment-replaceable.info': 'Esta transacción puede ser reemplazable con una tasa más alta, ¿Quiere aceptarla?',
 
 		'sample-addresses.label': 'Direcciones de muestra:',

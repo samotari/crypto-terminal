@@ -86,7 +86,7 @@ app.lang['en'] = (function() {
 
 		'payment-replaceable.accept': 'Accept',
 		'payment-replaceable.reject': 'Reject',
-		'payment-replaceable.message': 'Replaceable by Fee',
+		'payment-replaceable.message': 'Attention!',
 		'payment-replaceable.info': 'This transaction can be replaced by higher fee, do you want to accept it?',
 
 		'sample-addresses.label': 'Sample Addresses:',

@@ -40,24 +40,14 @@ app.views.PaymentReplaceable = (function() {
 
 		accept: function(evt) {
 
-			var paymentRequest = this.model.toJSON();
-
 			if (evt && evt.preventDefault) {
 				evt.preventDefault();
 			}
 
-			this.model.save(
-				_.extend(
-					{},
-					paymentRequest,
-					{
-						status: 'unconfirmed',
-					}
-				)
-			);
+			this.model.set('status', 'unconfirmed').save();
 
-			// Navigate back to the homescreen
-			app.router.navigate('pay', { trigger: true });
+			// Navigate to the payment status screen (to show success).
+			app.router.navigate('payment-status/unconfirmed', { trigger: true });
 		},
 
 		reject: function(evt) {

@@ -8,7 +8,7 @@ var helpers = require('../helpers');
 var manager = require('../../manager');
 require('../global-hooks');
 
-describe.only('#payment-replaceable [bitcoin]', function() {
+describe('#payment-replaceable [bitcoin]', function() {
 
 	var socketServer;
 	beforeEach(function() {
