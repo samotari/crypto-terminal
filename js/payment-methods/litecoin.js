@@ -74,5 +74,57 @@ app.paymentMethods.litecoin = (function() {
 				],
 			},
 		},
+
+		settings: [
+			{
+				name: 'extendedPublicKey',
+				label: function() {
+					return app.i18n.t('litecoin.settings.extendedPublicKey.label');
+				},
+				description: function() {
+					return app.i18n.t('litecoin.settings.extendedPublicKey.description');
+				},
+				type: 'text',
+				required: true,
+				validateAsync: function(value, data, cb) {
+					this.decodeExtendedPublicKey(value, cb);
+				},
+				actions: [
+					{
+						name: 'camera',
+						fn: function(value, cb) {
+							app.device.scanQRCodeWithCamera(cb);
+						}
+					}
+				]
+			},
+			{
+				name: 'addressIndex',
+				label: function() {
+					return app.i18n.t('litecoin.settings.addressIndex.label');
+				},
+				description: function() {
+					return app.i18n.t('litecoin.settings.addressIndex.description');
+				},
+				type: 'number',
+				required: true,
+				default: '0',
+				validate: function(value, data) {
+					value = parseInt(value);
+					if (_.isNaN(value)) {
+						throw new Error(app.i18n.t('litecoin.settings.addressIndex.integer-required'));
+					}
+					if (value < 0) {
+						throw new Error(app.i18n.t('litecoin.settings.addressIndex.greater-than-or-equal-zero'));
+					}
+				}
+			},
+			{
+				name: 'derivationScheme',
+				type: 'text',
+				visible: false,
+				default: 'm/0/n',
+			}
+		],
 	});
 })();

@@ -76,7 +76,7 @@ app.paymentMethods.bitcoin = (function() {
 				'settings.addressIndex.integer-required': 'Debe ser un entero',
 				'settings.addressIndex.greater-than-or-equal-zero': 'Debe ser mayor o igual que cero',
 				'settings.extendedPublicKey.label': 'Clave Pública Extendida',
-				'settings.extendedPublicKey.description': 'Usada para derivar una nueva direción cada vez que genere una solicitud de pago',
+				'settings.extendedPublicKey.description': 'Usada para derivar una nueva dirección cada vez que genere una solicitud de pago',
 				'incorrect-number-of-bytes': 'Número incorrecto de bytes',
 				'invalid-checksum': 'Suma de comprobación inválida',
 				'invalid-derivation-scheme': 'Esquema de derivación no válido',
@@ -108,10 +108,10 @@ app.paymentMethods.bitcoin = (function() {
 			{
 				name: 'extendedPublicKey',
 				label: function() {
-					return app.i18n.t(this.ref + '.settings.extendedPublicKey.label');
+					return app.i18n.t('bitcoin.settings.extendedPublicKey.label');
 				},
 				description: function() {
-					return app.i18n.t(this.ref + '.settings.extendedPublicKey.description');
+					return app.i18n.t('bitcoin.settings.extendedPublicKey.description');
 				},
 				type: 'text',
 				required: true,
@@ -130,10 +130,10 @@ app.paymentMethods.bitcoin = (function() {
 			{
 				name: 'addressIndex',
 				label: function() {
-					return app.i18n.t(this.ref + '.settings.addressIndex.label');
+					return app.i18n.t('bitcoin.settings.addressIndex.label');
 				},
 				description: function() {
-					return app.i18n.t(this.ref + '.settings.addressIndex.description');
+					return app.i18n.t('bitcoin.settings.addressIndex.description');
 				},
 				type: 'number',
 				required: true,
@@ -141,10 +141,10 @@ app.paymentMethods.bitcoin = (function() {
 				validate: function(value, data) {
 					value = parseInt(value);
 					if (_.isNaN(value)) {
-						throw new Error(app.i18n.t(this.ref + '.settings.addressIndex.integer-required'));
+						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.integer-required'));
 					}
 					if (value < 0) {
-						throw new Error(app.i18n.t(this.ref + '.settings.addressIndex.greater-than-or-equal-zero'));
+						throw new Error(app.i18n.t('bitcoin.settings.addressIndex.greater-than-or-equal-zero'));
 					}
 				}
 			},
