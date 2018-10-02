@@ -32,6 +32,7 @@ describe('#payment-replaceable [bitcoin]', function() {
 			app.settings.set('configurableCryptoCurrencies', ['bitcoinTestnet']);
 			app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
 			app.settings.set('displayCurrency', 'EUR');
+			app.settings.set('bitcoinTestnet.addressIndex', '0')
 		}, done);
 	});
 
@@ -58,7 +59,7 @@ describe('#payment-replaceable [bitcoin]', function() {
 
 	describe('accepting replaceable transaction', function() {
 
-		it('should show pay screen', function(done) {
+		it('should show success screen', function(done) {
 			var address = 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY';
 			var channel = 'v1/new-txs?' + querystring.stringify({
 				address: address,
@@ -92,9 +93,11 @@ describe('#payment-replaceable [bitcoin]', function() {
 					manager.page.waitFor('.view.payment-replaceable').then(function() {
 						manager.page.waitFor('.result-indicator').then(function() {
 							manager.page.click('.button.accept').then(function() {
-								manager.page.waitFor('.view.pay').then(function() {
-									done();
-								})
+								manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
+									manager.page.waitFor('.result-indicator').then(function() {
+										done();
+									}).catch(done);
+								}).catch(done);
 							})
 						}).catch(done);
 					}).catch(done);
@@ -106,7 +109,7 @@ describe('#payment-replaceable [bitcoin]', function() {
 	describe('rejecting replaceable transaction', function() {
 
 		it('should show display payment address screen', function(done) {
-			var address = 'mhgMkiZiqCmqDaT8b3E6uUD5xmvoKJEBpx';
+			var address = 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY';
 			var channel = 'v1/new-txs?' + querystring.stringify({
 				address: address,
 				network: 'bitcoinTestnet',

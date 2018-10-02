@@ -44,9 +44,8 @@ app.views.PaymentReplaceable = (function() {
 				evt.preventDefault();
 			}
 
-			this.model.set('status', 'unconfirmed').save();
-
-			// Navigate to the payment status screen (to show success).
+			// Navigate to the payment status screen (to show success and save the model).
+			// It is important to keep the status "pending" till the success screen so router finds it.
 			app.router.navigate('payment-status/unconfirmed', { trigger: true });
 		},
 
