@@ -44,7 +44,7 @@ app.lang['fr'] = (function () {
 		'payment-details.back': 'Retourner',
 		'payment-request.data.invalid': '"data" est invalide',
 		'payment-request.status.invalid': '"status" est invalide',
-		'payment-status.unconfirmed.message': 'Merci!',
+		'payment-status.unconfirmed.message': 'Merci !',
 		'payment-status.unconfirmed.done': 'Effectué',
 		'payment-status.timed-out.message': 'Fin du temps',
 		'payment-status.timed-out.done': 'OK',
@@ -55,6 +55,6 @@ app.lang['fr'] = (function () {
 		'pin-required.instructions': 'Entrez le PIN d\'administrateur pour continuer',
 		'pin-required.incorrect': 'Le PIN entré est incorrect',
 		'device.camera.not-available': 'L\'appareil photo de l\'appareil  n\'est pas disponible',
-		'more-menu.about': 'A propos de l\'application',
+		'more-menu.about': 'À propos de l\'application',
 	};
 })();
