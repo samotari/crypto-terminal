@@ -32,8 +32,10 @@ app.nfc = (function() {
 				nfc.readerMode(flags, function onRead(evt) {
 					try {
 						var payload = evt && evt.ndefMessage && evt.ndefMessage[0] && evt.ndefMessage[0].payload || null;
-						var data = payload && nfc.bytesToString(payload).substr(1) || null;
+						var data = payload && nfc.bytesToString(payload) || null;
 						if (data) {
+							// Strip non-ASCII characters.
+							data = data.replace(/[^ -~]/g, '');
 							emit('read', data);
 						}
 					} catch (error) {
