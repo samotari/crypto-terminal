@@ -256,18 +256,8 @@ app.Router = (function() {
 
 		paymentReplaceable: function() {
 
-			var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
-
-			if (!paymentRequest) {
-				// Start from the beginning of the payment process.
-				this.navigate('pay', { trigger: true });
-				return false;
-			}
-
-			app.mainView.renderView('PaymentReplaceable', {
-				model: paymentRequest,
-			})
-		}
+			app.mainView.renderView('PaymentReplaceable');
+		},
 
 	});
 

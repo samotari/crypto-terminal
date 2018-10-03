@@ -16,18 +16,14 @@ app.views.PaymentStatus = (function() {
 		},
 
 		initialize: function() {
-			var paymentRequest = this.model.toJSON();
-			var status = this.options.status;
 
-			this.model.save(
-				_.extend(
-					{},
-					paymentRequest,
-					{
-						status: status,
-					}
-				)
-			);
+			this.saveStatus();
+		},
+
+		saveStatus: function() {
+
+			var status = this.options.status;
+			this.model.set('status', status).save();
 		},
 
 		serializeData: function() {

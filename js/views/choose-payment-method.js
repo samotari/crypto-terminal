@@ -58,7 +58,6 @@ app.views.ChoosePaymentMethod = (function() {
 			var method = $(evt.target).attr('data-payment-method');
 			this.model.set({ method: method });
 
-			// Navigate to the next screen with the amount in the URI.
 			app.router.navigate('display-payment-address', { trigger: true });
 		},
 

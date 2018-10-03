@@ -55,7 +55,6 @@ app.views.PaymentReplaceable = (function() {
 				evt.preventDefault();
 			}
 
-			// Navigate to the next screen with the amount in the URI.
 			app.router.navigate('display-payment-address', { trigger: true });
 		},
 
