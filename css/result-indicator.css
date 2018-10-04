@@ -14,12 +14,6 @@
 	will-change: transform;
 	margin: 0 auto;
 }
-.result-indicator.success {
-	background-color: #7ac142;
-}
-.result-indicator.failed {
-	background-color: #d8000c;
-}
 .result-indicator-inner {
 	color: #fff;
 	font-size: 2.2rem;

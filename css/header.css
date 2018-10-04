@@ -85,7 +85,8 @@ html.configured .header-button.pay {
 body.view-pay .header-button.pay,
 body.view-choose-payment-method .header-button.pay,
 body.view-display-payment-address .header-button.pay,
-body.view-payment-status .header-button.pay {
+body.view-payment-status .header-button.pay,
+body.view-payment-replaceable .header-button.pay {
 	/*
 		Hide the pay button when viewing the pay screens.
 	*/

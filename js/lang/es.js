@@ -81,6 +81,12 @@ app.lang['es'] = (function() {
 		'payment-status.unconfirmed.done': 'Hecho',
 		'payment-status.timed-out.message': 'Expirado',
 		'payment-status.timed-out.done': 'Vale',
+
+		'payment-replaceable.accept': 'Aceptar',
+		'payment-replaceable.reject': 'Rechazar',
+		'payment-replaceable.message': '¡Advertencia!',
+		'payment-replaceable.info': 'Esta transacción puede ser reemplazable con una tasa más alta, ¿Quiere aceptarla?',
+
 		'sample-addresses.label': 'Direcciones de muestra:',
 		'enter-pin.cancel': 'Cancelar',
 		'enter-pin.submit': 'Aceptar',

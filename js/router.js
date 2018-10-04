@@ -24,6 +24,7 @@ app.Router = (function() {
 		'choosePaymentMethod',
 		'displayPaymentAddress',
 		'paymentStatus',
+		'paymentReplaceable',
 	];
 
 	var isAllowedWhenNotConfigured = function(routerMethodName) {
@@ -49,6 +50,7 @@ app.Router = (function() {
 			'display-payment-address': 'displayPaymentAddress',
 			'payment-details/:paymentId': 'paymentDetails',
 			'payment-status/:status': 'paymentStatus',
+			'payment-replaceable': 'paymentReplaceable',
 			'admin': 'admin',
 			'admin/:page': 'admin',
 			'about': 'about',
@@ -238,9 +240,23 @@ app.Router = (function() {
 
 		paymentStatus: function(status) {
 
+			var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
+
+			if (!paymentRequest) {
+				// Start from the beginning of the payment process.
+				this.navigate('pay', { trigger: true });
+				return false;
+			}
+
 			app.mainView.renderView('PaymentStatus', {
 				status: status,
+				model: paymentRequest,
 			});
+		},
+
+		paymentReplaceable: function() {
+
+			app.mainView.renderView('PaymentReplaceable');
 		},
 
 	});

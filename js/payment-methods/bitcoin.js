@@ -569,7 +569,7 @@ app.paymentMethods.bitcoin = (function() {
 
 				if (tx.amount >= expectedValue) {
 					// Passing transaction data so it can be stored.
-					var txData = _.pick(tx, 'txid');
+					var txData = _.pick(tx, 'txid', 'isReplaceable');
 					return done(null, txData);
 				}
 

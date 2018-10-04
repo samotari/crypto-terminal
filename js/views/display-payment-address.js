@@ -29,7 +29,6 @@ app.views.DisplayPaymentAddress = (function() {
 
 			_.bindAll(this,
 				'generatePaymentRequest',
-				'onStatusChange',
 				'payFromPaperWallet',
 				'queryRate',
 				'renderCryptoAmount',
@@ -40,7 +39,6 @@ app.views.DisplayPaymentAddress = (function() {
 			var method = this.model.get('method');
 			this.paymentMethod = app.paymentMethods[method];
 			this.listenTo(this.model, 'change:amount change:rate', this.generatePaymentRequest);
-			this.listenTo(this.model, 'change:status', this.onStatusChange);
 			this.listenTo(this.model, 'change:amount change:rate', this.renderCryptoAmount);
 			this.listenTo(this.model, 'change:uri', this.renderQrCode);
 			this.listenTo(this.model, 'change:uri', this.startListeningForPayment);
@@ -49,14 +47,6 @@ app.views.DisplayPaymentAddress = (function() {
 			if (this.canPayFromPaperWallet()) {
 				this.nfcStartReading = app.nfc.startReading(app.log);
 				app.nfc.on('read', this.payFromPaperWallet);
-			}
-		},
-
-		onStatusChange: function() {
-
-			var status = this.model.get('status');
-			if (status !== 'pending') {
-				return app.router.navigate('payment-status/' + status, { trigger: true });
 			}
 		},
 
@@ -107,6 +97,12 @@ app.views.DisplayPaymentAddress = (function() {
 			this.startListeningForStatus();
 			this.startListeningForPayment();
 			_.defer(this.queryRate);
+
+			// When payment is rejected the model already has rate.
+			var rate = this.model.get('rate');
+			if (rate) {
+				_.defer(this.onChangeRate);
+			}
 		},
 
 		generatePaymentRequest: function() {
@@ -175,14 +171,10 @@ app.views.DisplayPaymentAddress = (function() {
 			});
 		},
 
-		updatePaymentRequest: function(changes) {
+		savePaymentData: function(paymentData) {
 
-			if (changes.data) {
-				var data = this.model.get('data');
-				changes.data = _.extend({}, data, changes.data);
-			}
-
-			this.model.set(changes).save();
+			var data = _.extend({}, this.model.get('data') || {}, paymentData);
+			this.model.set('data', data).save();
 		},
 
 		startListeningForPayment: function() {
@@ -199,10 +191,17 @@ app.views.DisplayPaymentAddress = (function() {
 					return app.mainView.showMessage(error);
 				}
 
-				this.updatePaymentRequest({
-					status: 'unconfirmed',
-					data: paymentData,
-				});
+				this.savePaymentData(paymentData);
+
+				var isReplaceable = paymentData && paymentData.isReplaceable || false;
+
+				if (isReplaceable) {
+					// Special case for RBF feature in bitcoin and litecoin.
+					// Show a warning dialogue where user can accept or reject the payment.
+					app.router.navigate('payment-replaceable', { trigger: true });
+				} else {
+					app.router.navigate('payment-status/unconfirmed', { trigger: true });
+				}
 
 			}, this));
 
@@ -227,7 +226,7 @@ app.views.DisplayPaymentAddress = (function() {
 				if (!timedOut) {
 					this.timers.paymentRequestTimeout = _.delay(checkElapsedTime, 20);
 				} else {
-					this.updatePaymentRequest({ status: 'timed-out' });
+					app.router.navigate('payment-status/timed-out', { trigger: true });
 				}
 			}, this);
 			checkElapsedTime();
@@ -267,10 +266,7 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 
 				// Payment successful.
-				this.updatePaymentRequest({
-					status: 'unconfirmed',
-					data: paymentData,
-				});
+				this.savePaymentData(paymentData);
 
 			}, this);
 

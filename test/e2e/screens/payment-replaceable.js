@@ -4,11 +4,11 @@ var _ = require('underscore');
 var async = require('async');
 var querystring = require('querystring');
 
-var helpers = require('../../helpers');
-var manager = require('../../../manager');
-require('../../global-hooks');
+var helpers = require('../helpers');
+var manager = require('../../manager');
+require('../global-hooks');
 
-describe('#payment-status [bitcoin]', function() {
+describe('#payment-replaceable [bitcoin]', function() {
 
 	var socketServer;
 	beforeEach(function() {
@@ -57,9 +57,9 @@ describe('#payment-status [bitcoin]', function() {
 		socketServer.close();
 	});
 
-	describe('unconfirmed', function() {
+	describe('accepting replaceable transaction', function() {
 
-		it('should accept payment', function(done) {
+		it('should show success screen', function(done) {
 			var address = 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY';
 			var channel = 'v1/new-txs?' + querystring.stringify({
 				address: address,
@@ -87,11 +87,18 @@ describe('#payment-status [bitcoin]', function() {
 							address: address,
 							amount: 100000000,
 							txid: 'this-is-a-testing-transaction-id',
+							isReplaceable: true
 						}
 					});
-					manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
+					manager.page.waitFor('.view.payment-replaceable').then(function() {
 						manager.page.waitFor('.result-indicator').then(function() {
-							done();
+							manager.page.click('.button.accept').then(function() {
+								manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
+									manager.page.waitFor('.result-indicator').then(function() {
+										done();
+									}).catch(done);
+								}).catch(done);
+							})
 						}).catch(done);
 					}).catch(done);
 				}).catch(done);
@@ -99,18 +106,52 @@ describe('#payment-status [bitcoin]', function() {
 		});
 	});
 
-	describe('timed-out', function() {
+	describe('rejecting replaceable transaction', function() {
 
-		beforeEach(function(done) {
-			manager.evaluateInPageContext(function() {
-				app.config.paymentRequests.timeout = 20;
-			}, done);
-		});
-
-		it('should time-out', function(done) {
-			manager.page.waitFor('.view.payment-status.timed-out').then(function() {
-				done();
+		it('should show display payment address screen', function(done) {
+			var address = 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY';
+			var channel = 'v1/new-txs?' + querystring.stringify({
+				address: address,
+				network: 'bitcoinTestnet',
+			});
+			manager.page.waitFor('.address-qr-code').then(function() {
+				manager.page.waitFor(function(channel) {
+					return new Promise(function(resolve, reject) {
+						try {
+							async.until(function() {
+								return app.services.ctApi.isSubscribed(channel);
+							}, function(next) {
+								_.delay(next, 5);
+							}, function() {
+								resolve(true);
+							});
+						} catch (error) {
+							return reject(error);
+						}
+					});
+				}, {}/* options */, channel).then(function() {
+					socketServer.primus.write({
+						channel: channel,
+						data: {
+							address: address,
+							amount: 100000000,
+							txid: 'this-is-a-testing-transaction-id',
+							isReplaceable: true
+						}
+					});
+					manager.page.waitFor('.view.payment-replaceable').then(function() {
+						manager.page.waitFor('.result-indicator').then(function() {
+							manager.page.click('.button.reject').then(function() {
+								manager.page.waitFor('.address-qr-code').then(function() {
+									done();
+								})
+							})
+						}).catch(done);
+					}).catch(done);
+				}).catch(done);
 			}).catch(done);
 		});
 	});
+
+
 });

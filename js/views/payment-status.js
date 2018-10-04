@@ -15,6 +15,17 @@ app.views.PaymentStatus = (function() {
 			'click .done': 'done',
 		},
 
+		initialize: function() {
+
+			this.saveStatus();
+		},
+
+		saveStatus: function() {
+
+			var status = this.options.status;
+			this.model.set('status', status).save();
+		},
+
 		serializeData: function() {
 
 			var status = this.options.status;

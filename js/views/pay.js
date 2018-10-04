@@ -85,7 +85,6 @@ app.views.Pay = (function() {
 
 			this.model.set({ amount: amount });
 
-			// Navigate to the next screen with the amount in the URI.
 			app.router.navigate('choose-payment-method', { trigger: true });
 		},
 
