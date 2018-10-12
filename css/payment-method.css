@@ -16,6 +16,9 @@
 .payment-method.bitcoinLightning {
 	background-image: url('../images/bitcoin.svg');
 }
+.payment-method.bitcore {
+        background-image: url('../images/bitcore.svg');
+}
 .payment-method.litecoin,
 .payment-method.litecoinTestnet {
 	background-image: url('../images/litecoin.svg');

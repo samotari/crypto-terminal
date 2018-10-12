@@ -46,6 +46,45 @@ var samples = [
 		],
 	},
 	{
+		description: 'bitcore (legacy)',
+		paymentMethod: 'bitcore',
+		extendedPublicKey: 'xpub6Ex3QGjvYe6K2qgpNFRbNkjmRG3KT5CwwtrLyqHkUxB5VjUoDJxh1T5HScHaN67gdZKqiR6sfPtdfUJW1PxPy51PnjohbEnvrwojnQb6MFa',
+		derivationScheme: 'm/0/n',
+		addresses: [
+			'2MhCptvgxXc19XFJqCQafgzNegzMwjBLYN',
+			'2KZdb2EMiAxyaC4VrigWnLM1GcduGg3uwQ',
+			'2RRt4yzNS4S8DSU3PtJXzMFqibQvQjvGuJ',
+			'2KyYotg6XWz5esYMpZH3Hns7rpXdCbrnk6',
+			'2GTcSafGMSmgGM1z4xUuCb2d84EzmKBmEU'
+		],
+	},
+		{
+		description: 'bitcore (segwit backwards compatible)',
+		paymentMethod: 'bitcore',
+		extendedPublicKey: 'ypub6ZQH1kpyv7odncd395PrFCmfurCoQzFgNR24eUwPMGwLV1kTdqSCyBtKgLhzSpHjzMziEJ5F9AAZWvvN4KagH9RqQyKymwCCEJtrF84rjSr',
+		derivationScheme: 'm/0/n',
+		addresses: [
+			'sUNYrxTL1jQ4aNNDbt7SLEUqmF9kCBbLCN',
+			'sQ1NDtge4ubSQdNk1ZP4AKLwy1MSxyaK28',
+			'sNXrxojtGR8Fgm3qtMjBorYwo8GkrVLs2o',
+			'sfLELZ5c62VzeyucBq79AcTHdQp1AboWYq',
+			'sTz4X2nxfgSaGy1cco2i5MSqjcwg6aaiqS',
+		],
+	},
+        {
+                description: 'bitcore (segwit native)',
+                paymentMethod: 'bitcore',
+                extendedPublicKey: 'zpub6tipLKG2bsHvN9AauyNoRi4TVK1zXxec7U7fCAKmjZybmX3w3YJGM41bEDX1zCKr1HAXnqwFVFcLE9tfFU1yj1fR4VQuEVpuS11F5MEac3R',
+                derivationScheme: 'm/0/n',
+                addresses: [
+                        'btx1qeuzfa972qtq8am2p8kn3xm404nq27vhf5u7zce',
+                        'btx1qfknts7876lrqeqyjrkuz3laf59jpxt2ltg6a2j',
+                        'btx1qt5ersdeegyg6g3paprkl6sw75gx3fu2p0w09z4',
+                        'btx1qpqxjnmgdm9hmkg7a2fmmcw79zuz5g29jfu8lmf',
+                        'btx1q6edfl6ufxh0ewrltanh23666c52wch632edc3y',
+                ],
+        },
+	{
 		description: 'litecoin (legacy)',
 		paymentMethod: 'litecoin',
 		extendedPublicKey: 'xpub661MyMwAqRbcEsEC246xJ7246A9KQRSGYe4CEqiXHLcFcFCnGF5q8NNC3JsCUASVMMxQMBp8SjYCEBA94vMoXKVz5LUtZaq4X7yuxDAxa7s',
