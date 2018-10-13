@@ -187,69 +187,69 @@ app.config = (function() {
 				},
 			],
 			mobileWallets: {
-                                android: [
-                                        {
-                                                name: 'Coinomi',
-                                                paymentMethods: ['bitcoinTestnet', 'bitcoin', 'bitcore', 'litecoin'],
-                                                url: 'https://play.google.com/store/apps/details?id=com.coinomi.wallet',
-                                        },
-                                        {
-                                                name: 'Eclair Wallet',
-                                                paymentMethods: ['bitcoinLightning'],
-                                                url: 'https://play.google.com/store/apps/details?id=fr.acinq.eclair.wallet.mainnet2',
-                                        },
-                                        {
-                                                name: 'Jaxx Liberty',
-                                                paymentMethods: ['bitcoin', 'bitcore', 'litecoin'],
-                                                url: 'https://play.google.com/store/apps/details?id=com.liberty.jaxx',
-                                        },
-                                        {
-                                                name: 'Monerujo',
-                                                paymentMethods: ['monero'],
-                                                url: 'https://play.google.com/store/apps/details?id=com.m2049r.xmrwallet',
-                                        },
-                                        {
-                                                name: 'Samourai Wallet',
-                                                paymentMethods: ['bitcoin'],
-                                                url: 'https://play.google.com/store/apps/details?id=com.samourai.wallet',
-                                        },
-                                        {
-                                                name: 'ZelCore',
-                                                paymentMethods: ['bitcoin', 'bitcore', 'litecoin'],
-                                                url: 'https://play.google.com/store/apps/details?id=com.zelcash.zelcore',
-                                        },
+				android: [
+					{
+						name: 'Coinomi',
+						paymentMethods: ['bitcoinTestnet', 'bitcoin', 'bitcore', 'litecoin'],
+						url: 'https://play.google.com/store/apps/details?id=com.coinomi.wallet',
+					},
+					{
+						name: 'Eclair Wallet',
+						paymentMethods: ['bitcoinLightning'],
+						url: 'https://play.google.com/store/apps/details?id=fr.acinq.eclair.wallet.mainnet2',
+					},
+					{
+						name: 'Jaxx Liberty',
+						paymentMethods: ['bitcoin', 'litecoin', 'bitcore'],
+						url: 'https://play.google.com/store/apps/details?id=com.liberty.jaxx',
+					},
+					{
+						name: 'Monerujo',
+						paymentMethods: ['monero'],
+						url: 'https://play.google.com/store/apps/details?id=com.m2049r.xmrwallet',
+					},
+					{
+						name: 'Samourai Wallet',
+						paymentMethods: ['bitcoin'],
+						url: 'https://play.google.com/store/apps/details?id=com.samourai.wallet',
+					},
+					{
+						name: 'ZelCore',
+						paymentMethods: ['bitcoin', 'bitcore', 'litecoin'],
+						url: 'https://play.google.com/store/apps/details?id=com.zelcash.zelcore',
+					},
 				],
-                                ios: [
-                                        {
-                                                name: 'BRD (formerly "BreadWallet")',
-                                                paymentMethods: ['bitcoin'],
-                                                url: 'https://play.google.com/store/apps/details?id=com.breadwallet',
-                                        },
-                                        {
-                                                name: 'Cake Wallet',
-                                                paymentMethods: ['monero'],
-                                                url: 'https://itunes.apple.com/us/app/cake-wallet-for-xmr-monero/id1334702542',
-                                        },
-                                        {
-                                                name: 'Coinomi',
-                                                paymentMethods: ['bitcoinTestnet', 'bitcoin', 'bitcore', 'litecoin'],
-                                                url: 'https://itunes.apple.com/us/app/coinomi-wallet/id1333588809?mt=8',
-                                        },
-                                        {
-                                                name: 'Jaxx Liberty',
-                                                paymentMethods: ['bitcoin', 'bitcore', 'litecoin'],
-                                                url: 'https://itunes.apple.com/us/app/jaxx-liberty/id1435383184?ls=1&mt=8',
-                                        },
-                                        {
-                                                name: 'LoafWallet',
-                                                paymentMethods: ['litecoin'],
-                                                url: 'https://itunes.apple.com/us/app/loafwallet/id1119332592?ls=1&mt=8',
-                                        },
-                                        {
-                                                name: 'ZelCore',
-                                                paymentMethods: ['bitcoin', 'bitcore', 'litecoin'],
-                                                url: 'https://itunes.apple.com/us/app/zelcore/id1436296839?mt=8',
-                                        },
+				ios: [
+					{
+						name: 'BRD (formerly "BreadWallet")',
+						paymentMethods: ['bitcoin'],
+						url: 'https://play.google.com/store/apps/details?id=com.breadwallet',
+					},
+					{
+						name: 'Cake Wallet',
+						paymentMethods: ['monero'],
+						url: 'https://itunes.apple.com/us/app/cake-wallet-for-xmr-monero/id1334702542',
+					},
+					{
+						name: 'Coinomi',
+						paymentMethods: ['bitcoinTestnet', 'bitcoin', 'bitcore', 'litecoin'],
+						url: 'https://itunes.apple.com/us/app/coinomi-wallet/id1333588809?mt=8',
+					},
+					{
+						name: 'Jaxx Liberty',
+						paymentMethods: ['bitcoin', 'litecoin', 'bitcore'],
+						url: 'https://itunes.apple.com/us/app/jaxx-liberty/id1435383184?ls=1&mt=8',
+					},
+					{
+						name: 'LoafWallet',
+						paymentMethods: ['litecoin'],
+						url: 'https://itunes.apple.com/us/app/loafwallet/id1119332592?ls=1&mt=8',
+					},
+					{
+						name: 'ZelCore',
+						paymentMethods: ['bitcoin', 'bitcore', 'litecoin'],
+						url: 'https://itunes.apple.com/us/app/zelcore/id1436296839?mt=8',
+					},
 				],
 			},
 		},
