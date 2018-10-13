@@ -33,7 +33,7 @@ app.lang['cs'] = (function() {
 		'getting-started.done.ok': 'OK',
 		'getting-started.general-settings.title': 'Generální nastavení',
 		'getting-started.welcome.instructions': 'CryptoTerminal je navržen pro použití s Vaší stávající aplikací peněženky. To umožní přijímat platby snadno a současně udržovat soukromé klíče, které bezpečně uloží Vaše prostředky v režimu offline nebo hardwarové peněžence. Doporučujeme použít jednu z následujících hardwarových peněženek k zabezpečení Vašich finančních prostředků:',
-		'getting-started.welcome.ready?': 'Jakmile máte kryptopeněženku připravenou, můžete zahájit instalaci stisknutím tlačítka \"Start\" níže.',
+		'getting-started.welcome.ready?': 'Jakmile máte kryptopeněženku připravenou, můžete zahájit instalaci stisknutím tlačítka "Start" níže.',
 		'getting-started.welcome.skip': 'Přeskočit řízený proces instalace',
 		'getting-started.done.title': 'Jo!',
 		'getting-started.done.contact-below': 'Pokud máte nějaké potíže nebo chcete dát zpětnou vazbu, můžete nás kontaktovat přímo na e-mailové adrese uvedené níže.',
@@ -74,7 +74,7 @@ app.lang['cs'] = (function() {
 
 		'payment-request.data.invalid': '"data" je neplatný',
 		'payment-request.status.invalid': '"status" je neplatný',
-		'payment-request.crypto-amount.field-missing': 'Nelze konvertovat na částku kryptoměny bez \"{{field}}\"',
+		'payment-request.crypto-amount.field-missing': 'Nelze konvertovat na částku kryptoměny bez "{{field}}"',
 		'payment-request.crypto-amount.unknown-method': 'Nelze konvertovat na částku kryptoměny, protože způsob platby neexistuje',
 
 		'payment-status.unconfirmed.message': 'Díky!',
