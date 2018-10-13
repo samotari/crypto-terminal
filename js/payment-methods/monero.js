@@ -42,6 +42,17 @@ app.paymentMethods.monero = (function() {
 				'public-address-needed-to-check-private-view-key': 'Public Address is required to check the Private View Key',
 				'private-view-key-public-address-mismatch': 'Incorrect Private View Key: Does not pair with the Public Address provided.',
 			},
+			'de': {
+				'settings.public-address.label': 'Öffentliche Adresse',
+				'settings.private-view-key.label': 'Private View Schlüssel',
+				'payment-request.public-address-required': 'Die öffentliche Adresse wird benötigt, um eine Zahlungsanforderung zu generieren',
+				'invalid-checksum': 'Ungültige Prüfsumme',
+				'invalid-length': 'Ungültige Länge',
+				'invalid-network-byte': 'Ungültiges Netzwerk Byte',
+				'invalid-secret.length': 'Ungültige Länge des geheimen Schlüssels. Sind Sie sicher, dass Sie den gesamten Schlüssel kopiert bzw. eingegeben haben?',
+				'public-address-needed-to-check-private-view-key': 'Die öffentliche Adresse ist erforderlich, um den privaten View Schlüssel zu überprüfen',
+				'private-view-key-public-address-mismatch': 'Falscher privater View Schlüssel: Passt nicht mit der zur Verfügung gestellten öffentlichen Adresse zusammen.',
+			},
 			'cs': {
 				'settings.public-address.label': 'Veřejná adresa',
 				'settings.private-view-key.label': 'Klíč soukromého zobrazení',

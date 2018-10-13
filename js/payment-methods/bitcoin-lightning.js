@@ -44,6 +44,17 @@ app.paymentMethods.bitcoinLightning = (function() {
 				'getting-started.verify.message.success': 'Ok',
 				'getting-started.verify.message.failed': 'Failed',
 			},
+			'de': {
+				'instructions': 'Um das Lightning Network (LN) zu verwenden, müssen Sie Ihren eigenen Knoten ausführen. Für mehr Informationen:',
+				'links.configure.label': 'How to Configure for Lightning Network',
+				'settings.apiUrl.label': 'Lightning Network Knoten URL',
+				'settings.apiUrl.description': 'Die vollständige URL zu Ihrem Lightning Network Knoten. Sollte das Protokoll enthalten (z.B. "https://").',
+				'settings.invoiceMacaroon.label': 'Rechnung Macaroon',
+				'settings.invoiceMacaroon.description': 'Wird verwendet, um Anfragen an Ihren Lightning Network Knoten zu authentifizieren. Sollte eine hexadezimal Zahl sein.',
+				'addInvoice.failed': 'Fehler beim Generieren der Rechnung',
+				'getting-started.verify.message.success': 'Ok',
+				'getting-started.verify.message.failed': 'Fehlgeschlagen',
+			},
 			'es': {
 				'instructions': 'Para usar Lightning Network (LN) tiene que correr su propio nodo. Más información:',
 				'links.configure.label': 'Cómo configurar Lightning Network',
