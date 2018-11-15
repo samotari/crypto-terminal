@@ -40,6 +40,8 @@ app.lang['es'] = (function() {
 
 		'settings.display-currency.label': 'Moneda de cambio',
 		'settings.date-format.label': 'Formato de fecha',
+		'settings.in-app-audio.label': 'Sonido',
+		'settings.in-app-audio.description': 'Active/Desactive todos los sonidos de la aplicación',
 		'settings.accept-crypto-currencies.label': '¿Qué monedas quiere aceptar?',
 		'settings.field-required': '{{label}} es requerido',
 
@@ -104,6 +106,8 @@ app.lang['es'] = (function() {
 		'recommended-mobile-wallets.instructions': 'Escanee el código QR con su móvil para navegar a las applicaciones recomendadas',
 		'recommended-mobile-wallets.section-title.android': 'Para dispositivos Android',
 		'recommended-mobile-wallets.section-title.ios': 'Para dispositivos iOS',
+
+		'screen-saver.instructions': '(Toque en cualquier lugar para activar)',
 	};
 
 })();

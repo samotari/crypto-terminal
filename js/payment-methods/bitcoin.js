@@ -55,10 +55,13 @@ app.paymentMethods.bitcoin = (function() {
 				'private-keys-warning': 'WARNING: Do NOT use private keys with this app!',
 			},
 			'cs': {
+				'verificationInstructions': 'Porovnejte prosím následující adresy s těmi, které generuje vaše aplikace peněženky.',
 				'settings.addressIndex.label': 'Index adresy',
+				'settings.addressIndex.description': 'Toto je počáteční číslo (začínajíc 0), ze kterého budou generovány nové adresy.',
 				'settings.addressIndex.integer-required': 'Musí být celé číslo',
 				'settings.addressIndex.greater-than-or-equal-zero': 'Musí být větší nebo rovno nule',
 				'settings.extendedPublicKey.label': 'Rozšířený veřejný klíč',
+				'settings.extendedPublicKey.description': 'Používá se k vygenerování nové adresy při každém zadání platby',
 				'incorrect-number-of-bytes': 'Nesprávný počet bajtů',
 				'invalid-checksum': 'Neplatný kontrolní součet',
 				'invalid-derivation-scheme': 'Neplatná schéma odvození',
@@ -67,6 +70,9 @@ app.paymentMethods.bitcoin = (function() {
 				'index-must-be-an-integer': 'Index musí být celé číslo',
 				'index-must-be-less-than': 'Index musí být menší než 2^32',
 				'failed-to-derive-address': 'Nepodařilo se odvodit adresu',
+				'address-type-not-supported': 'Typ adresy ("{{type}}") ne podporován',
+				'insufficient-funds-to-make-payment': 'Není dostatek prostředků na platbu.',
+				'invalid-wif': 'Neplatný soukromý klíč. Jste si jisti, že to je pro {{paymentMethodLabel}}?',
 				'private-keys-warning': 'UPOZORNĚNÍ: Nepoužívejte s touto aplikací soukromé klíče!',
 			},
 			'es': {
@@ -85,6 +91,9 @@ app.paymentMethods.bitcoin = (function() {
 				'index-must-be-an-integer': 'El índice debe ser un número entero',
 				'index-must-be-less-than': 'El índice debe ser menor que 2^32',
 				'failed-to-derive-address': 'No se pudo derivar la dirección',
+				'address-type-not-supported': 'El tipo de dirección ("{{type}}") no es aceptada',
+				'insufficient-funds-to-make-payment': 'Insuficientes fondos para el pago.',
+				'invalid-wif': 'Clave privada incorrecta. ¿Seguro que es para {{paymentMethodLabel}}?',
 				'private-keys-warning': '¡ADVERTENCIA: NO utilice claves privadas en esta aplicación!',
 			},
 			'fr': {
