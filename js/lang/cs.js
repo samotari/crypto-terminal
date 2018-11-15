@@ -26,20 +26,22 @@ app.lang['cs'] = (function() {
 		'getting-started.buttons.back': 'Zpět',
 		'getting-started.buttons.next': 'Další',
 		'getting-started.welcome.title': 'Ahoj!',
-		'getting-started.welcome.start': 'Začít',
-		'getting-started.choose-payment-methods.title': 'Metody plateb',
-		'getting-started.choose-payment-methods.instructions': 'Jaké metody plateb chcete přijímat?',
-		'getting-started.done.app-is-ready': 'Váš CryptoTerminal je připravený.',
-		'getting-started.done.ok': 'OK',
-		'getting-started.general-settings.title': 'Generální nastavení',
 		'getting-started.welcome.instructions': 'CryptoTerminal je navržen pro použití s Vaší stávající aplikací peněženky. To umožní přijímat platby snadno a současně udržovat soukromé klíče, které bezpečně uloží Vaše prostředky v režimu offline nebo hardwarové peněžence. Doporučujeme použít jednu z následujících hardwarových peněženek k zabezpečení Vašich finančních prostředků:',
 		'getting-started.welcome.ready?': 'Jakmile máte kryptopeněženku připravenou, můžete zahájit instalaci stisknutím tlačítka "Start" níže.',
+		'getting-started.welcome.start': 'Začít',
 		'getting-started.welcome.skip': 'Přeskočit řízený proces instalace',
+		'getting-started.choose-payment-methods.title': 'Metody plateb',
+		'getting-started.choose-payment-methods.instructions': 'Jaké metody plateb chcete přijímat?',
 		'getting-started.done.title': 'Jo!',
+		'getting-started.done.app-is-ready': 'Váš CryptoTerminal je připravený.',
 		'getting-started.done.contact-below': 'Pokud máte nějaké potíže nebo chcete dát zpětnou vazbu, můžete nás kontaktovat přímo na e-mailové adrese uvedené níže.',
+		'getting-started.done.ok': 'OK',
+		'getting-started.general-settings.title': 'Generální nastavení',
 
 		'settings.display-currency.label': 'Zobrazovaná měna',
 		'settings.date-format.label': 'Datový formát',
+		'settings.in-app-audio.label': 'Zvuk',
+		'settings.in-app-audio.description': 'Hlavni on/off vypínácek pro všechny zvuky v aplikaci',
 		'settings.accept-crypto-currencies.label': 'Jaké metody plateb chcete přijímat?',
 		'settings.field-required': '{{label}} je vyžadován',
 
@@ -72,15 +74,20 @@ app.lang['cs'] = (function() {
 		'payment-details.label.amount': 'Částka',
 		'payment-details.back': 'Zpět',
 
-		'payment-request.data.invalid': '"data" je neplatný',
-		'payment-request.status.invalid': '"status" je neplatný',
 		'payment-request.crypto-amount.field-missing': 'Nelze konvertovat na částku kryptoměny bez "{{field}}"',
 		'payment-request.crypto-amount.unknown-method': 'Nelze konvertovat na částku kryptoměny, protože způsob platby neexistuje',
+		'payment-request.data.invalid': '"data" je neplatný',
+		'payment-request.status.invalid': '"status" je neplatný',
 
 		'payment-status.unconfirmed.message': 'Díky!',
 		'payment-status.unconfirmed.done': 'Hotovo',
 		'payment-status.timed-out.message': 'Čas vypršel',
 		'payment-status.timed-out.done': 'OK',
+
+		'payment-replaceable.accept': 'Přijmout',
+		'payment-replaceable.reject': 'odmítnout',
+		'payment-replaceable.message': 'Pozor!',
+		'payment-replaceable.info': 'Tuto transakci lze nahradit vyššími poplatky, chcete ji přijmout?',
 
 		'sample-addresses.label': 'Vzorové adresy:',
 		'enter-pin.cancel': 'Zrušit',
@@ -89,11 +96,6 @@ app.lang['cs'] = (function() {
 		'pin-required.instructions': 'Pokud chcete pokračovat, zadejte kód',
 		'pin-required.incorrect': 'Kód byl nesprávný',
 		'device.camera.not-available': 'Kamera zařízení není k dispozici',
-
-		'bitcoin.verificationInstructions': 'Porovnejte prosím následující adresy s těmi, které generuje vaše aplikace peněženky.',
-		'bitcoin.settings.addressIndex.description': 'Toto je počáteční číslo (začínajíc 0), ze kterého budou generovány nové adresy.',
-		'bitcoin.settings.extendedPublicKey.description': 'Používá se k vygenerování nové adresy při každém zadání platby',
-		'bitcoin.segwit-not-supported': 'Segwit adresy zatím nejsou podporovány. Pokud to Vaše peněženka umožňuje, použijte prosím místo toho starší rozšířený veřejný klíč (xpub).',
 
 		'more-menu.about': 'O této aplikaci',
 		'more-menu.recommended-mobile-wallets': 'Doporučené mobilní aplikace',
@@ -104,6 +106,8 @@ app.lang['cs'] = (function() {
 		'recommended-mobile-wallets.instructions': 'Načtěte QR kód na otevření stránky aplikace',
 		'recommended-mobile-wallets.section-title.android': 'Android zařízení',
 		'recommended-mobile-wallets.section-title.ios': 'iOS zařízení',
+
+		'screen-saver.instructions': '(klepněte pro aktivaci)',
 	};
 
 })();
