@@ -207,7 +207,7 @@ app.Router = (function() {
 			});
 
 			app.mainView.renderView('Pay', { model: paymentRequest });
-			app.paymentRequests.add(paymentRequest);
+			app.paymentRequests.add(paymentRequest, { at: 0 });
 		},
 
 		choosePaymentMethod: function() {

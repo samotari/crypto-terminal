@@ -69,7 +69,7 @@ app.views.Admin = (function() {
 		getDefaultSubPage: function() {
 
 			var subPages = _.result(this, 'subPages');
-			var visibleSubPages = _.where(subPages, {visible: true})
+			var visibleSubPages = _.where(subPages, { visible: true })
 			return visibleSubPages && visibleSubPages[0] || null;
 		},
 
@@ -87,6 +87,7 @@ app.views.Admin = (function() {
 
 		onRender: function() {
 
+			this.$slider = this.$('.slider');
 			this.$menuItems = this.$('.secondary-menu-item');
 			this.setVisibilityOfMenuItems();
 			this.initializeSlider();
@@ -153,15 +154,16 @@ app.views.Admin = (function() {
 
 			var subPages = _.result(this, 'subPages');
 			var items = _.map(subPages, function(subPage) {
+				var contentViewOptions = _.result(subPage, 'ContentViewOptions');
 				return {
 					key: subPage.key,
-					contentView: new subPage.ContentView(subPage.ContentViewOptions || {}),
+					contentView: new subPage.ContentView(contentViewOptions),
 					visible: subPage.visible,
 				};
 			});
 
 			this.slider = new app.views.Slider({
-				el: this.$('.slider'),
+				el: this.$slider,
 				items: items,
 			});
 
@@ -212,6 +214,25 @@ app.views.Admin = (function() {
 				this.setCryptoCurrencySettingsVisibility(key, visible);
 			}, this);
 			this.updateSecondaryMenuWidth();
+		},
+
+		setElement: function() {
+
+			app.abstracts.BaseView.prototype.setElement.apply(this, arguments);
+			if (this.slider) {
+				this.slider.setElement(this.$slider);
+				_.chain(this.slider.items).filter(function(item) {
+					return _.has(item, 'view');
+				}).each(function(item) {
+					if (item.view) {
+						item.view.setElement(item.view.$el);
+					}
+					if (item.contentView) {
+						item.contentView.setElement(item.contentView.$el);
+					}
+				});
+			}
+			return this;
 		},
 
 		onClose: function() {

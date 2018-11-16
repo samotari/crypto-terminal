@@ -126,9 +126,8 @@ app.util = (function() {
 
 		getSupportedDisplayCurrencies: function() {
 
-			var exchangeRates = app.cache.get('exchange-rates');
-			if (!exchangeRates) return [];
-			return _.keys(exchangeRates);
+			var fromExchangeRates = _.keys(app.cache.get('exchange-rates') || []);
+			return _.uniq([].concat(app.config.primaryDisplayCurrencies, fromExchangeRates));
 		},
 
 	};

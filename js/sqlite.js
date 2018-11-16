@@ -1,6 +1,10 @@
 var app = app || {};
 
 /*
+	TODO:
+	- Remove this file after existing users are updated.
+
+	SQLite storage provided by the following:
 	https://github.com/litehelpers/Cordova-sqlite-storage
 */
 app.onDeviceReady(function() {
@@ -10,53 +14,79 @@ app.onDeviceReady(function() {
 	// SQLite plugin not supported in browser.
 	if (!app.isCordova() || cordova.platformId === 'browser') return;
 
-	app.sqlite = {};
+	app.sqlite = {
 
-	app.queues.onStart.push({
-		fn: function(done) {
-			app.sqlite.db = window.sqlitePlugin.openDatabase(app.config.sqlite, function() {
-				// Successfully connected to database.
-				app.log('sqlite database connected');
-				done();
-			}, done);
+		migrateToLocalStorage: function(collection, done) {
+			app.log('Migrating SQLite data to LocaleStorage', collection.storeName);
+			var store = collection.sqliteStore;
+			app.sqlite.tableExists(store.tableName, function(error, exists) {
+				if (error) return done(error);
+				if (!exists) return done();
+				async.series([
+					function(next) {
+						app.sqlite.copySQLiteDataToLocalStorage(collection, next);
+					},
+					function(next) {
+						store.dropTable(next);
+					},
+				], function(error) {
+					if (error) app.log(error);
+					done();
+				});
+			});
 		},
+
+		tableExists: function(name, cb) {
+			var sql = 'SELECT name FROM sqlite_master WHERE type="table" AND name="' + name + '"';
+			var params = [];
+			app.sqlite.db.executeSql(sql, params, function onSuccess(result) {
+				var exists = (function() {
+					var index, row;
+					for (index = 0; index < result.rows.length; index++) {
+						row = result.rows.item(index);
+						if (row.name === name) return true;
+					}
+					return false;
+				})();
+				cb(null, exists);
+			}, cb/* onError */);
+		},
+
+		copySQLiteDataToLocalStorage: function(collection, cb) {
+			app.log('copySQLiteDataToLocalStorage', collection.storeName);
+			var store = collection.sqliteStore;
+			if (!store) return cb();
+			store.findAll({ limit: 9999 }, function(error, items) {
+				if (error) return cb(error);
+				try {
+					_.invoke(collection.models, 'destroy');
+					collection.reset([]);
+					collection.add(items);
+					_.invoke(collection.models, 'save');
+				} catch (error) {
+					return cb(error);
+				}
+				cb();
+			});
+		},
+	};
+
+	app.onStart(function openDatabase(done) {
+		app.sqlite.db = window.sqlitePlugin.openDatabase(app.config.sqlite, function() {
+			// Successfully connected to database.
+			app.log('sqlite database connected');
+			done();
+		}, done);
 	});
 
-	app.queues.onStart.push({
-		fn: function(done) {
-			var collections = [
-				app.settings.collection,
-				app.paymentRequests,
-			];
-			app.sqlite.db.transaction(
-				function(tx) {
-					_.each(collections, function(collection, index) {
-						var store = collection.sqliteStore;
-						if (store) {
-							store.tx = tx;
-							store._setupTable();
-							store._count(function(error, total) {
-								collection.total = total;
-								store.tx = null;
-								if (index === collections.length - 1) {
-									// Last collection.
-									// Finish the db transaction.
-									tx.finish();
-								}
-							});
-						}
-					});
-				},
-				function(error) {
-					app.log('db setup failed', error);
-					done(error);
-				}, function() {
-					app.log('db setup succeeded');
-					// Transaction was successful.
-					done();
-				}
-			);
-		},
+	app.onStart(function(done) {
+		var collections = [
+			app.paymentRequests,
+			app.settings.collection,
+		];
+		async.each(collections, function(collection, next) {
+			app.sqlite.migrateToLocalStorage(collection, next);
+		}, done);
 	});
 
 	var Store = function(name) {
@@ -78,56 +108,6 @@ app.onDeviceReady(function() {
 		name = name.substr(0, 20);
 
 		return name;
-	};
-
-	Store.prototype._setupTable = function(cb) {
-		app.log('SQLiteStore._setupTable');
-		this.query('CREATE TABLE IF NOT EXISTS '+this.tableName+' (id TEXT PRIMARY KEY, data TEXT, created_at INTEGER)', function(error) {
-			cb && cb(error);
-		});
-	};
-
-	Store.prototype.create = function(model, cb) {
-		app.log('SQLiteStore.create', model);
-		model.id = model.get(model.idAttribute) || null;
-		this.newTransaction(function(tx) {
-			async.seq(
-				_.bind(this.ensureId, this, model),
-				_.bind(function(next) {
-					this._replace(model.id, model.toJSON(), next);
-				}, this)
-			)(function() {
-				tx.finish();
-			});
-		}, function(error) {
-			if (error) {
-				return cb(error);
-			}
-			cb(null, model.toJSON());
-		});
-	};
-
-	Store.prototype.ensureId = function(model, cb) {
-		if (model.id) return cb();
-		app.log('SQLiteStore.ensureId');
-		var isUnique = false;
-		var id;
-		async.until(function() { return isUnique; }, _.bind(function(next) {
-			id = app.util.generateRandomString(
-				app.config.sqlite.uniqueId.length,
-				app.config.sqlite.uniqueId.charset
-			);
-			this._find(id, function(error, result) {
-				if (error) return next(error);
-				isUnique = result.rows.length === 0;
-				next();
-			});
-		}, this), function(error) {
-			if (error) return cb(error);
-			model.id = id;
-			model.set(model.idAttribute, model.id);
-			cb();
-		});
 	};
 
 	Store.prototype.findAll = function(options, cb) {
@@ -170,85 +150,20 @@ app.onDeviceReady(function() {
 		this.query(sql, params, cb);
 	};
 
-	Store.prototype.find = function(model, cb) {
-		app.log('SQLiteStore.find');
-		var items;
-		var prepareResultItems = this.prepareResultItems;
+	Store.prototype.dropTable = function(cb) {
+		app.log('SQLiteStore.dropTable');
 		var done = _.once(cb);
-		this.newTransaction({ readOnly: true }, function(tx) {
-			this._find(model.id, function(error, result) {
-				try {
-					items = prepareResultItems(result);
-				} catch (error) {
-					done(error);
-				}
-				tx.finish();
-			});
-		}, function(error) {
-			if (error) {
-				return done(error);
-			}
-			done(null, items);
-		});
-	};
-
-	Store.prototype._find = function(id, cb) {
-		this.query('SELECT id, data FROM '+this.tableName+' WHERE id = ? LIMIT 1', [ id ], cb);
-	};
-
-	Store.prototype.update = function(model, cb) {
-		app.log('SQLiteStore.update');
 		this.newTransaction(function(tx) {
-			this._replace(model.id, model.toJSON(), function() {
+			this._dropTable(function(error, result) {
 				tx.finish();
 			});
-		}, function(error) {
-			if (error) {
-				return cb(error);
-			}
-			cb(null, model.toJSON());
-		});
+		}, done);
 	};
 
-	Store.prototype._replace = function(id, data, cb) {
-		try {
-			data = this.serializeData(data);
-		} catch (error) {
-			_.defer(function() {
-				cb(error);
-			});
-			return;
-		}
-		this.query('REPLACE INTO '+this.tableName+' (id,data,created_at) VALUES (?,?,?)', [
-			id,
-			data,
-			Date.now(),
-		], function(error) {
-			cb(error);
-		});
-	};
-
-	Store.prototype.destroy = function(model, cb) {
-		app.log('SQLiteStore.destroy');
-		this.newTransaction(function(tx) {
-			this._destroy(model.id, function() {
-				tx.finish();
-			});
-		}, cb);
-	};
-
-	Store.prototype._destroy = function(id, cb) {
-		this.query('DELETE FROM '+this.tableName+' WHERE id = ? LIMIT 1', [ id ], cb);
-	};
-
-	Store.prototype._count = function(cb) {
-		this.query('SELECT COUNT(*) FROM '+this.tableName, function(error, result) {
-			if (error) {
-				return cb(error);
-			}
-			var total = result.rows.item(0)['COUNT(*)'];
-			cb(null, total);
-		});
+	Store.prototype._dropTable = function(cb) {
+		var sql = 'DROP TABLE IF EXISTS '+this.tableName;
+		var params = [];
+		this.query(sql, params, cb);
 	};
 
 	Store.prototype.query = function(sql, params, cb) {
@@ -310,10 +225,6 @@ app.onDeviceReady(function() {
 			}
 			return data;
 		}, this).compact().value();
-	};
-
-	Store.prototype.serializeData = function(data) {
-		return JSON.stringify(data);
 	};
 
 	Store.prototype.deserializeData = function(data) {

@@ -13,74 +13,22 @@ app.views.PaymentHistory = (function() {
 		itemContainer: '.payment-history-items',
 		events: {
 			'click .payment-history-item': 'showPaymentDetails',
-			'scroll': 'onScroll',
+		},
+
+		collection: function() {
+			return app.paymentRequests;
 		},
 
 		ItemView: function() {
 			return app.views.PaymentHistoryListItem;
 		},
 
-		offset: 0,
-		total: 0,
-
-		initialize: function() {
-
-			_.bindAll(this, 'fetchPayments', 'onScroll');
-
-			this.collection = app.paymentRequests;
-		},
-
-		fetchPayments: function() {
-
-			var $el = this.$el;
-			$el.addClass('loading');
-			window.requestAnimationFrame(_.bind(function() {
-				this.collection.fetch({
-					limit: app.config.paymentHistory.list.limit,
-					offset: this.offset,
-					error: function() {
-						$el.removeClass('loading');
-						app.mainView.showMessage(app.i18n.t('payment-history.failed-to-get-payment-data'));
-					},
-					success: _.bind(function() {
-						$el.removeClass('loading');
-						this.$el.toggleClass('empty', this.collection.length === 0);
-					}, this),
-				});
-			}, this));
-		},
-
 		onRender: function() {
 
-			app.log('paymentHistory.onRender');
-			if (this.collection.length < app.config.paymentHistory.list.limit) {
-				this.fetchPayments();
-			} else {
-				this.renderItems();
-			}
-			this.$items = this.$('.payment-history-items');
-			this.$items.on('scroll', this.onScroll);
-		},
-
-		onScroll: function(evt) {
-
-			app.log('paymentHistory.onScroll');
-			var scrollHeightRemaining = this.getScrollHeightRemaining();
-			var threshold = $(window).height();
-			if (scrollHeightRemaining < threshold && this.hasMoreItemsToFetch()) {
-				this.offset += app.config.paymentHistory.list.limit;
-				this.fetchPayments();
-			}
-		},
-
-		getScrollHeightRemaining: function() {
-
-			return this.$items.prop('scrollHeight') - (this.$items.scrollTop() + this.$items.outerHeight());
-		},
-
-		hasMoreItemsToFetch: function() {
-
-			return this.collection.length < this.collection.total;
+			app.views.utility.List.prototype.onRender.apply(this, arguments);
+			var collection = _.result(this, 'collection');
+			var total = _.result(collection, 'total');
+			this.$el.toggleClass('empty', total === 0);
 		},
 
 		showPaymentDetails: function(evt) {
@@ -99,11 +47,6 @@ app.views.PaymentHistory = (function() {
 				// Only add "complete" payment requests.
 				app.views.utility.List.prototype.addItem.apply(this, arguments);
 			}
-		},
-
-		onClose: function() {
-
-			this.$items.off('scroll', this.onScroll);
 		},
 
 	});

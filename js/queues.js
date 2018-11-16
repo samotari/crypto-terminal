@@ -37,13 +37,11 @@ app.queues = (function() {
 		app.log(error);
 	};
 
-	app.onDeviceReady = function(fn) {
-		app.queues.onDeviceReady.push({ fn: fn });
-	};
-
-	app.onReady = function(fn) {
-		app.queues.onReady.push({ fn: fn });
-	};
+	_.each(_.keys(queues), function(key) {
+		app[key] = function(fn) {
+			app.queues[key].push({ fn: fn });
+		};
+	});
 
 	$(function() {
 		if (!app.isCordova()) {
