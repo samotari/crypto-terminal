@@ -223,7 +223,7 @@ app.paymentMethods.bitcoinLightning = (function() {
 		checkPaymentReceived: function(paymentRequest, cb) {
 
 			_.defer(_.bind(function() {
-				var id = (new Buffer(paymentRequest.data.r_hash, 'base64')).toString('hex');
+				var id = Buffer.from(paymentRequest.data.r_hash, 'base64').toString('hex');
 				var uri = this.getApiUrl('/v1/invoice/' + encodeURIComponent(id));
 				$.ajax({
 					url: uri,

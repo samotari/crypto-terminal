@@ -519,7 +519,7 @@ app.paymentMethods.bitcoin = (function() {
 			var publicKeyHash = this.hash160(publicKey);
 			var scriptSig = [
 				this.OP_ZERO,
-				(new Buffer([publicKeyHash.length / 2])).toString('hex'),
+				Buffer.from([publicKeyHash.length / 2]).toString('hex'),
 				publicKeyHash,
 			].join('');
 			var scriptHash = this.hash160(scriptSig);
@@ -730,7 +730,7 @@ app.paymentMethods.bitcoin = (function() {
 
 			try {
 				var keyPair = this.keyPairFromWIF(wif);
-				var publicKey = (new Buffer(keyPair.publicKey)).toString('hex');
+				var publicKey = Buffer.from(keyPair.publicKey).toString('hex');
 				var buildTx = _.bind(this.buildTx, this);
 				var broadcastRawTx = _.bind(this.broadcastRawTx, this);
 				var ref = this.ref;

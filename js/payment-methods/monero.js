@@ -299,7 +299,7 @@ app.paymentMethods.monero = (function() {
 			Module._free(ge_p3);
 			Module._free(input_mem);
 			Module._free(out_mem);
-			return (new Buffer(output)).toString('hex');
+			return Buffer.from(output).toString('hex');
 		},
 
 		generatePaymentRequest: function(amount, cb) {
