@@ -105,8 +105,8 @@ html.screen-saver-on #view {
 	width: 100%;
 	height: 100%;
 	z-index: 999;
-	opacity: .8;
-	background-color: rgba(255, 255, 255, .8);
+	opacity: 1;
+	background-color: rgba(255, 255, 255, .7);
 }
 #cover-image {
 	position: relative;
@@ -132,8 +132,12 @@ html.loaded.busy #cover {
 	display: flex;
 }
 html.loaded.busy #cover-image {
-	background-size: 120px;
+	width: 160px;
+	height: 160px;
+	background-size: 80px;
 	background-image: url('../images/busy.gif');
+	background-color: #fff;
+	box-shadow: 0 0 8px rgba(0,0,0,.4);
 }
 html.screen-saver-on #cover {
 	display: flex;

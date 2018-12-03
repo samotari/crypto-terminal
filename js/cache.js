@@ -4,15 +4,7 @@ app.cache = (function() {
 
 	'use strict';
 
-	var model = (function() {
-		var Model = Backbone.Model.extend({
-			localStorage: new Backbone.LocalStorage('cache'),
-		});
-		var model = new Model({
-			id: 'cache',
-		});
-		return model;
-	})();
+	var model = new app.models.Cache({ id: 'cache' });
 
 	var cache = {
 		model: model,
@@ -55,26 +47,22 @@ app.cache = (function() {
 		}
 	};
 
-	app.queues.onStart.push({
-		fn: function(done) {
-			model.fetch({
-				success: function() {
-					done();
-				},
-				error: done,
-			});
-		}
+	app.onStart(function(done) {
+		model.fetch({
+			success: function() {
+				done();
+			},
+			error: done,
+		});
 	});
 
-	app.queues.onStart.push({
-		fn: function(done) {
-			try {
-				cache.clearOlderThan(app.config.cache.onAppStartClearOlderThan);
-			} catch (error) {
-				app.log(error);
-			}
-			done();
+	app.onStart(function(done) {
+		try {
+			cache.clearOlderThan(app.config.cache.onAppStartClearOlderThan);
+		} catch (error) {
+			app.log(error);
 		}
+		done();
 	});
 
 	return cache;

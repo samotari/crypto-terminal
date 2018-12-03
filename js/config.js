@@ -6,6 +6,7 @@ app.config = (function() {
 
 	var config = {
 		debug: false,
+		primaryDisplayCurrencies: ['BTC', 'CZK', 'EUR', 'GBP', 'LTC', 'USD', 'XMR'],
 		supportEmail: 'cryptoterminal.eu@gmail.com',
 		cache: {
 			onAppStartClearOlderThan: 86400000,// milliseconds
@@ -90,7 +91,7 @@ app.config = (function() {
 		},
 		paymentHistory: {
 			list: {
-				limit: 30,
+				limit: 999,
 			}
 		},
 		settings: [
@@ -124,7 +125,7 @@ app.config = (function() {
 				required: true,
 				options: function() {
 					var supportedDisplayCurrencies = app.util.getSupportedDisplayCurrencies();
-					var sticky = ['BTC', 'CZK', 'EUR', 'GBP', 'LTC', 'USD', 'XMR'];
+					var sticky = config.primaryDisplayCurrencies;
 					var rest = _.difference(supportedDisplayCurrencies, sticky);
 					return _.map([].concat(sticky, [''], rest), function(code) {
 						return {

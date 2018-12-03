@@ -15,25 +15,26 @@ app.onDeviceReady(function() {
 	// Initialize collections and models.
 	app.paymentRequests = new app.collections.PaymentRequests();
 
-	app.queues.onReady.push({
-		fn: function() {
-			// Initialize the main view.
-			app.mainView = new app.views.Main();
+	app.onReady(function() {
+		app.paymentRequests.fetch();
+	});
 
-			// Initialize the router.
-			app.router = new app.Router();
+	app.onReady(function() {
+		// Initialize the main view.
+		app.mainView = new app.views.Main();
 
-			// Don't initialize backbone history when testing.
-			if (!app.isTest()) {
-				// Start storing in-app browsing history.
-				Backbone.history.start();
-			}
+		// Initialize the router.
+		app.router = new app.Router();
 
-			$('html').addClass('loaded');
-			app.device.overrideBackButton();
-			app.device.listenToNetworkInformation();
-
+		// Don't initialize backbone history when testing.
+		if (!app.isTest()) {
+			// Start storing in-app browsing history.
+			Backbone.history.start();
 		}
+
+		$('html').addClass('loaded');
+		app.device.overrideBackButton();
+		app.device.listenToNetworkInformation();
 	});
 
 	app.queues.onStart.resume();

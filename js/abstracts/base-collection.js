@@ -11,7 +11,10 @@ app.abstracts.BaseCollection = (function() {
 		// storeName: '<NAME>',
 
 		// Internal counter for the total number of models stored in this collection's db table.
-		total: 0,
+		// This is used in the case of SQLite storage.
+		total: function() {
+			return this.length;
+		},
 
 		initialize: function() {
 
@@ -23,9 +26,9 @@ app.abstracts.BaseCollection = (function() {
 
 			if (app.sqlite) {
 				this.sqliteStore = new app.sqlite.Store(storeName);
-			} else {
-				this.localStorage = new Backbone.LocalStorage(storeName);
 			}
+
+			this.localStorage = new Backbone.LocalStorage(storeName);
 		},
 
 	});

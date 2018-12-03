@@ -63,8 +63,7 @@ app.models.PaymentRequest = (function() {
 		isComplete: function() {
 
 			var requiredFields = ['amount', 'currency', 'method', 'rate'];
-			var isPending = this.get('status') === 'pending';
-			return this.isSaved() && !isPending && _.every(requiredFields, function(field) {
+			return this.isSaved() && !this.isPending() && _.every(requiredFields, function(field) {
 				return !!this.get(field);
 			}, this);
 		},

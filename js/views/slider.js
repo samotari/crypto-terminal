@@ -110,12 +110,11 @@ app.views.Slider = (function() {
 
 		addItem: function(item) {
 
-			if (item.$el) return;
 			item.$el = $('<div/>');
 			item.$el.toggleClass('visible', this.isVisible(item.key));
 			item.$el.addClass(this.ItemView.prototype.className);
 			item.$el.attr('data-key', item.key);
-			item.$el.css('width', (100 / this.items.length) + '%')
+			item.$el.css('width', (100 / this.items.length) + '%');
 			this.$items.append(item.$el);
 		},
 
@@ -123,8 +122,7 @@ app.views.Slider = (function() {
 
 			if (!item || item.rendered === true) return;
 			item.view = (new this.ItemView(item));
-			item.view.setElement(item.$el);
-			item.view.render();
+			item.view.setElement(item.$el).render();
 			item.rendered = true;
 			return item.view;
 		},

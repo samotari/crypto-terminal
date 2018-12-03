@@ -137,10 +137,10 @@ app.settings = (function() {
 					if (model) {
 						model.set('value', value).save();
 					} else {
-						this.collection.add({
+						this.collection.create({
 							key: key,
 							value: value,
-						}).save();
+						});
 					}
 				}
 			}
@@ -157,8 +157,8 @@ app.settings = (function() {
 		// Initialize the settings collection.
 		settings.collection = new app.collections.Settings();
 
-		app.queues.onStart.push({
-			fn: function(done) {
+		app.onStart(function(done) {
+			try {
 				settings.collection.on('add update change', function(model) {
 					var key = model.get('key');
 					var value = model.get('value');
@@ -170,9 +170,13 @@ app.settings = (function() {
 					success: function() {
 						done();
 					},
-					error: done,
-				});
-			},
+					error: function(error) {
+						done(error);
+					},
+				});	
+			} catch (error) {
+				return done(error);
+			}
 		});
 	});
 

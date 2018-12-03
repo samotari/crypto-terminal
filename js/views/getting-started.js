@@ -197,9 +197,10 @@ app.views.GettingStarted = (function() {
 
 			var subPages = _.result(this, 'subPages');
 			var items = _.map(subPages, function(subPage) {
+				var contentViewOptions = _.result(subPage, 'ContentViewOptions');
 				return {
 					key: subPage.key,
-					contentView: new subPage.ContentView(subPage.ContentViewOptions || {}),
+					contentView: new subPage.ContentView(contentViewOptions),
 					visible: subPage.visible,
 				};
 			});
