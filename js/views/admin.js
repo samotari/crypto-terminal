@@ -16,6 +16,9 @@ app.views.Admin = (function() {
 			'click .secondary-menu-item': 'onClickNavMenuItem',
 		},
 
+		// Keep the rendered view instead of closing it.
+		doNotClose: true,
+
 		subPages: function() {
 
 			var subPages = [];
@@ -167,6 +170,8 @@ app.views.Admin = (function() {
 				items: items,
 			});
 
+			this.attachSubView(this.slider);
+
 			this.listenTo(this.slider, 'change:active', this.setActiveMenuItem);
 		},
 
@@ -174,9 +179,11 @@ app.views.Admin = (function() {
 
 			this.options.page = key;
 			this.$menuItems.removeClass('active');
-			var $activeMenuItem = this.$menuItems.filter('[data-key="' + key + '"]').addClass('active');
+			var $activeMenuItem = this.$menuItems.filter('[data-key="' + key + '"]').addClass('active').eq(0);
+			var activeMenuItemEl = $activeMenuItem[0];
 			// Set the menu scroll position to the active menu item.
-			this.$('.secondary-menu')[0].scrollLeft = $activeMenuItem[0].offsetLeft;
+			var offsetLeft = activeMenuItemEl && activeMenuItemEl.offsetLeft;
+			this.$('.secondary-menu')[0].scrollLeft = offsetLeft;
 			app.router.navigate('#admin/' + encodeURIComponent(key), { trigger: false });
 		},
 
@@ -220,17 +227,8 @@ app.views.Admin = (function() {
 
 			app.abstracts.BaseView.prototype.setElement.apply(this, arguments);
 			if (this.slider) {
-				this.slider.setElement(this.$slider);
-				_.chain(this.slider.items).filter(function(item) {
-					return _.has(item, 'view');
-				}).each(function(item) {
-					if (item.view) {
-						item.view.setElement(item.view.$el);
-					}
-					if (item.contentView) {
-						item.contentView.setElement(item.contentView.$el);
-					}
-				});
+				var key = this.options.page || this.getDefaultSubPage();
+				this.goToSubPage(key);
 			}
 			return this;
 		},
@@ -253,7 +251,7 @@ app.views.Admin = (function() {
 			} else if (defaultSubPage && page === defaultSubPage.key) {
 				app.router.navigate('pay', { trigger: true });
 			} else {
-				app.router.navigate('admin', { trigger: true });
+				app.router.navigate('admin/' + defaultSubPage.key, { trigger: true });
 			}
 		}
 	});

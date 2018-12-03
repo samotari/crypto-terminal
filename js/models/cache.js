@@ -8,6 +8,7 @@ app.models.Cache = (function() {
 
 	return app.abstracts.BaseModel.extend({
 		localStorage: new Backbone.LocalStorage('cache'),
+		url: _.noop,
 	});
 
 })();

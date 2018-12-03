@@ -144,7 +144,7 @@ app.paymentMethods.bitcoinLightning = (function() {
 					var view = new app.views.ApiVerify({
 						message: message,
 						status: verificationSuccess ? 'success' : 'failed',
-					})
+					});
 				} catch (error) {
 					return cb(error);
 				}
