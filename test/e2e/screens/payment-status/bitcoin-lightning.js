@@ -12,7 +12,7 @@ describe('#payment-status [bitcoin-lightning]', function() {
 	var server;
 	before(function() {
 		var paymentRequest = {payment_request:'4g5f6d8r3dwD6sF8e5kaM', r_hash: '123546346'};
-		var id = (new Buffer(paymentRequest.r_hash, 'base64')).toString('hex');
+		var id = Buffer.from(paymentRequest.r_hash, 'base64').toString('hex');
 
 		var tmpApp = express();
 		tmpApp.use(function(req, res, next) {
