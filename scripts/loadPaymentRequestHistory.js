@@ -33,7 +33,10 @@
 	for (var index = 0; index < repetitions; index++) {
 		paymentRequests.push(createPaymentRequest());
 	}
-	app.paymentRequests.add(paymentRequests).save();
+	var models = _.map(paymentRequests, function(paymentRequest) {
+		return app.paymentRequests.add(paymentRequest);
+	});
+	_.invoke(models, 'save');
 	console.log('Completed! ', paymentRequests.length, ' items were created');
 
 })(2);
