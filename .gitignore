@@ -1,7 +1,6 @@
 .gradle/
 build/
 node_modules/
-public/
 hooks/
 platforms/
 plugins/

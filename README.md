@@ -24,7 +24,6 @@ If you would like to contribute to the project, the following should help get yo
   * [Monero](#monero)
 * [Android Development](#android-development)
   * [Create Signed APK](#create-signed-apk)
-* [Homepage](#homepage) - [cryptoterminal.eu](https://cryptoterminal.eu)
 
 
 ## Requirements
@@ -32,7 +31,6 @@ If you would like to contribute to the project, the following should help get yo
 The following is a list of requirements needed to contribute to this project.
 
 * [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm). For Windows, use an [installer](https://nodejs.org/en/download/) from the nodejs website.
-* [grunt-cli](https://gruntjs.com/getting-started) - `npm install -g grunt-cli`
 * For Android development:
   * [cordova](https://cordova.apache.org/#getstarted) - `npm install -g cordova`
   * [Java Development Kit (JDK)](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) version 8 or higher. Use your system's native package manager to install the JDK (if available).
@@ -54,32 +52,9 @@ Don't forget to replace `YOUR_USERNAME` with your GitHub username.
 ```bash
 cd crypto-terminal
 npm install
-grunt
 ```
 
 Open your browser and navigate to [localhost:3000](http://localhost:3000). You should see the settings screen the first time you open the app.
-
-
-## Technical Overview
-
-The technology stack includes:
-* Standard web technologies (HTML, CSS, JavaScript).
-* [Backbone.js](http://backbonejs.org/) - A JavaScript library for developing complex web applications.
-* [cordova](https://cordova.apache.org/) - To wrap the web application and create builds for Android, iOS, and other mobile platforms.
-* [nodejs](https://nodejs.org/) - As a build tool.
-
-Directory structure explained:
-* `build/` - Temporary files used during the build process by Grunt.
-* `css/` - CSS source files.
-* `exports/` - Files that are processed by browserify, which processes node.js modules so that they can be run in a browser.
-* `grunt/` - Grunt task configuration files go here.
-* `html/` - Source HTML files go here (templates for example).
-* `js/` - JavaScript source files.
-* `scripts/` - Miscellaneous script files go here.
-* `tasks/` - Custom Grunt tasks live here.
-* `third-party/` - Custom builds of third-party libraries.
-* `test/` - Automated tests are defined here. This project uses [mocha]().
-* `www/` - Final output from the build process. Minified and uglified, this is served in the app once you run it.
 
 
 ## Developing with Cryptocurrencies
@@ -162,16 +137,6 @@ If successful, it should have created a new `.apk` file at the following path:
 ```
 
 
-## Homepage
+## License
 
-The homepage is hosted via [GitHub pages](https://pages.github.com/) at [cryptoterminal.eu](https://cryptoterminal.eu/). It is intended as a non-technical entry-point for merchants to find and learn about the app.
-
-The source files for the homepage are located in this project in the `homepage/` directory.
-
-To build and serve the homepage locally:
-```bash
-grunt homepage
-```
-Then open your browser to [localhost:3003](http://localhost:3003).
-
-To update the production build, copy the homepage build files from `build/homepage/www` to the `gh-pages` git branch in this project.
+This project is licensed under the [GNU Affero General Public License v3 (AGPL-3.0)](https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0)).

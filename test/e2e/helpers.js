@@ -3,7 +3,7 @@
 var expect = require('chai').expect;
 var manager = require('../manager');
 
-var helpers = module.exports = {
+module.exports = {
 	'#pay': {
 		pressNumberPadKey: function(key) {
 			var selector;

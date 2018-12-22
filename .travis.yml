@@ -9,9 +9,14 @@ node_js:
   - "8"
 
 before_install:
-  - npm install -g grunt-cli
+  - npm install -g mocha
+  - npm install -g eslint
 
 env:
   - TRAVIS_CI=1
 
-install: npm install
+install:
+  - npm install
+
+before_script:
+  - npm run build
