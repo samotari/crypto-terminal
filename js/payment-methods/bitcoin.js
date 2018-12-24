@@ -242,7 +242,7 @@ app.paymentMethods.bitcoin = (function() {
 
 		OP_ZERO: '00',
 
-		worker: app.createWorker('workers/bitcoin.js'),
+		worker: app.createWorker('js/workers/bitcoin.min.js'),
 
 		createVerificationView: function(cb) {
 

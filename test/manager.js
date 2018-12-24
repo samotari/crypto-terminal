@@ -1,18 +1,29 @@
 'use strict';
 
 var _ = require('underscore');
+
+process.env = _.defaults(process.env || {}, {
+	NODE_ENV: 'test',
+	TARGET: 'test',
+});
+
 var express = require('express');
 var puppeteer = require('puppeteer');
 var Primus = require('primus');
-
-var gruntConfig = {
-	connect: require('../grunt/connect'),
-};
+var serveStatic = require('serve-static');
 
 var manager = module.exports = {
 
 	browser: null,
 	page: null,
+
+	prepareStaticWebServer: function(done) {
+
+		var app = express();
+		app.use(serveStatic('www'));
+		app.server = app.listen(3000, done);
+		return app;
+	},
 
 	prepareBrowser: function(options, done) {
 
@@ -47,8 +58,8 @@ var manager = module.exports = {
 			return done(new Error('Must load a page before navigating.'));
 		}
 
-		var host = gruntConfig.connect.test.options.hostname;
-		var port = gruntConfig.connect.test.options.port;
+		var host = process.env.HTTP_SERVER_HOST || 'localhost';
+		var port = parseInt(process.env.HTTP_SERVER_PORT || 3000);
 		var baseUrl = 'http://' + host + ':' + port;
 		var pageUrl = baseUrl + uri;
 		manager.page.goto(pageUrl).then(function() {
@@ -98,14 +109,14 @@ var manager = module.exports = {
 		return parts[1] || '';
 	},
 
-	socketServer : function(serverConfig) {
+	socketServer: function(serverConfig) {
 
 		serverConfig = _.defaults(serverConfig || {}, {
-			port: 3601,
+			port: 3600,
 			pathname: '/primus',
 			transformer: 'websockets',
 			pingInterval: 5000,
-		})
+		});
 
 		var tmpApp = express();
 		tmpApp.server = tmpApp.listen(serverConfig.port, 'localhost');
@@ -131,6 +142,16 @@ var manager = module.exports = {
 
 before(function(done) {
 	manager.prepareBrowser(done);
+});
+
+var staticWeb;
+before(function(done) {
+	staticWeb = manager.prepareStaticWebServer(done);
+});
+
+after(function(done) {
+	if (!staticWeb) return done();
+	staticWeb.server.close(done);
 });
 
 after(function(done) {
