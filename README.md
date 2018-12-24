@@ -30,7 +30,8 @@ If you would like to contribute to the project, the following should help get yo
 
 The following is a list of requirements needed to contribute to this project.
 
-* [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm). For Windows, use an [installer](https://nodejs.org/en/download/) from the nodejs website.
+* [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm).
+* [make](https://www.gnu.org/software/make/)
 * For Android development:
   * [cordova](https://cordova.apache.org/#getstarted) - `npm install -g cordova`
   * [Java Development Kit (JDK)](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) version 8 or higher. Use your system's native package manager to install the JDK (if available).
