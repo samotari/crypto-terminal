@@ -41,7 +41,14 @@ SCRIPTS=scripts
 # exists.
 .PHONY: all clean fonts images sounds
 
-all: config.xml $(PUBLIC)/index.html $(PUBLIC_ALL_CSS) $(PUBLIC_ALL_JS) $(PUBLIC_WORKER_BITCOIN_JS) fonts images sounds
+all: config.xml\
+$(PUBLIC)/index.html\
+$(PUBLIC_ALL_CSS)\
+$(PUBLIC_ALL_JS)\
+$(PUBLIC_WORKER_BITCOIN_JS)\
+fonts\
+images\
+sounds
 
 clean:
 	# Delete build and output files:
@@ -76,7 +83,22 @@ $(BUILD)/css/views/*.min.css: $(CSS)/views/*.css
 	mkdir -p $(BUILD)/css/views
 	$(BIN)/postcss $^ --ext .min.css --dir $(BUILD)/css/views
 
-APP_CSS_FILES=$(CSS)/fonts.css $(CSS)/reset.css $(CSS)/base.css $(CSS)/buttons.css $(CSS)/forms.css $(CSS)/header.css $(CSS)/menu.css $(CSS)/page.css $(CSS)/payment-method.css $(CSS)/amount.css $(CSS)/secondary-controls.css $(CSS)/number-pad.css $(CSS)/slider.css $(CSS)/result-indicator.css $(CSS)/views/*.css $(CSS)/responsive.css
+APP_CSS_FILES=$(CSS)/fonts.css\
+$(CSS)/reset.css\
+$(CSS)/base.css\
+$(CSS)/buttons.css\
+$(CSS)/forms.css\
+$(CSS)/header.css\
+$(CSS)/menu.css\
+$(CSS)/page.css\
+$(CSS)/payment-method.css\
+$(CSS)/amount.css\
+$(CSS)/secondary-controls.css\
+$(CSS)/number-pad.css\
+$(CSS)/slider.css\
+$(CSS)/result-indicator.css\
+$(CSS)/views/*.css\
+$(CSS)/responsive.css
 APP_CSS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.css, %.min.css, $(APP_CSS_FILES)))
 $(BUILD_ALL_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/views/*.min.css
 	for file in $(APP_CSS_MIN_FILES); do \
@@ -155,14 +177,35 @@ $(BUILD_DEPS)/js/QRCode.min.js: $(BUILD_DEPS)/js/QRCode.js
 $(BUILD_DEPS)/js/querystring.min.js: $(BUILD_DEPS)/js/querystring.js
 	$(BIN)/uglifyjs $^ -o $@
 
-DEPS_JS_FILES=node_modules/core-js/client/shim.min.js node_modules/async/dist/async.min.js node_modules/bignumber.js/bignumber.min.js node_modules/jquery/dist/jquery.min.js node_modules/underscore/underscore-min.js node_modules/backbone/backbone-min.js node_modules/backbone.localstorage/build/backbone.localStorage.min.js node_modules/handlebars/dist/handlebars.min.js node_modules/js-sha3/build/sha3.min.js $(BUILD_DEPS)/js/basex.min.js $(BUILD_DEPS)/js/bech32.min.js $(BUILD_DEPS)/js/BigInteger.min.js $(BUILD_DEPS)/js/bs58.min.js $(BUILD_DEPS)/js/Buffer.min.js $(BUILD_DEPS)/js/ecurve.min.js $(BUILD_DEPS)/js/QRCode.min.js $(BUILD_DEPS)/js/querystring.min.js third-party/sjcl/sjcl.min.js third-party/monero/crypto.js node_modules/moment/min/moment-with-locales.min.js
+DEPS_JS_FILES=node_modules/core-js/client/shim.min.js\
+node_modules/async/dist/async.min.js\
+node_modules/bignumber.js/bignumber.min.js\
+node_modules/jquery/dist/jquery.min.js\
+node_modules/underscore/underscore-min.js\
+node_modules/backbone/backbone-min.js\
+node_modules/backbone.localstorage/build/backbone.localStorage.min.js\
+node_modules/handlebars/dist/handlebars.min.js\
+node_modules/js-sha3/build/sha3.min.js\
+$(BUILD_DEPS)/js/basex.min.js\
+$(BUILD_DEPS)/js/bech32.min.js\
+$(BUILD_DEPS)/js/BigInteger.min.js\
+$(BUILD_DEPS)/js/bs58.min.js\
+$(BUILD_DEPS)/js/Buffer.min.js\
+$(BUILD_DEPS)/js/ecurve.min.js\
+$(BUILD_DEPS)/js/QRCode.min.js\
+$(BUILD_DEPS)/js/querystring.min.js\
+third-party/sjcl/sjcl.min.js\
+third-party/monero/crypto.js\
+node_modules/moment/min/moment-with-locales.min.js
 $(BUILD_DEPS_JS): $(DEPS_JS_FILES)
 	for file in $(DEPS_JS_FILES); do \
 		cat $$file >> $(BUILD_DEPS_JS); \
 		echo "" >> $(BUILD_DEPS_JS); \
 	done
 
-$(BUILD)/js/**/*.min.js: $(JS)/*.js $(JS)/**/*.js $(JS)/**/**/*.js
+$(BUILD)/js/**/*.min.js:$(JS)/*.js\
+$(JS)/**/*.js\
+$(JS)/**/**/*.js
 	for input in $^; do \
 		dir=$$(dirname $(BUILD)/$$input); \
 		output="$$dir/$$(basename $$input .js).min.js"; \
@@ -170,7 +213,35 @@ $(BUILD)/js/**/*.min.js: $(JS)/*.js $(JS)/**/*.js $(JS)/**/**/*.js
 		$(BIN)/uglifyjs -o $$output $$input; \
 	done
 
-APP_JS_FILES=$(JS)/jquery.extend/*.js $(JS)/backbone.extend/*.js $(JS)/handlebars.extend/*.js $(JS)/app.js $(JS)/queues.js $(JS)/util.js $(JS)/device.js $(JS)/screen-saver.js $(JS)/nfc.js $(JS)/sqlite.js $(JS)/lang/*.js $(JS)/abstracts/*.js $(JS)/services/*.js $(JS)/models/*.js $(JS)/collections/*.js $(JS)/views/utility/*.js $(JS)/views/*.js $(JS)/payment-methods/bitcoin.js $(JS)/payment-methods/bitcoin-testnet.js $(JS)/payment-methods/bitcoin-lightning.js $(JS)/payment-methods/litecoin.js $(JS)/payment-methods/monero.js $(JS)/config.js $(JS)/cache.js $(JS)/settings.js $(JS)/sound.js $(JS)/i18n.js $(JS)/router.js $(JS)/init.js
+APP_JS_FILES=$(JS)/jquery.extend/*.js\
+$(JS)/backbone.extend/*.js\
+$(JS)/handlebars.extend/*.js\
+$(JS)/app.js\
+$(JS)/queues.js\
+$(JS)/util.js\
+$(JS)/device.js\
+$(JS)/screen-saver.js\
+$(JS)/nfc.js\
+$(JS)/sqlite.js\
+$(JS)/lang/*.js\
+$(JS)/abstracts/*.js\
+$(JS)/services/*.js\
+$(JS)/models/*.js\
+$(JS)/collections/*.js\
+$(JS)/views/utility/*.js\
+$(JS)/views/*.js\
+$(JS)/payment-methods/bitcoin.js\
+$(JS)/payment-methods/bitcoin-testnet.js\
+$(JS)/payment-methods/bitcoin-lightning.js\
+$(JS)/payment-methods/litecoin.js\
+$(JS)/payment-methods/monero.js\
+$(JS)/config.js\
+$(JS)/cache.js\
+$(JS)/settings.js\
+$(JS)/sound.js\
+$(JS)/i18n.js\
+$(JS)/router.js\
+$(JS)/init.js
 APP_JS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.js, %.min.js, $(APP_JS_FILES)))
 JS_FILES=$(BUILD_DEPS_JS) $(APP_JS_MIN_FILES)
 $(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(BUILD)/js/**/*.min.js
@@ -183,7 +254,17 @@ $(PUBLIC_ALL_JS): $(BUILD_ALL_JS)
 	mkdir -p $(PUBLIC)/js/
 	cp $(BUILD_ALL_JS) $(PUBLIC_ALL_JS)
 
-WORKER_BITCOIN_JS_FILES=node_modules/async/dist/async.min.js node_modules/bignumber.js/bignumber.min.js node_modules/underscore/underscore-min.js node_modules/js-sha3/build/sha3.min.js $(BUILD_DEPS)/js/bech32.min.js $(BUILD_DEPS)/js/BigInteger.min.js $(BUILD_DEPS)/js/bs58.min.js $(BUILD_DEPS)/js/Buffer.min.js $(BUILD_DEPS)/js/ecurve.min.js third-party/sjcl/sjcl.min.js $(BUILD)/js/workers/bitcoin.min.js
+WORKER_BITCOIN_JS_FILES=node_modules/async/dist/async.min.js\
+node_modules/bignumber.js/bignumber.min.js\
+node_modules/underscore/underscore-min.js\
+node_modules/js-sha3/build/sha3.min.js\
+$(BUILD_DEPS)/js/bech32.min.js\
+$(BUILD_DEPS)/js/BigInteger.min.js\
+$(BUILD_DEPS)/js/bs58.min.js\
+$(BUILD_DEPS)/js/Buffer.min.js\
+$(BUILD_DEPS)/js/ecurve.min.js\
+third-party/sjcl/sjcl.min.js\
+$(BUILD)/js/workers/bitcoin.min.js
 $(BUILD_WORKER_BITCOIN_JS): $(WORKER_BITCOIN_JS_FILES)
 	mkdir -p $(BUILD)/workers
 	for file in $(WORKER_BITCOIN_JS_FILES); do \
