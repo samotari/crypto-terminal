@@ -10,20 +10,18 @@ The high-level goals for the app include:
 * Keep you, the merchant, in control of your funds. It is impossible for your funds to be compromised by the app because it does not have access to your private keys.
 * Maintain the highest possible standards for both privacy and security.
 
-
-## Contributing
-
-If you would like to contribute to the project, the following should help get you started.
-
+If you would like to contribute to the project, the following should help get you started:
 * [Requirements](#requirements)
-* [Get the Code](#get-the-code)
-* [Technical Overview](#technical-overview)
+* [Getting Started](#getting-started)
+  * [Project Files](#project-files)
+  * [Build and Run Web App](#build-and-run-web-app)
+  * [Build and Run Android App](#build-and-run-android-app)
+  * [Create Signed APK](#create-signed-apk)
 * [Developing with Cryptocurrencies](#developing-with-cryptocurrencies)
   * [Bitcoin](#bitcoin)
   * [Litecoin](#litecoin)
   * [Monero](#monero)
-* [Android Development](#android-development)
-  * [Create Signed APK](#create-signed-apk)
+* [License](#license)
 
 
 ## Requirements
@@ -40,22 +38,70 @@ The following is a list of requirements needed to contribute to this project.
   * [adb](https://developer.android.com/studio/command-line/adb) - Not required, but is recommended.
 
 
-## Get the Code
+## Getting Started
 
-Before continuing, be sure to download and install the project [requirements](#requirements).
+Before continuing, be sure you already have the project's [requirements](#requirements).
 
-To get the project files and start working locally, you should first create a [fork](https://github.com/samotari/crypto-terminal/fork). Then "clone" your fork of the project:
+### Project Files
+
+Download the project files via git:
 ```bash
-git clone https://github.com/YOUR_USERNAME/crypto-terminal.git
+git clone https://github.com/samotari/crypto-terminal.git
 ```
-Don't forget to replace `YOUR_USERNAME` with your GitHub username.
 
+Install the project's dependencies:
 ```bash
 cd crypto-terminal
 npm install
 ```
 
-Open your browser and navigate to [localhost:3000](http://localhost:3000). You should see the settings screen the first time you open the app.
+
+### Build and Run Web App
+
+To build and then run the app in a browser:
+```bash
+npm build && npm run browser
+```
+Open your browser and navigate to [localhost:3000](http://localhost:3000).
+
+
+### Build and Run Android App
+
+Add the Android platform to the project (via cordova):
+```bash
+cordova platform add android
+```
+This downloads the cordova plugins which are necessary to build the app for Android devices.
+
+To install and run the app on an Android device, you must first:
+* [Enable developer mode](https://developer.android.com/studio/debug/dev-options) on the device.
+* Enable USB debugging
+
+Once developer mode and USB debugging are enabled, connect the device to your computer via USB. Run the following command to check to see if your computer is authorized:
+```bash
+adb devices
+```
+
+Once authorized, you can build then install and run the app from your computer onto the device:
+```bash
+npm build && npm run android-device
+```
+
+### Create Signed APK
+
+Create your signing key:
+```bash
+npm run generate-android-signing-key
+```
+
+Run the APK build script:
+```bash
+npm run build-signed-apk
+```
+If successful, it should have created a new `.apk` file at the following path:
+```
+./platforms/android/app/build/outputs/apk/release/app-release.apk
+```
 
 
 ## Developing with Cryptocurrencies
@@ -108,34 +154,6 @@ Setting | Key | Value
 ------- | --- | -----
 Public Address | `monero.publicAddress` | `9xmkWjzAB8JguD7JvkJxPHgMwkf7VP5v3Z5eSNmRMdoeCEnoVu6eGUbZT3FQ3Q8XrGihNEbb4qGhqHHGK5kWy9chU3URbaF`
 Private View Key | `monero.privateViewKey` | `136674e3e6868bb04d4ef2674f97c00166f5f7aa67185bdda97cde8ecfe4f609`
-
-
-## Android Development
-
-Before continuing, be sure you already have the [requirements](#requirements) for Android development.
-
-Add the Android platform to the project (via cordova):
-```bash
-cordova platform add android
-```
-This downloads the cordova plugins which are necessary to build the app for Android devices.
-
-
-### Create Signed APK
-
-Create your signing key:
-```bash
-npm run generate-android-signing-key
-```
-
-Run the APK build script:
-```bash
-npm run build-signed-apk
-```
-If successful, it should have created a new `.apk` file at the following path:
-```
-./platforms/android/app/build/outputs/apk/release/app-release.apk
-```
 
 
 ## License
