@@ -99,7 +99,9 @@
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-sqlite-storage": {},
-      "phonegap-plugin-barcodescanner": {},
+      "phonegap-plugin-barcodescanner": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
       "cordova-android-support-gradle-release": {
         "ANDROID_SUPPORT_VERSION": "26.+"
       },

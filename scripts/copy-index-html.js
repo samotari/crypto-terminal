@@ -13,7 +13,7 @@ var pkg = require('../package.json');
 var data = {
 	config: {
 		ctApi: {
-			baseUrl: 'http://localhost:3600',
+			baseUrl: process.env.CT_API_BASE_URL || 'https://api.cryptoterminal.eu',
 		},
 	},
 	info: _.extend({}, _.pick(pkg,
