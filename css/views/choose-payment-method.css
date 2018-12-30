@@ -7,3 +7,18 @@
 .view.choose-payment-method .select-payment-method {
 	text-align: center;
 }
+.view.choose-payment-method .payment-method {
+	width: 6rem;
+	height: 6rem;
+	background-size: 6rem;
+}
+.view.choose-payment-method .button.secondary-control {
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 2.4rem;
+	background-repeat: no-repeat;
+}
+.view.choose-payment-method .button.secondary-control.cancel {
+	background-color: rgba(255,0,0,0.6);
+	background-image: url('../images/cancel.svg');
+}

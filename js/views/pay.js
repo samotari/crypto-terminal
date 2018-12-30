@@ -49,16 +49,19 @@ app.views.Pay = (function() {
 
 			this.numberPadView.setElement(this.$('.number-pad')).render();
 			this.$amount = this.$('.amount-value');
+			this.$continueButton = this.$('.button.continue');
 			this.updateAmountElement();
 		},
 
 		updateAmountElement: function() {
 
 			var amount = this.numberPadView.getKeys() || '0';
+			var decimalSeparator = this.numberPadView.getDecimalSeparator();
 			// Remove extra leading zeroes.
 			amount = amount.replace(/^0{2,}/, '0');
-			amount = amount.replace(new RegExp('^0([^' + this.options.decimal + '])'), '$1');
+			amount = amount.replace(new RegExp('^0([^' + decimalSeparator + '])'), '$1');
 			this.$amount.text(amount);
+			this.$continueButton.toggleClass('disabled', !this.isValidAmount());
 		},
 
 		continue: function(evt) {
@@ -67,6 +70,19 @@ app.views.Pay = (function() {
 				evt.preventDefault();
 			}
 
+			try {
+				var amount = this.getAmount();
+			} catch (error) {
+				return app.mainView.showMessage(error);
+			}
+
+			this.model.set({ amount: amount });
+
+			app.router.navigate('choose-payment-method', { trigger: true });
+		},
+
+		getAmount: function() {
+
 			var keys = this.numberPadView.getKeys();
 			var decimalSeparator = this.numberPadView.getDecimalSeparator();
 			var amount = keys.replace(decimalSeparator, '.');
@@ -74,18 +90,24 @@ app.views.Pay = (function() {
 			try {
 				amount = new BigNumber(amount);
 			} catch (error) {
-				return app.mainView.showMessage(app.i18n.t('pay-enter-amount.valid-number'));
+				throw new Error(app.i18n.t('pay-enter-amount.valid-number'));
 			}
 
 			if (!amount.isGreaterThan(0)) {
-				return app.mainView.showMessage(app.i18n.t('pay-enter-amount.greater-than-zero'));
+				throw new Error(app.i18n.t('pay-enter-amount.greater-than-zero'));
 			}
 
-			amount = amount.toString();
+			return amount.toString();
+		},
 
-			this.model.set({ amount: amount });
+		isValidAmount: function() {
 
-			app.router.navigate('choose-payment-method', { trigger: true });
+			try {
+				this.getAmount();
+			} catch (error) {
+				return false;
+			}
+			return true;
 		},
 
 		onBackButton: function() {

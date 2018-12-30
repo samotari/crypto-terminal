@@ -10,12 +10,28 @@ var getHtml = function(file) {
 };
 var content = fs.readFileSync(srcFile);
 var pkg = require('../package.json');
-var data = {
-	config: {
-		ctApi: {
-			baseUrl: process.env.CT_API_BASE_URL || 'https://api.cryptoterminal.eu',
+var target = process.env.NODE_ENV || 'prod';
+var config = (function() {
+	return {
+		dev: {
+			ctApi: {
+				baseUrl: 'http://localhost:3600',
+			},
 		},
-	},
+		prod: {
+			ctApi: {
+				baseUrl: 'https://api.cryptoterminal.eu',
+			},
+		},
+		test: {
+			ctApi: {
+				baseUrl: 'http://localhost:3600',
+			},
+		},
+	};
+})()[target];
+var data = {
+	config: config,
 	info: _.extend({}, _.pick(pkg,
 		'description',
 		'version'
@@ -44,7 +60,7 @@ var data = {
 			}).compact().value();
 		})(),
 	},
-	target: 'dev',
+	target: target,
 };
 var template = _.template(content.toString());
 var output = template(data);

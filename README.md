@@ -60,7 +60,7 @@ npm install
 
 To build and then run the app in a browser:
 ```bash
-npm build && npm run browser
+npm run build && npm run browser
 ```
 Open your browser and navigate to [localhost:3000](http://localhost:3000).
 
@@ -84,8 +84,9 @@ adb devices
 
 Once authorized, you can build then install and run the app from your computer onto the device:
 ```bash
-npm build && npm run android-device
+npm run build && npm run android
 ```
+
 
 ### Create Signed APK
 
@@ -94,9 +95,9 @@ Create your signing key:
 npm run generate-android-signing-key
 ```
 
-Run the APK build script:
+Build a production APK:
 ```bash
-npm run build-signed-apk
+npm run build && npm run build:apk
 ```
 If successful, it should have created a new `.apk` file at the following path:
 ```

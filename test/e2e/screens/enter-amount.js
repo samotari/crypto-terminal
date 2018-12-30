@@ -32,11 +32,9 @@ describe('#pay', function() {
 		}).catch(done);
 	});
 
-	it('error message shown when no amount entered', function(done) {
-		manager.page.click('.button.continue').then(function() {
-			manager.page.waitFor('#message.visible').then(function() {
-				done();
-			}).catch(done);
+	it('cannot continue when no amount entered', function(done) {
+		manager.page.waitFor('.view.pay .button.continue.disabled').then(function() {
+			done();
 		}).catch(done);
 	});
 
