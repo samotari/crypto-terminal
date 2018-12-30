@@ -3,6 +3,11 @@
 * TBD:
   * Pay by scanning a paper wallet (using camera or NFC)
   * Show warning if received payment uses Replace-by-fee (RBF)
+  * Play sound on payment success - audio master on/off toggle included in general settings
+  * Show screen-saver when app inactive for a while
+  * Added German language
+  * Added missing French and Czech translations
+  * Bug fixes in Payment History screens
 * v1.3.0:
   * Segwit support (native and backwards compatible addresses)
   * Hide testnet payment methods by default
