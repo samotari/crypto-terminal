@@ -29,7 +29,10 @@
 }
 .number-pad-key.decimal,
 .number-pad-key.backspace {
-	font-weight: 400;
+	font-size: 1.4rem;
+	font-weight: 700;
+	line-height: 4rem;
+	color: #444;
 }
 .number-pad-key.disabled {
 	cursor: default;

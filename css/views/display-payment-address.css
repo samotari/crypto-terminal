@@ -57,3 +57,17 @@ html.offline .view.display-payment-address .message.warning-offline {
 .view.display-payment-address.payment-method-inactive .message.warning-payment-method-inactive {
 	display: block;
 }
+.view.display-payment-address .button.secondary-control {
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 2.4rem;
+	background-repeat: no-repeat;
+}
+.view.display-payment-address .button.secondary-control.back {
+	background-color: rgba(255,153,0,0.8);
+	background-image: url('../images/back.svg');
+}
+.view.display-payment-address .button.secondary-control.cancel {
+	background-color: rgba(255,0,0,0.6);
+	background-image: url('../images/cancel.svg');
+}

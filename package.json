@@ -9,20 +9,22 @@
   },
   "main": "index.js",
   "scripts": {
-    "android-device": "npm run build && cordova run android --device",
+    "android": "cordova run android --device",
     "android-export-signing-certificate": "keytool -keystore android.keystore -alias cryptoterminal -exportcert -rfc -file cryptoterminal.crt",
     "android-export-public-signing-key": "rm -rf cryptoterminal.crt; npm run android-export-signing-certificate | openssl x509 -pubkey -noout -in cryptoterminal.crt",
     "android-generate-signing-key": "keytool -keystore android.keystore -genkey -v -alias cryptoterminal -keyalg RSA -keysize 2048 -validity 10000",
     "browser": "cordova run browser",
-    "build": "make all",
-    "build-signed-apk": "npm run build && ./scripts/build-signed-apk.sh",
+    "build": "npm run build:prod",
+    "build:apk": "./scripts/build-signed-apk.sh",
+    "build:prod": "NODE_ENV=prod make clean-light all",
+    "build:test": "NODE_ENV=test make clean-light all",
     "lint": "eslint --config .eslintrc.js exports/*.js js/**/*.js scripts/*.js test/**/*.js *.js",
     "pretest": "npm run lint # runs before `npm test`",
-    "start": "npm run build && npm run server",
+    "start": "npm run build && npm run browser",
     "server": "./node_modules/.bin/http-server ./www -p 3000 -a localhost",
     "test": "npm run test:unit && npm run test:e2e",
-    "test:e2e": "mocha test/e2e/ --timeout 5000 --recursive --reporter spec --ui bdd --exit",
-    "test:unit": "mocha test/unit/ --timeout 5000 --recursive --reporter spec --ui bdd --exit"
+    "test:e2e": "npm run build:test && mocha test/e2e/ --timeout 5000 --recursive --reporter spec --ui bdd --exit",
+    "test:unit": "npm run build:test && mocha test/unit/ --timeout 5000 --recursive --reporter spec --ui bdd --exit"
   },
   "repository": {
     "type": "git",

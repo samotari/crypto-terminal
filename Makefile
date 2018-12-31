@@ -39,7 +39,12 @@ SCRIPTS=scripts
 # (such as "all" below) isn't a file but instead a just label. Declaring
 # it as phony ensures that it always run, even if a file by the same name
 # exists.
-.PHONY: all clean fonts images sounds
+.PHONY: all\
+clean\
+clean-light\
+fonts\
+images\
+sounds
 
 all: config.xml\
 $(PUBLIC)/index.html\
@@ -53,6 +58,9 @@ sounds
 clean:
 	# Delete build and output files:
 	rm -rf $(BUILD) $(PUBLIC)
+
+clean-light:
+	rm -rf $(PUBLIC)/index.html
 
 fonts:
 	mkdir -p $(PUBLIC)/fonts/OpenSans
@@ -68,10 +76,10 @@ sounds:
 	mkdir -p $(PUBLIC)/sounds
 	cp -r sounds/* $(PUBLIC)/sounds/
 
-config.xml: config-template.xml
+config.xml: config-template.xml package.json
 	node $(SCRIPTS)/copy-config-xml.js
 
-$(PUBLIC)/index.html: index.html
+$(PUBLIC)/index.html: index.html package.json html/**/*.html html/*.html
 	mkdir -p $(PUBLIC)/
 	node $(SCRIPTS)/copy-index-html.js
 
