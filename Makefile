@@ -109,6 +109,7 @@ $(CSS)/views/*.css\
 $(CSS)/responsive.css
 APP_CSS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.css, %.min.css, $(APP_CSS_FILES)))
 $(BUILD_ALL_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/views/*.min.css
+	rm -f $(BUILD_ALL_CSS)
 	for file in $(APP_CSS_MIN_FILES); do \
 		cat $$file >> $(BUILD_ALL_CSS); \
 		echo "" >> $(BUILD_ALL_CSS); \
@@ -206,6 +207,7 @@ third-party/sjcl/sjcl.min.js\
 third-party/monero/crypto.js\
 node_modules/moment/min/moment-with-locales.min.js
 $(BUILD_DEPS_JS): $(DEPS_JS_FILES)
+	rm -f $(BUILD_DEPS_JS)
 	for file in $(DEPS_JS_FILES); do \
 		cat $$file >> $(BUILD_DEPS_JS); \
 		echo "" >> $(BUILD_DEPS_JS); \
@@ -253,6 +255,7 @@ $(JS)/init.js
 APP_JS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.js, %.min.js, $(APP_JS_FILES)))
 JS_FILES=$(BUILD_DEPS_JS) $(APP_JS_MIN_FILES)
 $(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(BUILD)/js/**/*.min.js
+	rm -f $(BUILD_ALL_JS)
 	for file in $(JS_FILES); do \
 		cat $$file >> $(BUILD_ALL_JS); \
 		echo "" >> $(BUILD_ALL_JS); \
@@ -274,6 +277,7 @@ $(BUILD_DEPS)/js/ecurve.min.js\
 third-party/sjcl/sjcl.min.js\
 $(BUILD)/js/workers/bitcoin.min.js
 $(BUILD_WORKER_BITCOIN_JS): $(WORKER_BITCOIN_JS_FILES)
+	rm -f $(BUILD_WORKER_BITCOIN_JS)
 	mkdir -p $(BUILD)/workers
 	for file in $(WORKER_BITCOIN_JS_FILES); do \
 		cat $$file >> $(BUILD_WORKER_BITCOIN_JS); \
