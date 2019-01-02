@@ -123,6 +123,18 @@ It's a good idea to test your application without risking real money, which is w
   * https://tpfaucet.appspot.com/
 
 
+### Litecoin
+
+Litecoin is very similar to Bitcoin but with one key difference: blocks are mined about every 2.5 minutes instead of once every 10 minutes. This means that transactions are confirmed more quickly and fees are lower. To learn more about Litecoin you can check [the official project website](https://litecoin.org/).
+
+* Recommended wallet applications:
+  * [Coinomi](https://www.coinomi.com/downloads/) - A mobile wallet application for Android and iOS.
+  * [Electrum-LTC](https://electrum-ltc.org/) - A desktop wallet application which can be run in testnet mode from the command line like this: `electrum-ltc --testnet`. Supports legacy and segwit (backwards compatible and bech32) addresses.
+* "Faucets" can be used to obtain testnet litecoin:
+  * http://testnet.litecointools.com/
+  * https://faucet.xblau.com/
+
+
 ### Monero
 
 Monero is a cryptocurrency focused on privacy and censorship-resistance. You can learn more about Monero on [the official project website](https://www.getmonero.org/get-started/what-is-monero/).
