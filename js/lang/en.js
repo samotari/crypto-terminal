@@ -40,6 +40,9 @@ app.lang['en'] = (function() {
 
 		'settings.display-currency.label': 'Display Currency',
 		'settings.date-format.label': 'Date Format',
+		'settings.theme.label': 'Theme',
+		'settings.theme.option.default.label': 'Default',
+		'settings.theme.option.dark.label': 'Dark',
 		'settings.in-app-audio.label': 'Sound',
 		'settings.in-app-audio.description': 'Main on/off switch for all sounds in the app',
 		'settings.accept-crypto-currencies.label': 'Which payment methods would you like to accept?',

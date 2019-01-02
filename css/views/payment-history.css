@@ -41,6 +41,9 @@
 .view.admin .payment-history-item.status-canceled {
 	opacity: 0.5;
 }
+.view.admin .payment-history-item.status-canceled:nth-child(even) {
+	background-color: rgba(210, 210, 210, 0.3);
+}
 .view.admin .payment-history-item.status-timed-out {
 	background-color: rgba(216, 0, 12, 0.3);
 }

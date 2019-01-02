@@ -38,6 +38,7 @@ app.views.Main = (function() {
 				'toggleIsUnlockedFlag',
 				'toggleRequirePinFlag',
 				'toggleConfiguredFlag',
+				'setThemeFlag',
 				'onBeforeUnload'
 			);
 			this.$menuCover = this.$('#menu-cover');
@@ -58,10 +59,12 @@ app.views.Main = (function() {
 			this.listenTo(app.settings, 'change:lastUnlockTime', this.toggleIsUnlockedFlag);
 			this.listenTo(app.settings, 'change:settingsPin', this.toggleRequirePinFlag);
 			this.listenTo(app.settings, 'change:locale', this.updateLanguageToggle);
+			this.listenTo(app.settings, 'change:theme', this.setThemeFlag);
 			this.listenTo(app.settings, 'change', this.toggleConfiguredFlag);
 			this.toggleIsUnlockedFlag();
 			this.toggleRequirePinFlag();
 			this.toggleConfiguredFlag();
+			this.setThemeFlag();
 		},
 
 		toggleConfiguredFlag: function() {
@@ -77,6 +80,19 @@ app.views.Main = (function() {
 		toggleIsUnlockedFlag: function() {
 
 			$('html').toggleClass('is-unlocked', app.isUnlocked());
+		},
+
+		setThemeFlag: function(theme) {
+
+			theme = theme || app.settings.get('theme');
+			var settingConfig = _.findWhere(app.config.settings, { name: 'theme' });
+			if (settingConfig) {
+				var options = _.result(settingConfig, 'options');
+				_.each(options, function(option) {
+					$('html').removeClass('theme-' + option.key);
+				});
+			}
+			$('html').addClass('theme-' + theme);
 		},
 
 		initializeLanguageMenu: function() {

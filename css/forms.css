@@ -33,6 +33,8 @@
 	font-size: 0.9rem;
 	line-height: 2rem;
 	box-sizing: border-box;
+	border: none;
+	background: #fff;
 }
 
 /* Text input */

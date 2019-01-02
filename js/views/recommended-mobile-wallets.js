@@ -52,6 +52,7 @@ app.views.RecommendedMobileWallets = (function() {
 				var options = {
 					width: $target.width(),
 					height: $target.height(),
+					margin: 1,
 				};
 
 				app.util.renderQrCode($target, data, options, function(error) {
