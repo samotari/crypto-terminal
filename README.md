@@ -114,47 +114,24 @@ This project is focused on working with cryptocurrencies as a payment method. As
 It's a good idea to test your application without risking real money, which is why the [bitcoin testnet](https://en.bitcoin.it/wiki/Testnet) exists.
 
 * [Bitcoin - How it works](https://bitcoin.org/en/how-it-works) - A decent starting point if you are totally new to bitcoin and cryptocurrency.
-* Testnet wallet applications:
-  * [Mycelium Testnet Wallet](https://play.google.com/store/apps/details?id=com.mycelium.testnetwallet&hl=en) - A mobile testnet wallet application for Android.
-  * [Electrum](https://electrum.org/) - A desktop wallet application which can be run in testnet mode from the command line like this: `electrum --testnet`
+* Recommended wallet applications:
+  * [Coinomi](https://www.coinomi.com/downloads/) - A mobile wallet application for Android and iOS. Supports testnet bitcoin.
+  * [Electrum](https://electrum.org/) - A desktop wallet application which can be run in testnet mode from the command line like this: `electrum --testnet`. Supports legacy and segwit (backwards compatible and bech32) addresses.
 * "Faucets" can be used to obtain testnet bitcoin:
   * https://faucet.thonguyen.net/btc
   * https://kuttler.eu/en/bitcoin/btc/faucet/
   * https://tpfaucet.appspot.com/
 
-Valid testnet master public key that you can use while developing:
-```
-tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs
-```
-
-
-### Litecoin
-
-* Testnet wallet applications:
-  * [Electrum-LTC](https://electrum-ltc.org/) - A desktop wallet application which can be run in testnet mode from the command line like this: `electrum-ltc --testnet`
-* "Faucets" can be used to obtain testnet litecoin:
-  * https://faucet.thonguyen.net/ltc
-  * https://kuttler.eu/en/bitcoin/ltc/faucet/
-
-Valid testnet master public key that you can use while developing:
-```
-tpubD6NzVbkrYhZ4YLXXEvJuNSnv3duP7VvCVG2ybxbbfcdJrgfvyfqjLdS2mntHXAr5YVLQvGqSdwa5j62bJhPCGTxX6xXeJp4CtRw494UKG96
-```
-
 
 ### Monero
 
-* Testnet wallet applications:
+Monero is a cryptocurrency focused on privacy and censorship-resistance. You can learn more about Monero on [the official project website](https://www.getmonero.org/get-started/what-is-monero/).
+* Recommended wallet applications:
+  * [Official Monero Desktop Wallet](https://ww.getmonero.org/downloads/)
   * [monerujo](https://play.google.com/store/apps/details?id=com.m2049r.xmrwallet&hl=en) - A mobile, light-weight wallet app for Monero. If you are running an older version of Android, you can install the app from an `.apk` that you can download from the project's [GitHub repo](https://github.com/m2049r/xmrwallet).
+  * [Cake Wallet](https://itunes.apple.com/us/app/cake-wallet-for-xmr-monero/id1334702542) - A mobile wallet for iOS.
 * "Faucets" can be used to obtain testnet monero:
   * https://dis.gratis/
-
-Sample testnet settings that you can use during development:
-
-Setting | Key | Value
-------- | --- | -----
-Public Address | `monero.publicAddress` | `9xmkWjzAB8JguD7JvkJxPHgMwkf7VP5v3Z5eSNmRMdoeCEnoVu6eGUbZT3FQ3Q8XrGihNEbb4qGhqHHGK5kWy9chU3URbaF`
-Private View Key | `monero.privateViewKey` | `136674e3e6868bb04d4ef2674f97c00166f5f7aa67185bdda97cde8ecfe4f609`
 
 
 ## License
