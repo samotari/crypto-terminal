@@ -146,12 +146,12 @@ app.config = (function() {
 				options: function() {
 					return [
 						{
-							key: 'DD/MM/YYYY hh:mm:ss',
-							label: moment().format('DD/MM/YYYY hh:mm:ss')
+							key: 'DD/MM/YYYY HH:mm:ss',
+							label: moment().format('DD/MM/YYYY HH:mm:ss')
 						},
 						{
-							key: 'MMMM Do YYYY, h:mm:ss A',
-							label: moment().format('MMMM Do YYYY, h:mm:ss A')
+							key: 'MMMM Do YYYY, H:mm:ss A',
+							label: moment().format('MMMM Do YYYY, H:mm:ss A')
 						},
 						{
 							key: 'lll',
