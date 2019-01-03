@@ -218,14 +218,34 @@ $(BUILD_DEPS_JS): $(DEPS_JS_FILES)
 		echo "" >> $(BUILD_DEPS_JS); \
 	done
 
-$(BUILD)/js/**/*.min.js:$(JS)/*.js\
-$(JS)/**/*.js\
-$(JS)/**/**/*.js
+$(BUILD)/js/*.min.js:$(JS)/*.js
 	for input in $^; do \
 		dir=$$(dirname $(BUILD)/$$input); \
 		output="$$dir/$$(basename $$input .js).min.js"; \
-		mkdir -p $$dir; \
-		$(BIN)/uglifyjs -o $$output $$input; \
+		if [ ! -f $$output ] || [ $$output -ot $$input ]; then \
+			mkdir -p $$dir; \
+			$(BIN)/uglifyjs -o $$output $$input; \
+		fi; \
+	done
+
+$(BUILD)/js/**/*.min.js:$(JS)/**/*.js
+	for input in $^; do \
+		dir=$$(dirname $(BUILD)/$$input); \
+		output="$$dir/$$(basename $$input .js).min.js"; \
+		if [ ! -f $$output ] || [ $$output -ot $$input ]; then \
+			mkdir -p $$dir; \
+			$(BIN)/uglifyjs -o $$output $$input; \
+		fi; \
+	done
+
+$(BUILD)/js/**/**/*.min.js:$(JS)/**/**/*.js
+	for input in $^; do \
+		dir=$$(dirname $(BUILD)/$$input); \
+		output="$$dir/$$(basename $$input .js).min.js"; \
+		if [ ! -f $$output ] || [ $$output -ot $$input ]; then \
+			mkdir -p $$dir; \
+			$(BIN)/uglifyjs -o $$output $$input; \
+		fi; \
 	done
 
 APP_JS_FILES=$(JS)/jquery.extend/*.js\
@@ -259,7 +279,7 @@ $(JS)/router.js\
 $(JS)/init.js
 APP_JS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.js, %.min.js, $(APP_JS_FILES)))
 JS_FILES=$(BUILD_DEPS_JS) $(APP_JS_MIN_FILES)
-$(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(BUILD)/js/**/*.min.js
+$(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(BUILD)/js/*.min.js $(BUILD)/js/**/*.min.js $(BUILD)/js/**/**/*.min.js
 	rm -f $(BUILD_ALL_JS)
 	for file in $(JS_FILES); do \
 		cat $$file >> $(BUILD_ALL_JS); \
