@@ -165,6 +165,31 @@ app.config = (function() {
 				},
 			},
 			{
+				name: 'theme',
+				label: function() {
+					return app.i18n.t('settings.theme.label');
+				},
+				type: 'select',
+				default: 'default',
+				required: true,
+				options: function() {
+					return [
+						{
+							key: 'default',
+							label: function() {
+								return app.i18n.t('settings.theme.option.default.label');
+							},
+						},
+						{
+							key: 'dark',
+							label: function() {
+								return app.i18n.t('settings.theme.option.dark.label');
+							},
+						},
+					];
+				},
+			},
+			{
 				name: 'inAppAudio',
 				label: function() {
 					return app.i18n.t('settings.in-app-audio.label');

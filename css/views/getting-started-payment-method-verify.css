@@ -7,10 +7,11 @@
 .view.getting-started .getting-started-payment-method-verify .sample-addresses-content {
 	position: relative;
 	left: -1rem;
-	font-size: .95rem;
+	font-size: 1rem;
 	line-height: 1.7rem;
 	text-align: center;
 	white-space: nowrap;
+	letter-spacing: .1rem;
 }
 .view.getting-started .getting-started-payment-method-verify .sample-addresses-content-address-index {
 	position: relative;

@@ -91,6 +91,10 @@ $(BUILD)/css/views/*.min.css: $(CSS)/views/*.css
 	mkdir -p $(BUILD)/css/views
 	$(BIN)/postcss $^ --ext .min.css --dir $(BUILD)/css/views
 
+$(BUILD)/css/themes/*.min.css: $(CSS)/themes/*.css
+	mkdir -p $(BUILD)/css/themes
+	$(BIN)/postcss $^ --ext .min.css --dir $(BUILD)/css/themes
+
 APP_CSS_FILES=$(CSS)/fonts.css\
 $(CSS)/reset.css\
 $(CSS)/base.css\
@@ -106,9 +110,10 @@ $(CSS)/number-pad.css\
 $(CSS)/slider.css\
 $(CSS)/result-indicator.css\
 $(CSS)/views/*.css\
+$(CSS)/themes/*.css\
 $(CSS)/responsive.css
 APP_CSS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.css, %.min.css, $(APP_CSS_FILES)))
-$(BUILD_ALL_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/views/*.min.css
+$(BUILD_ALL_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/views/*.min.css $(BUILD)/css/themes/*.min.css
 	rm -f $(BUILD_ALL_CSS)
 	for file in $(APP_CSS_MIN_FILES); do \
 		cat $$file >> $(BUILD_ALL_CSS); \

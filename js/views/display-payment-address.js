@@ -161,6 +161,7 @@ app.views.DisplayPaymentAddress = (function() {
 
 			app.util.renderQrCode(this.$addressQrCode/* $target */, data, {
 				width: width,
+				margin: 1,
 			}, function(error) {
 
 				app.busy(false);

@@ -7,7 +7,6 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	display: none;
 	justify-content: center;
 	height: 2rem;
-	background: #fff;
 }
 .view.getting-started .getting-started-steps.visible {
 	display: flex;
@@ -28,7 +27,7 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 .view.getting-started .getting-started-page {
 	height: 100%;
 	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow-y: auto;
 	box-sizing: border-box;
 	padding: 2rem 2rem 8rem 2rem;
 }
@@ -67,9 +66,8 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 		width: 100%;
 		font-size: .9rem;
 		text-align: center;
-		background: #fff;
 		box-sizing: border-box;
-		padding: 1.5rem 0 .5rem 0;
+		padding: 1.5rem 0 2.5rem 0;
 	}
 	/*  Welcome  */
 

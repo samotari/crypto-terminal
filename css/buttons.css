@@ -42,5 +42,6 @@
 	display: inline-block;
 	vertical-align: top;
 	box-sizing: initial;
+	border-radius: 50%;
 	padding: .5rem;
 }

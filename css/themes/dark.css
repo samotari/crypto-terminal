@@ -1,0 +1,98 @@
+html.theme-dark,
+html.theme-dark body {
+	color: #ccc;
+	background: #111;
+}
+html.theme-dark #header {
+	background: #222;
+}
+html.theme-dark .button {
+	color: #eee;
+	background-color: #333;
+}
+html.theme-dark .header-button {
+	opacity: .4;
+}
+html.theme-dark .button.disabled {
+	color: #999;
+}
+html.theme-dark .secondary-controls {
+	background: #222;
+}
+html.theme-dark .menu {
+	background: #222;
+}
+html.theme-dark .view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method {
+	-webkit-transition: opacity .4s;
+	transition: opacity .4s;
+	opacity: .6;
+}
+html.theme-dark .view.admin .form-group.configurableCryptoCurrencies input[type=checkbox]:checked + .button.payment-method {
+	opacity: 1;
+}
+html.theme-dark .form-input {
+	color: #eee;
+	background-color: #222;
+	padding-left: .5rem;
+	padding-right: .5rem;
+}
+html.theme-dark .form-switch-slider:before {
+	background-color: #666;
+}
+html.theme-dark input:checked + .form-switch-slider {
+	background-color: #888;
+}
+html.theme-dark input:checked + .form-switch-slider:before {
+	background-color: #eee;
+}
+html.theme-dark .view.admin .form-group.configurableCryptoCurrencies .form-group-label {
+	color: #eee;
+}
+html.theme-dark .number-pad-key {
+	color: #eee;
+	font-family: 'Courier New';
+	font-weight: 700;
+	border-color: #444;
+}
+html.theme-dark .button.touchstart,
+html.theme-dark .header-button.touchstart,
+html.theme-dark .view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies input[type=checkbox]:checked + .button.payment-method,
+html.theme-dark .view.admin .form-group.configurableCryptoCurrencies input[type=checkbox]:checked + .button.payment-method,
+html.theme-dark .menu-item:nth-child(2n) {
+	background-color: #3f3f3f;
+}
+html.theme-dark .menu-item,
+html.theme-dark .form-switch-slider,
+html.theme-dark .secondary-menu,
+html.theme-dark .secondary-menu-item {
+	color: #eee;
+	background-color: #333;
+}
+html.theme-dark .secondary-menu-item.active {
+	background-color: #444;
+}
+html.theme-dark .view.getting-started .getting-started-payment-method-verify .sample-addresses-content {
+	color: #fff;
+}
+html.theme-dark .form-field-action.camera {
+	background-image: url('../images/camera-light.svg');
+}
+html.theme-dark .view.admin .payment-history-items {
+	color: #eee;
+}
+html.theme-dark .view.admin .payment-history-item.status-canceled,
+html.theme-dark .view.payment-detail.status-canceled .payment-details-info-item-value.status {
+	color: #eee;
+	opacity: .7;
+}
+html.theme-dark #cover {
+	background-color: rgba(0, 0, 0, .7);
+}
+html.theme-dark #cover-image {
+	background-image: url('../images/app-loading-dark.svg');
+}
+html.theme-dark.loaded.busy #cover-image {
+	background-image: url('../images/busy-dark.gif');
+	background-color: #000;
+	box-shadow: 0 0 .8rem rgba(255, 255, 255, .3);
+}

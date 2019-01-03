@@ -132,12 +132,13 @@ html.loaded.busy #cover {
 	display: flex;
 }
 html.loaded.busy #cover-image {
-	width: 160px;
-	height: 160px;
-	background-size: 80px;
+	width: 104px;
+	height: 104px;
+	background-size: 104px;
 	background-image: url('../images/busy.gif');
 	background-color: #fff;
-	box-shadow: 0 0 8px rgba(0,0,0,.4);
+	padding: 1rem;
+	box-shadow: 0 0 .8rem rgba(0, 0, 0, .3);
 }
 html.screen-saver-on #cover {
 	display: flex;
