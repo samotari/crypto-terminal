@@ -28,13 +28,8 @@
 	height: 3rem;
 	line-height: 3rem;
 	text-align: center;
-	padding-bottom: 5.5rem;
+	padding-bottom: 7.5rem;
 	margin: 0;
-}
-.view.display-payment-address .address-qr-code {
-	display: block;
-	width: 100%;
-	height: 100%;
 }
 .view.display-payment-address .message {
 	display: none;
@@ -70,4 +65,28 @@ html.offline .view.display-payment-address .message.warning-offline {
 .view.display-payment-address .button.secondary-control.cancel {
 	background-color: rgba(255,0,0,0.6);
 	background-image: url('../images/cancel.svg');
+}
+.view-display-payment-address .address-qr-code {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+html.full-screen-qr-code .view-display-payment-address .address-qr-code {
+	z-index: 200;
+	width: 100%;
+	height: 100%;
+	transition: width .4s, height .4s, left .4s, top .4s, background-size .4s;
+}
+.view-display-payment-address .address-qr-code-cover {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: none;
+	z-index: 150;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 255, 255, .7);
+}
+html.full-screen-qr-code .view-display-payment-address .address-qr-code-cover {
+	display: block;
 }

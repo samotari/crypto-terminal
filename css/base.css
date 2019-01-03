@@ -128,9 +128,6 @@ html.screen-saver-on #view {
 html.loaded #cover {
 	display: none;
 }
-html.loaded.busy #cover {
-	display: flex;
-}
 html.loaded.busy #cover-image {
 	width: 104px;
 	height: 104px;
@@ -140,6 +137,7 @@ html.loaded.busy #cover-image {
 	padding: 1rem;
 	box-shadow: 0 0 .8rem rgba(0, 0, 0, .3);
 }
+html.loaded.busy #cover,
 html.screen-saver-on #cover {
 	display: flex;
 }
