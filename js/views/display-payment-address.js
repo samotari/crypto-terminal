@@ -28,7 +28,10 @@ app.views.DisplayPaymentAddress = (function() {
 		initialize: function() {
 
 			_.bindAll(this,
+				'fullScreenQRCodeOff',
+				'fullScreenQRCodeOn',
 				'generatePaymentRequest',
+				'onDocumentClick',
 				'payFromPaperWallet',
 				'queryRate',
 				'renderCryptoAmount',
@@ -89,7 +92,12 @@ app.views.DisplayPaymentAddress = (function() {
 		onRender: function() {
 
 			this.$address = this.$('.address');
-			this.$addressQrCode = this.$('.address-qr-code');
+			this.$addressQrCode = $('<div/>', {
+				class: 'address-qr-code',
+			}).appendTo($('body'));
+			this.$addressQrCodeCover = $('<div/>', {
+				class: 'address-qr-code-cover',
+			}).appendTo($('body'));
 			this.$cryptoAmount = this.$('.crypto.amount');
 			this.toggleQrCodeHeaderIconVisibility();
 			this.renderCryptoAmount();
@@ -103,6 +111,8 @@ app.views.DisplayPaymentAddress = (function() {
 			if (rate) {
 				_.defer(this.onChangeRate);
 			}
+			this.$addressQrCode.on('click', this.fullScreenQRCodeOn);
+			$(document).on('click', this.onDocumentClick);
 		},
 
 		generatePaymentRequest: function() {
@@ -152,24 +162,24 @@ app.views.DisplayPaymentAddress = (function() {
 			var data = this.model.get('uri');
 			if (!data) return;
 
-			var width = Math.min(
-				this.$address.width(),
-				this.$address.height()
-			);
+			var fullScreenSize = this.getQrCodeFullScreenSize();
 
 			app.busy();
 
 			app.util.renderQrCode(this.$addressQrCode/* $target */, data, {
-				width: width,
+				width: fullScreenSize,
 				margin: 1,
-			}, function(error) {
+			}, _.bind(function(error) {
 
 				app.busy(false);
 
 				if (error) {
 					return app.mainView.showMessage(error);
 				}
-			});
+
+				this.fullScreenQRCodeOff();
+
+			}, this));
 		},
 
 		savePaymentData: function(paymentData) {
@@ -300,6 +310,52 @@ app.views.DisplayPaymentAddress = (function() {
 			this.$scanAndPayFromPaperWallet.toggleClass('visible', visible);
 		},
 
+		getQrCodeFullScreenSize: function() {
+
+			return Math.min(
+				$('body').width() - 20,
+				$('body').height() - 20
+			);
+		},
+
+		fullScreenQRCodeOn: function() {
+
+			_.defer(_.bind(function() {
+				if ($('html').hasClass('full-screen-qr-code')) return;
+				$('html').addClass('full-screen-qr-code');
+				var fullScreenSize = this.getQrCodeFullScreenSize();
+				this.$addressQrCode.css({
+					left: ($('body').width() - fullScreenSize) / 2,
+					top: ($('body').height() - fullScreenSize) / 2,
+					width: fullScreenSize,
+					height: fullScreenSize,
+					'background-size': fullScreenSize + 'px',
+				});
+			}, this));
+		},
+
+		fullScreenQRCodeOff: function() {
+
+			_.defer(_.bind(function() {
+				$('html').removeClass('full-screen-qr-code');
+				var width = Math.min(
+					this.$address.width(),
+					this.$address.height()
+				);
+				var position = {
+					top: this.$('.info').outerHeight() + this.$('.info').offset().top,
+					left: ($('body').width() - width) / 2,
+				};
+				this.$addressQrCode.css({
+					left: position.left,
+					top: position.top,
+					width: width,
+					height: width,
+					'background-size': width + 'px',
+				});
+			}, this));
+		},
+
 		canPayFromPaperWallet: function() {
 
 			var payRequestFromPaperWallet = this.paymentMethod.payRequestFromPaperWallet;
@@ -363,6 +419,21 @@ app.views.DisplayPaymentAddress = (function() {
 
 			this.toggleQrCodeHeaderIconVisibility(false);
 			this.$scanAndPayFromPaperWallet.off('click', this.scanAndPayFromPaperWallet);
+			this.fullScreenQRCodeOff();
+			$(document).off('click', this.onDocumentClick);
+			if (this.$addressQrCode) {
+				this.$addressQrCode.remove();
+			}
+			if (this.$addressQrCodeCover) {
+				this.$addressQrCodeCover.remove();
+			}
+		},
+
+		onDocumentClick: function() {
+
+			if ($('html').hasClass('full-screen-qr-code')) {
+				this.fullScreenQRCodeOff();
+			}
 		},
 
 		onBackButton: function() {
