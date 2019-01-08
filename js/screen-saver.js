@@ -37,6 +37,7 @@ app.screenSaver = (function() {
 
 		show: function() {
 
+			if (!this.isActive()) return;
 			$('#cover-text').text(app.i18n.t('screen-saver.instructions'));
 			$('html').addClass('screen-saver-on');
 		},
@@ -45,6 +46,11 @@ app.screenSaver = (function() {
 
 			$('html').removeClass('screen-saver-on');
 			$('#cover-text').text('');
+		},
+
+		isActive: function() {
+
+			return app.settings.get('screenSaver') === true;
 		},
 
 	};

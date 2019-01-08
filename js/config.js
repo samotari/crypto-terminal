@@ -200,6 +200,17 @@ app.config = (function() {
 				type: 'checkbox',
 				default: true,
 			},
+			{
+				name: 'screenSaver',
+				label: function() {
+					return app.i18n.t('settings.screen-saver.label');
+				},
+				description: function() {
+					return app.i18n.t('settings.screen-saver.description');
+				},
+				type: 'checkbox',
+				default: true,
+			},
 		],
 		recommendations: {
 			hardwareWallets: [

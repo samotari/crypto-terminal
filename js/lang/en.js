@@ -47,6 +47,8 @@ app.lang['en'] = (function() {
 		'settings.in-app-audio.description': 'Main on/off switch for all sounds in the app',
 		'settings.accept-crypto-currencies.label': 'Which payment methods would you like to accept?',
 		'settings.field-required': '{{label}} is required',
+		'settings.screen-saver.label': 'Screen Saver',
+		'settings.screen-saver.description': 'Show the screen saver animation after a long time of inactivity',
 
 		'pay-enter-amount.description': 'Enter amount to be paid',
 		'pay-enter-amount.continue': 'Continue',
