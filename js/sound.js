@@ -48,10 +48,10 @@ app.sound = (function() {
 			done = done || _.noop;
 			done = _.once(done);
 
-			if (!app.isCordova()) {
-				this.preloadTrackForBrowser(track, done);
-			} else if (app.isAndroid()) {
+			if (app.isAndroid()) {
 				this.preloadTrackForMobile(track, done);
+			} else {
+				this.preloadTrackForBrowser(track, done);
 			}
 		},
 
