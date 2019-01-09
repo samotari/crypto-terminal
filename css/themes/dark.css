@@ -86,7 +86,7 @@ html.theme-dark .view.payment-detail.status-canceled .payment-details-info-item-
 	opacity: .7;
 }
 html.theme-dark #cover {
-	background-color: rgba(0, 0, 0, .7);
+	background-color: rgba(0, 0, 0, 1);
 }
 html.theme-dark #cover-image {
 	background-image: url('../images/app-loading-dark.svg');
