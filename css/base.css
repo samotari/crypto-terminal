@@ -156,6 +156,7 @@ html.screen-saver-on #cover-image-wrap {
 	left: 0;
 	width: 14rem;
 	height: 21rem;
+	-webkit-animation: moveX 2.48s linear infinite alternate;
 	animation: moveX 2.48s linear infinite alternate;
 }
 html.screen-saver-on #cover-text {
@@ -170,6 +171,7 @@ html.screen-saver-on #cover-text {
 html.screen-saver-on #cover-image {
 	position: absolute;
 	top: 0;
+	-webkit-animation: moveY 5s linear infinite alternate;
 	animation: moveY 1.5s linear infinite alternate;
 }
 @keyframes moveX {
@@ -179,4 +181,12 @@ html.screen-saver-on #cover-image {
 @keyframes moveY {
 	0% { top: 0; }
 	100% { top: calc(100vh - 25rem); }
+}
+@-webkit-keyframes moveX {
+	0% { left: 0; }
+	100% { left: calc(100% - 14rem); }
+}
+@-webkit-keyframes moveY {
+	0% { top: 0; }
+	100% { top: 90%; }
 }
