@@ -123,6 +123,10 @@ app.views.Slider = (function() {
 			if (!item || item.rendered === true) return;
 			item.view = (new this.ItemView(item));
 			item.view.setElement(item.$el).render();
+			this.attachSubView(item.view);
+			if (item.contentView) {
+				this.attachSubView(item.contentView);
+			}
 			item.rendered = true;
 			return item.view;
 		},

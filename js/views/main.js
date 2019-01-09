@@ -25,6 +25,7 @@ app.views.Main = (function() {
 			'click a': 'onClickAnchor',
 		},
 
+		views: {},
 		currentView: null,
 		$interactTarget: null,
 		interaction: null,
@@ -109,31 +110,27 @@ app.views.Main = (function() {
 				.render();
 		},
 
-		stashedAdminView: null,
-
 		renderView: function(name, options) {
 
 			app.log('mainView.renderView', name);
-			this.closeCurrentView();
 
 			var View = app.views[name];
 			var view;
 
-			if (name === 'Admin' && this.stashedAdminView) {
-				app.busy(true);
-				window.requestAnimationFrame(_.bind(function() {
-					view = this.stashedAdminView;
-					this.stashedAdminView = null;
-					this.$view.empty().append(view.$el);
-					view.setElement(view.$el);
-					this.currentView = view;
-					this.renderViewArguments = arguments;
-					if (view.className) {
-						$('body').addClass('view-' + view.className);
-					}
-					app.busy(false);
-				}, this));
+			this.removeCurrentViewClassName();
+
+			if (this.views[name] && this.views[name].view.doNotClose === true) {
+				view = this.views[name].view;
+				this.views[name].options = options;
+				this.$view.empty().append(view.$el);
+				view.options = options;
+				view.setElement(view.$el);
 			} else {
+
+				if (this.views[name]) {
+					this.views[name].view.close();
+				}
+
 				var $el = $('<div/>', {
 					class: 'view'
 				});
@@ -143,38 +140,41 @@ app.views.Main = (function() {
 				view = new View(options);
 				this.$view.empty().append($el);
 				view.setElement($el).render();
-				this.currentView = view;
-				this.renderViewArguments = arguments;
-				if (view.className) {
-					$('body').addClass('view-' + view.className);
-				}
+				this.views[name] = {
+					name: name,
+					options: options,
+					view: view,
+				};
+			}
+
+			this.currentView = {
+				name: name,
+				options: options,
+				view: view,
+			};
+
+			if (view.className) {
+				$('body').addClass('view-' + view.className);
 			}
 		},
 
-		closeCurrentView: function() {
+		removeCurrentViewClassName: function() {
 
 			if (this.currentView) {
-
-				var isAdmin = this.currentView instanceof app.views.Admin;
-
-				if (isAdmin) {
-					// Don't close the admin view. Stash it instead.
-					this.stashedAdminView = this.currentView;
-				} else {
-					this.currentView.close();
-				}
-
-				if (this.currentView.className) {
-					$('body').removeClass('view-' + this.currentView.className);
+				var className = this.currentView.view.className;
+				if (className) {
+					$('body').removeClass('view-' + className);
 				}
 			}
 		},
 
 		reRenderView: function() {
 
-			if (this.renderViewArguments) {
+			if (this.currentView) {
 				// Re-render the view with the same arguments as it was originally rendered.
-				this.renderView.apply(this, this.renderViewArguments);
+				var name = this.currentView.name;
+				var options = this.currentView.options;
+				this.renderView(name, options);
 			}
 		},
 

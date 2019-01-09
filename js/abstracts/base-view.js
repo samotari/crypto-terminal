@@ -10,9 +10,14 @@ app.abstracts.BaseView = (function() {
 
 		_rendered: false,
 
+		// Set this to TRUE to keep the view instead of closing it.
+		doNotClose: false,
+
 		constructor: function(options) {
 
 			this.options = options || {};
+
+			this._subViews = [];
 
 			_.bindAll(this,
 				'close',
@@ -96,6 +101,20 @@ app.abstracts.BaseView = (function() {
 
 			var html = $template && $template.html() || '';
 			return Handlebars.compile(html);
+		},
+
+		setElement: function() {
+
+			Backbone.View.prototype.setElement.apply(this, arguments);
+			_.each(this._subViews, function(subView) {
+				subView.setElement(subView.$el);
+			});
+			return this;
+		},
+
+		attachSubView: function(subView) {
+
+			this._subViews.push(subView);
 		},
 
 		onResize: function() {

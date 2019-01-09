@@ -117,6 +117,8 @@ app.views.DisplayPaymentAddress = (function() {
 
 		generatePaymentRequest: function() {
 
+			var rate = this.model.get('rate');
+			if (!rate) return;
 			var cryptoAmount = this.model.getCryptoAmount();
 
 			this.paymentMethod.generatePaymentRequest(cryptoAmount, _.bind(function(error, paymentRequest) {
@@ -140,9 +142,10 @@ app.views.DisplayPaymentAddress = (function() {
 
 		renderCryptoAmount: function() {
 
+			var rate = this.model.get('rate');
+			if (!rate) return;
 			var amount = this.model.get('amount');
 			var currency = this.model.get('currency');
-			var rate = this.model.get('rate');
 			var paymentMethod = this.paymentMethod;
 			var isDisplayCurrency = paymentMethod.code === currency;
 

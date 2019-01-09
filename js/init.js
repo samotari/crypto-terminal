@@ -16,10 +16,9 @@ app.onDeviceReady(function() {
 	app.paymentRequests = new app.collections.PaymentRequests();
 
 	app.onReady(function() {
-		app.paymentRequests.fetch();
-	});
 
-	app.onReady(function() {
+		app.paymentRequests.fetch();
+
 		// Initialize the main view.
 		app.mainView = new app.views.Main();
 
@@ -33,8 +32,7 @@ app.onDeviceReady(function() {
 		}
 
 		$('html').addClass('loaded');
-		app.device.overrideBackButton();
-		app.device.listenToNetworkInformation();
+		app.device.initialize();
 	});
 
 	app.queues.onStart.resume();

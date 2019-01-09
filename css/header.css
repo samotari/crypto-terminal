@@ -131,6 +131,6 @@ body.view-getting-started .header-button.language {
 	float: right;
 	background-image: url('../images/qrcode.svg');
 }
-.header-button.qrcode.visible {
+body.view-display-payment-address .header-button.qrcode.visible {
 	display: block;
 }

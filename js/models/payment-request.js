@@ -21,6 +21,8 @@ app.models.PaymentRequest = (function() {
 			this.collection = app.paymentRequests;
 		},
 
+		url: _.noop,
+
 		defaults: function() {
 			return {
 				// The display currency used for the payment request.

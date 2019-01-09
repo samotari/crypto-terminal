@@ -8,6 +8,7 @@ app.models.Setting = (function() {
 
 	return app.abstracts.BaseModel.extend({
 		idAttribute: 'key',
+		url: _.noop,
 	});
 
 })();

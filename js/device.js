@@ -4,7 +4,45 @@ app.device = (function() {
 
 	'use strict';
 
-	return {
+	var device = _.extend({}, {
+
+		initialize: function() {
+
+			if (app.isCordova()) {
+
+				window.addEventListener('keyboardWillShow', function() {
+					$('html').addClass('keyboard-visible');
+					device.trigger('keyboard:visible');
+				}, false);
+
+				window.addEventListener('keyboardWillHide', function() {
+					$('html').removeClass('keyboard-visible');
+					device.trigger('keyboard:hidden');
+				}, false);
+
+				// https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-network-information/
+				document.addEventListener('offline', function() {
+					$('html').addClass('offline');
+					device.trigger('offline');
+				}, false);
+
+				document.addEventListener('online', function() {
+					$('html').removeClass('offline');
+					device.trigger('online');
+				}, false);
+
+				document.addEventListener('backbutton', function() {
+					var currentView = app.mainView.currentView && app.mainView.currentView.view;
+					if (currentView && currentView.onBackButton) {
+						// Use current view's custom back button behavior, if defined.
+						currentView.onBackButton();
+					} else {
+						// Otherwise, use browser history to go back.
+						Backbone.history.history.back();
+					}
+				}, false);
+			}
+		},
 
 		scanQRCodeWithCamera: function(options, cb) {
 
@@ -39,49 +77,8 @@ app.device = (function() {
 			cordova.plugins.barcodeScanner.scan(onSuccess, onError, options);
 		},
 
-		overrideBackButton: function() {
+	}, Backbone.Events);
 
-			if (app.isCordova()) {
-				document.addEventListener('backbutton', function() {
-					var currentView = app.mainView.currentView;
-					if (currentView && currentView.onBackButton) {
-						// Use current view's custom back button behavior, if defined.
-						currentView.onBackButton();
-					} else {
-						// Otherwise, use browser history to go back.
-						Backbone.history.history.back();
-					}
-				}, false);
-			}
-		},
-
-		listenToNetworkInformation: function() {
-			// https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-network-information/
-
-			function onOffline() {
-				$('html').addClass('offline');
-			}
-
-			function onOnline() {
-				$('html').removeClass('offline');
-			}
-
-			function keyboardVisible() {
-				$('html').addClass('keyboard-visible');
-			}
-
-			function keyboardNotVisible() {
-				$('html').removeClass('keyboard-visible');
-			}
-
-			if (app.isCordova()) {
-				document.addEventListener("offline", onOffline, false);
-				document.addEventListener("online", onOnline, false);
-				window.addEventListener('keyboardWillShow', keyboardVisible, false);
-				window.addEventListener('keyboardWillHide', keyboardNotVisible, false);
-			}
-		}
-
-	};
+	return device;
 
 })();

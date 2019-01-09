@@ -228,8 +228,12 @@ app.Router = (function() {
 
 			// Get latest payment request.
 			var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
+			var requiredFields = ['amount', 'currency', 'method'];
+			var hasRequiredFields = !!paymentRequest && _.every(requiredFields, function(field) {
+				return paymentRequest.has(field);
+			});
 
-			if (!paymentRequest) {
+			if (!paymentRequest || !hasRequiredFields) {
 				// Start from the beginning of the payment process.
 				this.navigate('pay', { trigger: true });
 				return false;
