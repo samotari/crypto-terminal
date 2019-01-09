@@ -108,15 +108,20 @@ html.screen-saver-on #view {
 	opacity: 1;
 	background-color: rgba(255, 255, 255, .7);
 }
-#cover-image {
+#cover-image-wrap {
 	position: relative;
 	width: 14rem;
 	height: 21rem;
+	margin: 0 auto;
+}
+#cover-image {
+	position: relative;
+	width: 100%;
+	height: 100%;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 14rem 21rem;
 	background-image: url('../images/app-loading.svg');
-	margin: 0 auto;
 }
 #cover-text {
 	position: relative;
@@ -128,9 +133,14 @@ html.screen-saver-on #view {
 html.loaded #cover {
 	display: none;
 }
-html.loaded.busy #cover-image {
+html.loaded.busy #cover {
+	display: flex;
+}
+html.loaded.busy #cover-image-wrap {
 	width: 104px;
 	height: 104px;
+}
+html.loaded.busy #cover-image {
 	background-size: 104px;
 	background-image: url('../images/busy.gif');
 	background-color: #fff;
@@ -139,5 +149,44 @@ html.loaded.busy #cover-image {
 }
 html.loaded.busy #cover,
 html.screen-saver-on #cover {
-	display: flex;
+	display: block;
+}
+html.screen-saver-on #cover-image-wrap {
+	position: absolute;
+	left: 0;
+	width: 14rem;
+	height: 21rem;
+	-webkit-animation: moveX 2.48s linear infinite alternate;
+	animation: moveX 2.48s linear infinite alternate;
+}
+html.screen-saver-on #cover-text {
+	position: absolute;
+	left: 0;
+	bottom: 2rem;
+	top: initial;
+	width: 100%;
+	height: 2rem;
+	line-height: 2rem;
+}
+html.screen-saver-on #cover-image {
+	position: absolute;
+	top: 0;
+	-webkit-animation: moveY 5s linear infinite alternate;
+	animation: moveY 1.5s linear infinite alternate;
+}
+@keyframes moveX {
+	0% { left: 0; }
+	100% { left: calc(100% - 14rem); }
+}
+@keyframes moveY {
+	0% { top: 0; }
+	100% { top: calc(100vh - 25rem); }
+}
+@-webkit-keyframes moveX {
+	0% { left: 0; }
+	100% { left: calc(100% - 14rem); }
+}
+@-webkit-keyframes moveY {
+	0% { top: 0; }
+	100% { top: 90%; }
 }
