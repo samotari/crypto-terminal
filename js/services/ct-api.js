@@ -13,27 +13,33 @@ app.services.ctApi = (function() {
 
 			var done = _.once(cb);
 
-			if (typeof Primus === 'undefined' || this.primus) {
+			if (this.primus) {
+				// Primus already initialized.
+				return _.defer(done);
+			}
+
+			if (typeof Primus === 'undefined') {
 				// If Primus doesn't exist, then we can't connect.
-				// Or, if a primus instance already exists then we are already connected.
-				_.defer(done);
-				return;
+				return _.defer(function() {
+					done(new Error('Failed to open websocket connection because primus.js could not be loaded'));
+				});
 			}
 
 			var uri = this.getUri(app.config.ctApi.primusPath);
+			var primus = this.primus = Primus.connect(uri, app.config.primus);
 
-			this.primus = Primus.connect(uri);
-
-			this.primus.once('open', function() {
+			primus.once('open', function() {
 				done();
 			});
 
-			this.primus.once('error', function(error) {
+			primus.once('error', function(error) {
 				done(error);
 			});
 
-			this.primus.on('data', _.bind(this.onData, this));
-			this.primus.on('reconnected', _.bind(this.onReconnected, this));
+			primus.on('data', _.bind(this.onData, this));
+			primus.on('reconnected', _.bind(this.onReconnected, this));
+			primus.on('offline', _.bind(this.trigger, this, 'offline'));
+			primus.on('online', _.bind(this.trigger, this, 'online'));
 		},
 
 		getUri: function(uri, params) {
@@ -243,10 +249,82 @@ app.services.ctApi = (function() {
 			}).catch(cb)
 		},
 
+		doWhenOnline: function(cb) {
+
+			async.until(function() {
+				return navigator.onLine;
+			}, function(next) {
+				_.delay(next, 500);
+			}, cb);
+		},
+
+		loadPrimusLibrary: function(cb) {
+
+			var numAttempts = 0;
+			var maxAttempts = 5;
+			var $script = $('script#primus-library');
+			var src = $script.attr('src');
+			async.until(_.bind(function() {
+				return this.primusLibraryLoaded() || numAttempts >= maxAttempts;
+			}, this), function(next) {
+				numAttempts++;
+				$.getScript(src, function() {
+					next();
+				}).fail(function() {
+					_.delay(next, 500);
+				});
+			}, _.bind(function() {
+				if (!this.primusLibraryLoaded()) {
+					cb(new Error('Failed to load primus.js library'));
+				} else {
+					cb();
+				}
+			}, this));
+		},
+
+		primusLibraryLoaded: function() {
+
+			return typeof Primus !== 'undefined';
+		},
+
 	}, Backbone.Events);
 
-	app.queues.onStart.push({
-		fn: _.bind(service.connect, service),
+	app.onStart(function(done) {
+		if (!service.primusLibraryLoaded()) {
+			// Primus library is not available.
+			// This means we are offline completely (at page load).
+			$('html').addClass('offline');
+			// Wait until we are back online.
+			service.doWhenOnline(function() {
+				// Then try to load the primus library.
+				service.loadPrimusLibrary(function(error) {
+					if (error) {
+						// Failed to load the primus library, so can't do anything.
+						app.log(error);
+					} else {
+						// Now we can try to establish a websock connection.
+						service.connect(function(error) {
+							if (error) {
+								app.log(error);
+							} else {
+								$('html').removeClass('offline');
+							}
+						});
+					}
+				});
+			});
+			done();
+		} else {
+			// Primus library is available.
+			// Try to establish a websocket connection.
+			service.connect(function(error) {
+				if (error) {
+					$('html').addClass('offline');
+					app.log(error);
+				}
+				done();
+			});
+		}
 	});
 
 	app.onReady(function() {
@@ -257,6 +335,16 @@ app.services.ctApi = (function() {
 		} catch (error) {
 			app.log('ct-api', error);
 		}
+	});
+
+	service.on('offline', function() {
+		$('html').addClass('offline');
+		app.device.trigger('offline');
+	});
+
+	service.on('online', function() {
+		$('html').removeClass('offline');
+		app.device.trigger('online');
 	});
 
 	return service;

@@ -17,6 +17,13 @@ app.config = (function() {
 				timeout: 10000,
 			},
 		}, app.config.ctApi),
+		primus: {
+			reconnect: {
+				max: 5000, // Number: The max delay before we try to reconnect.
+				min: 500, // Number: The minimum delay before we try reconnect.
+				retries: Infinity, // Number: How many times we should try to reconnect.
+			},
+		},
 		sqlite: {
 			name: 'crypto-terminal.db',
 			location: 'default',
