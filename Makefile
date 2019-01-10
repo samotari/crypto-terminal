@@ -256,7 +256,6 @@ $(JS)/queues.js\
 $(JS)/util.js\
 $(JS)/device.js\
 $(JS)/screen-saver.js\
-$(JS)/export-payments.js\
 $(JS)/nfc.js\
 $(JS)/sqlite.js\
 $(JS)/lang/*.js\

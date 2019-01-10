@@ -130,6 +130,28 @@ app.util = (function() {
 			return _.uniq([].concat(app.config.primaryDisplayCurrencies, fromExchangeRates));
 		},
 
+		toCsv: function(data) {
+			data = data || [];
+
+			if (_.isEmpty(data)) {
+				return '';
+			}
+
+			var headers = Object.keys(data[0]).join(',');
+			return [headers].concat(_.map(data, function(item) {
+				return _.map(item, function(value) {
+					if (_.isObject(value)) {
+						value = JSON.stringify(value);
+					} else if (_.isNumber(value)) {
+						value = value.toString();
+					} else if (!_.isString(value)) {
+						value = '';
+					}
+					return value.replace(/\n|,/gm, '');
+				}).join(',');
+			})).join('\n');
+		}
+
 	};
 
 })();

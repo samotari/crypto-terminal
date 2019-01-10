@@ -103,8 +103,8 @@ app.config = (function() {
 			export: {
 				storagePath: 'file:///storage/emulated/0/',
 				storageDirectory: 'download',
-				fileName: 'payment-history',
-				extension: '.csv'
+				extension: '.csv',
+				dateFormat: 'DD-MM-YYYY_HHmmss'
 			}
 		},
 		settings: [

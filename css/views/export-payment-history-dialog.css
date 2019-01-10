@@ -1,0 +1,17 @@
+.export-payment-history-dialog {
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 100;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	box-sizing: border-box;
+	padding-bottom: 4rem;
+}
+.export-payment-history-dialog-inner {
+	width: 90%;
+	margin: 0 auto;
+}

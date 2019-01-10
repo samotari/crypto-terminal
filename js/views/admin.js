@@ -178,6 +178,7 @@ app.views.Admin = (function() {
 		setActiveMenuItem: function(key) {
 
 			this.options.page = key;
+			this.setSubPageFlag(key);
 			this.$menuItems.removeClass('active');
 			var $activeMenuItem = this.$menuItems.filter('[data-key="' + key + '"]').addClass('active').eq(0);
 			var activeMenuItemEl = $activeMenuItem[0];
@@ -185,6 +186,18 @@ app.views.Admin = (function() {
 			var offsetLeft = activeMenuItemEl && activeMenuItemEl.offsetLeft;
 			this.$('.secondary-menu')[0].scrollLeft = offsetLeft;
 			app.router.navigate('#admin/' + encodeURIComponent(key), { trigger: false });
+		},
+
+		setSubPageFlag: function(key) {
+
+			var subPages = _.result(this, 'subPages');
+			_.each(subPages, function(subPage) {
+				$('body').removeClass('subview-admin-' + subPage.key);
+			}, this);
+
+			if (_.isString(key)) {
+				$('body').addClass('subview-admin-' + key);
+			}
 		},
 
 		onClickCryptoCurrencyToggle: function(evt) {

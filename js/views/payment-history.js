@@ -36,8 +36,6 @@ app.views.PaymentHistory = (function() {
 			var collection = _.result(this, 'collection');
 			var total = _.result(collection, 'total');
 			this.$el.toggleClass('empty', total === 0);
-			// Add a class to body tag in order to show specific buttons in header.
-			$('body').addClass('payment-history');
 		},
 
 		showPaymentDetails: function(evt) {
@@ -60,16 +58,9 @@ app.views.PaymentHistory = (function() {
 
 		exportPaymentHistory: function() {
 
-			app.busy(true);
-			app.exportPayments.exportPaymentDetails(function(error) {
-				app.busy(false);
-				if (error) {
-					return app.mainView.showMessage(app.i18n.t('payment-history.export.fail'));
-				}
+			this.exportPaymentHistoryDialogView = new app.views.exportPaymentHistoryDialog();
 
-				app.mainView.showMessage(app.i18n.t('payment-history.export.success'));
-
-			});
 		}
+
 	});
 })();

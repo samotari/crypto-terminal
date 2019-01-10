@@ -1,0 +1,14 @@
+<div class="export-payment-history-dialog-inner">
+	<h2 class="page-title">{{i18n "payment-history.export.dialog.message"}}</h2>
+	<div class="form">
+		<div class="form-group">
+			{{#each settings}}
+				{{> formFieldRow .}}
+			{{/each}}
+		</div>
+	</div>
+	<div class="secondary-controls">
+		<a class="secondary-control button cancel">{{i18n "payment-history.export.dialog.cancel"}}</a>
+		<a class="secondary-control button download">{{i18n "payment-history.export.dialog.download"}}</a>
+	</div>
+</div>
