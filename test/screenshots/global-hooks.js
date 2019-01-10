@@ -1,5 +1,3 @@
-'use strict';
-
 var manager = require('../manager');
 require('../global-hooks');
 
@@ -8,5 +6,10 @@ before(function(done) {
 });
 
 before(function(done) {
-	manager.navigate('/', done);
+	manager.page.setViewport({
+		width: 375,
+		height: 667,
+	}).then(function() {
+		done();
+	}).catch(done);
 });

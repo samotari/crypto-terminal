@@ -1,13 +1,8 @@
-'use strict';
-
 var _ = require('underscore');
-
-process.env = _.defaults(process.env || {}, {
-	NODE_ENV: 'test',
-	TARGET: 'test',
-});
-
+var async = require('async');
 var express = require('express');
+var mkdirp = require('mkdirp');
+var path = require('path');
 var puppeteer = require('puppeteer');
 var Primus = require('primus');
 var serveStatic = require('serve-static');
@@ -138,32 +133,22 @@ var manager = module.exports = {
 		};
 	},
 
+	screenshot: function(name, done) {
+		var dir = path.join(__dirname, '..', 'build', 'screenshots');
+		var extension = '.png';
+		async.series([
+			function(next) {
+				mkdirp(dir, next);
+			},
+			function(next) {
+				var filePath = path.join(dir, name + extension);
+				manager.page.screenshot({
+					path: filePath,
+				}).then(function() {
+					next();
+				}).catch(next);
+			},
+		], done);
+	},
+
 };
-
-before(function(done) {
-	manager.prepareBrowser(done);
-});
-
-var staticWeb;
-before(function(done) {
-	staticWeb = manager.prepareStaticWebServer(done);
-});
-
-after(function(done) {
-	if (!staticWeb) return done();
-	staticWeb.server.close(done);
-});
-
-after(function(done) {
-	if (!manager.page) return done();
-	manager.page.close().then(function() {
-		done();
-	}).catch(done);
-});
-
-after(function(done) {
-	if (!manager.browser) return done();
-	manager.browser.close().then(function() {
-		done();
-	}).catch(done);
-});
