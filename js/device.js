@@ -20,17 +20,6 @@ app.device = (function() {
 					device.trigger('keyboard:hidden');
 				}, false);
 
-				// https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-network-information/
-				document.addEventListener('offline', function() {
-					$('html').addClass('offline');
-					device.trigger('offline');
-				}, false);
-
-				document.addEventListener('online', function() {
-					$('html').removeClass('offline');
-					device.trigger('online');
-				}, false);
-
 				document.addEventListener('backbutton', function() {
 					var currentView = app.mainView.currentView && app.mainView.currentView.view;
 					if (currentView && currentView.onBackButton) {
