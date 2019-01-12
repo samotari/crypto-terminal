@@ -4,6 +4,8 @@ var app = app || {};
 
 	'use strict';
 
+	app = _.extend({}, app, Backbone.Events);
+
 	app.createWorker = function(fileName) {
 		var worker = new Worker(fileName);
 		var callers = {};
@@ -35,6 +37,15 @@ var app = app || {};
 
 	app.busy = function(isBusy) {
 		$('html').toggleClass('busy', isBusy !== false);
+		if (isBusy) {
+			app.trigger('busy');
+		} else {
+			app.trigger('notBusy');
+		}
+	};
+
+	app.isBusy = function() {
+		return $('html').hasClass('busy');
 	};
 
 	app.isCordova = function() {

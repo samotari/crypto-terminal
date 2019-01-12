@@ -15,19 +15,50 @@ app.screenSaver = (function() {
 		initialize: function() {
 
 			_.bindAll(this,
-				'hide',
-				'resetTimer',
-				'show'
+				'pause',
+				'reset',
+				'resume',
+				'show',
+				'toggle'
 			);
-			this.startTimer();
-			$(document).click(this.resetTimer);
+			$(document).click(this.reset);
+			app.on('busy', this.pause);
+			app.on('notBusy', this.resume);
+			app.settings.on('change:screenSaver', this.toggle);
+			if (this.isActive()) {
+				this.startTimer();
+			}
 		},
 
-		resetTimer: function() {
+		toggle: function() {
+
+			if (this.isActive()) {
+				this.resume();
+			} else {
+				this.pause();
+			}
+		},
+
+		pause: function() {
+
+			this.hide();
+			this.stopTimer();
+		},
+
+		resume: function() {
+
+			this.startTimer();
+		},
+
+		reset: function() {
+
+			this.pause();
+			this.resume();
+		},
+
+		stopTimer: function() {
 
 			clearTimeout(this.idleTimeout);
-			this.hide();
-			this.startTimer();
 		},
 
 		startTimer: function() {
@@ -37,7 +68,6 @@ app.screenSaver = (function() {
 
 		show: function() {
 
-			if (!this.isActive()) return;
 			$('#cover-text').text(app.i18n.t('screen-saver.instructions'));
 			$('html').addClass('screen-saver-on');
 		},

@@ -147,7 +147,6 @@ html.loaded.busy #cover-image {
 	padding: 1rem;
 	box-shadow: 0 0 .8rem rgba(0, 0, 0, .3);
 }
-html.loaded.busy #cover,
 html.screen-saver-on #cover {
 	display: block;
 }
