@@ -99,6 +99,12 @@ app.config = (function() {
 		paymentHistory: {
 			list: {
 				limit: 999,
+			},
+			export: {
+				storagePath: 'file:///storage/emulated/0/',
+				storageDirectory: 'download',
+				extension: '.csv',
+				dateFormat: 'DD-MM-YYYY_HHmmss'
 			}
 		},
 		settings: [

@@ -15,6 +15,13 @@ app.views.PaymentHistory = (function() {
 			'click .payment-history-item': 'showPaymentDetails',
 		},
 
+		initialize: function() {
+
+			_.bindAll(this, 'exportPaymentHistory');
+			this.$exportPaymentHistory = app.mainView.$('.header-button.export');
+			this.$exportPaymentHistory .on('click', this.exportPaymentHistory);
+		},
+
 		collection: function() {
 			return app.paymentRequests;
 		},
@@ -48,6 +55,12 @@ app.views.PaymentHistory = (function() {
 				app.views.utility.List.prototype.addItem.apply(this, arguments);
 			}
 		},
+
+		exportPaymentHistory: function() {
+
+			this.exportPaymentHistoryDialogView = new app.views.exportPaymentHistoryDialog();
+
+		}
 
 	});
 })();

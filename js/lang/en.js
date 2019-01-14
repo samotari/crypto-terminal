@@ -71,8 +71,17 @@ app.lang['en'] = (function() {
 		'payment.status.unconfirmed': 'Accepted',
 		'payment.status.confirmed': 'Confirmed',
 		'payment.status.timed-out': 'Timed out',
+
 		'payment-history.failed-to-get-payment-data': 'Failed to load payment data',
 		'payment-history.empty': 'No payments yet',
+		'payment-history.export.success': 'Your payments history has been exported in your downloads folder',
+		'payment-history.export.fail': 'An error happened during the export of payments history.',
+		'payment-history.export.dialog.download': 'Download',
+		'payment-history.export.dialog.cancel': 'Cancel',
+		'payment-history.export.dialog.message': 'The payment history is ready to download.',
+		'payment-history.export.dialog.default-file-name': 'payment-history',
+		'payment-history.export.dialog.fileName-label': 'File name (.csv)',
+
 		'payment-details.title': 'Payment Details',
 		'payment-details.label.status': 'Status',
 		'payment-details.label.timestamp': 'Date',

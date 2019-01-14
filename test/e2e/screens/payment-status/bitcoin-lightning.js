@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('underscore');
 var express = require('express');
 var helpers = require('../../helpers');
 var manager = require('../../../manager');
@@ -19,7 +18,7 @@ describe('#payment-status [bitcoin-lightning]', function() {
 			res.header("Access-Control-Allow-Origin", "*");
 			res.header("Access-Control-Allow-Headers", "*");
 			next();
-		  });
+		});
 		server = tmpApp.listen(port, 'localhost');
 		tmpApp.post('/v1/invoices', function(req, res, next) {
 			res.send(paymentRequest);
