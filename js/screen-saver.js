@@ -25,9 +25,7 @@ app.screenSaver = (function() {
 			app.on('busy', this.pause);
 			app.on('notBusy', this.resume);
 			app.settings.on('change:screenSaver', this.toggle);
-			if (this.isActive()) {
-				this.startTimer();
-			}
+			this.toggle();
 		},
 
 		toggle: function() {
@@ -47,7 +45,9 @@ app.screenSaver = (function() {
 
 		resume: function() {
 
-			this.startTimer();
+			if (this.isActive()) {
+				this.startTimer();
+			}
 		},
 
 		reset: function() {
