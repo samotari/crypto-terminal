@@ -92,7 +92,7 @@ npm run build && npm run android
 
 Create your signing key:
 ```bash
-npm run generate-android-signing-key
+npm run android-generate-signing-key
 ```
 
 Build a production APK:
