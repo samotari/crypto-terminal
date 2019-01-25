@@ -99,3 +99,7 @@ html.theme-dark.loaded.busy #cover-image {
 html.theme-dark .view-display-payment-address .address-qr-code-cover {
 	background-color: rgba(0, 0, 0, .7);
 }
+html.theme-dark .enter-pin,
+html.theme-dark .export-payment-history-dialog {
+	background: #111;
+}

@@ -18,13 +18,3 @@
 .view.pay .preset.button {
 	font-size: 1.1rem;
 }
-.view.pay .button.secondary-control {
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-size: 2.4rem;
-	background-repeat: no-repeat;
-}
-.view.pay .button.secondary-control.continue {
-	background-color: rgba(0,128,0,0.6);
-	background-image: url('../images/continue.svg');
-}
