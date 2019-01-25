@@ -8,6 +8,10 @@ app.device = (function() {
 
 		initialize: function() {
 
+			_.bindAll(this,
+				'onBackButton'
+			);
+
 			if (app.isCordova()) {
 
 				window.addEventListener('keyboardWillShow', function() {
@@ -20,17 +24,30 @@ app.device = (function() {
 					device.trigger('keyboard:hidden');
 				}, false);
 
-				document.addEventListener('backbutton', function() {
-					var currentView = app.mainView.currentView && app.mainView.currentView.view;
-					if (currentView && currentView.onBackButton) {
-						// Use current view's custom back button behavior, if defined.
-						currentView.onBackButton();
-					} else {
-						// Otherwise, use browser history to go back.
-						Backbone.history.history.back();
-					}
-				}, false);
+				document.addEventListener('backbutton', this.onBackButton, false);
 			}
+		},
+
+		onBackButton: function() {
+
+			// Don't do extra back-button behavior when scanning with camera.
+			if (this.isScanningWithCamera()) return;
+
+			var currentView = app.mainView.currentView && app.mainView.currentView.view;
+			if (currentView && currentView.onBackButton) {
+				// Use current view's custom back button behavior, if defined.
+				currentView.onBackButton();
+			} else {
+				// Otherwise, use browser history to go back.
+				Backbone.history.history.back();
+			}
+		},
+
+		scanning: false,
+
+		isScanningWithCamera: function() {
+
+			return this.scanning === true;
 		},
 
 		scanQRCodeWithCamera: function(options, cb) {
@@ -58,12 +75,22 @@ app.device = (function() {
 				disableSuccessBeep: true,// iOS and Android
 			});
 
-			var onError = _.once(cb);
-			var onSuccess = _.once(function(result) {
-				cb(null, result.text);
-			});
+			// Use a flag to know when we are scanning with the camera.
+			this.scanning = true;
+			var done = _.once(_.bind(function() {
+				// Wait before unsetting the scanning flag.
+				// To prevent the back event in the camera plugin from triggering navigation.
+				_.delay(_.bind(function() {
+					this.scanning = false;
+				}, this), 500);
+				cb.apply(undefined, arguments);
+			}, this));
 
-			cordova.plugins.barcodeScanner.scan(onSuccess, onError, options);
+			cordova.plugins.barcodeScanner.scan(function onSuccess(result) {
+				done(null, result.text);
+			}, function onError(error) {
+				done(error);
+			}, options);
 		},
 
 	}, Backbone.Events);
