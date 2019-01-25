@@ -1,6 +1,6 @@
 # Changelog
 
-* TBD:
+* v1.4.0:
   * Pay by scanning a paper wallet (using camera or NFC)
   * Show warning if received payment uses Replace-by-fee (RBF)
   * Play sound on payment success - audio master on/off toggle included in general settings
