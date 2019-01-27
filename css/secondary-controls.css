@@ -66,9 +66,13 @@
 .button.secondary-control.submit {
 	background-image: url('../images/checkmark.svg');
 }
+.button.secondary-control.done{
+	background-image: url('../images/checkmark.svg')
+}
 .button.secondary-control.continue,
 .button.secondary-control.download,
-.button.secondary-control.submit {
+.button.secondary-control.submit,
+.button.secondary-control.done {
 	background-color: rgba(0,128,0,0.6);
 }
 .button.secondary-control.continue.touchstart,
