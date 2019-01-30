@@ -113,7 +113,7 @@ app.paymentMethods.bitcoinLightning = (function() {
 
 			// Allowing this view only to render during getting started.
 			// TODO: find a different approach to work with admin view.
-			var isGettingStartedView = app.mainView.currentView.$el.hasClass('getting-started');
+			var isGettingStartedView = app.mainView.currentView.view.$el.hasClass('getting-started');
 			if (!isGettingStartedView) {
 				return;
 			}
