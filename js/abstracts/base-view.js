@@ -53,7 +53,7 @@ app.abstracts.BaseView = (function() {
 
 		reRender: function() {
 
-			if (this.isRendered()) {
+			if (this.isRendered() && this.isVisible()) {
 				this.render();
 			}
 		},
@@ -78,6 +78,11 @@ app.abstracts.BaseView = (function() {
 			// Left empty intentionally.
 			// Override as needed.
 			return this;
+		},
+
+		isVisible: function() {
+
+			return this.$el && this.$el.is(':visible');
 		},
 
 		serializeData: function() {

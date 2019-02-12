@@ -127,8 +127,8 @@ app.views.Main = (function() {
 				view.setElement(view.$el);
 			} else {
 
-				if (this.views[name]) {
-					this.views[name].view.close();
+				if (this.currentView && this.currentView.view && this.currentView.view.doNotClose !== true) {
+					this.currentView.view.close();
 				}
 
 				var $el = $('<div/>', {
