@@ -1,6 +1,5 @@
 var _ = require('underscore');
 var async = require('async');
-var fs = require('fs');
 var https = require('https');
 var httpProxy = require('http-proxy');
 var pem = require('pem');
