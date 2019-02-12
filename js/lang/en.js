@@ -24,7 +24,7 @@ app.lang['en'] = (function() {
 		'admin.pin.min-length': 'PIN must be at least {{minLength}} digit(s)',
 
 		'getting-started.buttons.back': 'Back',
-		'getting-started.buttons.next': 'Next',
+		'getting-started.buttons.continue': 'Next',
 		'getting-started.welcome.title': 'Hi there!',
 		'getting-started.welcome.instructions': 'CryptoTerminal is designed to be used with your existing wallet application. This enables you to easily receive payments while keeping the private keys that secure your funds stored safely offline or in a hardware wallet. We recommend that you use one of the following hardware wallets to secure your funds:',
 		'getting-started.welcome.ready?': 'Once you have your cryptocurrency wallet prepared, you can begin the setup process by pressing the "Start" button below.',

@@ -12,7 +12,7 @@ app.views.GettingStarted = (function() {
 		template: '#template-getting-started',
 		events: {
 			'click .button.back': 'back',
-			'click .button.next': 'next',
+			'click .button.continue': 'continue',
 			'click .skip': 'skip',
 			'click label[for^="configurableCryptoCurrencies-"]': 'onClickCryptoCurrencyToggle',
 			'change :input': 'onChangeInput',
@@ -148,7 +148,7 @@ app.views.GettingStarted = (function() {
 			this.goToSubPage(previousItem.key);
 		},
 
-		next: function() {
+		continue: function() {
 
 
 			var currentItem = this.slider.getCurrentItem();
@@ -278,7 +278,7 @@ app.views.GettingStarted = (function() {
 			var currentItem = this.slider.getCurrentItem();
 			if (currentItem) {
 				var isComplete = !_.isFunction(currentItem.contentView.isComplete) || currentItem.contentView.isComplete();
-				currentItem.contentView.$('.button.next').toggleClass('disabled', !isComplete);
+				currentItem.contentView.$('.button.continue').toggleClass('disabled', !isComplete);
 			}
 		},
 

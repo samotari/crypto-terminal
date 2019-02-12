@@ -24,7 +24,7 @@ app.lang['es'] = (function() {
 		'admin.pin.min-length': 'El código debe tener al menos {{minLength}} dígito(s)',
 
 		'getting-started.buttons.back': 'Volver',
-		'getting-started.buttons.next': 'Seguir',
+		'getting-started.buttons.continue': 'Seguir',
 		'getting-started.welcome.title': '¡Hola!',
 		'getting-started.welcome.instructions': 'CryptoTerminal está diseñada para que sea usada con su monedero de criptomonedas. De esta manera es posible recibir pagos al tiempo que sus claves privadas quedan almacenadas de forma segura offline o en su monedero hardware. Recomendamos el uso de alguno de los siguientes monederos hardware:',
 		'getting-started.welcome.ready?': 'Una vez tenga sus monederos de criptomonedas preparados, puede continuar con el proceso presionando en el botón "Comenzar"',
