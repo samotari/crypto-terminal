@@ -27,7 +27,6 @@ app.lang['cs'] = (function() {
 		'getting-started.buttons.continue': 'Další',
 		'getting-started.welcome.title': 'Ahoj!',
 		'getting-started.welcome.instructions': 'CryptoTerminal je navržen pro použití s Vaší stávající aplikací peněženky. To umožní přijímat platby snadno a současně udržovat soukromé klíče, které bezpečně uloží Vaše prostředky v režimu offline nebo hardwarové peněžence. Doporučujeme použít jednu z následujících hardwarových peněženek k zabezpečení Vašich finančních prostředků:',
-		'getting-started.welcome.ready?': 'Jakmile máte kryptopeněženku připravenou, můžete zahájit instalaci stisknutím tlačítka "Start" níže.',
 		'getting-started.welcome.start': 'Začít',
 		'getting-started.welcome.skip': 'Přeskočit řízený proces instalace',
 		'getting-started.choose-payment-methods.title': 'Metody plateb',

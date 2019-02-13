@@ -27,7 +27,6 @@ app.lang['de'] = (function() {
 		'getting-started.buttons.continue': 'Weiter',
 		'getting-started.welcome.title': 'Geschafft!',
 		'getting-started.welcome.instructions': 'CryptoTerminal wurde entwickelt, um mit Ihrer vorhandenen Wallet Anwendung verwendet zu werden. Auf diese Weise können Sie problemlos Zahlungen empfangen, während Ihre privaten Schlüssel sicher offline oder in einer Hardware-Wallet aufbewahren. Wir empfehlen Ihnen eine der folgenden Hardware-Brieftaschen zu verwenden, um Ihr Guthaben zu sichernn:',
-		'getting-started.welcome.ready?': 'Sobald Sie Ihre Krypto-Wallets vorbereitet haben, drücken Sie "Starten" um mit dem Setup zu beginnen.',
 		'getting-started.welcome.start': 'Starten',
 		'getting-started.welcome.skip': 'Überspringen Sie das Setup',
 		'getting-started.choose-payment-methods.title': 'Wählen Sie die gewünschten Zahlungsmethoden',

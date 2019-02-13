@@ -5,7 +5,9 @@ app.screenSaver = (function() {
 	'use strict';
 
 	app.onReady(function() {
-		app.screenSaver.initialize();
+		if (app.isConfigured() && app.hasCompletedGettingStarted()) {
+			app.screenSaver.initialize();
+		}
 	});
 
 	return {

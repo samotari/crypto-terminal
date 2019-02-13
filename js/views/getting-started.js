@@ -180,6 +180,12 @@ app.views.GettingStarted = (function() {
 			}
 
 			this.slider.switchToItem(key);
+			var currentItem = this.slider.getCurrentItem();
+			if (currentItem) {
+				var contentView = currentItem.contentView;
+				var title = contentView && _.result(contentView, 'title');
+				app.mainView.setHeaderText(title || '');
+			}
 			this.setActiveMenuItem(key);
 			this.toggleCurrentItemCompletedFlag();
 			this.toggleMenuItemsCompletedFlag();

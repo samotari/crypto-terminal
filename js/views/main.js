@@ -486,6 +486,11 @@ app.views.Main = (function() {
 			}, 500/* let the close animation finish */);
 		},
 
+		setHeaderText: function(text) {
+
+			this.$('#header .header-text').text(text);
+		},
+
 		onClickAnchor: function(evt) {
 
 			app.log('onClickAnchor');

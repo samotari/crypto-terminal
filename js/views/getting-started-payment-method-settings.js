@@ -18,6 +18,11 @@ app.views.GettingStartedPaymentMethodSettings = (function() {
 
 		verificationView: null,
 
+		title: function() {
+
+			return this.paymentMethod && _.result(this.paymentMethod, 'label');
+		},
+
 		initialize: function() {
 
 			app.views.utility.Form.prototype.initialize.apply(this, arguments);
@@ -27,11 +32,7 @@ app.views.GettingStartedPaymentMethodSettings = (function() {
 		serializeData: function() {
 
 			var key = this.options.key;
-			var data = {
-				title: _.result(this.paymentMethod, 'label'),
-				instructions: _.result(this.paymentMethod, 'instructions'),
-				links: _.result(this.paymentMethod, 'links'),
-			};
+			var data = {};
 			data.settings = app.views.AdminPaymentMethodSettings.prototype.preparePaymentMethodSettings(this.paymentMethod.settings, key);
 			return data;
 		},

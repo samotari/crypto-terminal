@@ -15,6 +15,18 @@ html.loaded #header {
 html.screen-saver-on #header {
 	display: none;
 }
+.header-text {
+	display: none;
+}
+.view-getting-started .header-text {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+	line-height: 4.1rem;
+	font-weight: 100;
+	padding: 0 1rem;
+}
 .header-button {
 	position: relative;
 	z-index: 20;
@@ -102,6 +114,8 @@ body.view-payment-replaceable .header-button.pay {
 	font-size: 1.1rem;
 	text-align: center;
 	color: #ccc;
+	background: transparent;
+	padding: 0;
 }
 .header-button.offline {
 	/*

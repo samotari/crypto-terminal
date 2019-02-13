@@ -11,7 +11,7 @@ app.paymentMethods.bitcoinLightning = (function() {
 		enabled: true,
 
 		// The name of the cryptocurrency shown in the UI:
-		label: 'Bitcoin (LN)',
+		label: 'Lightning Network',
 
 		// The exchange symbol:
 		code: 'BTC',
@@ -19,23 +19,8 @@ app.paymentMethods.bitcoinLightning = (function() {
 		// Used internally to reference itself:
 		ref: 'bitcoinLightning',
 
-		instructions: function() {
-			return app.i18n.t(this.ref + '.instructions');
-		},
-
-		links: function() {
-			return [
-				{
-					label: app.i18n.t(this.ref + '.links.configure.label'),
-					url: 'https://github.com/samotari/crypto-terminal/blob/master/docs/how-to-configure-for-lightning-network.md',
-				},
-			];
-		},
-
 		lang: {
 			'en': {
-				'instructions': 'To use the Lightning Network (LN) you must run your own node. For more information:',
-				'links.configure.label': 'How to configure for Lightning Network',
 				'settings.apiUrl.label': 'Lightning Node URL',
 				'settings.apiUrl.description': 'The full URL to your LN node. Should include the protocol (e.g "https://").',
 				'settings.invoiceMacaroon.label': 'Invoice Macaroon',
@@ -45,8 +30,6 @@ app.paymentMethods.bitcoinLightning = (function() {
 				'getting-started.verify.message.failed': 'Failed',
 			},
 			'de': {
-				'instructions': 'Um das Lightning Network (LN) zu verwenden, müssen Sie Ihren eigenen Knoten ausführen. Für mehr Informationen:',
-				'links.configure.label': 'How to Configure for Lightning Network',
 				'settings.apiUrl.label': 'Lightning Network Knoten URL',
 				'settings.apiUrl.description': 'Die vollständige URL zu Ihrem Lightning Network Knoten. Sollte das Protokoll enthalten (z.B. "https://").',
 				'settings.invoiceMacaroon.label': 'Rechnung Macaroon',
@@ -56,16 +39,12 @@ app.paymentMethods.bitcoinLightning = (function() {
 				'getting-started.verify.message.failed': 'Fehlgeschlagen',
 			},
 			'es': {
-				'instructions': 'Para usar Lightning Network (LN) tiene que correr su propio nodo. Más información:',
-				'links.configure.label': 'Cómo configurar Lightning Network',
 				'settings.apiUrl.description': 'URL completa de su nodo LN',
 				'settings.invoiceMacaroon.description': 'Código de autentificación (hexadecimal)',
 				'addInvoice.failed': 'Fallo al crear factura',
 				'getting-started.verify.message.failed': 'Fallo',
 			},
 			'fr': {
-				'instructions': 'Pour utiliser le Lightning Network (LN) vous devez lancer votre propre nœud. Pour plus d\'informations:',
-				'links.configure.label': 'Comment configurer le Lightning Network',
 				'settings.apiUrl.label': 'URL du nœud Lightning',
 				'settings.apiUrl.description': 'L\'URL complète de votre nœud Lightning Network. Inclure le protocole (ex: "https://").',
 				'settings.invoiceMacaroon.label': 'Facture Macaroon',

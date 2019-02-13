@@ -230,10 +230,12 @@ app.config = (function() {
 				{
 					name: 'Trezor',
 					url: 'https://shop.trezor.io?a=cryptoterminal.eu',
+					image: 'images/trezor.svg',
 				},
 				{
 					name: 'Ledger Wallet',
 					url: 'https://www.ledgerwallet.com/r/285ab5ed6cb2',
+					image: 'images/ledger.svg',
 				},
 			],
 			mobileWallets: {

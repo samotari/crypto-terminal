@@ -1,18 +1,8 @@
 html.keyboard-visible .view.getting-started .secondary-controls {
 	display: none;
 }
-.view.getting-started .getting-started-steps {
-	position: relative;
-	z-index: 10;
-	display: none;
-	justify-content: center;
-	height: 2rem;
-}
-.view.getting-started .getting-started-steps.visible {
-	display: flex;
-}
 .view.getting-started .slider {
-	padding-top: 2rem;
+	padding-top: 3.4rem;
 }
 .view.getting-started[data-subpage=welcome] .slider,
 .view.getting-started[data-subpage=done] .slider {
@@ -69,6 +59,15 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 		box-sizing: border-box;
 		padding: 1.5rem 0 2.5rem 0;
 	}
+	.view.getting-started .getting-started-welcome .recommended-hardware-wallets {
+		margin-top: 3rem;
+	}
+	.view.getting-started .getting-started-welcome .recommended-hardware-wallets img {
+		float: left;
+		width: 40%;
+		max-height: 5rem;
+		margin-left: 5%;
+	}
 	/*  Welcome  */
 
 	/*  Choose payment methods  */
@@ -79,19 +78,19 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 		margin-top: 1rem;
 	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method {
-		width: 3.2rem;
-		height: 3.2rem;
-		background-size: 3.2rem;
+		width: 4.8rem;
+		height: 4.8rem;
+		background-size: 4.8rem;
 		opacity: 0.5;
 		margin: 0 .4rem .4rem 0;
-		padding: .5rem;
+		padding: .4rem;
 	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method.bitcoinLightning:after {
 		right: -.8rem;
 		bottom: -.8rem;
-		width: 2.4rem;
-		height: 2.4rem;
-		background-size: 2.4rem;
+		width: 3.6rem;
+		height: 3.6rem;
+		background-size: 3.6rem;
 	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies input[type="checkbox"] {
 		position: absolute;
@@ -117,47 +116,57 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	}
 	/*  Choose payment methods  */
 
+
 	/*  Getting Started Steps  */
+	.view.getting-started .getting-started-steps {
+		position: relative;
+		z-index: 10;
+		display: none;
+		justify-content: center;
+		height: 1.4rem;
+	}
+	.view.getting-started .getting-started-steps.visible {
+		display: flex;
+	}
 	.getting-started-steps .getting-started-step {
 		list-style-type: none;
 		width: 25%;
 		float: left;
 		position: relative;
-		color: #7d7d7d;
 	}
 	.getting-started-steps .getting-started-step:before {
 		position: absolute;
-		width: calc(100% - .6rem);
-		height: .1rem;
+		left: calc(50% + .5rem);
+		top: .56rem;
+		z-index: 5;
 		content: '';
-		background-color: #7d7d7d;
-		top: .35rem;
-		left: calc(50% + .3rem);
-		z-index: 1;
+		width: calc(100% - 1rem);
+		height: .2rem;
+		background-color: #ccc;
 	}
 	.getting-started-steps .getting-started-step:after {
-		width: .6rem;
-		height: .6rem;
+		position: relative;
+		z-index: 10;
+		width: 1.4rem;
+		height: 1.4rem;
 		content: '';
-		border: 0.1rem solid #7d7d7d;
+		border: .2rem solid #ccc;
 		display: block;
-		margin: 0 auto .2rem auto;
+		margin: 0 auto;
 		border-radius: 50%;
-		z-index: 2;
+		box-sizing: border-box;
 	}
 	.getting-started-steps .getting-started-step:last-child:before {
 		content: none;
 	}
-	.getting-started-steps .getting-started-step.visible.active {
-		color: #017AA9;
-	}
 	.getting-started-steps .getting-started-step.active:after,
 	.getting-started-steps .getting-started-step.visible.completed.active:after {
+		z-index: 10;
 		border-color: #017AA9;
 		background-color: #017AA9;
 	}
 	.getting-started-steps .getting-started-step.visible.completed:after {
-		border-color: rgba(122, 193, 66, 0.25);;
+		border-color: rgba(122, 193, 66, 0.25);
 		background-color: rgba(122, 193, 66, 0.7);
 	}
 	/*  Getting Started Steps  */

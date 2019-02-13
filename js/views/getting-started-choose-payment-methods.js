@@ -15,6 +15,11 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',
 		},
 
+		title: function() {
+
+			return app.i18n.t('getting-started.choose-payment-methods.title');
+		},
+
 		serializeData: function() {
 
 			var data = {
