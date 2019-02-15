@@ -1,7 +1,9 @@
 var _ = require('underscore');
 var async = require('async');
+var fs = require('fs');
 var https = require('https');
 var httpProxy = require('http-proxy');
+var path = require('path');
 var pem = require('pem');
 var proxy = httpProxy.createProxyServer({
 	secure: false,
@@ -41,13 +43,38 @@ var getConfigurations = function(done) {
 	});
 };
 
+var getSelfSignedCertificateAndKey = function(cb) {
+	var filePaths = {
+		cert: path.join(__dirname, '..', 'lnd-proxy.cert'),
+		key: path.join(__dirname, '..', 'lnd-proxy.key'),
+	};
+	async.parallel({
+		cert: fs.readFile.bind(fs, filePaths.cert),
+		key: fs.readFile.bind(fs, filePaths.key),
+	}, function(error, results) {
+		if (!error) return cb(null, results);
+		// Missing certificate or key file.
+		// Create and save them.
+		pem.createCertificate({ days: 1, selfSigned: true }, function(error, results) {
+			if (error) return cb(error);
+			async.parallel({
+				cert: fs.writeFile.bind(fs, filePaths.cert, results.certificate),
+				key: fs.writeFile.bind(fs, filePaths.key, results.serviceKey),
+			}, function(error) {
+				if (error) return cb(error);
+				var selfSigned = {
+					cert: results.certificate,
+					key: results.serviceKey,
+				};
+				cb(null, selfSigned);
+			});
+		});
+	});
+};
+
 async.series({
-	config: function(next) {
-		getConfigurations(next);
-	},
-	keys: function(next) {
-		pem.createCertificate({ days: 1, selfSigned: true }, next);
-	},
+	config: getConfigurations,
+	selfSigned: getSelfSignedCertificateAndKey,
 }, function(error, results) {
 
 	if (error) {
@@ -56,14 +83,14 @@ async.series({
 	}
 
 	var config = results.config;
-	config.keys = results.keys;
+	config.selfSigned = results.selfSigned;
 
 	https.createServer({
-		key: config.keys.serviceKey,
-		cert: config.keys.certificate,
+		key: config.selfSigned.key,
+		cert: config.selfSigned.cert,
 	}, function(req, res) {
 		try {
-			res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+			res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
 			res.setHeader('Access-Control-Request-Method', '*');
 			res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
 			res.setHeader('Access-Control-Allow-Headers', '*');

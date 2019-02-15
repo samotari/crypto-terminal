@@ -8,6 +8,8 @@ www/
 android-build-config.json
 android.keystore
 config.xml
+lnd-proxy.cert
+lnd-proxy.key
 npm-debug.log
 .DS_Store
 .vscode
