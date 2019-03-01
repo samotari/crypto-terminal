@@ -25,13 +25,13 @@ var getConfigurations = function(done) {
 		proxyPort: function(next) {
 			read({
 				prompt: 'Proxy server port',
-				default: 3100,
+				default: 8081,
 			}, next);
 		},
 		lndRestUrl: function(next) {
 			read({
 				prompt: 'lnd REST URL',
-				default: 'https://localhost:4000',
+				default: 'https://localhost:8080',
 			}, next);
 		},
 	}, function(error, results) {

@@ -64,7 +64,7 @@ app.paymentMethods.bitcoinLightning = (function() {
 		settings: [
 			{
 				name: 'apiUrl',
-				default: 'http://localhost:8280',
+				default: 'http://localhost:8080',
 				label: function() {
 					return app.i18n.t('bitcoinLightning.settings.apiUrl.label');
 				},
@@ -72,6 +72,18 @@ app.paymentMethods.bitcoinLightning = (function() {
 				required: true,
 				description: function() {
 					return app.i18n.t('bitcoinLightning.settings.apiUrl.description');
+				},
+				validateAsync: function(value, data, cb) {
+					$.ajax({
+						url: value,
+						method: 'GET',
+					}).then(function(result) {
+						console.log(result);
+						cb();
+					}).fail(function(error) {
+						console.log(error);
+						cb();
+					});
 				},
 			},
 			{
@@ -81,10 +93,18 @@ app.paymentMethods.bitcoinLightning = (function() {
 					return app.i18n.t('bitcoinLightning.settings.invoiceMacaroon.label');
 				},
 				type: 'text',
-				required: true,
+				required: false,
 				description: function() {
 					return app.i18n.t('bitcoinLightning.settings.invoiceMacaroon.description');
 				},
+				actions: [
+					{
+						name: 'camera',
+						fn: function(value, cb) {
+							app.device.scanQRCodeWithCamera(cb);
+						}
+					}
+				],
 			},
 		],
 
@@ -161,13 +181,14 @@ app.paymentMethods.bitcoinLightning = (function() {
 			}
 
 			options = _.defaults(options || {}, {
+				apiUrl: app.settings.get(this.ref + '.apiUrl'),
 				maxInvoiceAgeInSeconds: Math.floor(app.config.paymentRequests.timeout / 1000),
 				memo: app.info.name,
 			});
 
 			// Convert the amount to whole satoshis.
 			var value = (new BigNumber(amount)).times('100000000').toFixed(0, BigNumber.ROUND_CEIL);
-			var apiUrl = app.settings.get(this.ref + '.apiUrl');
+			var apiUrl = options.apiUrl;
 			var uri = apiUrl + '/v1/invoices';
 			var data = {
 				expiry: options.maxInvoiceAgeInSeconds,
@@ -177,13 +198,19 @@ app.paymentMethods.bitcoinLightning = (function() {
 
 			cb = _.once(cb);
 
+			var headers = {
+				'Content-Type': 'application/json',
+			};
+
+			var invoiceMacaroon = app.settings.get(this.ref + '.invoiceMacaroon');
+			if (invoiceMacaroon) {
+				headers['Grpc-Metadata-macaroon'] = invoiceMacaroon;
+			}
+
 			$.ajax({
 				url: uri,
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Grpc-Metadata-macaroon': app.settings.get(this.ref + '.invoiceMacaroon')
-				},
+				headers: headers,
 				data: JSON.stringify(data),
 			}).then(function(result) {
 				cb(null, result);
