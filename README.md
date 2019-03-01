@@ -104,6 +104,13 @@ If successful, it should have created a new `.apk` file at the following path:
 ./platforms/android/app/build/outputs/apk/release/app-release.apk
 ```
 
+To install the newly created APK onto an Android device:
+```bash
+adb install ./platforms/android/app/build/outputs/apk/release/app-release.apk
+```
+* You may need to run `adb devices` before the above command.
+* And if the app is already installed on the device, you will need to use the `-r` flag to reinstall it.
+
 
 ## Developing with Cryptocurrencies
 
