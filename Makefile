@@ -137,7 +137,11 @@ $(BUILD_DEPS)/js/bitcoin.min.js: $(BUILD_DEPS)/js/bitcoin.js
 
 $(BUILD_DEPS)/js/basex.js: node_modules/base-x/index.js
 	mkdir -p $(BUILD_DEPS)/js
-	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
+	$(BIN)/browserify \
+		--entry $^ \
+		--standalone $$(basename $@ .js) \
+		--transform [ babelify --presets [ @babel/preset-env ] ] \
+		--outfile $@
 
 $(BUILD_DEPS)/js/bech32.js: node_modules/bech32/index.js
 	mkdir -p $(BUILD_DEPS)/js
@@ -149,11 +153,19 @@ $(BUILD_DEPS)/js/BigInteger.js: node_modules/bigi/lib/index.js
 
 $(BUILD_DEPS)/js/bs58.js: node_modules/bs58/index.js
 	mkdir -p $(BUILD_DEPS)/js
-	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
+	$(BIN)/browserify \
+		--entry $^ \
+		--standalone $$(basename $@ .js) \
+		--transform [ babelify --presets [ @babel/preset-env ] ] \
+		--outfile $@
 
 $(BUILD_DEPS)/js/Buffer.js: exports/buffer.js
 	mkdir -p $(BUILD_DEPS)/js
-	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
+	$(BIN)/browserify \
+		--entry $^ \
+		--standalone $$(basename $@ .js) \
+		--transform [ babelify --presets [ @babel/preset-env ] ] \
+		--outfile $@
 
 $(BUILD_DEPS)/js/ecurve.js: node_modules/ecurve/lib/index.js
 	mkdir -p $(BUILD_DEPS)/js
