@@ -1,5 +1,7 @@
 # Changelog
 
+* TBD:
+  * Removed Monero
 * v1.4.0:
   * Pay by scanning a paper wallet (using camera or NFC)
   * Show warning if received payment uses Replace-by-fee (RBF)

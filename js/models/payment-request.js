@@ -31,7 +31,7 @@ app.models.PaymentRequest = (function() {
 				amount: null,
 				// The conversion rate (to the payment method currency) when the payment request was created.
 				rate: null,
-				// The payment method used (bitcoin, litecoin, monero, ..)
+				// The payment method used (bitcoin, litecoin, ..)
 				method: null,
 				// The payment request URI (e.g "bitcoin:<ADDRESS>?amount=0.005")
 				uri: null,

@@ -20,7 +20,6 @@ If you would like to contribute to the project, the following should help get yo
 * [Developing with Cryptocurrencies](#developing-with-cryptocurrencies)
   * [Bitcoin](#bitcoin)
   * [Litecoin](#litecoin)
-  * [Monero](#monero)
 * [License](#license)
 
 
@@ -140,17 +139,6 @@ Litecoin is very similar to Bitcoin but with one key difference: blocks are mine
 * "Faucets" can be used to obtain testnet litecoin:
   * http://testnet.litecointools.com/
   * https://faucet.xblau.com/
-
-
-### Monero
-
-Monero is a cryptocurrency focused on privacy and censorship-resistance. You can learn more about Monero on [the official project website](https://www.getmonero.org/get-started/what-is-monero/).
-* Recommended wallet applications:
-  * [Official Monero Desktop Wallet](https://ww.getmonero.org/downloads/)
-  * [monerujo](https://play.google.com/store/apps/details?id=com.m2049r.xmrwallet&hl=en) - A mobile, light-weight wallet app for Monero. If you are running an older version of Android, you can install the app from an `.apk` that you can download from the project's [GitHub repo](https://github.com/m2049r/xmrwallet).
-  * [Cake Wallet](https://itunes.apple.com/us/app/cake-wallet-for-xmr-monero/id1334702542) - A mobile wallet for iOS.
-* "Faucets" can be used to obtain testnet monero:
-  * https://dis.gratis/
 
 
 ## License

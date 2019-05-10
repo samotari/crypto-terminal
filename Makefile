@@ -135,14 +135,6 @@ $(BUILD_DEPS)/js/bitcoin.js: node_modules/bitcoinjs-lib/src/index.js
 $(BUILD_DEPS)/js/bitcoin.min.js: $(BUILD_DEPS)/js/bitcoin.js
 	$(BIN)/uglifyjs $(BUILD_DEPS)/js/bitcoin.js --mangle reserved=['BigInteger','ECPair','Point'] -o $(BUILD)/js/bitcoin.min.js
 
-$(BUILD_DEPS)/js/basex.js: node_modules/base-x/index.js
-	mkdir -p $(BUILD_DEPS)/js
-	$(BIN)/browserify \
-		--entry $^ \
-		--standalone $$(basename $@ .js) \
-		--transform [ babelify --presets [ @babel/preset-env ] ] \
-		--outfile $@
-
 $(BUILD_DEPS)/js/bech32.js: node_modules/bech32/index.js
 	mkdir -p $(BUILD_DEPS)/js
 	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
@@ -179,9 +171,6 @@ $(BUILD_DEPS)/js/querystring.js: exports/querystring.js
 	mkdir -p $(BUILD_DEPS)/js
 	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
 
-$(BUILD_DEPS)/js/basex.min.js: $(BUILD_DEPS)/js/basex.js
-	$(BIN)/uglifyjs $^ -o $@
-
 $(BUILD_DEPS)/js/bech32.min.js: $(BUILD_DEPS)/js/bech32.js
 	$(BIN)/uglifyjs $^ -o $@
 
@@ -211,8 +200,6 @@ node_modules/underscore/underscore-min.js\
 node_modules/backbone/backbone-min.js\
 node_modules/backbone.localstorage/build/backbone.localStorage.min.js\
 node_modules/handlebars/dist/handlebars.min.js\
-node_modules/js-sha3/build/sha3.min.js\
-$(BUILD_DEPS)/js/basex.min.js\
 $(BUILD_DEPS)/js/bech32.min.js\
 $(BUILD_DEPS)/js/BigInteger.min.js\
 $(BUILD_DEPS)/js/bs58.min.js\
@@ -221,7 +208,6 @@ $(BUILD_DEPS)/js/ecurve.min.js\
 $(BUILD_DEPS)/js/QRCode.min.js\
 $(BUILD_DEPS)/js/querystring.min.js\
 third-party/sjcl/sjcl.min.js\
-third-party/monero/crypto.js\
 node_modules/moment/min/moment-with-locales.min.js
 $(BUILD_DEPS_JS): $(DEPS_JS_FILES)
 	rm -f $(BUILD_DEPS_JS)
@@ -281,7 +267,6 @@ $(JS)/payment-methods/bitcoin.js\
 $(JS)/payment-methods/bitcoin-testnet.js\
 $(JS)/payment-methods/bitcoin-lightning.js\
 $(JS)/payment-methods/litecoin.js\
-$(JS)/payment-methods/monero.js\
 $(JS)/config.js\
 $(JS)/cache.js\
 $(JS)/settings.js\
@@ -305,7 +290,6 @@ $(PUBLIC_ALL_JS): $(BUILD_ALL_JS)
 WORKER_BITCOIN_JS_FILES=node_modules/async/dist/async.min.js\
 node_modules/bignumber.js/bignumber.min.js\
 node_modules/underscore/underscore-min.js\
-node_modules/js-sha3/build/sha3.min.js\
 $(BUILD_DEPS)/js/bech32.min.js\
 $(BUILD_DEPS)/js/BigInteger.min.js\
 $(BUILD_DEPS)/js/bs58.min.js\

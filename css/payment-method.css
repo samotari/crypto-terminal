@@ -20,9 +20,6 @@
 .payment-method.litecoinTestnet {
 	background-image: url('../images/litecoin.svg');
 }
-.payment-method.monero {
-	background-image: url('../images/monero.svg');
-}
 .payment-method.bitcoinTestnet:after,
 .payment-method.litecoinTestnet:after {
 	position: absolute;

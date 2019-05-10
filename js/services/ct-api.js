@@ -208,14 +208,6 @@ app.services.ctApi = (function() {
 			});
 		},
 
-		getMoneroOutputs: function(networkName, txObject, cb) {
-
-			var uri = this.getUri('/api/v1/monero/outputs', _.assign({ network: networkName }, txObject));
-			$.get(uri).then(function(result) {
-				cb(null, result);
-			}).catch(cb)
-		},
-
 		getFeeRate: function(network, cb) {
 
 			var uri = this.getUri('/api/v1/fee-rate', {
