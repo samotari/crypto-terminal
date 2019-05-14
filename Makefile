@@ -247,7 +247,6 @@ $(BUILD)/js/**/**/*.min.js:$(JS)/**/**/*.js
 	done
 
 APP_JS_FILES=$(JS)/jquery.extend/*.js\
-$(JS)/backbone.extend/*.js\
 $(JS)/handlebars.extend/*.js\
 $(JS)/app.js\
 $(JS)/queues.js\
@@ -255,7 +254,6 @@ $(JS)/util.js\
 $(JS)/device.js\
 $(JS)/screen-saver.js\
 $(JS)/nfc.js\
-$(JS)/sqlite.js\
 $(JS)/lang/*.js\
 $(JS)/abstracts/*.js\
 $(JS)/services/*.js\
