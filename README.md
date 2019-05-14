@@ -13,10 +13,10 @@ The high-level goals for the app include:
 If you would like to contribute to the project, the following should help get you started:
 * [Requirements](#requirements)
 * [Getting Started](#getting-started)
-  * [Project Files](#project-files)
-  * [Build and Run Web App](#build-and-run-web-app)
-  * [Build and Run Android App](#build-and-run-android-app)
-  * [Create Signed APK](#create-signed-apk)
+  * [Android](#android)
+    * [Running on Android (VM)](#running-on-android-vm)
+    * [Running on Android (Device)](#running-on-android-device)
+    * [Create Signed APK](#create-signed-apk)
 * [Developing with Cryptocurrencies](#developing-with-cryptocurrencies)
   * [Bitcoin](#bitcoin)
   * [Litecoin](#litecoin)
@@ -30,7 +30,6 @@ The following is a list of requirements needed to contribute to this project.
 * [nodejs](https://nodejs.org/) - For Linux and Mac install node via [nvm](https://github.com/creationix/nvm).
 * [make](https://www.gnu.org/software/make/)
 * For Android development:
-  * [cordova](https://cordova.apache.org/#getstarted) - `npm install -g cordova`
   * [Java Development Kit (JDK)](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) version 8 or higher. Use your system's native package manager to install the JDK (if available).
   * [Android SDK](https://developer.android.com/studio/index.html) - On Ubuntu 18.04 or later, it is possible to install Android Studio from Ubuntu Software Sources.
   * [gradle](https://gradle.org/install/)
@@ -40,8 +39,6 @@ The following is a list of requirements needed to contribute to this project.
 ## Getting Started
 
 Before continuing, be sure you already have the project's [requirements](#requirements).
-
-### Project Files
 
 Download the project files via git:
 ```bash
@@ -54,23 +51,32 @@ cd crypto-terminal
 npm install
 ```
 
-
-### Build and Run Web App
-
-To build and then run the app in a browser:
+Build the application files:
 ```bash
-npm run build && npm run browser
+npm run build
 ```
-Open your browser and navigate to [localhost:3000](http://localhost:3000).
 
+### Android
 
-### Build and Run Android App
-
-Add the Android platform to the project (via cordova):
+Before installing and running the app on Android, you must prepare the Android platform with cordova:
 ```bash
-cordova platform add android
+npm run prepare:android
 ```
 This downloads the cordova plugins which are necessary to build the app for Android devices.
+
+#### Running on Android (VM)
+
+Run the following command to check to see if there are any available Android virtual devices:
+```bash
+adb devices
+```
+
+Install and run the app on the virtual device with the following command:
+```bash
+npm run android-vm
+```
+
+#### Running on Android (Device)
 
 To install and run the app on an Android device, you must first:
 * [Enable developer mode](https://developer.android.com/studio/debug/dev-options) on the device.
@@ -81,13 +87,12 @@ Once developer mode and USB debugging are enabled, connect the device to your co
 adb devices
 ```
 
-Once authorized, you can build then install and run the app from your computer onto the device:
+Install and run the app on the device: with the following command
 ```bash
-npm run build && npm run android
+npm run android
 ```
 
-
-### Create Signed APK
+#### Create Signed APK
 
 Create your signing key:
 ```bash
@@ -96,7 +101,7 @@ npm run android-generate-signing-key
 
 Build a production APK:
 ```bash
-npm run build && npm run build:apk
+npm run build:prod && npm run build:apk
 ```
 If successful, it should have created a new `.apk` file at the following path:
 ```
