@@ -21,7 +21,7 @@
     "build:screenshots": "npm run build:test && ./node_modules/.bin/mocha test/screenshots/ --timeout 5000 --recursive --reporter spec --ui bdd --exit",
     "lint": "./node_modules/.bin/eslint --config .eslintrc.js exports/*.js js/**/*.js scripts/*.js test/**/*.js *.js",
     "lnd-proxy": "node ./scripts/lnd-proxy.js",
-    "pretest": "npm run lint # runs before `npm test`",
+    "pretest": "npm run lint",
     "test": "npm run test:unit && npm run test:e2e",
     "test:e2e": "npm run build:test && ./node_modules/.bin/mocha test/e2e/ --timeout 5000 --recursive --reporter spec --ui bdd --exit",
     "test:unit": "npm run build:test && ./node_modules/.bin/mocha test/unit/ --timeout 5000 --recursive --reporter spec --ui bdd --exit"
