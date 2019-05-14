@@ -25,59 +25,61 @@ app.paymentMethods.bitcoinTestnet = (function() {
 			Network constants.
 		*/
 		network: {
-			messagePrefix: '\x18Bitcoin Signed Message:\n',
-			wif: 'ef',
-			p2pkh: '6f',
-			p2sh: 'c4',
 			bech32: 'tb',
+			bip32: {
+				public: 70617039,
+				private: 70615956,
+			},
 			/*
 				NOTE:
 				Some wallets use the same constants as Bitcoin-Mainnet, which is why they are included here.
 			*/
-			xpub: {
-				'p2pkh': [
-					'0488b21e',// xpub
-					'043587cf',// tpub
-				],
-				'p2wpkh-p2sh': [
-					'049d7cb2',// ypub
-					'044a5262',// upub
-				],
-				'p2wsh-p2sh': [
-					'0295b43f',// Ypub
-					'024289ef',// Upub
-				],
-				'p2wpkh': [
-					'04b24746',// zpub
-					'045f1cf6',// vpub
-				],
-				'p2wsh': [
-					'02aa7ed3',// Zpub
-					'02575483',// Vpub
-				],
+			extendedPublicKeyPrefixes: {
+				xpub: {
+					addressType: 'p2pkh',
+					hex: '0488b21e',
+				},
+				tpub: {
+					addressType: 'p2pkh',
+					hex: '043587cf',
+				},
+				ypub: {
+					addressType: 'p2wpkh-p2sh',
+					hex: '049d7cb2',
+				},
+				upub: {
+					addressType: 'p2wpkh-p2sh',
+					hex: '044a5262',
+				},
+				Ypub: {
+					addressType: 'p2wsh-p2sh',
+					hex: '0295b43f',
+				},
+				Upub: {
+					addressType: 'p2wsh-p2sh',
+					hex: '024289ef',
+				},
+				zpub: {
+					addressType: 'p2wpkh',
+					hex: '04b24746',
+				},
+				vpub: {
+					addressType: 'p2wpkh',
+					hex: '045f1cf6',
+				},
+				Zpub: {
+					addressType: 'p2wsh',
+					hex: '02aa7ed3',
+				},
+				Vpub: {
+					addressType: 'p2wsh',
+					hex: '02575483',
+				},
 			},
-			xprv: {
-				'p2pkh': [
-					'0488ade4',// xprv
-					'04358394',// tprv
-				],
-				'p2wpkh-p2sh': [
-					'049d7878',// yprv
-					'044a4e28',// uprv
-				],
-				'p2wsh-p2sh': [
-					'0295b005',// Yprv
-					'024285b5',// Uprv
-				],
-				'p2wpkh': [
-					'04b2430c',// zprv
-					'045f18bc',// vprv
-				],
-				'p2wsh': [
-					'02aa7a99',// Zprv
-					'02575048',// Vprv
-				],
-			},
+			messagePrefix: "\u0018Bitcoin Signed Message:\n",
+			pubKeyHash: 111,
+			scriptHash: 196,
+			wif: 239,
 		},
 	});
 

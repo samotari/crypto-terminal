@@ -26,105 +26,49 @@ app.paymentMethods.litecoin = (function() {
 			Network constants.
 		*/
 		network: {
-			messagePrefix: '\x18Litecoin Signed Message:\n',
-			wif: 'b0',
-			p2pkh: '30',
-			p2sh: '32',
 			bech32: 'ltc',
+			bip32: {
+				public: 76067358,
+				private: 76066276
+			},
 			/*
 				NOTE:
 				Some wallets use the same constants as Bitcoin-Mainnet, which is why they are included here.
 			*/
-			xpub: {
-				'p2pkh': [
-					'0488b21e',// xpub
-					'019da462',// Ltub
-				],
-				'p2wpkh-p2sh': [
-					'049d7cb2',// ypub
-					'01b26ef6',// Mtub
-				],
-				'p2wsh-p2sh': [
-					'0295b43f',// Ypub
-				],
-				'p2wpkh': [
-					'04b24746',// zpub
-				],
-				'p2wsh': [
-					'02aa7ed3',// Zpub
-				],
+			extendedPublicKeyPrefixes: {
+				xpub: {
+					addressType: 'p2pkh',
+					hex: '0488b21e',
+				},
+				Ltub: {
+					addressType: 'p2pkh',
+					hex: '019da462',
+				},
+				ypub: {
+					addressType: 'p2wpkh-p2sh',
+					hex: '049d7cb2',
+				},
+				Mtub: {
+					addressType: 'p2wpkh-p2sh',
+					hex: '01b26ef6',
+				},
+				Ypub: {
+					addressType: 'p2wsh-p2sh',
+					hex: '0295b43f',
+				},
+				zpub: {
+					addressType: 'p2wpkh',
+					hex: '04b24746',
+				},
+				Zpub: {
+					addressType: 'p2wsh',
+					hex: '02aa7ed3',
+				},
 			},
-			xprv: {
-				'p2pkh': [
-					'0488ade4',// xprv
-					'019d9cfe',// Ltpv
-				],
-				'p2wpkh-p2sh': [
-					'049d7878',// yprv
-					'01b26792',// Mtpv
-				],
-				'p2wsh-p2sh': [
-					'0295b005',// Yprv
-				],
-				'p2wpkh': [
-					'04b2430c',// zprv
-				],
-				'p2wsh': [
-					'02aa7a99',// Zprv
-				],
-			},
+			messagePrefix: "\u0018Litecoin Signed Message:\n",
+			pubKeyHash: 48,
+			scriptHash: 50,
+			wif: 176,
 		},
-
-		settings: [
-			{
-				name: 'extendedPublicKey',
-				label: function() {
-					return app.i18n.t('litecoin.settings.extendedPublicKey.label');
-				},
-				description: function() {
-					return app.i18n.t('litecoin.settings.extendedPublicKey.description');
-				},
-				type: 'text',
-				required: true,
-				validateAsync: function(value, data, cb) {
-					this.decodeExtendedPublicKey(value, cb);
-				},
-				actions: [
-					{
-						name: 'camera',
-						fn: function(value, cb) {
-							app.device.scanQRCodeWithCamera(cb);
-						}
-					}
-				]
-			},
-			{
-				name: 'addressIndex',
-				label: function() {
-					return app.i18n.t('litecoin.settings.addressIndex.label');
-				},
-				description: function() {
-					return app.i18n.t('litecoin.settings.addressIndex.description');
-				},
-				type: 'number',
-				required: true,
-				default: '0',
-				validate: function(value, data) {
-					value = parseInt(value);
-					if (_.isNaN(value)) {
-						throw new Error(app.i18n.t('litecoin.settings.addressIndex.integer-required'));
-					}
-					if (value < 0) {
-						throw new Error(app.i18n.t('litecoin.settings.addressIndex.greater-than-or-equal-zero'));
-					}
-				}
-			},
-			{
-				name: 'derivationScheme',
-				type: 'text',
-				visible: false,
-				default: 'm/0/n',
-			}
-		],
 	});
 })();

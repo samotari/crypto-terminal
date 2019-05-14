@@ -6,30 +6,6 @@ var app = app || {};
 
 	app = _.extend({}, app, Backbone.Events);
 
-	app.createWorker = function(fileName) {
-		var worker = new Worker(fileName);
-		var callers = {};
-		worker.addEventListener('message', function(evt) {
-			var id = evt.data.id;
-			var error = evt.data.error;
-			var result = evt.data.result;
-			var caller = callers[id] || null;
-			delete callers[id];
-			caller && caller(error, result);
-		}, false);
-		return {
-			call: function(fn, args, cb) {
-				var id = _.uniqueId('worker');
-				callers[id] = cb;
-				worker.postMessage({
-					id: id,
-					fn: fn,
-					args: args,
-				});
-			}
-		};
-	};
-
 	app.exit = function() {
 		app.cleanUpPendingPaymentRequest();
 		navigator.app.exitApp();

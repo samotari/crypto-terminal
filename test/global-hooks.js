@@ -1,6 +1,7 @@
 var manager = require('./manager');
 
 before(function(done) {
+	this.timeout(12000);
 	manager.prepareBrowser(done);
 });
 
@@ -22,6 +23,7 @@ after(function(done) {
 });
 
 after(function(done) {
+	this.timeout(12000);
 	if (!manager.browser) return done();
 	manager.browser.close().then(function() {
 		done();

@@ -41,14 +41,12 @@ app.paymentMethods.bitcoin = (function() {
 				'settings.addressIndex.greater-than-or-equal-zero': 'Must be greater than or equal to zero',
 				'settings.extendedPublicKey.label': 'Extended Public Key',
 				'settings.extendedPublicKey.description': 'Used to generate a new receiving address every time you request a payment',
-				'incorrect-number-of-bytes': 'Incorrect number of bytes',
 				'invalid-checksum': 'Invalid checksum',
 				'invalid-derivation-scheme': 'Invalid derivation scheme',
-				'invalid-network-byte': 'Invalid network byte',
-				'invalid-parent-fingerprint': 'Invalid parent fingerprint',
+				'invalid-extended-public-key': 'Invalid extended public key. Are you sure it is for {{paymentMethodLabel}}?',
+				'unknown-extended-public-key-prefix': 'Unknown extended public key prefix',
 				'index-must-be-an-integer': 'Index must be an integer',
 				'index-must-be-less-than': 'Index must be less than 2^32',
-				'failed-to-derive-address': 'Failed to derive address',
 				'address-type-not-supported': 'Address type ("{{type}}") not supported',
 				'insufficient-funds-to-make-payment': 'Not enough funds to make payment.',
 				'invalid-wif': 'Invalid private key. Are you sure it is for {{paymentMethodLabel}}?',
@@ -62,14 +60,10 @@ app.paymentMethods.bitcoin = (function() {
 				'settings.addressIndex.greater-than-or-equal-zero': 'Muss größer oder gleich 0 sein',
 				'settings.extendedPublicKey.label': 'Extended Public Key',
 				'settings.extendedPublicKey.description': 'Wird verwendet, um bei jeder Zahlung eine neue Empfängeradresse zu generieren',
-				'incorrect-number-of-bytes': 'Falsche Bytes Anzahl',
 				'invalid-checksum': 'Ungültige Prüfsumme',
 				'invalid-derivation-scheme': 'Ungültiges Ableitungsschema (derivation scheme)',
-				'invalid-network-byte': 'Ungültiges Netzwerk Byte',
-				'invalid-parent-fingerprint': 'Ungültiger Eltern-Knoten Fingerabdruck',
 				'index-must-be-an-integer': 'Der Index muss eine Ganzzahl sein',
 				'index-must-be-less-than': 'Der Index muss kleiner als 2^32 sein',
-				'failed-to-derive-address': 'Fehler beim Ableiten der Adresse',
 				'address-type-not-supported': 'Adresstyp ("{{type}}") wird nicht unterstützt',
 				'insufficient-funds-to-make-payment': 'Ihr Guthaben reicht nicht aus.',
 				'invalid-wif': 'Ungültiger privater Schlüssel. Sind Sie sicher, dass der Schlüssel für {{paymentMethodLabel}} ist?',
@@ -83,14 +77,10 @@ app.paymentMethods.bitcoin = (function() {
 				'settings.addressIndex.greater-than-or-equal-zero': 'Musí být větší nebo rovno nule',
 				'settings.extendedPublicKey.label': 'Rozšířený veřejný klíč',
 				'settings.extendedPublicKey.description': 'Používá se k vygenerování nové adresy při každém zadání platby',
-				'incorrect-number-of-bytes': 'Nesprávný počet bajtů',
 				'invalid-checksum': 'Neplatný kontrolní součet',
 				'invalid-derivation-scheme': 'Neplatná schéma odvození',
-				'invalid-network-byte': 'Neplatný síťový byte',
-				'invalid-parent-fingerprint': 'Neplatný nadřazený otisk prstu',
 				'index-must-be-an-integer': 'Index musí být celé číslo',
 				'index-must-be-less-than': 'Index musí být menší než 2^32',
-				'failed-to-derive-address': 'Nepodařilo se odvodit adresu',
 				'address-type-not-supported': 'Typ adresy ("{{type}}") ne podporován',
 				'insufficient-funds-to-make-payment': 'Není dostatek prostředků na platbu.',
 				'invalid-wif': 'Neplatný soukromý klíč. Jste si jisti, že to je pro {{paymentMethodLabel}}?',
@@ -104,14 +94,10 @@ app.paymentMethods.bitcoin = (function() {
 				'settings.addressIndex.greater-than-or-equal-zero': 'Debe ser mayor o igual que cero',
 				'settings.extendedPublicKey.label': 'Clave Pública Extendida',
 				'settings.extendedPublicKey.description': 'Usada para derivar una nueva dirección cada vez que genere una solicitud de pago',
-				'incorrect-number-of-bytes': 'Número incorrecto de bytes',
 				'invalid-checksum': 'Suma de comprobación inválida',
 				'invalid-derivation-scheme': 'Esquema de derivación no válido',
-				'invalid-network-byte': 'Byte de red inválido',
-				'invalid-parent-fingerprint': 'La huella paterna no es válida',
 				'index-must-be-an-integer': 'El índice debe ser un número entero',
 				'index-must-be-less-than': 'El índice debe ser menor que 2^32',
-				'failed-to-derive-address': 'No se pudo derivar la dirección',
 				'address-type-not-supported': 'El tipo de dirección ("{{type}}") no es aceptada',
 				'insufficient-funds-to-make-payment': 'Insuficientes fondos para el pago.',
 				'invalid-wif': 'Clave privada incorrecta. ¿Seguro que es para {{paymentMethodLabel}}?',
@@ -122,14 +108,10 @@ app.paymentMethods.bitcoin = (function() {
 				'settings.addressIndex.integer-required': 'Doit être un entier',
 				'settings.addressIndex.greater-than-or-equal-zero': 'Doit être supérieur ou égal à zéro',
 				'settings.extendedPublicKey.label': 'Clé publique étendue',
-				'incorrect-number-of-bytes': 'Nombre incorrect d\'octets',
 				'invalid-checksum': 'Somme de contrôle invalide',
 				'invalid-derivation-scheme': 'Schéma de dérivation invalide',
-				'invalid-network-byte': 'Octet réseau non valide',
-				'invalid-parent-fingerprint': 'Empreinte parentale invalide',
 				'index-must-be-an-integer': 'L\'index doit être un nombre entier',
 				'index-must-be-less-than': 'L\'index doit être inférieur à 2^32',
-				'failed-to-derive-address': 'Impossible de dériver l\'adresse',
 				'private-keys-warning': 'AVERTISSEMENT: N\'utilisez pas de clés privées avec cette application!',
 			},
 		},
@@ -146,7 +128,7 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'text',
 				required: true,
 				validateAsync: function(value, data, cb) {
-					this.decodeExtendedPublicKey(value, cb);
+					this.deriveAddress(value, data.derivationScheme, 0/* addressIndex */, cb);
 				},
 				actions: [
 					{
@@ -183,6 +165,9 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'text',
 				visible: false,
 				default: 'm/0/n',
+				validate: function(value) {
+					this.parseDerivationScheme(value);
+				},
 			}
 		],
 
@@ -190,11 +175,11 @@ app.paymentMethods.bitcoin = (function() {
 			Network constants.
 		*/
 		network: {
-			messagePrefix: '\x18Bitcoin Signed Message:\n',
-			wif: '80',
-			p2pkh: '00',
-			p2sh: '05',
 			bech32: 'bc',
+			bip32: {
+				public: 76067358,
+				private: 76066276
+			},
 			/*
 				Extended-key constants. See:
 				https://github.com/spesmilo/electrum-docs/blob/master/xpub_version_bytes.rst
@@ -202,47 +187,35 @@ app.paymentMethods.bitcoin = (function() {
 				https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
 				https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
 			*/
-			xpub: {
-				'p2pkh': [
-					'0488b21e',// xpub
-				],
-				'p2wpkh-p2sh': [
-					'049d7cb2',// ypub
-				],
-				'p2wsh-p2sh': [
-					'0295b43f',// Ypub
-				],
-				'p2wpkh': [
-					'04b24746',// zpub
-				],
-				'p2wsh': [
-					'02aa7ed3',// Zpub
-				],
+			extendedPublicKeyPrefixes: {
+				xpub: {
+					addressType: 'p2pkh',
+					hex: '0488b21e',
+				},
+				ypub: {
+					addressType: 'p2wpkh-p2sh',
+					hex: '049d7cb2',
+				},
+				Ypub: {
+					addressType: 'p2wsh-p2sh',
+					hex: '0295b43f',
+				},
+				zpub: {
+					addressType: 'p2wpkh',
+					hex: '04b24746',
+				},
+				Zpub: {
+					addressType: 'p2wsh',
+					hex: '02aa7ed3',
+				},
 			},
-			xprv: {
-				'p2pkh': [
-					'0488ade4',// xprv
-				],
-				'p2wpkh-p2sh': [
-					'049d7878',// yprv
-				],
-				'p2wsh-p2sh': [
-					'0295b005',// Yprv
-				],
-				'p2wpkh': [
-					'04b2430c',// zprv
-				],
-				'p2wsh': [
-					'02aa7a99',// Zprv
-				],
-			},
+			messagePrefix: '\x18Bitcoin Signed Message:\n',
+			pubKeyHash: 0,
+			scriptHash: 5,
+			wif: 128,
 		},
 
 		addressTypes: ['p2pkh', 'p2wpkh-p2sh', 'p2wpkh'],
-
-		OP_ZERO: '00',
-
-		worker: app.createWorker('js/workers/bitcoin.min.js'),
 
 		createVerificationView: function(cb) {
 
@@ -263,6 +236,57 @@ app.paymentMethods.bitcoin = (function() {
 				cb(null, view);
 
 			}, this));
+		},
+
+		isExtendedPrivateKey: function(value) {
+
+			return _.isString(value) && value.substr(1, 3) === 'prv';
+		},
+
+		getAddressTypeFromExtendedPublicKey: function(extendedPublicKey) {
+
+			var prefix = extendedPublicKey.substr(0, 4);
+
+			if (!this.network.extendedPublicKeyPrefixes[prefix]) {
+				throw new Error(app.i18n.t(this.ref + '.invalid-extended-public-key', { paymentMethodLabel: this.label }));
+			}
+
+			return this.network.extendedPublicKeyPrefixes[prefix].addressType;
+		},
+
+		normalizeExtendedPublicKey: function(extendedPublicKey) {
+
+			// Find the prefix that matches the bip32 public key constant.
+			var toPrefix = _.findKey(this.network.extendedPublicKeyPrefixes, function(prefix) {
+				var value = parseInt(prefix.hex, 16);
+				return !_.isNaN(value) && value === this.network.bip32.public;
+			}, this);
+
+			return this.convertExtendedPublicKey(extendedPublicKey, toPrefix);
+		},
+
+		convertExtendedPublicKey: function(extendedPublicKey, toPrefix) {
+
+			if (!this.network.extendedPublicKeyPrefixes[toPrefix]) {
+				throw new Error(app.i18n.t(this.ref + '.unknown-extended-public-key-prefix'));
+			}
+
+			var data = bs58.decode(extendedPublicKey);
+			// Remove the current prefix:
+			data = data.slice(4);
+			// And the current checksum:
+			data = data.slice(0, -4);
+			// Add the new prefix:
+			data = Buffer.concat([
+				Buffer.from(this.network.extendedPublicKeyPrefixes[toPrefix].hex, 'hex'),
+				data,
+			]);
+			var checksum = bitcoin.crypto.hash256(data).slice(0, 4);
+			// Base58 encode with checksum (ie. "base58check"):
+			return bs58.encode(Buffer.concat([
+				data,
+				checksum,
+			], data.length + 4));
 		},
 
 		generateSampleAddresses: function(cb) {
@@ -337,84 +361,63 @@ app.paymentMethods.bitcoin = (function() {
 
 		deriveAddress: function(extendedPublicKey, derivationScheme, addressIndex, cb) {
 
-			var ref = this.ref;
-			var network = this.network;
-			var deriveLastParentExtendedPublicKey = _.bind(this.deriveLastParentExtendedPublicKey, this);
-			var deriveChildKeyAtIndex = _.bind(this.deriveChildKeyAtIndex, this);
-
-			async.seq(
-				deriveLastParentExtendedPublicKey,
-				function(lastParentExtendedPublicKey, next) {
-					deriveChildKeyAtIndex(lastParentExtendedPublicKey, addressIndex, network, next);
-				}
-			)(extendedPublicKey, derivationScheme, _.bind(function(error, child) {
-
-				if (error) {
-					return cb(error);
-				}
-
-				if (!child) {
-					return cb(new Error(app.i18n.t(ref + '.failed-to-derive-address')));
-				}
-
-				var type = child.type;
-
-				if (!_.contains(this.addressTypes, type) || !this[type] || !_.isFunction(this[type])) {
-					return cb(new Error(app.i18n.t(ref + '.address-type-not-supported', { type: child.type })));
-				}
-
+			_.defer(_.bind(function() {
 				try {
-					var address = this[type](child.key, child.network);
+					if (this.isExtendedPrivateKey(extendedPublicKey)) {
+						throw new Error(app.i18n.t(this.ref + '.private-keys-warning'));
+					}
+					var type = this.getAddressTypeFromExtendedPublicKey(extendedPublicKey);
+					extendedPublicKey = this.normalizeExtendedPublicKey(extendedPublicKey);
+					var constants = this.getNetworkConstants();
+					var keyPair = bitcoin.bip32.fromBase58(extendedPublicKey, constants);
+					var path = this.getPath(derivationScheme, addressIndex);
+					var child = keyPair.derivePath(path, keyPair.network);
+					var address;
+					switch (type) {
+						case 'p2wpkh':
+							var p2wpkh = bitcoin.payments.p2wpkh({
+								network: child.network,
+								pubkey: child.publicKey,
+							});
+							address = p2wpkh.address;
+							break;
+						case 'p2wpkh-p2sh':
+							var p2sh = bitcoin.payments.p2sh({
+								network: child.network,
+								redeem: bitcoin.payments.p2wpkh({
+									network: child.network,
+									pubkey: child.publicKey,
+								}),
+							});
+							address = p2sh.address;
+							break;
+						case 'p2pkh':
+							var p2pkh = bitcoin.payments.p2pkh({
+								network: child.network,
+								pubkey: child.publicKey,
+							});
+							address = p2pkh.address;
+							break;
+						default:
+							throw new Error(app.i18n.t(this.ref + '.address-type-not-supported', { type: type }));
+					}
 				} catch (error) {
 					return cb(error);
 				}
-
 				cb(null, address);
 			}, this));
 		},
 
-		deriveLastParentExtendedPublicKey: function(extendedPublicKey, derivationScheme, cb) {
+		// Prepare object of network constants (for bitcoinjs-lib).
+		getNetworkConstants: function() {
 
-			var cacheKey = this.ref + '.lastParentExtendedPublicKey.' + extendedPublicKey;
-			var lastParentExtendedPublicKey = app.cache.get(cacheKey) || null;
+			return _.pick(this.network, 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif');
+		},
 
-			if (lastParentExtendedPublicKey) {
-				// From cache.
-				_.defer(cb, null, lastParentExtendedPublicKey);
-				return;
-			}
+		getPath: function(scheme, index) {
 
-			var network = this.network;
-			var deriveChildKeyAtIndex = _.bind(this.deriveChildKeyAtIndex, this);
-			var indexes = this.parseDerivationScheme(derivationScheme);
-
-			async.until(function() { return !(indexes.length > 0); }, function(next) {
-
-				var index = indexes.shift();
-				var extendedKey = lastParentExtendedPublicKey || extendedPublicKey;
-
-				deriveChildKeyAtIndex(extendedKey, index, network, function(error, result) {
-
-					if (error) {
-						return next(error);
-					}
-
-					lastParentExtendedPublicKey = result && result.extendedKey;
-					next();
-				});
-
-			}, function(error) {
-
-				if (error) {
-					return cb(error);
-				}
-
-				if (lastParentExtendedPublicKey) {
-					app.cache.set(cacheKey, lastParentExtendedPublicKey);
-				}
-
-				cb(null, lastParentExtendedPublicKey);
-			});
+			var indexes = this.parseDerivationScheme(scheme);
+			return indexes.concat(index).join('/');
 		},
 
 		parseDerivationScheme: function(scheme) {
@@ -451,110 +454,14 @@ app.paymentMethods.bitcoin = (function() {
 			}, this);
 		},
 
-		decodeExtendedPublicKey: function(extendedPublicKey, cb) {
-
-			var ref = this.ref;
-			this.worker.call('decodeExtendedPublicKey', [extendedPublicKey, this.network], function(error) {
-				if (error) {
-					error = app.i18n.t(ref + '.' + error);
-					return cb(error);
-				}
-				cb.apply(undefined, arguments);
-			});
-		},
-
-		deriveChildKeyAtIndex: function(extendedPublicKey, index, network, cb) {
-
-			var ref = this.ref;
-			this.worker.call('deriveChildKeyAtIndex', [extendedPublicKey, index, network], function(error) {
-				if (error) {
-					error = app.i18n.t(ref + '.' + error);
-					return cb(error);
-				}
-				cb.apply(undefined, arguments);
-			});
-		},
-
-		sha256sha256: function(data) {
-
-			return sjcl.codec.hex.fromBits(
-				sjcl.hash.sha256.hash(
-					sjcl.hash.sha256.hash(
-						sjcl.codec.hex.toBits(data)
-					)
-				)
-			);
-		},
-
-		hash160: function(data) {
-
-			return sjcl.codec.hex.fromBits(
-				sjcl.hash.ripemd160.hash(
-					sjcl.hash.sha256.hash(
-						sjcl.codec.hex.toBits(data)
-					)
-				)
-			);
-		},
-
-		/*
-			See:
-			https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses#How_to_create_Bitcoin_Address
-		*/
-		p2pkh: function(publicKey, network) {
-
-			network || (network = this.network);
-			var hash = this.hash160(publicKey);
-			var version = network.p2pkh;
-			return this.base58check(version + hash);
-		},
-		/*
-			See:
-			https://bitcoincore.org/en/segwit_wallet_dev/#creation-of-p2sh-p2wpkh-address
-			https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
-		*/
-		'p2wpkh-p2sh': function(publicKey, network) {
-
-			network || (network = this.network);
-			var publicKeyHash = this.hash160(publicKey);
-			var scriptSig = [
-				this.OP_ZERO,
-				Buffer.from([publicKeyHash.length / 2]).toString('hex'),
-				publicKeyHash,
-			].join('');
-			var scriptHash = this.hash160(scriptSig);
-			var version = network.p2sh;
-			return this.base58check(version + scriptHash);
-		},
-
-		/*
-			See:
-			https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
-		*/
-		p2wpkh: function(publicKey, network) {
-
-			network || (network = this.network);
-			var version = 0;
-			var prefix = network.bech32;
-			var witnessProgram = this.hash160(publicKey.toLowerCase());
-			return this.bech32(witnessProgram, prefix, version);
-		},
-
-		bech32: function(data, prefix, version) {
-
-			var words = bech32.toWords(Buffer.from(data, 'hex'));
-			return bech32.encode(prefix, [version].concat(words));
-		},
-
-		base58check: function(data) {
-
-			var checksum = this.sha256sha256(data).substr(0, 8);
-			return bs58.encode(Buffer.from(data + checksum, 'hex'));
-		},
-
 		toBaseUnit: function(value) {
 
 			return Math.ceil((new BigNumber(value)).times(1e8).toNumber());
+		},
+
+		fromBaseUnit: function(value) {
+
+			return (new BigNumber(value)).dividedBy(1e8).toString();
 		},
 
 		convertAmount: function(amount, rate) {
@@ -610,41 +517,18 @@ app.paymentMethods.bitcoin = (function() {
 			this.listening = { channel: channel, listener: listener };
 		},
 
-		prepareBitcoinJSNetworkConstants: function() {
-
-			var wif = this.network.wif;
-
-			if (!_.isArray(wif)) {
-				wif = [wif];
-			}
-
-			var constants = {
-				messagePrefix: this.network.messagePrefix,
-				bech32: this.network.bech32,
-				pubKeyHash: parseInt(this.network.p2pkh, 16),
-				scriptHash: parseInt(this.network.p2sh, 16),
-				bip32: {
-					private: parseInt(this.network.xprv.p2pkh, 16),
-					public: parseInt(this.network.xpub.p2pkh, 16),
-				},
-			};
-
-			// There could be more than one valid WIF byte (e.g Litecoin).
-			// So create an array of possible network constants for bitcoinjs-lib.
-			// Later we try each set of network constants until a valid set is found.
-			return _.map(wif, function(hex) {
-				return _.extend({}, constants, {
-					wif: parseInt(hex, 16),
-				});
-			});
-		},
-
 		buildTx: function(receivingAddress, value, source, feeRate) {
 
 			var changeAddress = source.address;
-			var network = source.keyPair.network;
-			var p2wpkh = bitcoin.payments.p2wpkh({ pubkey: source.keyPair.publicKey, network: network });
-			var p2sh = bitcoin.payments.p2sh({ redeem: p2wpkh, network: network });
+			var constants = source.keyPair.network;
+			var p2wpkh = bitcoin.payments.p2wpkh({
+				pubkey: source.keyPair.publicKey,
+				network: constants,
+			});
+			var p2sh = bitcoin.payments.p2sh({
+				redeem: p2wpkh,
+				network: constants,
+			});
 			var sumOfOutputs = _.reduce(source.utxo, function(memo, output) {
 				return memo + parseInt(output.value);
 			}, 0);
@@ -652,7 +536,7 @@ app.paymentMethods.bitcoin = (function() {
 
 			var createRawTxWithFee = function(fee) {
 				fee = Math.ceil(fee || 0);
-				var txb = new bitcoin.TransactionBuilder(network);
+				var txb = new bitcoin.TransactionBuilder(constants);
 				_.each(source.utxo, function(output) {
 					var txid = output.tx_hash;
 					var n = output.tx_pos;
@@ -708,10 +592,8 @@ app.paymentMethods.bitcoin = (function() {
 
 		keyPairFromWIF: function(wif) {
 
-			// Try each possible set of network constants.
-			// Use the first one that works with the given WIF.
 			try {
-				var constants = this.prepareBitcoinJSNetworkConstants();
+				var constants = this.getNetworkConstants();
 				var keyPair = bitcoin.ECPair.fromWIF(wif, constants);
 			} catch (error) {
 				app.log(error);

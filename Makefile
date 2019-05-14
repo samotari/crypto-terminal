@@ -15,14 +15,12 @@ BUILD_DEPS=$(BUILD)/deps
 BUILD_DEPS_JS=$(BUILD)/dependencies.min.js
 BUILD_ALL_JS=$(BUILD)/all.min.js
 BUILD_ALL_CSS=$(BUILD)/all.min.css
-BUILD_WORKER_BITCOIN_JS=$(BUILD)/workers/bitcoin.min.js
 CSS=css
 IMAGES=images
 JS=js
 PUBLIC=www
 PUBLIC_ALL_CSS=$(PUBLIC)/css/all.min.css
 PUBLIC_ALL_JS=$(PUBLIC)/js/all.min.js
-PUBLIC_WORKER_BITCOIN_JS=$(PUBLIC)/js/workers/bitcoin.min.js
 SCRIPTS=scripts
 
 # Targets
@@ -50,7 +48,6 @@ all: config.xml\
 $(PUBLIC)/index.html\
 $(PUBLIC_ALL_CSS)\
 $(PUBLIC_ALL_JS)\
-$(PUBLIC_WORKER_BITCOIN_JS)\
 fonts\
 images\
 sounds
@@ -132,17 +129,6 @@ $(BUILD_DEPS)/js/bitcoin.js: node_modules/bitcoinjs-lib/src/index.js
 		--transform [ babelify --presets [ @babel/preset-env ] ] \
 		--outfile $(BUILD_DEPS)/js/bitcoin.js
 
-$(BUILD_DEPS)/js/bitcoin.min.js: $(BUILD_DEPS)/js/bitcoin.js
-	$(BIN)/uglifyjs $(BUILD_DEPS)/js/bitcoin.js --mangle reserved=['BigInteger','ECPair','Point'] -o $(BUILD)/js/bitcoin.min.js
-
-$(BUILD_DEPS)/js/bech32.js: node_modules/bech32/index.js
-	mkdir -p $(BUILD_DEPS)/js
-	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
-
-$(BUILD_DEPS)/js/BigInteger.js: node_modules/bigi/lib/index.js
-	mkdir -p $(BUILD_DEPS)/js
-	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
-
 $(BUILD_DEPS)/js/bs58.js: node_modules/bs58/index.js
 	mkdir -p $(BUILD_DEPS)/js
 	$(BIN)/browserify \
@@ -159,10 +145,6 @@ $(BUILD_DEPS)/js/Buffer.js: exports/buffer.js
 		--transform [ babelify --presets [ @babel/preset-env ] ] \
 		--outfile $@
 
-$(BUILD_DEPS)/js/ecurve.js: node_modules/ecurve/lib/index.js
-	mkdir -p $(BUILD_DEPS)/js
-	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
-
 $(BUILD_DEPS)/js/QRCode.js: node_modules/qrcode/lib/browser.js
 	mkdir -p $(BUILD_DEPS)/js
 	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
@@ -171,19 +153,13 @@ $(BUILD_DEPS)/js/querystring.js: exports/querystring.js
 	mkdir -p $(BUILD_DEPS)/js
 	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
 
-$(BUILD_DEPS)/js/bech32.min.js: $(BUILD_DEPS)/js/bech32.js
-	$(BIN)/uglifyjs $^ -o $@
-
-$(BUILD_DEPS)/js/BigInteger.min.js: $(BUILD_DEPS)/js/BigInteger.js
-	$(BIN)/uglifyjs $^ -o $@
+$(BUILD_DEPS)/js/bitcoin.min.js: $(BUILD_DEPS)/js/bitcoin.js
+	$(BIN)/uglifyjs $^ --mangle reserved=['BigInteger','ECPair','Point'] -o $@
 
 $(BUILD_DEPS)/js/bs58.min.js: $(BUILD_DEPS)/js/bs58.js
 	$(BIN)/uglifyjs $^ -o $@
 
 $(BUILD_DEPS)/js/Buffer.min.js: $(BUILD_DEPS)/js/Buffer.js
-	$(BIN)/uglifyjs $^ -o $@
-
-$(BUILD_DEPS)/js/ecurve.min.js: $(BUILD_DEPS)/js/ecurve.js
 	$(BIN)/uglifyjs $^ -o $@
 
 $(BUILD_DEPS)/js/QRCode.min.js: $(BUILD_DEPS)/js/QRCode.js
@@ -200,14 +176,11 @@ node_modules/underscore/underscore-min.js\
 node_modules/backbone/backbone-min.js\
 node_modules/backbone.localstorage/build/backbone.localStorage.min.js\
 node_modules/handlebars/dist/handlebars.min.js\
-$(BUILD_DEPS)/js/bech32.min.js\
-$(BUILD_DEPS)/js/BigInteger.min.js\
+$(BUILD_DEPS)/js/bitcoin.min.js\
 $(BUILD_DEPS)/js/bs58.min.js\
 $(BUILD_DEPS)/js/Buffer.min.js\
-$(BUILD_DEPS)/js/ecurve.min.js\
 $(BUILD_DEPS)/js/QRCode.min.js\
 $(BUILD_DEPS)/js/querystring.min.js\
-third-party/sjcl/sjcl.min.js\
 node_modules/moment/min/moment-with-locales.min.js
 $(BUILD_DEPS_JS): $(DEPS_JS_FILES)
 	rm -f $(BUILD_DEPS_JS)
@@ -284,25 +257,3 @@ $(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(BUILD)/js/*.min.js $(BUILD)/js/**/*.min.js $
 $(PUBLIC_ALL_JS): $(BUILD_ALL_JS)
 	mkdir -p $(PUBLIC)/js/
 	cp $(BUILD_ALL_JS) $(PUBLIC_ALL_JS)
-
-WORKER_BITCOIN_JS_FILES=node_modules/async/dist/async.min.js\
-node_modules/bignumber.js/bignumber.min.js\
-node_modules/underscore/underscore-min.js\
-$(BUILD_DEPS)/js/bech32.min.js\
-$(BUILD_DEPS)/js/BigInteger.min.js\
-$(BUILD_DEPS)/js/bs58.min.js\
-$(BUILD_DEPS)/js/Buffer.min.js\
-$(BUILD_DEPS)/js/ecurve.min.js\
-third-party/sjcl/sjcl.min.js\
-$(BUILD)/js/workers/bitcoin.min.js
-$(BUILD_WORKER_BITCOIN_JS): $(WORKER_BITCOIN_JS_FILES)
-	rm -f $(BUILD_WORKER_BITCOIN_JS)
-	mkdir -p $(BUILD)/workers
-	for file in $(WORKER_BITCOIN_JS_FILES); do \
-		cat $$file >> $(BUILD_WORKER_BITCOIN_JS); \
-		echo "" >> $(BUILD_WORKER_BITCOIN_JS); \
-	done
-
-$(PUBLIC_WORKER_BITCOIN_JS): $(BUILD_WORKER_BITCOIN_JS)
-	mkdir -p $(PUBLIC)/js/workers/
-	cp $(BUILD_WORKER_BITCOIN_JS) $(PUBLIC_WORKER_BITCOIN_JS)
