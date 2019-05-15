@@ -5,8 +5,8 @@ addons:
 
 language: node_js
 node_js:
+  - "12"
   - "10"
-  - "8"
 
 env:
   - TRAVIS_CI=1
