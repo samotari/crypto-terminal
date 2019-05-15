@@ -385,8 +385,16 @@ app.views.DisplayPaymentAddress = (function() {
 
 			this.stopListening();
 
-			// Navigate back to the choose payment method screen.
-			app.router.navigate('choose-payment-method', { trigger: true });
+			var acceptedCryptoCurrencies = app.settings.getAcceptedCryptoCurrencies();
+
+			if (acceptedCryptoCurrencies.length > 1) {
+				// Navigate back to the choose payment method screen.
+				app.router.navigate('choose-payment-method', { trigger: true });
+			} else {
+				// Skip the #choose-payment-method screen.
+				app.router.navigate('pay', { trigger: true });
+			}
+
 		},
 
 		stopTimers: function() {

@@ -47,7 +47,9 @@ describe('#payment-status [bitcoin-lightning]', function() {
 	beforeEach(function(done) {
 		manager.evaluateInPageContext(function() {
 			app.markGettingStartedAsComplete();
-			app.settings.set('configurableCryptoCurrencies', ['bitcoinLightning']);
+			// Must configure more than one payment method to be able to view the #choose-payment-method screen.
+			app.settings.set('configurableCryptoCurrencies', ['bitcoinLightning', 'bitcoinTestnet']);
+			app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
 			app.settings.set('bitcoinLightning.apiUrl', 'http://localhost:3700');
 			app.settings.set('bitcoinLightning.invoiceMacaroon', '12345679');
 			app.settings.set('displayCurrency', 'EUR');

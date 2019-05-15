@@ -221,7 +221,16 @@ app.Router = (function() {
 				return false;
 			}
 
-			app.mainView.renderView('ChoosePaymentMethod', { model: paymentRequest });
+			var acceptedCryptoCurrencies = app.settings.getAcceptedCryptoCurrencies();
+
+			if (acceptedCryptoCurrencies.length > 1) {
+				app.mainView.renderView('ChoosePaymentMethod', { model: paymentRequest });
+			} else {
+				// Skip the #choose-payment-method screen.
+				paymentRequest.set('method', _.first(acceptedCryptoCurrencies));
+				this.navigate('display-payment-address', { trigger: true });
+				return false;
+			}
 		},
 
 		displayPaymentAddress: function() {
