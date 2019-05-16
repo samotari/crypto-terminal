@@ -22,9 +22,8 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 
 		serializeData: function() {
 
-			var data = {
-				isComplete: this.isComplete(),
-			};
+			var data = app.views.utility.Form.prototype.serializeData.apply(this, arguments);
+			data.isComplete = this.isComplete();
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies');
 			data.paymentMethods = _.chain(app.paymentMethods).keys().filter(function(key) {
 				return _.result(app.paymentMethods[key], 'enabled') === true;
@@ -34,17 +33,6 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 					_.pick(app.paymentMethods[key], 'label', 'settings'),
 					{ key: key }
 				);
-				paymentMethod.settings = _.map(paymentMethod.settings, function(setting) {
-					return _.extend(
-						{},
-						setting,
-						{
-							id: ['settings', key, setting.name].join('-'),
-							name: [key, setting.name].join('.'),
-							value: app.settings.get(key + '.' + setting.name) || setting.default,
-						}
-					);
-				});
 				paymentMethod.accepted = _.contains(configurableCryptoCurrencies, key);
 				return paymentMethod;
 			}).value();

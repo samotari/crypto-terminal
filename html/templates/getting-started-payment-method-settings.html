@@ -1,7 +1,4 @@
 <div class="getting-started-page">
-{{#if title}}
-	<h1 class="getting-started-page-title">{{title}}</h1>
-{{/if}}
 {{#if instructions}}
 	<div class="getting-started-page-instructions">
 		<p>{{instructions}}</p>
@@ -14,13 +11,12 @@
 {{/if}}
 	<form>
 		<div class="form">
-			{{#each settings}}
-				{{#if visible}}
-					{{> formFieldRow .}}
-				{{/if}}
+			{{#each inputs}}
+				{{> formFieldRow .}}
 			{{/each}}
 		</div>
 	</form>
+	<div class="verification"></div>
 </div>
 <div class="secondary-controls">
 	<a class="secondary-control button back" title="{{i18n 'getting-started.buttons.back'}}"></a>

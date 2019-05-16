@@ -2,24 +2,18 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	display: none;
 }
 .view.getting-started .slider {
-	padding-top: 3.4rem;
+	padding-top: 0;
 }
 .view.getting-started[data-subpage=welcome] .slider,
 .view.getting-started[data-subpage=done] .slider {
 	padding-top: 0;
-}
-.view.getting-started .getting-started-step {
-	display: none;
-}
-.view.getting-started .getting-started-step.visible {
-	display: block;
 }
 .view.getting-started .getting-started-page {
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
-	padding: 2rem 2rem 8rem 2rem;
+	padding: 1rem 1rem 7rem 1rem;
 }
 .view.getting-started .getting-started-page-title {
 	font-size: 1.6rem;
@@ -48,26 +42,6 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 }
 
 	/*  Welcome  */
-	.view.getting-started .getting-started-welcome .skip-getting-started {
-		position: absolute;
-		left: 0;
-		bottom: 6rem/* height of secondary-controls */;
-		z-index: 5;
-		width: 100%;
-		font-size: .9rem;
-		text-align: center;
-		box-sizing: border-box;
-		padding: 1.5rem 0 2.5rem 0;
-	}
-	.view.getting-started .getting-started-welcome .recommended-hardware-wallets {
-		margin-top: 3rem;
-	}
-	.view.getting-started .getting-started-welcome .recommended-hardware-wallets img {
-		float: left;
-		width: 40%;
-		max-height: 5rem;
-		margin-left: 5%;
-	}
 	/*  Welcome  */
 
 	/*  Choose payment methods  */
@@ -117,56 +91,10 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	/*  Choose payment methods  */
 
 
-	/*  Getting Started Steps  */
-	.view.getting-started .getting-started-steps {
-		position: relative;
-		z-index: 10;
-		display: none;
-		justify-content: center;
-		height: 1.4rem;
+	/*  Payment method settings  */
+	.view.getting-started .getting-started-page .sample-addresses-instructions p {
+		font-size: 1rem;
+		line-height: 160%;
+		margin-bottom: .5rem;
 	}
-	.view.getting-started .getting-started-steps.visible {
-		display: flex;
-	}
-	.getting-started-steps .getting-started-step {
-		list-style-type: none;
-		width: 25%;
-		float: left;
-		position: relative;
-	}
-	.getting-started-steps .getting-started-step:before {
-		position: absolute;
-		left: calc(50% + .5rem);
-		top: .56rem;
-		z-index: 5;
-		content: '';
-		width: calc(100% - 1rem);
-		height: .2rem;
-		background-color: #ccc;
-	}
-	.getting-started-steps .getting-started-step:after {
-		position: relative;
-		z-index: 10;
-		width: 1.4rem;
-		height: 1.4rem;
-		content: '';
-		border: .2rem solid #ccc;
-		display: block;
-		margin: 0 auto;
-		border-radius: 50%;
-		box-sizing: border-box;
-	}
-	.getting-started-steps .getting-started-step:last-child:before {
-		content: none;
-	}
-	.getting-started-steps .getting-started-step.active:after,
-	.getting-started-steps .getting-started-step.visible.completed.active:after {
-		z-index: 10;
-		border-color: #017AA9;
-		background-color: #017AA9;
-	}
-	.getting-started-steps .getting-started-step.visible.completed:after {
-		border-color: rgba(122, 193, 66, 0.25);
-		background-color: rgba(122, 193, 66, 0.7);
-	}
-	/*  Getting Started Steps  */
+	/*  Payment method settings  */

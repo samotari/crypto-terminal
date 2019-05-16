@@ -71,9 +71,6 @@ html.theme-dark .secondary-menu-item {
 html.theme-dark .secondary-menu-item.active {
 	background-color: #444;
 }
-html.theme-dark .view.getting-started .getting-started-payment-method-verify .sample-addresses-content {
-	color: #fff;
-}
 html.theme-dark .form-field-action.camera {
 	background-image: url('../images/camera-light.svg');
 }

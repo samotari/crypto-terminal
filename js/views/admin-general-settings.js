@@ -17,52 +17,33 @@ app.views.AdminGeneralSettings = (function() {
 			'click .remove-pin': 'removePin',
 		},
 
+		inputs: function() {
+
+			return app.config.settings;
+		},
+
 		serializeData: function() {
 
-			var data = {};
+			var data = app.views.utility.Form.prototype.serializeData.apply(this, arguments);
 			var configurableCryptoCurrencies = app.settings.get('configurableCryptoCurrencies');
 			data.paymentMethods = _.chain(app.paymentMethods).keys().filter(function(key) {
 				return _.result(app.paymentMethods[key], 'enabled') === true;
 			}).map(function(key) {
 				var paymentMethod = _.extend(
 					{},
-					_.pick(app.paymentMethods[key], 'label', 'settings'),
+					_.pick(app.paymentMethods[key], 'label'),
 					{ key: key }
 				);
-				paymentMethod.settings = _.map(paymentMethod.settings, function(setting) {
-					var options = _.result(setting, 'options') || null;
-					return _.extend(
-						{},
-						setting,
-						{ options: options },
-						{
-							id: ['settings', key, setting.name].join('-'),
-							name: [key, setting.name].join('.'),
-							value: app.settings.get(key + '.' + setting.name) || setting.default,
-						}
-					);
-				});
 				paymentMethod.accepted = _.contains(configurableCryptoCurrencies, key);
 				return paymentMethod;
 			}).value();
-
-			data.settings = this.prepareGenearalSettings();
 			data.hasPin = app.requirePin();
-
 			return data;
 		},
 
-		validate: function(data, done) {
+		getInputValueOverride: function(key) {
 
-			app.settings.doValidation(app.config.settings, data, function(error, validationErrors) {
-
-				if (error) {
-					// An unexpected error.
-					return done(error);
-				}
-
-				done(null, validationErrors);
-			});
+			return app.settings.get(key);
 		},
 
 		onChangeConfigurableCryptocurrencies: function() {
@@ -75,11 +56,6 @@ app.views.AdminGeneralSettings = (function() {
 			}
 
 			app.settings.set(data);
-		},
-
-		save: function(data) {
-
-			app.settings.doSave(app.config.settings, data);
 		},
 
 		setPin: function(evt) {
@@ -134,31 +110,6 @@ app.views.AdminGeneralSettings = (function() {
 			// Re-render the general settings screen.
 			this.render();
 		},
-
-		prepareGenearalSettings: function() {
-			// Prepare general settings for the template.
-			return _.map(app.config.settings, function(setting) {
-				setting = _.clone(setting);
-				setting.options = _.result(setting, 'options') || null;
-				switch (setting.type) {
-					case 'select':
-						setting.options = _.map(setting.options || [], function(option) {
-							return {
-								key: option.key,
-								label: _.result(option, 'label'),
-								selected: app.settings.get(setting.name) === option.key
-							}
-						});
-						break;
-
-					default:
-						setting.value = app.settings.get(setting.name);
-						break;
-				}
-				setting.id = ['settings', setting.name].join('-');
-				return setting;
-			})
-		}
 
 	});
 

@@ -6,7 +6,6 @@ app.paymentMethods.bitcoin = (function() {
 
 	'use strict';
 
-
 	return app.abstracts.PaymentMethod.extend({
 
 		enabled: true,
@@ -128,7 +127,9 @@ app.paymentMethods.bitcoin = (function() {
 				type: 'text',
 				required: true,
 				validateAsync: function(value, data, cb) {
-					this.deriveAddress(value, data.derivationScheme, 0/* addressIndex */, cb);
+					var addressIndex = data[this.ref + '.addressIndex'];
+					var derivationScheme = data[this.ref + '.derivationScheme'];
+					this.deriveAddress(value, derivationScheme, addressIndex, cb);
 				},
 				actions: [
 					{

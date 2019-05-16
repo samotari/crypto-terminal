@@ -88,7 +88,6 @@ app.lang['cs'] = (function() {
 		'payment-replaceable.message': 'Pozor!',
 		'payment-replaceable.info': 'Tuto transakci lze nahradit vyššími poplatky, chcete ji přijmout?',
 
-		'sample-addresses.label': 'Vzorové adresy:',
 		'enter-pin.cancel': 'Zrušit',
 		'enter-pin.submit': 'Vstoupit',
 		'pin-required.title': 'Kód je vyžadován',

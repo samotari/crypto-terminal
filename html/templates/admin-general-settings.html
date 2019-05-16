@@ -15,10 +15,8 @@
 					</div>
 				</div>
 			</div>
-			{{#each settings}}
-				{{#if visible}}
-					{{> formFieldRow .}}
-				{{/if}}
+			{{#each inputs}}
+				{{> formFieldRow .}}
 			{{/each}}
 		</div>
 		<div class="form-group configurableCryptoCurrencies">

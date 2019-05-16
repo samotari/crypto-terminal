@@ -13,7 +13,6 @@ app.views.GettingStarted = (function() {
 		events: {
 			'click .button.back': 'back',
 			'click .button.continue': 'continue',
-			'click .skip': 'skip',
 			'click label[for^="configurableCryptoCurrencies-"]': 'onClickCryptoCurrencyToggle',
 			'change :input': 'onChangeInput',
 		},
@@ -64,16 +63,6 @@ app.views.GettingStarted = (function() {
 					ContentViewOptions: { key: key },
 					visible: _.contains(configurableCryptoCurrencies, key),
 				});
-
-				if (paymentMethod.hasVerificationView()) {
-					subPages.push({
-						key: 'payment-method-verify-' + key,
-						label: _.result(paymentMethod, 'label'),
-						ContentView: app.views.GettingStartedPaymentMethodVerify,
-						ContentViewOptions: { key: key },
-						visible: _.contains(configurableCryptoCurrencies, key),
-					});
-				}
 			});
 
 			subPages.push({
@@ -100,45 +89,15 @@ app.views.GettingStarted = (function() {
 			return visibleSubPages && visibleSubPages[0] || null;
 		},
 
-		serializeData: function() {
-
-			var data = {};
-			var subPages = _.result(this, 'subPages');
-			var subPagesNotIncludedInMenu = [
-				'welcome',
-				'done'
-			];
-
-			data.menuItems = _.chain(subPages).filter(function(subPage) {
-				return !_.contains(subPagesNotIncludedInMenu, subPage.key);
-			}).map(function(subPage) {
-				return _.pick(subPage, 'key', 'label', 'visible');
-			}).value();
-
-			return data;
-		},
-
 		onRender: function() {
 
-			this.$menuItems = this.$('.getting-started-step');
-			this.setVisibilityOfMenuItems();
 			this.initializeSlider();
 			this.updateCryptoCurrencySettingsVisibility();
 
-			if (this.options.page) {
-				this.goToSubPage(this.options.page);
+			var page = app.cache.get('getting-started-last-step') || this.options.page;
+			if (page) {
+				this.goToSubPage(page);
 			}
-
-			this.toggleMenuItemsCompletedFlag();
-			this.toggleStepsVisibility();
-		},
-
-		setVisibilityOfMenuItems: function() {
-
-			var subPages = _.result(this, 'subPages');
-			_.each(subPages, function(subPage) {
-				this.$menuItems.filter('.' + subPage.key).toggleClass('visible', subPage.visible);
-			}, this);
 		},
 
 		back: function() {
@@ -150,26 +109,16 @@ app.views.GettingStarted = (function() {
 
 		continue: function() {
 
-
 			var currentItem = this.slider.getCurrentItem();
-			var currentItemKey = currentItem.key;
-
 			if (currentItem.contentView && _.isFunction(currentItem.contentView.isComplete)) {
 				// If the current step is incomplete, don't go to the next step.
 				if (!currentItem.contentView.isComplete()) return;
 			}
 
-			app.cache.set('getting-started-' + currentItemKey, 1);
-
 			var nextItem = this.slider.getNextVisibleItem();
-			if (!nextItem) return;
-			this.goToSubPage(nextItem.key);
-		},
-
-		skip: function() {
-
-			app.markGettingStartedAsComplete();
-			app.router.navigate('admin', { trigger: true });
+			if (nextItem) {
+				this.goToSubPage(nextItem.key);
+			}
 		},
 
 		goToSubPage: function(key) {
@@ -188,15 +137,7 @@ app.views.GettingStarted = (function() {
 			}
 			this.setActiveMenuItem(key);
 			this.toggleCurrentItemCompletedFlag();
-			this.toggleMenuItemsCompletedFlag();
-			this.toggleStepsVisibility();
-		},
-
-		toggleStepsVisibility: function() {
-
-			var currentItem = this.slider.getCurrentItem();
-			var visible = !!currentItem && !_.contains(['welcome', 'done'], currentItem.key);
-			this.$('.getting-started-steps').toggleClass('visible', visible);
+			app.cache.set('getting-started-last-step', key);
 		},
 
 		initializeSlider: function() {
@@ -227,9 +168,7 @@ app.views.GettingStarted = (function() {
 		setActiveMenuItem: function(key) {
 
 			this.options.page = key;
-			this.$menuItems.removeClass('active');
 			$('.view.getting-started').attr('data-subpage', key);
-			this.$menuItems.filter('[data-key="' + key + '"]').addClass('active');
 			app.router.navigate('#getting-started/' + encodeURIComponent(key), { trigger: false });
 		},
 
@@ -252,12 +191,7 @@ app.views.GettingStarted = (function() {
 			visible = visible === true;
 			var itemKeys = [
 				'payment-method-settings-' + key,
-				'payment-method-verify-' + key,
 			];
-			var filter = _.map(itemKeys, function(itemKey) {
-				return '[data-key="' + itemKey + '"]';
-			}).join(',');
-			this.$menuItems.filter(filter).toggleClass('visible', visible);
 			if (visible) {
 				this.slider.showItems(itemKeys);
 			} else {
@@ -286,15 +220,6 @@ app.views.GettingStarted = (function() {
 				var isComplete = !_.isFunction(currentItem.contentView.isComplete) || currentItem.contentView.isComplete();
 				currentItem.contentView.$('.button.continue').toggleClass('disabled', !isComplete);
 			}
-		},
-
-		toggleMenuItemsCompletedFlag: function() {
-
-			var items = this.slider.getVisibleItems();
-			_.each(items, function(item) {
-				var isComplete = !!app.cache.get('getting-started-' + item.key);
-				this.$menuItems.filter('[data-key=' + item.key +']').toggleClass('completed', isComplete);
-			}, this);
 		},
 
 		onClose: function() {

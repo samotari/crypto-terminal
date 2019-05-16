@@ -88,7 +88,6 @@ app.lang['de'] = (function() {
 		'payment-replaceable.message': 'Achtung!',
 		'payment-replaceable.info': 'Diese Transaktion kann durch eine höhere Gebühr ersetzt werden, möchten Sie dies akzeptieren?',
 
-		'sample-addresses.label': 'Beispiel Adressen:',
 		'enter-pin.cancel': 'Abbruch',
 		'enter-pin.submit': 'Enter',
 		'pin-required.title': 'PIN notwendig',

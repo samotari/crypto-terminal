@@ -15,7 +15,13 @@ app.views.GettingStartedDone = (function() {
 			'click .done': 'done',
 		},
 
+		title: function() {
+
+			return app.i18n.t('getting-started.done.title');
+		},
+
 		serializeData: function() {
+
 			return {
 				supportEmail: app.config.supportEmail,
 			};

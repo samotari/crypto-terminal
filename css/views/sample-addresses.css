@@ -1,20 +1,19 @@
 .sample-addresses {
 	text-align: left;
-	padding: 1rem 0;
+	margin-top: 1.5rem;
 }
 .sample-addresses:empty {
 	display: none;
 }
-.sample-addresses-label {
-	font-size: 0.85rem;
-	font-weight: bold;
-	margin-bottom: .5rem;
+.sample-addresses-instructions {
+	font-size: 1rem;
+	line-height: 160%;
 }
 .sample-addresses-content {
 	width: 100%;
 	font-family: 'Courier';
-	font-size: 0.75rem;
-	line-height: 150%;
+	font-size: .9rem;
+	line-height: 180%;
 	border: none;
 	background: transparent;
 	box-sizing: border-box;

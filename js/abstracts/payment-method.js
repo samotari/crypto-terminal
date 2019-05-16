@@ -150,9 +150,8 @@ app.abstracts.PaymentMethod = (function() {
 
 		isConfigured: function() {
 
-			var data = app.settings.getAll();
-			return _.every(this.settings || [], function(setting) {
-				return setting.required !== true || !!data[setting.path];
+			return _.every(this.inputs || [], function(input) {
+				return input.required !== true || !!app.settings.get(input.name);
 			});
 		},
 
@@ -164,9 +163,10 @@ app.abstracts.PaymentMethod = (function() {
 		},
 
 		extend: function() {
+
 			var args = Array.prototype.slice.call(arguments);
 			return app.util.extend.apply(undefined, [this].concat(args));
-		}
+		},
 	};
 
 })();

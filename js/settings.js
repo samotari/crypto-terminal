@@ -4,99 +4,23 @@ app.settings = (function() {
 
 	'use strict';
 
-	var defaults = {};
-
-	_.each(app.config.settings, function(setting) {
-		setting.path = setting.name;
-		defaults[setting.path] = _.result(setting, 'default');
-	});
-
+	// Prepare payment method inputs.
 	_.each(app.paymentMethods, function(paymentMethod, key) {
-		if (!_.isEmpty(paymentMethod.settings)) {
-			paymentMethod.settings = _.map(paymentMethod.settings, function(setting) {
-				setting = _.clone(setting);
-				setting.path = key + '.' + setting.name;
-				defaults[setting.path] = _.result(setting, 'default');
-				if (setting.validate) {
-					setting.validate = _.bind(setting.validate, paymentMethod);
+		paymentMethod.inputs = _.map(paymentMethod.settings || [], function(setting) {
+			var input = _.clone(setting);
+			// Bind the validate functions in the context of the payment method.
+			_.each(['validate', 'validateAsync'], function(fnName) {
+				if (_.isFunction(input[fnName])) {
+					input[fnName] = _.bind(input[fnName], paymentMethod);
 				}
-				if (setting.validateAsync) {
-					setting.validateAsync = _.bind(setting.validateAsync, paymentMethod);
-				}
-				return setting;
 			});
-		}
+			// Prefix every input's name with the payment method's key.
+			input.name = [key, input.name].join('.');
+			return input;
+		});
 	});
 
 	var settings = _.extend({}, {
-
-		doValidation: function(settings, data, done) {
-
-			async.map(settings, function(setting, next) {
-
-				var value = data[setting.path];
-				var errors = [];
-
-				if (setting.required && _.isEmpty(value)) {
-					errors.push({
-						field: setting.path,
-						error: app.i18n.t('settings.field-required', {
-							label: _.result(setting, 'label')
-						}),
-					});
-				}
-
-				if (setting.validate) {
-					try {
-						setting.validate(value, data);
-					} catch (error) {
-						errors.push({
-							field: setting.path,
-							error: error,
-						});
-					}
-				}
-
-				if (!setting.validateAsync) {
-					return next(null, errors);
-				}
-
-				try {
-					setting.validateAsync(value, data, function(error) {
-						if (error) {
-							errors.push({
-								field: setting.path,
-								error: error,
-							});
-						}
-						next(null, errors);
-					});
-				} catch (error) {
-					next(error);
-				}
-
-			}, function(error, results) {
-
-				if (error) {
-					return done(error);
-				}
-
-				// Flatten the errors array.
-				var errors = Array.prototype.concat.apply([], results);
-
-				done(null, errors);
-			});
-		},
-		doSave: function(settings, data) {
-			_.each(settings, function(setting) {
-				var path = setting.path;
-				var type = setting.type;
-				if (type === 'checkbox') {
-					data[path] = !!data[path];
-				}
-			});
-			this.set(data);
-		},
 		getAcceptedCryptoCurrencies: function() {
 			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];
 			return _.filter(configurableCryptoCurrencies, function(key) {
@@ -104,8 +28,33 @@ app.settings = (function() {
 				return paymentMethod && paymentMethod.isConfigured();
 			});
 		},
+		getDefaultValue: function(key) {
+			var defaultValue;
+			var input = this.getInputByName(key);
+			if (input) {
+				defaultValue = _.result(input, 'default');
+			}
+			return defaultValue;
+		},
+		getInputByName: function(name) {
+			var inputs = this.getInputs();
+			return _.findWhere(inputs, { name: name });
+		},
+		getInputNames: function() {
+			var inputs = this.getInputs();
+			return _.pluck(inputs, 'name');
+		},
+		getInputs: function() {
+			var inputs = [];
+			inputs = inputs.concat(app.config.settings);
+			_.each(app.paymentMethods, function(paymentMethod) {
+				inputs = inputs.concat(paymentMethod.inputs);
+			});
+			return inputs;
+		},
 		getAll: function() {
-			var keys = _.pluck(this.collection.toJSON(), 'key').concat(_.keys(defaults));
+			var defaultKeys = this.getInputNames();
+			var keys = _.pluck(this.collection.toJSON(), 'key').concat(defaultKeys);
 			return _.chain(keys).uniq().map(function(key) {
 				return [key, this.get(key)];
 			}, this).object().value();
@@ -116,8 +65,9 @@ app.settings = (function() {
 			if (model) {
 				value = model.get('value');
 			}
-			if (_.isUndefined(value) && !_.isUndefined(defaults[key])) {
-				value = defaults[key];
+			var defaultValue = this.getDefaultValue(key);
+			if (_.isUndefined(value) && !_.isUndefined(defaultValue)) {
+				value = defaultValue;
 			}
 			return value;
 		},
@@ -137,18 +87,13 @@ app.settings = (function() {
 					if (model) {
 						model.set('value', value).save();
 					} else {
-						this.collection.create({
+						this.collection.add({
 							key: key,
 							value: value,
-						});
+						}).save();
 					}
 				}
 			}
-
-			return {
-				// For temporary, backwards compatibility.
-				save: _.noop,
-			};
 		}
 	}, Backbone.Events);
 
@@ -158,25 +103,18 @@ app.settings = (function() {
 		settings.collection = new app.collections.Settings();
 
 		app.onStart(function(done) {
-			try {
-				settings.collection.on('add update change', function(model) {
-					var key = model.get('key');
-					var value = model.get('value');
-					settings.trigger('change:' + key, value);
-					settings.trigger('change', key, value);
-				});
-				settings.collection.fetch({
-					limit: 999,
-					success: function() {
-						done();
-					},
-					error: function(error) {
-						done(error);
-					},
-				});	
-			} catch (error) {
-				return done(error);
-			}
+			settings.collection.on('add change', function(model) {
+				var key = model.get('key');
+				var value = model.get('value');
+				settings.trigger('change:' + key, value);
+				settings.trigger('change', key, value);
+			});
+			settings.collection.fetch({
+				success: function() {
+					done();
+				},
+				error: done,
+			});
 		});
 	});
 

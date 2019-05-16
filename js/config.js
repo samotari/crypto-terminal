@@ -5,7 +5,6 @@ app.config = (function() {
 	'use strict';
 
 	var config = {
-		debug: false,
 		primaryDisplayCurrencies: ['BTC', 'CZK', 'EUR', 'GBP', 'LTC', 'USD'],
 		supportEmail: 'cryptoterminal.eu@gmail.com',
 		cache: {
@@ -17,6 +16,7 @@ app.config = (function() {
 				timeout: 10000,
 			},
 		}, app.config.ctApi),
+		debug: false,
 		primus: {
 			reconnect: {
 				max: 5000, // Number: The max delay before we try to reconnect.
@@ -214,22 +214,10 @@ app.config = (function() {
 					return app.i18n.t('settings.screen-saver.description');
 				},
 				type: 'checkbox',
-				default: true,
+				default: false,
 			},
 		],
 		recommendations: {
-			hardwareWallets: [
-				{
-					name: 'Trezor',
-					url: 'https://shop.trezor.io?a=cryptoterminal.eu',
-					image: 'images/trezor.svg',
-				},
-				{
-					name: 'Ledger Wallet',
-					url: 'https://www.ledgerwallet.com/r/285ab5ed6cb2',
-					image: 'images/ledger.svg',
-				},
-			],
 			mobileWallets: {
 				android: [
 					{
@@ -268,12 +256,6 @@ app.config = (function() {
 			},
 		},
 	};
-
-	config.settings = _.map(config.settings, function(setting) {
-		return _.extend({}, setting, {
-			visible: setting.visible !== false,
-		});
-	});
 
 	_.each(app.paymentMethods, function(paymentMethod) {
 		if (paymentMethod.numberFormat) {

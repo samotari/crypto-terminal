@@ -1,11 +1,8 @@
 <div class="getting-started-page">
-	<h1 class="getting-started-page-title">{{i18n "getting-started.general-settings.title"}}</h1>
 	<form>
 		<div class="form">
-			{{#each settings}}
-				{{#if visible}}
-					{{> formFieldRow .}}
-				{{/if}}
+			{{#each inputs}}
+				{{> formFieldRow .}}
 			{{/each}}
 		</div>
 	</form>

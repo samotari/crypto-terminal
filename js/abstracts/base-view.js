@@ -87,7 +87,7 @@ app.abstracts.BaseView = (function() {
 
 		serializeData: function() {
 
-			return this.model && this.model.toJSON() || null;
+			return this.model && this.model.toJSON() || {};
 		},
 
 		getTemplate: function() {

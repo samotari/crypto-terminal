@@ -17,7 +17,9 @@
 	margin-bottom: .5rem;
 }
 .form-field {
+	position: relative;
 	font-size: 0.9rem;
+	padding-right: 0;
 }
 .form-field-description {
 	margin-bottom: 0.5rem;
@@ -64,22 +66,29 @@
 	font-size: 0.9rem;
 }
 .form-field-actions {
-	margin-top: .5rem;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: auto;
+	margin-top: 0;
 }
 .form-field-action {
 	display: inline-block;
 	vertical-align: top;
-	width: 1rem;
-	height: 1rem;
+	width: 1.5rem;
+	height: 1.5rem;
 	background-position: center center;
 	background-repeat: no-repeat;
-	background-size: 1rem;
+	background-size: 1.4rem;
 	box-sizing: border-box;
-	padding: .8rem 1.1rem;
+	padding: .9rem 1.2rem;
 }
 .form-field-action + .form-field-action {
-	margin-left: .2rem;
+	margin-left: .3rem;
 }
+.form-field.has-1-actions { padding-right: 3rem; }
+.form-field.has-2-actions { padding-right: 6rem; }
+.form-field.has-3-actions { padding-right: 9rem; }
 .form-field-action.camera {
 	background-image: url('../images/camera.svg');
 }

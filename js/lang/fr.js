@@ -48,7 +48,6 @@ app.lang['fr'] = (function () {
 		'payment-status.unconfirmed.done': 'Effectué',
 		'payment-status.timed-out.message': 'Fin du temps',
 		'payment-status.timed-out.done': 'OK',
-		'sample-addresses.label': 'Exemple d\'adresses :',
 		'enter-pin.cancel': 'Annuler',
 		'enter-pin.submit': 'Entrer',
 		'pin-required.title': 'PIN Requis',

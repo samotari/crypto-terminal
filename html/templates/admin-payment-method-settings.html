@@ -7,10 +7,8 @@
 <form>
 	<div class="form">
 		<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
-			{{#each settings}}
-				{{#if visible}}
-					{{> formFieldRow .}}
-				{{/if}}
+			{{#each inputs}}
+				{{> formFieldRow .}}
 			{{/each}}
 		</div>
 	</div>

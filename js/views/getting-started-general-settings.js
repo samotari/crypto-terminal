@@ -11,22 +11,21 @@ app.views.GettingStartedGeneralSettings = (function() {
 		className: 'getting-started getting-started-general-settings',
 		template: '#template-getting-started-general-settings',
 
-		serializeData: function() {
+		inputs: function() {
 
-			var data = {
-				isComplete: this.isComplete(),
-			};
-
-			var settings = app.views.AdminGeneralSettings.prototype.prepareGenearalSettings();
-
-			data.settings = settings;
-
-			return data;
+			return app.config.settings;
 		},
 
-		save: function(data) {
+		title: function() {
 
-			app.settings.doSave(app.config.settings, data);
+			return app.i18n.t('getting-started.general-settings.title');
+		},
+
+		serializeData: function() {
+
+			var data = app.views.utility.Form.prototype.serializeData.apply(this, arguments);
+			data.isComplete = this.isComplete();
+			return data;
 		},
 
 		isComplete: function() {

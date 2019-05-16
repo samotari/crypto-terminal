@@ -88,7 +88,6 @@ app.lang['es'] = (function() {
 		'payment-replaceable.message': '¡Advertencia!',
 		'payment-replaceable.info': 'Esta transacción puede ser reemplazable con una tasa más alta, ¿Quiere aceptarla?',
 
-		'sample-addresses.label': 'Direcciones de muestra:',
 		'enter-pin.cancel': 'Cancelar',
 		'enter-pin.submit': 'Aceptar',
 		'pin-required.title': 'Se requiere código PIN',

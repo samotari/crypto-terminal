@@ -25,33 +25,23 @@ app.paymentMethods.bitcoinLightning = (function() {
 				'settings.apiUrl.description': 'The full URL to your LN node. Should include the protocol (e.g "https://").',
 				'settings.invoiceMacaroon.label': 'Invoice Macaroon',
 				'settings.invoiceMacaroon.description': 'Used to authenticate requests to your LN node. Should be in hexadecimal.',
-				'addInvoice.failed': 'Failed to generate invoice',
-				'getting-started.verify.message.success': 'Ok',
-				'getting-started.verify.message.failed': 'Failed',
+				'settings.failed-authentication-check.unexpected-response': 'Failed LN node test: Unexpected response',
 			},
 			'de': {
 				'settings.apiUrl.label': 'Lightning Network Knoten URL',
 				'settings.apiUrl.description': 'Die vollständige URL zu Ihrem Lightning Network Knoten. Sollte das Protokoll enthalten (z.B. "https://").',
 				'settings.invoiceMacaroon.label': 'Rechnung Macaroon',
 				'settings.invoiceMacaroon.description': 'Wird verwendet, um Anfragen an Ihren Lightning Network Knoten zu authentifizieren. Sollte eine hexadezimal Zahl sein.',
-				'addInvoice.failed': 'Fehler beim Generieren der Rechnung',
-				'getting-started.verify.message.success': 'Ok',
-				'getting-started.verify.message.failed': 'Fehlgeschlagen',
 			},
 			'es': {
 				'settings.apiUrl.description': 'URL completa de su nodo LN',
 				'settings.invoiceMacaroon.description': 'Código de autentificación (hexadecimal)',
-				'addInvoice.failed': 'Fallo al crear factura',
-				'getting-started.verify.message.failed': 'Fallo',
 			},
 			'fr': {
 				'settings.apiUrl.label': 'URL du nœud Lightning',
 				'settings.apiUrl.description': 'L\'URL complète de votre nœud Lightning Network. Inclure le protocole (ex: "https://").',
 				'settings.invoiceMacaroon.label': 'Facture Macaroon',
 				'settings.invoiceMacaroon.description': 'Utilisé pour authentifier les requêtes de votre nœud Lightning Network. Cela doit être en hexadécimal.',
-				'addInvoice.failed': 'Impossible de générer la facture',
-				'getting-started.verify.message.success': 'Ok',
-				'getting-started.verify.message.failed': 'Échec',
 			}
 		},
 
@@ -64,36 +54,28 @@ app.paymentMethods.bitcoinLightning = (function() {
 		settings: [
 			{
 				name: 'apiUrl',
-				default: 'http://localhost:8080',
+				type: 'text',
+				required: false,
+				default: '',
 				label: function() {
 					return app.i18n.t('bitcoinLightning.settings.apiUrl.label');
 				},
-				type: 'text',
-				required: true,
 				description: function() {
 					return app.i18n.t('bitcoinLightning.settings.apiUrl.description');
 				},
 				validateAsync: function(value, data, cb) {
-					$.ajax({
-						url: value,
-						method: 'GET',
-					}).then(function(result) {
-						console.log(result);
-						cb();
-					}).fail(function(error) {
-						console.log(error);
-						cb();
-					});
+					var invoiceMacaroon = data[this.ref + '.invoiceMacaroon'];
+					this.doAuthenticationCheck(value, invoiceMacaroon, cb);
 				},
 			},
 			{
 				name: 'invoiceMacaroon',
+				type: 'text',
+				required: false,
 				default: '',
 				label: function() {
 					return app.i18n.t('bitcoinLightning.settings.invoiceMacaroon.label');
 				},
-				type: 'text',
-				required: false,
 				description: function() {
 					return app.i18n.t('bitcoinLightning.settings.invoiceMacaroon.description');
 				},
@@ -102,54 +84,48 @@ app.paymentMethods.bitcoinLightning = (function() {
 						name: 'camera',
 						fn: function(value, cb) {
 							app.device.scanQRCodeWithCamera(cb);
-						}
-					}
+						},
+					},
 				],
 			},
 		],
 
-		createVerificationView: function(cb) {
+		toBaseUnit: function() {
 
-			// Allowing this view only to render during getting started.
-			// TODO: find a different approach to work with admin view.
-			var isGettingStartedView = app.mainView.currentView.view.$el.hasClass('getting-started');
-			if (!isGettingStartedView) {
-				return;
-			}
+			return app.paymentMethods.bitcoin.toBaseUnit.apply(this, arguments);
+		},
 
-			var verificationAmount = 0.00000001;
+		fromBaseUnit: function(value) {
+
+			return app.paymentMethods.bitcoin.fromBaseUnit.apply(this, arguments);
+		},
+
+		doAuthenticationCheck: function(apiUrl, invoiceMacaroon, cb) {
+
+			var amount = 1e-8;// 1 satoshi
+			var memo = app.info.name + ': Authentication check';
 			var options = {
 				maxInvoiceAgeInSeconds: 5,
-				memo: 'Test to verify connection from: ' + app.info.name,
-			}
+				memo: memo,
+			};
 
-			app.busy(true);
-			this.addInvoice(verificationAmount, options, function(error, result) {
+			this.addInvoice(amount, options, _.bind(function(error, result) {
 
-				app.busy(false);
-				var message = function() {
-					return app.i18n.t('bitcoinLightning.getting-started.verify.message.success');
-				}
-
-				var verificationSuccess = !_.isError(error) && _.has(result, 'payment_request') && _.has(result, 'r_hash');
-
-				if (!verificationSuccess) {
-					message = function() {
-						return app.i18n.t('bitcoinLightning.getting-started.verify.message.failed');
-					}
-				}
-
-				try {
-					var view = new app.views.ApiVerify({
-						message: message,
-						status: verificationSuccess ? 'success' : 'failed',
-					});
-				} catch (error) {
+				if (error) {
 					return cb(error);
 				}
 
-				cb(null, view);
-			})
+				var isExpectedResult = _.every(['payment_request', 'r_hash'], function(key) {
+					return _.has(result, key);
+				});
+
+				if (!isExpectedResult) {
+					return cb(new Error(app.i18n.t(this.ref + '.settings.failed-authentication-check.unexpected-response')));
+				}
+
+				// Check passed - OK.
+				cb();
+			}, this));
 		},
 
 		generatePaymentRequest: function(amount, cb) {
@@ -181,71 +157,72 @@ app.paymentMethods.bitcoinLightning = (function() {
 			}
 
 			options = _.defaults(options || {}, {
-				apiUrl: app.settings.get(this.ref + '.apiUrl'),
 				maxInvoiceAgeInSeconds: Math.floor(app.config.paymentRequests.timeout / 1000),
-				memo: app.info.name,
+				memo: app.info.name + ': Generate new invoice',
 			});
 
-			// Convert the amount to whole satoshis.
-			var value = (new BigNumber(amount)).times('100000000').toFixed(0, BigNumber.ROUND_CEIL);
-			var apiUrl = options.apiUrl;
-			var uri = apiUrl + '/v1/invoices';
+			var value = this.toBaseUnit(amount)
 			var data = {
 				expiry: options.maxInvoiceAgeInSeconds,
 				value: value,
 				memo: options.memo,
 			};
-
-			cb = _.once(cb);
-
-			var headers = {
-				'Content-Type': 'application/json',
+			var uri = '/v1/invoices';
+			var requestOptions = {
+				data: data,
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			};
 
-			var invoiceMacaroon = app.settings.get(this.ref + '.invoiceMacaroon');
-			if (invoiceMacaroon) {
-				headers['Grpc-Metadata-macaroon'] = invoiceMacaroon;
-			}
-
-			$.ajax({
-				url: uri,
-				method: 'POST',
-				headers: headers,
-				data: JSON.stringify(data),
-			}).then(function(result) {
-				cb(null, result);
-			}).fail(function(error) {
-				app.log(error);
-				cb(new Error(app.i18n.t('bitcoinLightning.addInvoice.failed')));
-			});
-		},
-
-		getApiUrl: function(uri) {
-
-			var baseUrl = app.settings.get(this.ref + '.apiUrl');
-			return baseUrl + uri;
+			this.request('post', uri, requestOptions, cb);
 		},
 
 		checkPaymentReceived: function(paymentRequest, cb) {
 
-			_.defer(_.bind(function() {
-				var id = Buffer.from(paymentRequest.data.r_hash, 'base64').toString('hex');
-				var uri = this.getApiUrl('/v1/invoice/' + encodeURIComponent(id));
-				$.ajax({
-					url: uri,
-					method: 'GET',
-					headers: {
-						'Grpc-Metadata-macaroon': app.settings.get(this.ref + '.invoiceMacaroon')
-					},
-				}).then(function(result) {
-					var wasReceived = result.settled === true;
-					var paymentData = _.pick(result, 'settle_date');
-					// Passing paymentData so it can be stored.
-					cb(null, wasReceived, paymentData);
-				}).fail(cb);
+			var id = Buffer.from(paymentRequest.data.r_hash, 'base64').toString('hex');
+			var uri = '/v1/invoice/' + encodeURIComponent(id);
+			this.request('get', uri, function(error, result) {
+				if (error) return cb(error);
+				var wasReceived = result.settled === true;
+				var paymentData = _.pick(result, 'settle_date');
+				// Passing paymentData so it can be stored.
+				cb(null, wasReceived, paymentData);
+			});
+		},
 
-			}, this));
-		}
+		request: function(method, uri, options, cb) {
+
+			if (_.isFunction(options)) {
+				cb = options;
+				options = null;
+			}
+
+			options = _.defaults(options || {}, {
+				apiUrl: app.settings.get(this.ref + '.apiUrl'),
+				invoiceMacaroon: app.settings.get(this.ref + '.invoiceMacaroon'),
+				headers: {},
+			});
+
+			if (options.invoiceMacaroon) {
+				options.headers['Grpc-Metadata-macaroon'] = options.invoiceMacaroon;
+			}
+
+			var ajaxOptions = {
+				url: options.apiUrl + uri,
+				method: method.toUpperCase(),
+				headers: options.headers,
+			};
+
+			if (options.data) {
+				ajaxOptions.data = JSON.stringify(options.data);
+			}
+
+			var done = _.once(cb);
+			$.ajax(ajaxOptions).then(function(result) {
+				done(null, result);
+			}).fail(done);
+		},
 	});
 
 })();
