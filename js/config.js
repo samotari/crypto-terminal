@@ -24,14 +24,6 @@ app.config = (function() {
 				retries: Infinity, // Number: How many times we should try to reconnect.
 			},
 		},
-		sqlite: {
-			name: 'crypto-terminal.db',
-			location: 'default',
-			uniqueId: {
-				length: 20,
-				charset: 'abcdefghijklmnopqrstuvqxyzABCDEFGHIJKLMNOPQRSTUVQXYZ1234567890-_',
-			},
-		},
 		qrCodes: {
 			errorCorrectionLevel: 'M',
 			margin: 0,
