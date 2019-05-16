@@ -5,22 +5,26 @@
 # And then you can run various commands:
 #
 #   $ make            # compile files that need compiling
-#   $ make clean all  # remove target files and recompile from scratch
+#   $ make clean dev  # remove target files and recompile dev build from scratch
+#   $ make clean prod  # remove target files and recompile production build from scratch
 #
 
 ## Variables
 BIN=node_modules/.bin
 BUILD=build
 BUILD_DEPS=$(BUILD)/deps
-BUILD_DEPS_JS=$(BUILD)/dependencies.min.js
-BUILD_ALL_JS=$(BUILD)/all.min.js
+BUILD_DEPS_JS=$(BUILD)/dependencies.js
+BUILD_DEPS_MIN_JS=$(BUILD)/dependencies.min.js
+BUILD_ALL_JS=$(BUILD)/all.js
+BUILD_ALL_MIN_JS=$(BUILD)/all.min.js
 BUILD_ALL_CSS=$(BUILD)/all.min.css
 CSS=css
 IMAGES=images
 JS=js
 PUBLIC=www
 PUBLIC_ALL_CSS=$(PUBLIC)/css/all.min.css
-PUBLIC_ALL_JS=$(PUBLIC)/js/all.min.js
+PUBLIC_ALL_JS=$(PUBLIC)/js/all.js
+PUBLIC_ALL_MIN_JS=$(PUBLIC)/js/all.min.js
 SCRIPTS=scripts
 
 # Targets
@@ -34,30 +38,37 @@ SCRIPTS=scripts
 # target's dependencies list.
 
 # Phony targets - these are for when the target-side of a definition
-# (such as "all" below) isn't a file but instead a just label. Declaring
+# (such as "dev" below) isn't a file but instead a just label. Declaring
 # it as phony ensures that it always run, even if a file by the same name
 # exists.
-.PHONY: all\
+.PHONY: app\
+dev\
+prod\
 clean\
 clean-light\
 fonts\
 images\
 sounds
 
-all: config.xml\
+app: config.xml\
 $(PUBLIC)/index.html\
 $(PUBLIC_ALL_CSS)\
-$(PUBLIC_ALL_JS)\
 fonts\
 images\
 sounds
 
+dev: app\
+$(PUBLIC_ALL_JS)
+
+prod: app\
+$(PUBLIC_ALL_MIN_JS)
+
 clean:
 	# Delete build and output files:
-	rm -rf $(BUILD) $(PUBLIC)
+	rm -rf $(BUILD) $(PUBLIC) config.xml
 
 clean-light:
-	rm -rf $(PUBLIC)/index.html
+	rm -rf $(PUBLIC)/index.html config.xml
 
 fonts:
 	mkdir -p $(PUBLIC)/fonts/OpenSans
@@ -168,7 +179,28 @@ $(BUILD_DEPS)/js/QRCode.min.js: $(BUILD_DEPS)/js/QRCode.js
 $(BUILD_DEPS)/js/querystring.min.js: $(BUILD_DEPS)/js/querystring.js
 	$(BIN)/uglifyjs $^ -o $@
 
-DEPS_JS_FILES=node_modules/core-js/client/shim.min.js\
+DEPS_JS_FILES=node_modules/core-js/client/shim.js\
+node_modules/async/dist/async.js\
+node_modules/bignumber.js/bignumber.js\
+node_modules/jquery/dist/jquery.js\
+node_modules/underscore/underscore.js\
+node_modules/backbone/backbone.js\
+node_modules/backbone.localstorage/build/backbone.localStorage.js\
+node_modules/handlebars/dist/handlebars.js\
+$(BUILD_DEPS)/js/bitcoin.js\
+$(BUILD_DEPS)/js/bs58.js\
+$(BUILD_DEPS)/js/Buffer.js\
+$(BUILD_DEPS)/js/QRCode.js\
+$(BUILD_DEPS)/js/querystring.js\
+node_modules/moment/min/moment-with-locales.js
+$(BUILD_DEPS_JS): $(DEPS_JS_FILES)
+	rm -f $(BUILD_DEPS_JS)
+	for file in $(DEPS_JS_FILES); do \
+		cat $$file >> $(BUILD_DEPS_JS); \
+		echo "" >> $(BUILD_DEPS_JS); \
+	done
+
+DEPS_MIN_JS_FILES=node_modules/core-js/client/shim.min.js\
 node_modules/async/dist/async.min.js\
 node_modules/bignumber.js/bignumber.min.js\
 node_modules/jquery/dist/jquery.min.js\
@@ -182,11 +214,11 @@ $(BUILD_DEPS)/js/Buffer.min.js\
 $(BUILD_DEPS)/js/QRCode.min.js\
 $(BUILD_DEPS)/js/querystring.min.js\
 node_modules/moment/min/moment-with-locales.min.js
-$(BUILD_DEPS_JS): $(DEPS_JS_FILES)
-	rm -f $(BUILD_DEPS_JS)
-	for file in $(DEPS_JS_FILES); do \
-		cat $$file >> $(BUILD_DEPS_JS); \
-		echo "" >> $(BUILD_DEPS_JS); \
+$(BUILD_DEPS_MIN_JS): $(DEPS_MIN_JS_FILES)
+	rm -f $(BUILD_DEPS_MIN_JS)
+	for file in $(DEPS_MIN_JS_FILES); do \
+		cat $$file >> $(BUILD_DEPS_MIN_JS); \
+		echo "" >> $(BUILD_DEPS_MIN_JS); \
 	done
 
 $(BUILD)/js/*.min.js:$(JS)/*.js
@@ -246,14 +278,27 @@ $(JS)/i18n.js\
 $(JS)/router.js\
 $(JS)/init.js
 APP_JS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.js, %.min.js, $(APP_JS_FILES)))
-JS_FILES=$(BUILD_DEPS_JS) $(APP_JS_MIN_FILES)
-$(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(BUILD)/js/*.min.js $(BUILD)/js/**/*.min.js $(BUILD)/js/**/**/*.min.js
+
+JS_FILES=$(BUILD_DEPS_JS) $(APP_JS_FILES)
+$(BUILD_ALL_JS): $(BUILD_DEPS_JS) $(JS)/*.js $(JS)/**/*.js $(JS)/**/**/*.js
 	rm -f $(BUILD_ALL_JS)
 	for file in $(JS_FILES); do \
 		cat $$file >> $(BUILD_ALL_JS); \
 		echo "" >> $(BUILD_ALL_JS); \
 	done
 
+JS_MIN_FILES=$(BUILD_DEPS_MIN_JS) $(APP_JS_MIN_FILES)
+$(BUILD_ALL_MIN_JS): $(BUILD_DEPS_MIN_JS) $(BUILD)/js/*.min.js $(BUILD)/js/**/*.min.js $(BUILD)/js/**/**/*.min.js
+	rm -f $(BUILD_ALL_MIN_JS)
+	for file in $(JS_MIN_FILES); do \
+		cat $$file >> $(BUILD_ALL_MIN_JS); \
+		echo "" >> $(BUILD_ALL_MIN_JS); \
+	done
+
 $(PUBLIC_ALL_JS): $(BUILD_ALL_JS)
 	mkdir -p $(PUBLIC)/js/
 	cp $(BUILD_ALL_JS) $(PUBLIC_ALL_JS)
+
+$(PUBLIC_ALL_MIN_JS): $(BUILD_ALL_MIN_JS)
+	mkdir -p $(PUBLIC)/js/
+	cp $(BUILD_ALL_MIN_JS) $(PUBLIC_ALL_MIN_JS)

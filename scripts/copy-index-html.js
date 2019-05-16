@@ -15,7 +15,7 @@ var config = (function() {
 	return {
 		dev: {
 			ctApi: {
-				baseUrl: 'http://localhost:3600',
+				baseUrl: 'https://api.cryptoterminal.eu',
 			},
 		},
 		prod: {
