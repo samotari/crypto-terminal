@@ -152,4 +152,76 @@ var manager = module.exports = {
 		], done);
 	},
 
+	// Execute a function in the context of the current browser page.
+	evaluateFn: function(options, cb) {
+
+		manager.page.evaluate(function(evaluateOptions) {
+			return new Promise(function(resolve, reject) {
+				try {
+					(function() {
+						if (typeof evaluateOptions !== 'object') {
+							throw new Error('Invalid argument ("evaluateOptions"): Object expected');
+						}
+						if (typeof evaluateOptions.args === 'undefined') {
+							throw new Error('Missing required option ("args")');
+						}
+						if (typeof evaluateOptions.fn === 'undefined') {
+							throw new Error('Missing required option ("fn")');
+						}
+						if (typeof evaluateOptions.isAsync === 'undefined') {
+							throw new Error('Missing required option ("isAsync")');
+						}
+						if (typeof evaluateOptions.fn !== 'string') {
+							throw new Error('Invalid option ("fn"): String expected');
+						}
+						if (!(evaluateOptions.args instanceof Array)) {
+							throw new Error('Missing required option ("args"): Array expected');
+						}
+						evaluateOptions.isAsync = evaluateOptions.isAsync === true;
+						// Find the test function in the context of the page.
+						var fn = (function() {
+							var parts = evaluateOptions.fn.split('.');
+							var parent = window;
+							while (parts.length > 1) {
+								parent = parent[parts.shift()];
+							}
+							var fn = parent[parts[0]];
+							if (typeof fn === 'undefined') {
+								throw new Error('Function does not exist: "' + evaluateOptions.fn + '"');
+							}
+							// Bind the function to the parent context.
+							return function() {
+								return fn.apply(parent, arguments);
+							};
+						})();
+						if (evaluateOptions.isAsync) {
+							// Asynchronous execution.
+							var done = function() {
+								var args = Array.prototype.slice.call(arguments);
+								resolve(args);
+							};
+							var args = evaluateOptions.args.concat(done);
+							fn.apply(undefined, args);
+						} else {
+							// Synchronous execution.
+							var thrownError;
+							try {
+								var result = fn.apply(undefined, evaluateOptions.args);
+							} catch (error) {
+								return resolve([error]);
+							}
+							return resolve([null, result]);
+						}
+					})();
+				} catch (error) {
+					return reject(error);
+				}
+			});
+		}, options)
+			.then(function(args) {
+				cb.apply(undefined, args);
+			})
+			.catch(cb);
+	},
+
 };
