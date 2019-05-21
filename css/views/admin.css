@@ -6,7 +6,7 @@
 }
 .view.admin .slider-item {
 	box-sizing: border-box;
-	padding: 2rem;
+	padding: 1rem;
 }
 .view.admin .secondary-menu-item {
 	display: none;
@@ -52,8 +52,6 @@
 	font-style: normal;
 	font-size: 1.2rem;
 	margin-bottom: 1rem;
-}
-.view.admin .slider-item.general-settings .set-pin.button {
 }
 .view.admin select {
 	height: auto;

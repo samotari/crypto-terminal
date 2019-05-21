@@ -95,13 +95,15 @@ $(BUILD)/css/*.min.css: $(CSS)/*.css
 	mkdir -p $(BUILD)/css
 	$(BIN)/postcss $^ --ext .min.css --dir $(BUILD)/css
 
-$(BUILD)/css/views/*.min.css: $(CSS)/views/*.css
-	mkdir -p $(BUILD)/css/views
-	$(BIN)/postcss $^ --ext .min.css --dir $(BUILD)/css/views
-
-$(BUILD)/css/themes/*.min.css: $(CSS)/themes/*.css
-	mkdir -p $(BUILD)/css/themes
-	$(BIN)/postcss $^ --ext .min.css --dir $(BUILD)/css/themes
+$(BUILD)/css/**/*.min.css:$(CSS)/**/*.css
+	for input in $^; do \
+		dir=$$(dirname $(BUILD)/$$input); \
+		output="$$dir/$$(basename $$input .css).min.css"; \
+		if [ ! -f $$output ] || [ $$output -ot $$input ]; then \
+			mkdir -p $$dir; \
+			$(BIN)/postcss $$input --output $$output; \
+		fi; \
+	done
 
 APP_CSS_FILES=$(CSS)/fonts.css\
 $(CSS)/reset.css\
@@ -119,9 +121,9 @@ $(CSS)/slider.css\
 $(CSS)/result-indicator.css\
 $(CSS)/views/*.css\
 $(CSS)/themes/*.css\
-$(CSS)/responsive.css
+$(CSS)/responsive/*.css
 APP_CSS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.css, %.min.css, $(APP_CSS_FILES)))
-$(BUILD_ALL_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/views/*.min.css $(BUILD)/css/themes/*.min.css
+$(BUILD_ALL_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/**/*.min.css
 	rm -f $(BUILD_ALL_CSS)
 	for file in $(APP_CSS_MIN_FILES); do \
 		cat $$file >> $(BUILD_ALL_CSS); \

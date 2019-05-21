@@ -13,7 +13,7 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
-	padding: 1rem 1rem 7rem 1rem;
+	padding: 1rem 1rem 6rem 1rem;
 }
 .view.getting-started .getting-started-page-title {
 	font-size: 1.6rem;

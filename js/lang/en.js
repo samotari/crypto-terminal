@@ -29,7 +29,7 @@ app.lang['en'] = (function() {
 		'getting-started.buttons.continue': 'Next',
 		'getting-started.welcome.title': 'Welcome!',
 		'getting-started.welcome.instructions.1': 'CryptoTerminal is a payment terminal. It is not a wallet application. It is designed for you to easily receive payments while keeping your private keys stored safely offline or in a hardware wallet.',
-		'getting-started.welcome.instructions.2': 'Press the green button below to get started.',
+		'getting-started.welcome.instructions.2': 'Press the green button to get started.',
 		'getting-started.welcome.start': 'Start',
 		'getting-started.welcome.skip': 'Skip guided setup',
 		'getting-started.welcome.skip-confirm': 'Are you sure you want to skip the guided setup process?',
