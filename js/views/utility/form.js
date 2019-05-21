@@ -140,10 +140,10 @@ app.views.utility.Form = (function() {
 
 			var data = this.getFormData();
 
-			// Set defaults.
+			// Add missing data from inputs.
 			_.each(this.inputs, function(input) {
-				if (_.isUndefined(data[input.name]) && !_.isUndefined(input.default)) {
-					data[input.name] = input.default;
+				if (_.isUndefined(data[input.name]) && !_.isUndefined(input.value)) {
+					data[input.name] = input.value;
 				}
 			});
 
