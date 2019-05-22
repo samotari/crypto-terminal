@@ -1,6 +1,8 @@
 # Changelog
 
 * TBD:
+  * Landscape UI improvements
+  * Skip choose payment method screen when only one configured
   * Removed Monero
 * v1.4.0:
   * Pay by scanning a paper wallet (using camera or NFC)
