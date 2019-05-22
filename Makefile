@@ -17,12 +17,14 @@ BUILD_DEPS_JS=$(BUILD)/dependencies.js
 BUILD_DEPS_MIN_JS=$(BUILD)/dependencies.min.js
 BUILD_ALL_JS=$(BUILD)/all.js
 BUILD_ALL_MIN_JS=$(BUILD)/all.min.js
-BUILD_ALL_CSS=$(BUILD)/all.min.css
+BUILD_ALL_CSS=$(BUILD)/all.css
+BUILD_ALL_MIN_CSS=$(BUILD)/all.min.css
 CSS=css
 IMAGES=images
 JS=js
 PUBLIC=www
-PUBLIC_ALL_CSS=$(PUBLIC)/css/all.min.css
+PUBLIC_ALL_CSS=$(PUBLIC)/css/all.css
+PUBLIC_ALL_MIN_CSS=$(PUBLIC)/css/all.min.css
 PUBLIC_ALL_JS=$(PUBLIC)/js/all.js
 PUBLIC_ALL_MIN_JS=$(PUBLIC)/js/all.min.js
 SCRIPTS=scripts
@@ -52,15 +54,16 @@ sounds
 
 app: config.xml\
 $(PUBLIC)/index.html\
-$(PUBLIC_ALL_CSS)\
 fonts\
 images\
 sounds
 
 dev: app\
+$(PUBLIC_ALL_CSS)\
 $(PUBLIC_ALL_JS)
 
 prod: app\
+$(PUBLIC_ALL_MIN_CSS)\
 $(PUBLIC_ALL_MIN_JS)
 
 clean:
@@ -88,14 +91,14 @@ config.xml: config-template.xml package.json
 	node $(SCRIPTS)/copy-config-xml.js
 
 $(PUBLIC)/index.html: index.html package.json html/**/*.html html/*.html
-	mkdir -p $(PUBLIC)/
+	mkdir -p $$(dirname $@)
 	node $(SCRIPTS)/copy-index-html.js
 
 $(BUILD)/css/*.min.css: $(CSS)/*.css
-	mkdir -p $(BUILD)/css
+	mkdir -p $$(dirname $@)
 	$(BIN)/postcss $^ --ext .min.css --dir $(BUILD)/css
 
-$(BUILD)/css/**/*.min.css:$(CSS)/**/*.css
+$(BUILD)/css/**/*.min.css: $(CSS)/**/*.css
 	for input in $^; do \
 		dir=$$(dirname $(BUILD)/$$input); \
 		output="$$dir/$$(basename $$input .css).min.css"; \
@@ -123,19 +126,33 @@ $(CSS)/views/*.css\
 $(CSS)/themes/*.css\
 $(CSS)/responsive/*.css
 APP_CSS_MIN_FILES=$(addprefix $(BUILD)/, $(patsubst %.css, %.min.css, $(APP_CSS_FILES)))
-$(BUILD_ALL_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/**/*.min.css
+
+$(BUILD_ALL_CSS): $(CSS)/*.css $(CSS)/**/*.css
+	mkdir -p $$(dirname $@)
 	rm -f $(BUILD_ALL_CSS)
-	for file in $(APP_CSS_MIN_FILES); do \
+	for file in $(APP_CSS_FILES); do \
 		cat $$file >> $(BUILD_ALL_CSS); \
 		echo "" >> $(BUILD_ALL_CSS); \
 	done
 
+$(BUILD_ALL_MIN_CSS): $(BUILD)/css/*.min.css $(BUILD)/css/**/*.min.css
+	mkdir -p $$(dirname $@)
+	rm -f $(BUILD_ALL_MIN_CSS)
+	for file in $(APP_CSS_MIN_FILES); do \
+		cat $$file >> $(BUILD_ALL_MIN_CSS); \
+		echo "" >> $(BUILD_ALL_MIN_CSS); \
+	done
+
 $(PUBLIC_ALL_CSS): $(BUILD_ALL_CSS)
-	mkdir -p $(PUBLIC)/css/
+	mkdir -p $$(dirname $@)
 	cp $(BUILD_ALL_CSS) $(PUBLIC_ALL_CSS)
 
+$(PUBLIC_ALL_MIN_CSS): $(BUILD_ALL_MIN_CSS)
+	mkdir -p $$(dirname $@)
+	cp $(BUILD_ALL_MIN_CSS) $(PUBLIC_ALL_MIN_CSS)
+
 $(BUILD_DEPS)/js/bitcoin.js: node_modules/bitcoinjs-lib/src/index.js
-	mkdir -p $(BUILD_DEPS)/js
+	mkdir -p $$(dirname $@)
 	$(BIN)/browserify \
 		--entry node_modules/bitcoinjs-lib/src/index.js \
 		--standalone bitcoin \
@@ -143,7 +160,7 @@ $(BUILD_DEPS)/js/bitcoin.js: node_modules/bitcoinjs-lib/src/index.js
 		--outfile $(BUILD_DEPS)/js/bitcoin.js
 
 $(BUILD_DEPS)/js/bs58.js: node_modules/bs58/index.js
-	mkdir -p $(BUILD_DEPS)/js
+	mkdir -p $$(dirname $@)
 	$(BIN)/browserify \
 		--entry $^ \
 		--standalone $$(basename $@ .js) \
@@ -151,7 +168,7 @@ $(BUILD_DEPS)/js/bs58.js: node_modules/bs58/index.js
 		--outfile $@
 
 $(BUILD_DEPS)/js/Buffer.js: exports/buffer.js
-	mkdir -p $(BUILD_DEPS)/js
+	mkdir -p $$(dirname $@)
 	$(BIN)/browserify \
 		--entry $^ \
 		--standalone $$(basename $@ .js) \
@@ -159,11 +176,11 @@ $(BUILD_DEPS)/js/Buffer.js: exports/buffer.js
 		--outfile $@
 
 $(BUILD_DEPS)/js/QRCode.js: node_modules/qrcode/lib/browser.js
-	mkdir -p $(BUILD_DEPS)/js
+	mkdir -p $$(dirname $@)
 	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
 
 $(BUILD_DEPS)/js/querystring.js: exports/querystring.js
-	mkdir -p $(BUILD_DEPS)/js
+	mkdir -p $$(dirname $@)
 	$(BIN)/browserify --entry $^ --standalone $$(basename $@ .js) --outfile $@
 
 $(BUILD_DEPS)/js/bitcoin.min.js: $(BUILD_DEPS)/js/bitcoin.js
@@ -298,9 +315,9 @@ $(BUILD_ALL_MIN_JS): $(BUILD_DEPS_MIN_JS) $(BUILD)/js/*.min.js $(BUILD)/js/**/*.
 	done
 
 $(PUBLIC_ALL_JS): $(BUILD_ALL_JS)
-	mkdir -p $(PUBLIC)/js/
+	mkdir -p $$(dirname $@)
 	cp $(BUILD_ALL_JS) $(PUBLIC_ALL_JS)
 
 $(PUBLIC_ALL_MIN_JS): $(BUILD_ALL_MIN_JS)
-	mkdir -p $(PUBLIC)/js/
+	mkdir -p $$(dirname $@)
 	cp $(BUILD_ALL_MIN_JS) $(PUBLIC_ALL_MIN_JS)
