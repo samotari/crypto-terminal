@@ -127,6 +127,7 @@ app.lang['en'] = (function() {
 		'recommended-mobile-wallets.section-title.ios': 'For iOS devices',
 
 		'screen-saver.instructions': '(tap anywhere to activate)',
+		'screen-saver.accepted-here': 'Accepted Here',
 	};
 
 })();

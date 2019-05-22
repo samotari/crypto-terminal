@@ -214,7 +214,7 @@ app.config = (function() {
 					return app.i18n.t('settings.screen-saver.description');
 				},
 				type: 'checkbox',
-				default: false,
+				default: true,
 			},
 		],
 		recommendations: {

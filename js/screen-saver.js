@@ -28,6 +28,7 @@ app.screenSaver = (function() {
 			app.on('notBusy', this.resume);
 			app.settings.on('change:screenSaver', this.toggle);
 			this.toggle();
+			this.$screenSaver = $('#screen-saver');
 		},
 
 		toggle: function() {
@@ -70,14 +71,39 @@ app.screenSaver = (function() {
 
 		show: function() {
 
-			$('#cover-text').text(app.i18n.t('screen-saver.instructions'));
+			this.renderView();
 			$('html').addClass('screen-saver-on');
 		},
 
 		hide: function() {
 
 			$('html').removeClass('screen-saver-on');
-			$('#cover-text').text('');
+			this.closeView();
+		},
+
+		renderView: function() {
+
+			if (!this.$screenSaver) return;
+			var View = app.views.ScreenSaver;
+			var view = this.view = new View();
+			var $el = $('<div/>', {
+				class: 'view'
+			});
+			if (View.prototype.className) {
+				$el.addClass(View.prototype.className);
+			}
+			this.$screenSaver.empty().append($el);
+			view.setElement($el).render();
+		},
+
+		closeView: function() {
+
+			if (this.view) {
+				this.view.close();
+			}
+			if (this.$screenSaver) {
+				this.$screenSaver.empty();
+			}
 		},
 
 		isActive: function() {

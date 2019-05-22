@@ -1,0 +1,9 @@
+<div class="screen-saver-payment-methods has-{{acceptedCryptoCurrencies.length}}">
+	<div class="screen-saver-payment-methods-inner">
+	{{#each acceptedCryptoCurrencies}}
+		<div class="payment-method {{.}}"></div>
+	{{/each}}
+	</div>
+</div>
+<div class="screen-saver-accepted-here">{{i18n "screen-saver.accepted-here"}}</div>
+<div class="screen-saver-hide-instructions">{{i18n "screen-saver.instructions"}}</div>

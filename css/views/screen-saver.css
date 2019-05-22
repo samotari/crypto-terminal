@@ -1,0 +1,107 @@
+#screen-saver {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+.view.screen-saver {
+	padding: 0;
+}
+html.screen-saver-on #screen-saver {
+	display: block;
+}
+.screen-saver-accepted-here {
+	position: absolute;
+	left: 0;
+	top: 2rem;
+	width: 100%;
+	height: 3rem;
+	line-height: 3rem;
+	color: #777;
+	font-weight: 700;
+	font-size: 3rem;
+	font-style: italic;
+	text-align: center;
+	text-transform: uppercase;
+}
+.screen-saver-payment-methods {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+	padding: 6rem 0 5rem 0;
+}
+.screen-saver-payment-methods-inner {
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+}
+.screen-saver-payment-methods .payment-method {
+	display: block;
+	margin: 0 auto;
+}
+.screen-saver-payment-methods.has-1 .payment-method {
+	width: 20rem;
+	height: 20rem;
+	background-size: 20rem;
+}
+.screen-saver-payment-methods.has-1 .payment-method.bitcoinLightning:after {
+	right: -3.2rem;
+	bottom: -2.1rem;
+	width: 8rem;
+	height: 13.6rem;
+	background-size: 8rem 13.6rem;
+}
+.screen-saver-payment-methods.has-1 .payment-method.bitcoinLightning {
+	position: relative;
+	left: -1rem;
+}
+.screen-saver-payment-methods.has-2 .payment-method {
+	width: 14rem;
+	height: 14rem;
+	background-size: 14rem;
+}
+.screen-saver-payment-methods.has-2 .payment-method.bitcoinLightning:after {
+	right: -2.6rem;
+	bottom: -1.5rem;
+	width: 5.8rem;
+	height: 9.8rem;
+	background-size: 5.8rem 9.8rem;
+}
+.screen-saver-payment-methods.has-2 .payment-method + .payment-method {
+	margin-top: 1rem;
+}
+.screen-saver-payment-methods.has-3 .payment-method {
+	display: inline-block;
+	width: 10rem;
+	height: 10rem;
+	background-size: 10rem;
+}
+.screen-saver-payment-methods.has-3 .payment-method.bitcoinLightning:after {
+	right: -1.5rem;
+	bottom: -.9rem;
+	width: 3.8rem;
+	height: 6.5rem;
+	background-size: 3.8rem 6.5rem;
+}
+.screen-saver-payment-methods.has-3 .payment-method + .payment-method {
+	float: left;
+	margin-left: 1rem;
+}
+.screen-saver-payment-methods.has-3 .payment-method:first-child {
+	display: block;
+}
+.screen-saver-hide-instructions {
+	position: absolute;
+	left: 0;
+	bottom: 2rem;
+	top: initial;
+	width: 100%;
+	height: 2rem;
+	line-height: 2rem;
+	text-align: center;
+	font-style: italic;
+	font-weight: 100;
+}
