@@ -221,14 +221,19 @@ app.config = (function() {
 			mobileWallets: {
 				android: [
 					{
-						name: 'Coinomi',
-						paymentMethods: ['bitcoinTestnet', 'litecoin'],
-						url: 'https://play.google.com/store/apps/details?id=com.coinomi.wallet',
-					},
-					{
 						name: 'Eclair Wallet',
 						paymentMethods: ['bitcoinLightning'],
 						url: 'https://play.google.com/store/apps/details?id=fr.acinq.eclair.wallet.mainnet2',
+					},
+					{
+						name: 'Mycelium',
+						paymentMethods: ['bitcoin'],
+						url: 'https://play.google.com/store/apps/details?id=com.mycelium.wallet',
+					},
+					{
+						name: 'Coinomi',
+						paymentMethods: ['bitcoin', 'bitcoinTestnet', 'litecoin'],
+						url: 'https://play.google.com/store/apps/details?id=com.coinomi.wallet',
 					},
 					{
 						name: 'Samourai Wallet',
@@ -238,13 +243,13 @@ app.config = (function() {
 				],
 				ios: [
 					{
-						name: 'BRD (formerly "BreadWallet")',
+						name: 'BreadWallet (BRD)',
 						paymentMethods: ['bitcoin'],
 						url: 'https://play.google.com/store/apps/details?id=com.breadwallet',
 					},
 					{
 						name: 'Coinomi',
-						paymentMethods: ['bitcoinTestnet'],
+						paymentMethods: ['bitcoin', 'bitcoinTestnet'],
 						url: 'https://itunes.apple.com/us/app/coinomi-wallet/id1333588809?mt=8',
 					},
 					{
