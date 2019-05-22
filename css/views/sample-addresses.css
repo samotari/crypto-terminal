@@ -8,6 +8,7 @@
 .sample-addresses-instructions {
 	font-size: 1rem;
 	line-height: 160%;
+	margin-bottom: 1rem;
 }
 .sample-addresses-content {
 	width: 100%;
@@ -20,12 +21,36 @@
 }
 .sample-addresses-content-address {
 	position: relative;
+	height: 2rem;
+	white-space: nowrap;
+}
+.sample-addresses-content-address + .sample-addresses-content-address {
+	margin-top: .2rem;
+}
+.sample-addresses-content-address-index,
+.sample-addresses-content-address-text {
+	display: inline-block;
+	vertical-align: top;
+	color: #222;
+	height: 100%;
+	line-height: 2rem;
+	padding: 0 .3rem;
+	box-sizing: border-box;
 }
 .sample-addresses-content-address-index {
-	position: relative;
-	left: 0;
-	top: 0;
-	font-size: .65rem;
-	margin-right: .2rem;
-	color: #aaa;
+	font-size: .9rem;
+	font-weight: 400;
+	background: #eee;
+}
+.sample-addresses-content-address-text {
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: .1rem;
+	background: #f7f7f7;
+}
+.sample-addresses-content-address:nth-child(even) .sample-addresses-content-address-index {
+	background: #ddd;
+}
+.sample-addresses-content-address:nth-child(even) .sample-addresses-content-address-text {
+	background: #e7e7e7;
 }

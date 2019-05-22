@@ -3,7 +3,7 @@
 	padding-bottom: 4rem;
 }
 .view.payment-detail .page-title {
-	margin: 2rem 0;
+	margin: 1rem 0;
 }
 .view.payment-detail .payment-details-info-item {
 	display: flex;
@@ -27,14 +27,14 @@
 .view.payment-detail .payment-details-info-item-value-timestamp,
 .view.payment-detail .payment-details-amount-crypto {
 	font-size: .9rem;
-	font-weight: 100;
+	font-weight: 200
 	margin-top: .2rem;
 }
 .view.payment-detail .payment-details-info-item-value.status {
 	display: inline-block;
 	vertical-align: top;
 	font-size: 1.1rem;
-	font-weight: 100;
+	font-weight: 200
 	background-color: rgba(210, 210, 210, 0.5);
 	border-radius: .5rem;
 	padding: .5rem 1rem;

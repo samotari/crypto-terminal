@@ -54,6 +54,7 @@ html.screen-saver-on #view {
 	margin: 0 auto;
 }
 .view-inner {
+	width: 100%;
 	margin: 0 auto;
 }
 .page-title {
@@ -126,7 +127,7 @@ html.screen-saver-on #view {
 #cover-text {
 	position: relative;
 	top: -1rem;
-	font-weight: 100;
+	font-weight: 200
 	font-style: italic;
 	text-align: center;
 }

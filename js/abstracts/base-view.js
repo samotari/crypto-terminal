@@ -74,6 +74,12 @@ app.abstracts.BaseView = (function() {
 			return this;
 		},
 
+		hasSecondaryControls: function() {
+
+			var html = this.getTemplateHtml();
+			return /class="secondary-controls[ "]/.test(html);
+		},
+
 		onRender: function() {
 			// Left empty intentionally.
 			// Override as needed.
@@ -92,6 +98,12 @@ app.abstracts.BaseView = (function() {
 
 		getTemplate: function() {
 
+			var html = this.getTemplateHtml();
+			return Handlebars.compile(html);
+		},
+
+		getTemplateHtml: function() {
+
 			var id = _.result(this, 'template');
 
 			if (!id) {
@@ -104,8 +116,7 @@ app.abstracts.BaseView = (function() {
 				throw new Error('Missing template: "' + id + '"');
 			}
 
-			var html = $template && $template.html() || '';
-			return Handlebars.compile(html);
+			return $template && $template.html() || '';
 		},
 
 		setElement: function() {

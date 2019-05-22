@@ -1,3 +1,6 @@
+.view.display-payment-address.has-secondary-controls {
+	padding: 0;
+}
 .view.display-payment-address .info {
 	position: absolute;
 	left: 0;
@@ -6,19 +9,21 @@
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 7.5rem;
+	height: 7rem;
 	box-sizing: border-box;
 }
 .view.display-payment-address .info-inner {
 	width: 100%;
 }
-.view.display-payment-address .address {
-	position: relative;
+.view.display-payment-address .address-wrap {
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
-	padding-top: 5.5rem;/* (height of the .amount-wrap element) + extra padding */
-	padding-bottom: 9.4rem;/* (height of the .amount-wrap element) + extra padding */
+	padding: 7rem 1rem 8rem 1rem;
+}
+.view.display-payment-address .address {
+	width: 100%;
+	height: 100%;
 }
 .view.display-payment-address .address-instructions {
 	position: absolute;
@@ -27,8 +32,9 @@
 	width: 100%;
 	height: 3rem;
 	line-height: 3rem;
+	font-size: 1.1rem;
 	text-align: center;
-	padding-bottom: 7.5rem;
+	padding-bottom: 5rem;
 	margin: 0;
 }
 .view.display-payment-address .message {

@@ -18,7 +18,7 @@ app.views.exportPaymentHistoryDialog = (function() {
 			'keyup #export-payment-history-dialog-fileName': 'onFileNameInputKeyup'
 		},
 
-		settings: [
+		inputs: [
 			{
 				name: 'fileName',
 				id: 'export-payment-history-dialog-fileName',
@@ -27,20 +27,21 @@ app.views.exportPaymentHistoryDialog = (function() {
 				},
 				type: 'text',
 				required: true,
+				visible: true,
 				value: function() {
 					var today = app.util.formatDate(new Date(), app.config.paymentHistory.export.dateFormat);
 					var fileExtension = app.config.paymentHistory.export.extension;
 					var defaultFileName = app.i18n.t('payment-history.export.dialog.default-file-name') + '-' + today + fileExtension;
 					return defaultFileName;
-				}
-			}
+				},
+			},
 		],
 
 		initialize: function() {
 
 			this.render().$el.appendTo($('body'));
 			this.preparePaymentHistory();
-			var settingFileName = _.findWhere(this.settings, {name: 'fileName'});
+			var settingFileName = _.findWhere(this.inputs, {name: 'fileName'});
 			var defaultFileName = _.result(settingFileName, 'value');
 			this.setFileName(defaultFileName);
 		},
@@ -49,8 +50,8 @@ app.views.exportPaymentHistoryDialog = (function() {
 
 			return {
 				title: this.options.title,
-				settings: this.settings
-			}
+				inputs: this.inputs,
+			};
 		},
 
 		getPaymentHistory: function() {

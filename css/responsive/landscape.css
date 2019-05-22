@@ -12,6 +12,13 @@
 		padding-top: 0;
 		padding-left: 4.1rem;
 	}
+	.view.has-secondary-controls {
+		padding: 1rem 5rem 1rem 1rem;
+	}
+	.page-description {
+		font-size: 1.1rem;
+		margin-bottom: 1rem;
+	}
 	/*  Base  */
 
 
@@ -76,20 +83,101 @@
 	/*  Slider  */
 
 
+	/*  Amount  */
+	.amount-wrap {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.amount,
+	.amount-value,
+	.amount-currency {
+		display: inline;
+		width: auto;
+		height: 100%;
+		line-height: 3.2rem;
+	}
+	.amount-value,
+	.amount-currency {
+		float: none;
+	}
+	.amount-value {
+		padding-right: 0;
+	}
+	.amount.crypto {
+		position: relative;
+		top: .1rem;
+		height: 100%;
+		margin-left: 1.6rem;
+	}
+	.amount.crypto:before {
+		position: absolute;
+		right: 100%;
+		top: 0;
+		content: '=';
+		line-height: 3.2rem;
+		margin-right: .4rem;
+	}
+	/*  Amount  */
+
+
 	/*  #pay  */
-	.view.pay {
-		padding: 1rem 5rem 1rem 1rem;
+	.view.pay.has-secondary-controls {
+		padding: 0 5rem 0 1rem;
+	}
+	.view.pay .amount-wrap {
+		margin-bottom: .5rem;
+	}
+	.view.pay .page-description {
+		margin-top: 1rem;
 	}
 	/*  #pay  */
+
+
+	/*  #display-payment-address  */
+	.view.display-payment-address {
+		padding: 0;
+	}
+	.view.display-payment-address .info {
+		position: relative;
+		top: .1rem;
+		height: 3.2rem;
+		padding: 0 5rem 0 1rem;
+	}
+	.view.display-payment-address .info .amount-wrap {
+		height: 100%;
+	}
+	.view.display-payment-address .address-wrap {
+		padding: 3.2rem 5rem 3.2rem 1rem;
+	}
+	.view.display-payment-address .address-instructions {
+		padding: 0;
+	}
+	.view.display-payment-address .address-instructions-inner {
+		padding: 0 5rem 1rem 1rem;
+	}
+	/*  #display-payment-address  */
 
 
 	/*  #getting-started  */
 	.view-getting-started .header-text {
 		display: none;
 	}
-	.view.getting-started .getting-started-page {
-		padding: 1rem 6rem 1rem 1rem;
-	}
 	/*  #getting-started  */
+
+
+	/*  Export Payment History  */
+	.export-payment-history-dialog {
+		padding: 1rem 4rem 1rem 1rem;
+	}
+	/*  Export Payment History  */
+
+
+	/*  Payment details  */
+	.view.payment-detail .payment-method {
+		right: 7rem;
+		bottom: 1rem;
+	}
+	/*  Payment details  */
 
 }

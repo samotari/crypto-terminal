@@ -138,6 +138,7 @@ app.views.Main = (function() {
 					$el.addClass(View.prototype.className);
 				}
 				view = new View(options);
+				$el.toggleClass('has-secondary-controls', view.hasSecondaryControls());
 				this.$view.empty().append($el);
 				view.setElement($el).render();
 				this.views[name] = {

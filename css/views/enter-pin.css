@@ -9,7 +9,6 @@
 	height: 100%;
 	background: #fff;
 	box-sizing: border-box;
-	padding-bottom: 4rem;
 }
 .enter-pin-keys {
 	height: 2rem;
@@ -20,7 +19,7 @@
 }
 .enter-pin-keys:empty:after {
 	content: '-';
-	font-weight: 100;
+	font-weight: 200
 }
 .enter-pin-inner {
 	margin: 0 auto;

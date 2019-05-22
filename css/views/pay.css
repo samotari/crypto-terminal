@@ -1,19 +1,20 @@
 .view.pay {
 	display: flex;
 	align-items: center;
-	padding: 0;
-	padding-bottom: 5rem;/* height of buttons */
 }
 .view.pay .page-description {
-	margin: 0;
+	margin: 2rem 0 0 0;
 }
 .view.pay .amount-wrap {
-	margin-bottom: .5rem;
+	margin-bottom: 2rem;
 }
 .view.pay .presets {
 	text-align: center;
-	margin-bottom: 2rem;
+	margin-bottom: 1rem;
 }
 .view.pay .preset.button {
 	font-size: 1.1rem;
+}
+.view.pay .amount {
+	font-size: 1.5rem;
 }

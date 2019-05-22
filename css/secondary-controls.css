@@ -1,3 +1,6 @@
+.view.has-secondary-controls {
+	padding: 1rem 1rem 5rem 1rem;
+}
 .secondary-controls {
 	position: absolute;
 	left: 0;
