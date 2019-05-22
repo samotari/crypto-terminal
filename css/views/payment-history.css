@@ -44,7 +44,7 @@
 .view.admin .payment-history-item-timestamp,
 .view.admin .payment-history-item-amount-crypto {
 	font-size: 0.9rem;
-	font-weight: 200
+	font-weight: 200;
 	margin-top: .2rem;
 }
 .view.admin .payment-history-status-and-timestamp {

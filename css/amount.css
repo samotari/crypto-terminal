@@ -37,7 +37,7 @@
 	display: inline-block;
 }
 .amount.crypto .amount-value {
-	font-weight: 200
+	font-weight: 200;
 }
 .amount.crypto .amount-currency {
 	font-weight: 500;

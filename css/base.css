@@ -127,7 +127,7 @@ html.screen-saver-on #view {
 #cover-text {
 	position: relative;
 	top: -1rem;
-	font-weight: 200
+	font-weight: 200;
 	font-style: italic;
 	text-align: center;
 }

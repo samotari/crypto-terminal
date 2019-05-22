@@ -17,19 +17,20 @@
 
 /*  General Settings  */
 .view.admin .form-group.configurableCryptoCurrencies .button.payment-method {
-	width: 3.2rem;
-	height: 3.2rem;
-	background-size: 3.2rem;
-	opacity: 0.5;
+	width: 5rem;
+	height: 5rem;
+	background-size: 4.5rem;
+	opacity: .33;
+	box-sizing: border-box;
+	padding: 0;
 	margin: 0 .4rem .4rem 0;
-	padding: .5rem;
 }
 .view.admin .form-group.configurableCryptoCurrencies .button.payment-method.bitcoinLightning:after {
-	right: -.4rem;
-	bottom: -.4rem;
-	width: 2.4rem;
-	height: 2.4rem;
-	background-size: 2.4rem;
+	right: -.5rem;
+	bottom: -.15rem;
+	width: 1.7rem;
+	height: 2.89rem;
+	background-size: 2rem 2.89rem;
 }
 .view.admin .form-group.configurableCryptoCurrencies input[type="checkbox"] {
 	position: absolute;

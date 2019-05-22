@@ -1,6 +1,19 @@
 <form>
 	<div class="form">
 		<div class="form-group settings">
+			{{#each inputs}}
+				{{> formFieldRow .}}
+			{{/each}}
+		</div>
+		<div class="form-group configurableCryptoCurrencies">
+			<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
+			{{#each paymentMethods}}
+			<input id="settings-configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
+			<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}" data-key="{{key}}"></label>
+			{{/each}}
+			<div class="clearfix"></div>
+		</div>
+		<div class="form-group other">
 			<div class="form-row">
 				<div class="form-label">{{i18n "admin.pin.label"}}</div>
 				<div class="form-field">
@@ -15,17 +28,6 @@
 					</div>
 				</div>
 			</div>
-			{{#each inputs}}
-				{{> formFieldRow .}}
-			{{/each}}
-		</div>
-		<div class="form-group configurableCryptoCurrencies">
-			<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
-			{{#each paymentMethods}}
-			<input id="settings-configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
-			<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}" data-key="{{key}}"></label>
-			{{/each}}
-			<div class="clearfix"></div>
 		</div>
 	</div>
 </form>
