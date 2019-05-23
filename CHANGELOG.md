@@ -1,6 +1,6 @@
 # Changelog
 
-* TBD:
+* v1.5.0:
   * Screen saver now shows accepted payment methods
   * Landscape UI improvements
   * Skip choose payment method screen when only one configured
