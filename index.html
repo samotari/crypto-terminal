@@ -10,7 +10,7 @@
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss:; script-src 'self' 'unsafe-eval' <%= config.ctApi.baseUrl %>/primus/primus.js;">
 <% } %>
 	<title><%= info.name %></title>
-<% if (target === 'dev' || target === 'test') { %>
+<% if (target === 'dev') { %>
 	<link href="css/all.css" rel="stylesheet">
 <% } else { %>
 	<link href="css/all.min.css" rel="stylesheet">
@@ -34,7 +34,7 @@
 	<script type="text/json" id="json-config"><%= JSON.stringify(config) %></script>
 	<script src="cordova.js"></script>
 	<script id="primus-library" src="<%= config.ctApi.baseUrl %>/primus/primus.js"></script>
-<% if (target === 'dev' || target === 'test') { %>
+<% if (target === 'dev') { %>
 	<script src="js/all.js"></script>
 <% } else { %>
 	<script src="js/all.min.js"></script>
