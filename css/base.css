@@ -53,6 +53,9 @@ html.screen-saver-on #view {
 	padding: 1rem;
 	margin: 0 auto;
 }
+.view.has-secondary-controls {
+	padding: 1rem 1rem 6rem 1rem;
+}
 .view-inner {
 	width: 100%;
 	margin: 0 auto;

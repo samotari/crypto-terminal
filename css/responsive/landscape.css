@@ -13,7 +13,7 @@
 		padding-left: 4.1rem;
 	}
 	.view.has-secondary-controls {
-		padding: 1rem 5rem 1rem 1rem;
+		padding: 1rem 6rem 1rem 1rem;
 	}
 	.page-description {
 		font-size: 1.1rem;
@@ -123,7 +123,7 @@
 
 	/*  #pay  */
 	.view.pay.has-secondary-controls {
-		padding: 0 5rem 0 1rem;
+		padding: 0 6rem 0 1rem;
 	}
 	.view.pay .amount-wrap {
 		margin-bottom: .5rem;
@@ -161,7 +161,18 @@
 
 	/*  #getting-started  */
 	.view-getting-started .header-text {
-		display: none;
+		top: initial;
+		bottom: 0;
+		right: 50%;
+		font-size: 1.1rem;
+		transform: rotate(-90deg);
+		-webkit-transform: rotate(-90deg);
+		white-space: nowrap;
+		margin-left: 2rem;
+		padding: 0;
+	}
+	.view.getting-started .slider-item.has-secondary-controls .getting-started-page {
+		padding: 1rem 6rem 1rem 1rem;
 	}
 	/*  #getting-started  */
 

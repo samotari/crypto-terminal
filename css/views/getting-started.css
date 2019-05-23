@@ -1,6 +1,9 @@
 html.keyboard-visible .view.getting-started .secondary-controls {
 	display: none;
 }
+.view-getting-started .header-text {
+	display: block;
+}
 .view.getting-started .slider {
 	padding-top: 0;
 }
@@ -13,6 +16,9 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
+	padding: 1rem;
+}
+.view.getting-started .slider-item.has-secondary-controls .getting-started-page {
 	padding: 1rem 1rem 6rem 1rem;
 }
 .view.getting-started .getting-started-page-title {
@@ -52,19 +58,20 @@ html.keyboard-visible .view.getting-started .secondary-controls {
 		margin-top: 1rem;
 	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method {
-		width: 4.8rem;
-		height: 4.8rem;
-		background-size: 4.8rem;
-		opacity: 0.5;
+		width: 5rem;
+		height: 5rem;
+		background-size: 4.5rem;
+		opacity: .33;
+		box-sizing: border-box;
+		padding: 0;
 		margin: 0 .4rem .4rem 0;
-		padding: .4rem;
 	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies .button.payment-method.bitcoinLightning:after {
-		right: -.8rem;
-		bottom: -.8rem;
-		width: 3.6rem;
-		height: 3.6rem;
-		background-size: 3.6rem;
+		right: -.5rem;
+		bottom: -.15rem;
+		width: 1.7rem;
+		height: 2.89rem;
+		background-size: 2rem 2.89rem;
 	}
 	.view.getting-started .getting-started-choose-payment-methods .form-group.configurableCryptoCurrencies input[type="checkbox"] {
 		position: absolute;

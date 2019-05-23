@@ -97,8 +97,7 @@ app.views.Admin = (function() {
 			this.updateCryptoCurrencySettingsVisibility();
 
 			if (this.options.page) {
-				this.slider.switchToItem(this.options.page);
-				this.setActiveMenuItem(this.options.page);
+				this.goToSubPage(this.options.page);
 			}
 
 			this.updateSecondaryMenuWidth();
@@ -137,6 +136,9 @@ app.views.Admin = (function() {
 		onResize: function() {
 
 			this.updateSecondaryMenuWidth();
+			if (this.options.page) {
+				this.goToSubPage(this.options.page);
+			}
 		},
 
 		updateSecondaryMenuWidth: function() {

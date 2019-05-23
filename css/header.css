@@ -16,13 +16,11 @@ html.screen-saver-on #header {
 	display: none;
 }
 .header-text {
-	display: none;
-}
-.view-getting-started .header-text {
 	position: absolute;
 	left: 0;
 	top: 0;
-	display: block;
+	display: none;
+	font-size: 1.3rem;
 	line-height: 4.1rem;
 	font-weight: 200;
 	padding: 0 1rem;

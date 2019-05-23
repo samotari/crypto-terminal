@@ -100,6 +100,13 @@ app.views.GettingStarted = (function() {
 			}
 		},
 
+		onResize: function() {
+
+			if (this.options.page) {
+				this.goToSubPage(this.options.page);
+			}
+		},
+
 		back: function() {
 
 			var previousItem = this.slider.getPreviousVisibleItem();

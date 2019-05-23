@@ -20,6 +20,7 @@ app.views.Slider = (function() {
 					this.$el.addClass(this.options.key);
 					this.$content = this.$('.slider-item-content');
 					this.$content.append(this.options.contentView.render().el);
+					this.$el.toggleClass('has-secondary-controls', this.options.contentView.hasSecondaryControls());
 				},
 				onClose: function() {
 					if (this.options.contentView) {
