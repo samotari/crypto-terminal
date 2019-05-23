@@ -74,6 +74,18 @@ app.abstracts.BaseView = (function() {
 			return this;
 		},
 
+		renderSubView: function($target, subView) {
+
+			var $el = $('<div/>', {
+				class: 'view',
+			});
+			if (subView.className) {
+				$el.addClass(subView.className);
+			}
+			$target.empty().append($el);
+			subView.setElement($el).render();
+		},
+
 		hasSecondaryControls: function() {
 
 			var html = this.getTemplateHtml();

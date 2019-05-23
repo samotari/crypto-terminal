@@ -41,7 +41,8 @@ app.views.EnterPin = (function() {
 		onRender: function() {
 
 			this.$keys = this.$('.enter-pin-keys');
-			this.numberPadView.setElement(this.$('.number-pad')).render();
+			this.$numberPad = this.$('.enter-pin-number-pad');
+			this.renderSubView(this.$numberPad, this.numberPadView);
 			this.updateKeysDisplay();
 		},
 
@@ -85,9 +86,19 @@ app.views.EnterPin = (function() {
 			}
 		},
 
+		closeNumberPadView: function() {
+
+			if (this.numberPadView) {
+				this.numberPadView.close();
+			}
+			if (this.$numberPad) {
+				this.$numberPad.empty();
+			}
+		},
+
 		onClose: function() {
 
-			this.numberPadView.close();
+			this.closeNumberPadView();
 			$(document).off('click', this.onDocumentClick);
 		}
 

@@ -54,7 +54,7 @@ html.screen-saver-on #view {
 	margin: 0 auto;
 }
 .view.has-secondary-controls {
-	padding: 1rem 1rem 6rem 1rem;
+	padding: 1rem 1rem 5.5rem 1rem;
 }
 .view-inner {
 	width: 100%;
@@ -67,6 +67,7 @@ html.screen-saver-on #view {
 	margin-bottom: 1rem;
 }
 .page-description {
+	font-size: 1.2rem;
 	text-align: center;
 	margin-bottom: 2rem;
 }

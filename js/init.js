@@ -22,6 +22,10 @@ app.onDeviceReady(function() {
 		// Initialize the main view.
 		app.mainView = new app.views.Main();
 
+		app.device.initialize();
+
+		$('html').addClass('loaded');
+
 		// Initialize the router.
 		app.router = new app.Router();
 
@@ -30,9 +34,6 @@ app.onDeviceReady(function() {
 			// Start storing in-app browsing history.
 			Backbone.history.start();
 		}
-
-		$('html').addClass('loaded');
-		app.device.initialize();
 	});
 
 	app.queues.onStart.resume();

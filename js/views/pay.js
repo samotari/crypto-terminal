@@ -47,7 +47,8 @@ app.views.Pay = (function() {
 
 		onRender: function() {
 
-			this.numberPadView.setElement(this.$('.number-pad')).render();
+			this.$numberPad = this.$('.pay-number-pad');
+			this.renderSubView(this.$numberPad, this.numberPadView);
 			this.$amount = this.$('.amount-value');
 			this.$continueButton = this.$('.button.continue');
 			this.updateAmountElement();
@@ -62,6 +63,21 @@ app.views.Pay = (function() {
 			amount = amount.replace(new RegExp('^0([^' + decimalSeparator + '])'), '$1');
 			this.$amount.text(amount);
 			this.$continueButton.toggleClass('disabled', !this.isValidAmount());
+		},
+
+		closeNumberPadView: function() {
+
+			if (this.numberPadView) {
+				this.numberPadView.close();
+			}
+			if (this.$numberPad) {
+				this.$numberPad.empty();
+			}
+		},
+
+		onClose: function() {
+
+			this.closeNumberPadView();
 		},
 
 		continue: function(evt) {

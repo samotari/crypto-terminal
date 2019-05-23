@@ -1,29 +1,36 @@
 .number-pad {
+	display: flex;
+	align-self: center;
+	width: auto;
+	height: auto;
+	margin: 0 auto;
+}
+.number-pad.view {
+	padding: 0;
+}
+.number-pad-keys {
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
 	width: 100%;
-}
-.number-pad-wrap {
-	width: 24rem;
-	max-width: 90%;
-	margin: 0 auto;
+	height: 100%;
 }
 .number-pad-key {
 	float: left;
 	cursor: pointer;
 	display: block;
 	width: 33.3333%;
-	height: 4rem;
-	line-height: 4rem;
+	height: 25%;
+	line-height: 200%;
 	color: #666;
 	font-weight: 400;
-	font-size: 1.2rem;
+	font-size: 1.4rem;
 	text-align: center;
 	border: .15rem solid #efefef;
 	box-shadow: .15rem .15rem .15rem 0 rgba(0,0,0,.14),
 				.3rem .3rem .15rem -.45rem rgba(0,0,0,.2),
 				.15rem .15rem .15rem 0 rgba(0,0,0,.12);
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
 }

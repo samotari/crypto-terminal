@@ -8,9 +8,9 @@ app.views.NumberPad = (function() {
 
 	return app.abstracts.BaseView.extend({
 
-		className: 'number-pad',
-
 		template: '#template-number-pad',
+
+		className: 'number-pad',
 
 		events: {
 			'click .number-pad-key': 'onClickNumberKey',
@@ -41,6 +41,30 @@ app.views.NumberPad = (function() {
 				useDecimal: this.options.decimal,
 				decimalSeparator: this.getDecimalSeparator(),
 			};
+		},
+
+		onRender: function() {
+
+			this.fitToParent();
+		},
+
+		onResize: function() {
+
+			this.fitToParent();
+		},
+
+		fitToParent: function() {
+
+			var $parent = this.$el.parent();
+			var width = Math.min(
+				$parent.width(),
+				$parent.height()
+			);
+			this.$el.css({
+				width: width,
+				height: width,
+			});
+			this.$('.number-pad-key').css('line-height', (width / 4) + 'px');
 		},
 
 		onLongTouchStartNumberKey: function(evt) {
