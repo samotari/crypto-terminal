@@ -12,7 +12,7 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 		template: '#template-getting-started-choose-payment-methods',
 
 		events: {
-			'change input[name="configurableCryptoCurrencies[]"]': 'onChangeConfigurableCryptocurrencies',
+			'change input[name="configurableCryptoCurrencies[]"]': 'process',
 		},
 
 		title: function() {
@@ -40,7 +40,7 @@ app.views.GettingStartedChoosePaymentMethods = (function() {
 			return data;
 		},
 
-		onChangeConfigurableCryptocurrencies: function() {
+		save: function() {
 
 			var data = _.pick(this.getFormData(), 'configurableCryptoCurrencies');
 

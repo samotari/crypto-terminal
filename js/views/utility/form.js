@@ -142,6 +142,14 @@ app.views.utility.Form = (function() {
 
 			// Add missing data from inputs.
 			_.each(this.inputs, function(input) {
+				switch (input.type) {
+					case 'checkbox':
+						// Force checkbox fields to have boolean values.
+						// FALSE = undefined
+						// TRUE = "1"
+						data[input.name] = typeof data[input.name] !== 'undefined';
+						break;
+				}
 				if (_.isUndefined(data[input.name]) && !_.isUndefined(input.value)) {
 					data[input.name] = input.value;
 				}
@@ -158,14 +166,6 @@ app.views.utility.Form = (function() {
 					this.onValidationErrors(validationErrors);
 				} else {
 					// No validation errors.
-					_.each(this.inputs, function(input) {
-						switch (input.type) {
-							case 'checkbox':
-								// Force checkbox fields to have boolean values.
-								data[input.name] = !!data[input.name];
-								break;
-						}
-					});
 					try {
 						// Try saving.
 						this.save(data);

@@ -35,6 +35,7 @@ app.views.AdminPaymentMethodSettings = (function() {
 		renderVerificationView: function() {
 
 			if (!_.isFunction(this.paymentMethod.createVerificationView)) return;
+			if (!this.$verification) return;
 
 			this.closeVerificationView();
 
@@ -45,9 +46,11 @@ app.views.AdminPaymentMethodSettings = (function() {
 					return;
 				}
 
-				this.verificationView = view;
-				this.$verification.append(view.el);
-				view.render();
+				if (this.$verification) {
+					this.verificationView = view;
+					this.$verification.append(view.el);
+					view.render();
+				}
 
 			}, this));
 		},

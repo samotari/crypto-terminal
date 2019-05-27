@@ -1,8 +1,12 @@
 #screen-saver {
-	position: relative;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 500;
 	width: 100%;
 	height: 100%;
 	display: none;
+	background: #fff;
 }
 .view.screen-saver {
 	padding: 0;
@@ -13,7 +17,7 @@ html.screen-saver-on #screen-saver {
 .screen-saver-accepted-here {
 	position: absolute;
 	left: 0;
-	top: 2rem;
+	top: 3rem;
 	z-index: 50;
 	width: 100%;
 	height: 3rem;
@@ -97,7 +101,7 @@ html.screen-saver-on #screen-saver {
 .screen-saver-hide-instructions {
 	position: absolute;
 	left: 0;
-	bottom: 2rem;
+	bottom: 3rem;
 	top: initial;
 	z-index: 50;
 	width: 100%;

@@ -100,3 +100,26 @@ html.theme-dark .enter-pin,
 html.theme-dark .export-payment-history-dialog {
 	background: #111;
 }
+html.theme-dark .sample-addresses-content-address-index,
+html.theme-dark .sample-addresses-content-address-text {
+	color: #e7e7e7;
+}
+html.theme-dark .sample-addresses-content-address-index {
+	background: #333;
+}
+html.theme-dark .sample-addresses-content-address-text {
+	background: #272727;
+}
+html.theme-dark .sample-addresses-content-address:nth-child(even) .sample-addresses-content-address-index {
+	background: #222;
+}
+html.theme-dark .sample-addresses-content-address:nth-child(even) .sample-addresses-content-address-text {
+	background: #373737;
+}
+html.theme-dark #screen-saver {
+	background: #111;
+}
+html.theme-dark .screen-saver-accepted-here,
+html.theme-dark .screen-saver-hide-instructions {
+	color: #f7f7f7;
+}

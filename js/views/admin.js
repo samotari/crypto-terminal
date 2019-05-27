@@ -245,6 +245,7 @@ app.views.Admin = (function() {
 				var key = this.options.page || this.getDefaultSubPage();
 				this.goToSubPage(key);
 			}
+			this.updateSecondaryMenuWidth();
 			return this;
 		},
 

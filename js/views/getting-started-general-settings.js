@@ -13,7 +13,9 @@ app.views.GettingStartedGeneralSettings = (function() {
 
 		inputs: function() {
 
-			return app.config.settings;
+			return _.filter(app.config.settings, function(setting) {
+				return setting.name !== 'configurableCryptoCurrencies';
+			});
 		},
 
 		title: function() {

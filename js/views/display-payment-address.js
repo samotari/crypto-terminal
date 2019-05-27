@@ -113,6 +113,7 @@ app.views.DisplayPaymentAddress = (function() {
 			}
 			this.$addressQrCode.on('click', this.fullScreenQRCodeOn);
 			$(document).on('click', this.onDocumentClick);
+			app.screenSaver.disable();
 		},
 
 		generatePaymentRequest: function() {
@@ -438,6 +439,7 @@ app.views.DisplayPaymentAddress = (function() {
 			if (this.$addressQrCodeCover) {
 				this.$addressQrCodeCover.remove();
 			}
+			app.screenSaver.enable();
 		},
 
 		onDocumentClick: function() {

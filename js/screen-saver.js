@@ -13,6 +13,7 @@ app.screenSaver = (function() {
 	return {
 
 		idleTimeout: null,
+		disabled: true,
 
 		initialize: function() {
 
@@ -62,6 +63,7 @@ app.screenSaver = (function() {
 		stopTimer: function() {
 
 			clearTimeout(this.idleTimeout);
+			this.idleTimeout = null;
 		},
 
 		startTimer: function() {
@@ -108,7 +110,22 @@ app.screenSaver = (function() {
 
 		isActive: function() {
 
-			return app.settings.get('screenSaver') === true;
+			return app.settings.get('screenSaver') === true && !this.isDisabled();
+		},
+
+		isDisabled: function() {
+
+			return this.disabled === true;
+		},
+
+		disable: function() {
+
+			this.disabled = true;
+		},
+
+		enable: function() {
+
+			this.disabled = false;
 		},
 
 	};

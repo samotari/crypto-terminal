@@ -129,10 +129,12 @@
 	}
 	.view.pay .pay-number-pad {
 		padding-right: 5.5rem;
-		padding-bottom: 4rem;
+		padding-bottom: 5rem;
 	}
 	.view.pay .page-description {
 		bottom: 1rem;
+		font-weight: 500;
+		letter-spacing: .1rem;
 		padding-right: 5.5rem;
 	}
 	/*  #pay  */
