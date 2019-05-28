@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="Layer_2"
+   data-name="Layer 2"
+   viewBox="0 0 121 205"
+   version="1.1"
+   width="121"
+   height="205">
+  <defs
+     id="defs4">
+    <style
+       id="style2">.cls-1{fill:#ff9000;}.cls-2{fill:#fff;}.cls-3{fill:#ffba00;}.cls-4{font-size:260px;letter-spacing:-0.03em;}.cls-4,.cls-7{fill:#4e4e4e;font-family:Ubuntu-BoldItalic, Ubuntu;font-style:italic;}.cls-4,.cls-8,.cls-9{font-weight:700;}.cls-5{letter-spacing:-0.04em;}.cls-6{letter-spacing:-0.05em;}.cls-7{font-size:57px;}.cls-12,.cls-9{letter-spacing:0.01em;}.cls-10,.cls-11,.cls-12,.cls-13,.cls-14{font-family:Ubuntu-LightItalic, Ubuntu;}.cls-10{letter-spacing:-0.02em;}.cls-11{letter-spacing:-0.02em;}.cls-13{letter-spacing:-0.01em;}.cls-14{letter-spacing:0.01em;}</style>
+  </defs>
+  <polygon
+     class="cls-3"
+     points="400.77,261.31 337.77,244.31 375.77,162.31 279.77,269.31 333.77,284.31 295.77,367.31 "
+     id="polygon12"
+     style="fill:#ffba00"
+     transform="translate(-279.77,-162.31)" />
+</svg>

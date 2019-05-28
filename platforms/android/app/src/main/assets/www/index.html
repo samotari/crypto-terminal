@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss:; script-src 'self' 'unsafe-eval' https://api.cryptoterminal.eu/primus/primus.js;">
+
+	<title>CryptoTerminal</title>
+
+	<link href="css/all.min.css" rel="stylesheet">
+
+	<!-- favicon -->
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="images/favicon/apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="images/favicon/apple-touch-icon-60x60.png">
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="images/favicon/apple-touch-icon-120x120.png">
+	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="images/favicon/apple-touch-icon-76x76.png">
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="images/favicon/apple-touch-icon-152x152.png">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-196x196.png" sizes="196x196">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-16x16.png" sizes="16x16">
+	<link rel="icon" type="image/png" href="images/favicon/favicon-128.png" sizes="128x128">
+	<meta name="application-name" content="&nbsp;">
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+	<meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png">
+	<meta name="msapplication-square70x70logo" content="images/favicon/mstile-70x70.png">
+	<meta name="msapplication-square150x150logo" content="images/favicon/mstile-150x150.png">
+	<meta name="msapplication-wide310x150logo" content="images/favicon/mstile-310x150.png">
+	<meta name="msapplication-square310x310logo" content="images/favicon/mstile-310x310.png">
+</head>
+<body>
+
+<div id="cover">
+	<div id="cover-image-wrap">
+		<div id="cover-image"></div>
+	</div>
+	<div id="cover-text"></div>
+</div>
+<div id="screen-saver"></div>
+<div id="header">
+	<p class="header-text"></p>
+	<a class="header-button admin" href="#admin"></a>
+	<a class="header-button pay" href="#pay"></a>
+	<a class="header-button offline"></a>
+	<a class="header-button more"></a>
+	<a class="header-button language"></a>
+	<a class="header-button export"></a>
+	<a class="header-button qrcode"></a>
+</div>
+<div id="language-menu" class="menu"></div>
+<div id="more-menu" class="menu"></div>
+<div id="menu-cover"></div>
+<div id="view">
+	<div id="view-content"></div>
+</div>
+<div id="message">
+	<div id="message-inner">
+		<div id="message-content"></div>
+	</div>
+</div>
+
+	<noscript>
+		<!-- This language string is hard-coded because handlebars requires JavaScript. -->
+		<p class="page-description">This app requires JavaScript to function.</p>
+	</noscript>
+
+	<script type="text/html" id="template-about">
+<div class="page">
+	<h1>{{name}}</h1>
+	<p>{{description}}</p>
+	<h2>{{i18n "about.version"}}</h2>
+	<p>{{version}}</p>
+	<h2>{{i18n "about.repo-url"}}</h2>
+	<p><a href="{{repoUrl}}">{{repoUrl}}</a></p>
+	<h2>{{i18n "about.support-email"}}</h2>
+	<p><a href="{{supportEmail}}">{{supportEmail}}</a></p>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-admin-general-settings">
+<form>
+	<div class="form">
+		<div class="form-group settings">
+			{{#each inputs}}
+				{{> formFieldRow .}}
+			{{/each}}
+		</div>
+		<div class="form-group configurableCryptoCurrencies">
+			<div class="form-group-label">{{i18n "settings.accept-crypto-currencies.label"}}</div>
+			{{#each paymentMethods}}
+			<input id="settings-configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
+			<label for="settings-configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}" data-key="{{key}}"></label>
+			{{/each}}
+			<div class="clearfix"></div>
+		</div>
+		<div class="form-group other">
+			<div class="form-row">
+				<div class="form-label">{{i18n "admin.pin.label"}}</div>
+				<div class="form-field">
+					<p class="form-field-description">{{i18n "admin.pin.description"}}</p>
+					<div class="form-field-buttons">
+						{{#if hasPin}}
+						<a class="set-pin button">{{i18n "admin.pin.change"}}</a>
+						<a class="remove-pin button">{{i18n "admin.pin.remove"}}</a>
+						{{else}}
+						<a class="set-pin button">{{i18n "admin.pin.set"}}</a>
+						{{/if}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+	</script>
+
+	<script type="text/html" id="template-admin-payment-method-settings">
+{{#if instructions}}
+<div class="payment-method-instructions">
+	<p>{{instructions}}</p>
+</div>
+{{/if}}
+
+<form>
+	<div class="form">
+		<div class="form-group {{key}}{{#if accepted}} accepted{{/if}}">
+			{{#each inputs}}
+				{{> formFieldRow .}}
+			{{/each}}
+		</div>
+	</div>
+</form>
+
+<div class="verification"></div>
+
+	</script>
+
+	<script type="text/html" id="template-admin">
+<div class="secondary-menu">
+		<div class="secondary-menu-inner">
+		{{#each menuItems}}
+		<a class="secondary-menu-item {{key}}" href="#admin/{{key}}" data-key="{{key}}">{{label}}</a>
+		{{/each}}
+	</div>
+</div>
+<div class="slider">
+	{{> slider}}
+</div>
+	</script>
+
+	<script type="text/html" id="template-amount">
+<div class="amount-wrap">
+	<div class="amount display">
+		<div class="amount-value">{{formatNumber amount.display.value amount.display.currency}}</div>
+		<div class="amount-currency">{{amount.display.currency}}</div>
+	</div>
+	<div class="amount crypto">
+		<div class="amount-value">{{formatNumber amount.crypto.value amount.crypto.currency}}</div>
+		<div class="amount-currency">{{amount.crypto.currency}}</div>
+	</div>
+</div>
+	</script>
+
+	<script type="text/html" id="template-enter-pin">
+<div class="enter-pin-inner">
+	{{#if title}}
+	<h2 class="page-title">{{title}}</h2>
+	{{/if}}
+	<div class="enter-pin-keys"></div>
+	<div class="enter-pin-number-pad"></div>
+	{{#if instructions}}
+	<p class="enter-pin-instructions">{{instructions}}</p>
+	{{/if}}
+	<div class="secondary-controls">
+		<a class="secondary-control button submit" title="{{i18n 'enter-pin.submit'}}"></a>
+		{{#if showCancel}}
+		<a class="secondary-control button cancel" title="{{i18n 'enter-pin.cancel'}}"></a>
+		{{/if}}
+	</div>
+</div>
+	</script>
+
+	<script type="text/html" id="template-export-payment-history-dialog">
+<div class="export-payment-history-dialog-inner">
+	<p class="page-description">{{i18n "payment-history.export.dialog.message"}}</p>
+	<div class="form">
+		<div class="form-group">
+			{{#each inputs}}
+				{{> formFieldRow .}}
+			{{/each}}
+		</div>
+	</div>
+	<div class="secondary-controls">
+		<a class="secondary-control button cancel" title="{{i18n 'payment-history.export.dialog.cancel'}}"></a>
+		<a class="secondary-control button download" title="{{i18n 'payment-history.export.dialog.download'}}"></a>
+	</div>
+</div>
+	</script>
+
+	<script type="text/html" id="template-form-field-row">
+{{#if visible}}
+	<div class="form-row form-row-type--{{type}}">
+		<div class="form-label">
+			<label for="{{id}}">{{label}}</label>
+		</div>{{#if description}}
+		<div class="form-description">{{description}}</div>{{/if}}
+		<div class="form-field has-{{actions.length}}-actions">
+			{{> formField .}}
+		</div>
+	</div>
+{{/if}}
+	</script>
+
+	<script type="text/html" id="template-form-field">
+{{#switch type}}
+	{{#case "select" break=true}}
+	<select class="form-input" id="{{id}}" name="{{name}}">
+		{{#each options}}
+		<option{{#if selected}} selected{{/if}}{{#if disabled}} disabled{{/if}}{{#if key}} value="{{key}}"{{/if}}>{{label}}</option>
+		{{/each}}
+	</select>
+	{{/case}}
+	{{#case "checkbox" break=true}}
+	<label class="form-switch" for="{{id}}">
+		<input type="checkbox" name="{{name}}" id="{{id}}"{{#if value}} checked{{/if}} value="1">
+		<span class="form-switch-slider"></span>
+	</label>
+	{{/case}}
+	{{#case "number" break=true}}
+	<input class="form-input" type="number" id="{{id}}" name="{{name}}" value="{{value}}">
+	{{/case}}
+	{{#case "integer" break=true}}
+	<input class="form-input" type="number" min="0" step="1" id="{{id}}" name="{{name}}" value="{{value}}">
+	{{/case}}
+	{{#case "password" break=true}}
+	<input class="form-input" type="password" id="{{id}}" name="{{name}}" value="{{value}}">
+	{{/case}}
+	{{#default}}
+	<input class="form-input" type="text" id="{{id}}" name="{{name}}" value="{{value}}">
+	{{/default}}
+{{/switch}}
+	<div class="form-error"></div>
+{{#if actions}}
+	<div class="form-field-actions">
+	{{#each actions}}
+		<a class="form-field-action button {{name}}" data-action="{{name}}" data-input="{{../name}}"></a>
+	{{/each}}
+	</div>
+{{/if}}
+
+	</script>
+
+	<script type="text/html" id="template-getting-started-choose-payment-methods">
+<div class="getting-started-page">
+	<p>{{i18n "getting-started.choose-payment-methods.instructions.1"}}</p>
+	<p>{{i18n "getting-started.choose-payment-methods.instructions.2"}}</p>
+	<form>
+		<div class="form">
+			<div class="form-group configurableCryptoCurrencies">
+				{{#each paymentMethods}}
+				<input id="configurableCryptoCurrencies-{{key}}" type="checkbox" name="configurableCryptoCurrencies[]" value="{{key}}"{{#if accepted}} checked{{/if}}>
+				<label for="configurableCryptoCurrencies-{{key}}" class="button payment-method {{key}}" title="{{label}}" data-key="{{key}}"></label>
+				{{/each}}
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button back" title="{{i18n 'getting-started.buttons.back'}}"></a>
+	<a class="secondary-control button continue" title="{{i18n 'getting-started.buttons.continue'}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-getting-started-done">
+<div class="getting-started-page">
+	<p>{{i18n "getting-started.done.app-is-ready"}}</p>
+	<p>{{i18n "getting-started.done.contact-below"}}</p>
+	<p><a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button done" title="{{i18n 'getting-started.done.ok'}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-getting-started-general-settings">
+<div class="getting-started-page">
+	<form>
+		<div class="form">
+			{{#each inputs}}
+				{{> formFieldRow .}}
+			{{/each}}
+		</div>
+	</form>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button back" title="{{i18n 'getting-started.buttons.back'}}"></a>
+	<a class="secondary-control button continue" title="{{i18n 'getting-started.buttons.continue'}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-getting-started-payment-method-settings">
+<div class="getting-started-page">
+{{#if instructions}}
+	<div class="getting-started-page-instructions">
+		<p>{{instructions}}</p>
+		{{#if links}}
+		<ul>{{#each links}}
+			<li><a href="{{url}}">{{label}}</a></li>{{/each}}
+		</ul>
+		{{/if}}
+	</div>
+{{/if}}
+	<form>
+		<div class="form">
+			{{#each inputs}}
+				{{> formFieldRow .}}
+			{{/each}}
+		</div>
+	</form>
+	<div class="verification"></div>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button back" title="{{i18n 'getting-started.buttons.back'}}"></a>
+	<a class="secondary-control button continue" title="{{i18n 'getting-started.buttons.continue'}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-getting-started-welcome">
+<div class="getting-started-page">
+	<p>{{i18n "getting-started.welcome.instructions.1"}}</p>
+	<p>{{i18n "getting-started.welcome.instructions.2"}}</p>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button skip"><span>{{i18n "getting-started.welcome.skip"}}</span></a>
+	<a class="secondary-control button continue" title="{{i18n 'getting-started.welcome.start'}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-getting-started">
+<div class="slider">
+	{{> slider}}
+</div>
+	</script>
+
+	<script type="text/html" id="template-language-menu">
+{{#each languages}}
+<a class="menu-item {{key}}" data-locale="{{key}}">{{label}}</a>
+{{/each}}
+	</script>
+
+	<script type="text/html" id="template-more-menu">
+<a class="menu-item about" href="#about">{{i18n "more-menu.about"}}</a>
+<a class="menu-item recommended-mobile-wallets" href="#recommended-mobile-wallets">{{i18n "more-menu.recommended-mobile-wallets"}}</a>
+
+	</script>
+
+	<script type="text/html" id="template-number-pad">
+<div class="number-pad-keys">
+	<a class="number-pad-key button" data-key="1">1</a>
+	<a class="number-pad-key button" data-key="2">2</a>
+	<a class="number-pad-key button" data-key="3">3</a>
+	<a class="number-pad-key button" data-key="4">4</a>
+	<a class="number-pad-key button" data-key="5">5</a>
+	<a class="number-pad-key button" data-key="6">6</a>
+	<a class="number-pad-key button" data-key="7">7</a>
+	<a class="number-pad-key button" data-key="8">8</a>
+	<a class="number-pad-key button" data-key="9">9</a>
+	{{#if useDecimal}}
+	<a class="number-pad-key button decimal">{{decimalSeparator}}</a>
+	{{else}}
+	<a class="number-pad-key button disabled"></a>
+	{{/if}}
+	<a class="number-pad-key button" data-key="0">0</a>
+	<a class="number-pad-key button backspace">&lt;</a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-pay-address">
+<div class="info">
+	<div class="info-inner">
+		{{> amount}}
+		<div class="message warning-offline">
+			<h4>{{i18n "display-payment-address.message.warning"}}</h4>
+			<p>{{i18n "display-payment-address.message.offline"}}</p>
+		</div>
+		<div class="message warning-payment-method-inactive">
+			<h4>{{i18n "display-payment-address.message.warning"}}</h4>
+			<p>{{i18n "display-payment-address.message.cannot-verify-payment"}}</p>
+		</div>
+	</div>
+</div>
+<div class="address-wrap">
+	<div class="address"></div>
+</div>
+<div class="address-instructions">
+	<p class="address-instructions-inner">{{i18n "pay-address.description"}}</p>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button back" title="{{i18n 'pay-address.back'}}"></a>
+	<a class="secondary-control button cancel" title="{{i18n 'pay-address.cancel'}}"></a>
+</div>
+	</script>
+
+	<script type="text/html" id="template-pay-choose-method">
+<div class="view-inner">
+	<p class="page-description">{{i18n "pay-choose-method.description"}}</p>
+	<div class="select-payment-method">
+	{{#each paymentMethods}}
+		<a class="button payment-method {{key}}" data-payment-method="{{key}}"></a>
+	{{/each}}
+	</div>
+	<div class="secondary-controls">
+		<a class="secondary-control button cancel" title="{{i18n 'pay-choose-method.cancel'}}"></a>
+	</div>
+</div>
+	</script>
+
+	<script type="text/html" id="template-pay-enter-amount">
+<div class="view-inner">
+	{{> amount}}
+	{{#if presets}}
+	<div class="presets">
+		{{#each presets}}
+		<a class="preset button" href="#pay/{{.}}">{{.}} {{../displayCurrency}}</a>
+		{{/each}}
+	</div>
+	{{/if}}
+	<div class="pay-number-pad"></div>
+	<p class="page-description">{{i18n "pay-enter-amount.description"}}</p>
+	<div class="secondary-controls">
+		<a class="secondary-control button continue disabled" title="{{i18n 'pay-enter-amount.continue'}}"></a>
+	</div>
+</div>
+	</script>
+
+	<script type="text/html" id="template-payment-details">
+<h2 class="page-title">{{i18n "payment-details.title"}}</h2>
+<div class="payment-details-info">
+	<div class="payment-details-info-item">
+		<div class="payment-details-info-item-label">{{i18n "payment-details.label.status"}}</div>
+		<div class="payment-details-info-item-value status">{{statusLabel}}</div>
+	</div>
+	<div class="payment-details-info-item">
+		<div class="payment-details-info-item-label">{{i18n "payment-details.label.timestamp"}}</div>
+		<div class="payment-details-info-item-value timestamp">{{formatDate timestamp}}</div>
+	</div>
+	<div class="payment-details-info-item">
+		<div class="payment-details-info-item-label">{{i18n "payment-details.label.amount"}}</div>
+		<div class="payment-details-info-item-value">
+			<div class="payment-details-amount-display">{{formatNumber amount currency}} {{currency}}</div>
+			<div class="payment-details-amount-crypto">{{formatNumber cryptoAmount paymentMethod.code}} {{paymentMethod.code}}</div>
+		</div>
+	</div>
+</div>
+<div class="payment-method {{paymentMethod.ref}}"></div>
+<div class="secondary-controls">
+	<a class="secondary-control button back" title="{{i18n 'payment-details.back'}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-payment-history-list-item">
+<div class="payment-history-item-amount">
+	<div class="payment-history-item-amount-display">{{formatNumber amount currency}} {{currency}}</div>
+	<div class="payment-history-item-amount-crypto">{{formatNumber cryptoAmount paymentMethod.code}} {{paymentMethod.code}}</div>
+</div>
+<div class="payment-history-status-and-timestamp">
+	<div class="payment-history-item-status">{{statusLabel}}</div>
+	<div class="payment-history-item-timestamp">{{formatDate timestamp}}</div>
+</div>
+<div class="payment-method {{paymentMethod.ref}}"></div>
+
+	</script>
+
+	<script type="text/html" id="template-payment-history">
+<div class="payment-history-items"></div>
+<div class="payment-history-loader"></div>
+<p class="payment-history-empty">{{i18n "payment-history.empty"}}</p>
+
+	</script>
+
+	<script type="text/html" id="template-payment-replaceable">
+<div class="result-indicator">
+	<div class="result-indicator-inner">{{text.message}}</div>
+</div>
+<div class="info">
+	<p class="text">{{text.info}}</p>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button reject" title="{{text.reject}}"></a>
+	<a class="secondary-control button accept" title="{{text.accept}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-payment-status">
+<div class="result-indicator">
+	<div class="result-indicator-inner">{{text.message}}</div>
+</div>
+<div class="secondary-controls">
+	<a class="secondary-control button done" title="{{text.done}}"></a>
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-recommended-mobile-wallets">
+<div class="page">
+	<h1>{{i18n "recommended-mobile-wallets.title"}}</h1>
+	<p>{{i18n "recommended-mobile-wallets.description"}}</p>
+	<p>{{i18n "recommended-mobile-wallets.instructions"}}</p>
+	{{#if recommendations}}
+		{{#each recommendations}}
+	<div class="recommendations-group">
+		<h2 class="recommendations-group-title">{{title}}</h2>
+		<div class="recommendations-group-items">{{#each mobileWallets}}
+			<div class="recommendations-group-item">
+				<div class="recommendations-group-item-qr-code" data-url="{{url}}"></div>
+				<h3 class="recommendations-group-item-name">{{name}}</h3>
+				<div class="recommendations-group-item-payment-methods">{{#each paymentMethods}}
+					<span class="payment-method {{.}}"></span>{{/each}}
+				</div>
+			</div>{{/each}}
+		</div>
+	</div>
+		{{/each}}
+	{{/if}}
+</div>
+
+	</script>
+
+	<script type="text/html" id="template-sample-addresses">
+<div class="sample-addresses-instructions">
+	<p>{{i18n "sample-addresses.instructions"}}</p>
+</div>
+<div class="sample-addresses-content">
+	{{#each addresses}}
+	<div class="sample-addresses-content-address">
+		<span class="sample-addresses-content-address-index">{{index}}</span>
+		<span class="sample-addresses-content-address-text">{{address}}</span>
+	</div>
+	{{/each}}
+</div>
+	</script>
+
+	<script type="text/html" id="template-screen-saver">
+<div class="screen-saver-payment-methods has-{{acceptedCryptoCurrencies.length}}">
+	<div class="screen-saver-payment-methods-inner">
+	{{#each acceptedCryptoCurrencies}}
+		<div class="payment-method {{.}}"></div>
+	{{/each}}
+	</div>
+</div>
+<div class="screen-saver-accepted-here">{{i18n "screen-saver.accepted-here"}}</div>
+<div class="screen-saver-hide-instructions">{{i18n "screen-saver.instructions"}}</div>
+	</script>
+
+	<script type="text/html" id="template-slider-item">
+<div class="slider-item-content" data-slide="{{key}}"></div>
+	</script>
+
+	<script type="text/html" id="template-slider">
+<div class="slider-inner">
+	<div class="slider-items{{#if canSwipe}} can-swipe{{/if}}"></div>
+</div>
+	</script>
+
+	<script type="text/json" id="json-info">{"description":"An open-source terminal application with which merchants can accept in-person cryptocurrency payments","version":"1.5.0","name":"CryptoTerminal","repoUrl":"git@github.com:samotari/crypto-terminal.git"}</script>
+	<script type="text/json" id="json-config">{"ctApi":{"baseUrl":"https://api.cryptoterminal.eu"}}</script>
+	<script src="cordova.js"></script>
+	<script id="primus-library" src="https://api.cryptoterminal.eu/primus/primus.js"></script>
+
+	<script src="js/all.min.js"></script>
+
+
+</body>
+</html>
