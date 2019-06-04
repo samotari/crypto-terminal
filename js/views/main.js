@@ -443,8 +443,10 @@ app.views.Main = (function() {
 
 				if (_.isString(message)) {
 					messageText = message;
-				} else if (message.status === 0) {
-					messageText = app.i18n.t('main.message.status.0');
+				} else if (_.isObject(message) && _.has(message, 'status')) {
+					messageText = app.i18n.t('http-request-failed', {
+						message: app.util.getErrorMessageFromJQueryXHRObject(jqXHR),
+					});
 				} else if (message.message && _.isString(message.message)) {
 					messageText = message.message;
 				} else if (message.error && _.isString(message.error)) {

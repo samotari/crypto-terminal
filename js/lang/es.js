@@ -6,7 +6,6 @@ app.lang['es'] = (function() {
 
 	return {
 		'self.label': 'Español',
-		'main.message.status.0': 'Error: No hay conexión de red',
 
 		'about.version': 'Versión',
 		'about.repo-url': 'Código fuente y seguimiento de incidencias',

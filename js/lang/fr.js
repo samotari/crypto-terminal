@@ -6,7 +6,6 @@ app.lang['fr'] = (function () {
 
 	return {
 		'self.label': 'Français',
-		'main.message.status.0': 'Erreur : il n\'y a pas de réseau',
 		'admin.general-settings.label': 'Paramètres généraux',
 		'admin.payment-history.label': 'Historique des paiements',
 		'admin.pin.label': 'PIN d\'administrateur',

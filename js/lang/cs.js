@@ -6,7 +6,6 @@ app.lang['cs'] = (function() {
 
 	return {
 		'self.label': 'Čeština',
-		'main.message.status.0': 'Chyba: Síťové spojení bylo zřejmě přerušeno',
 
 		'about.version': 'Verze',
 		'about.repo-url': 'Zdrojový kód a tracker problémů',

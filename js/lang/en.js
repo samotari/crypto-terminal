@@ -6,7 +6,7 @@ app.lang['en'] = (function() {
 
 	return {
 		'self.label': 'English',
-		'main.message.status.0': 'Error: Network seems to be down',
+		'http-request-failed': 'HTTP request failed: "{{message}}"',
 
 		'about.version': 'Version',
 		'about.repo-url': 'Source code and issue tracker',

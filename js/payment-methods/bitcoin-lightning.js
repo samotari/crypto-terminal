@@ -100,34 +100,6 @@ app.paymentMethods.bitcoinLightning = (function() {
 			return app.paymentMethods.bitcoin.fromBaseUnit.apply(this, arguments);
 		},
 
-		doAuthenticationCheck: function(apiUrl, invoiceMacaroon, cb) {
-
-			var amount = 1e-8;// 1 satoshi
-			var memo = app.info.name + ': Authentication check';
-			var options = {
-				maxInvoiceAgeInSeconds: 5,
-				memo: memo,
-			};
-
-			this.addInvoice(amount, options, _.bind(function(error, result) {
-
-				if (error) {
-					return cb(error);
-				}
-
-				var isExpectedResult = _.every(['payment_request', 'r_hash'], function(key) {
-					return _.has(result, key);
-				});
-
-				if (!isExpectedResult) {
-					return cb(new Error(app.i18n.t(this.ref + '.settings.failed-authentication-check.unexpected-response')));
-				}
-
-				// Check passed - OK.
-				cb();
-			}, this));
-		},
-
 		generatePaymentRequest: function(amount, cb) {
 
 			this.addInvoice(amount, _.bind(function(error, response) {
@@ -149,6 +121,18 @@ app.paymentMethods.bitcoinLightning = (function() {
 			},this));
 		},
 
+		doAuthenticationCheck: function(apiUrl, invoiceMacaroon, cb) {
+
+			var amount = 1e-8;
+			var options = {
+				apiUrl: apiUrl,
+				invoiceMacaroon: invoiceMacaroon,
+				maxInvoiceAgeInSeconds: 10,
+				memo: app.info.name + ': Authentication check',
+			};
+			this.addInvoice(amount, options, cb);
+		},
+
 		addInvoice: function(amount, options, cb) {
 
 			if (_.isFunction(options)) {
@@ -168,21 +152,29 @@ app.paymentMethods.bitcoinLightning = (function() {
 				memo: options.memo,
 			};
 			var uri = '/v1/invoices';
-			var requestOptions = {
+			var requestOptions = _.extend({}, _.pick(options, 'apiUrl', 'invoiceMacaroon'), {
 				data: data,
 				headers: {
 					'Content-Type': 'application/json',
 				},
-			};
+			});
 
 			this.request('post', uri, requestOptions, cb);
 		},
 
-		checkPaymentReceived: function(paymentRequest, cb) {
+		checkPaymentReceived: function(paymentRequest, options, cb) {
+
+			if (_.isFunction(options)) {
+				cb = options;
+				options = null;
+			}
+
+			options = options || {};
 
 			var id = Buffer.from(paymentRequest.data.r_hash, 'base64').toString('hex');
 			var uri = '/v1/invoice/' + encodeURIComponent(id);
-			this.request('get', uri, function(error, result) {
+			var requestOptions = _.pick(options, 'apiUrl', 'invoiceMacaroon');
+			this.request('get', uri, requestOptions, function(error, result) {
 				if (error) return cb(error);
 				var wasReceived = result.settled === true;
 				var paymentData = _.pick(result, 'settle_date');
@@ -221,7 +213,12 @@ app.paymentMethods.bitcoinLightning = (function() {
 			var done = _.once(cb);
 			$.ajax(ajaxOptions).then(function(result) {
 				done(null, result);
-			}).fail(done);
+			}).fail(function(jqXHR) {
+				var error = new Error(app.i18n.t('http-request-failed', {
+					message: app.util.getErrorMessageFromJQueryXHRObject(jqXHR),
+				}));
+				cb(error);
+			});
 		},
 	});
 

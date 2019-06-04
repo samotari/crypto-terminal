@@ -12,6 +12,16 @@ app.util = (function() {
 			return _.extend.apply(_, [{}].concat(args));
 		},
 
+		getErrorMessageFromJQueryXHRObject: function(jqXHR) {
+
+			if (jqXHR.responseJSON) {
+				return jqXHR.responseJSON.error;
+			} else if (jqXHR.responseText) {
+				return jqXHR.responseText;
+			}
+			return jqXHR.statusText || '';
+		},
+
 		renderQrCode: function($target, data, options, cb) {
 
 			if (_.isFunction(options)) {

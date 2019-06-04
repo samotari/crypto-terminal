@@ -6,7 +6,6 @@ app.lang['de'] = (function() {
 
 	return {
 		'self.label': 'Deutsch',
-		'main.message.status.0': 'Fehler: Das Netzwerk scheint nicht verfügbar zu sein',
 
 		'about.version': 'Version',
 		'about.repo-url': 'Quellcode und Problem Tracker',
