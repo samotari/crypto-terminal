@@ -121,6 +121,17 @@
 	/*  Amount  */
 
 
+	/*  Enter Pin  */
+	.enter-pin-number-pad {
+		padding: 6.5rem 5.5rem 1rem 1rem;
+	}
+	.enter-pin .page-title,
+	.enter-pin-keys {
+		padding-right: 5.5rem;
+	}
+	/*  Enter Pin  */
+
+
 	/*  #pay  */
 	.view.pay .amount-wrap {
 		top: .5rem;

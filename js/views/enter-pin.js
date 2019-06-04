@@ -22,7 +22,8 @@ app.views.EnterPin = (function() {
 			_.bindAll(this, 'updateKeysDisplay', 'onDocumentClick');
 			this.numberPadView = new app.views.NumberPad({ decimal: false });
 			this.listenTo(this.numberPadView.model, 'change:keys', this.updateKeysDisplay);
-			this.render().$el.appendTo($('body'));
+			this.$el.appendTo($('body'));
+			this.render();
 			_.defer(_.bind(function() {
 				// Defer the document event listener so that the view isn't closed immediately.
 				$(document).on('click', this.onDocumentClick);
