@@ -221,11 +221,6 @@ app.config = (function() {
 			mobileWallets: {
 				android: [
 					{
-						name: 'Eclair Wallet',
-						paymentMethods: ['bitcoinLightning'],
-						url: 'https://play.google.com/store/apps/details?id=fr.acinq.eclair.wallet.mainnet2',
-					},
-					{
 						name: 'Mycelium',
 						paymentMethods: ['bitcoin'],
 						url: 'https://play.google.com/store/apps/details?id=com.mycelium.wallet',
@@ -236,26 +231,46 @@ app.config = (function() {
 						url: 'https://play.google.com/store/apps/details?id=com.coinomi.wallet',
 					},
 					{
-						name: 'Samourai Wallet',
-						paymentMethods: ['bitcoin'],
-						url: 'https://play.google.com/store/apps/details?id=com.samourai.wallet',
+						name: 'Eclair Wallet',
+						paymentMethods: ['bitcoinLightning'],
+						url: 'https://play.google.com/store/apps/details?id=fr.acinq.eclair.wallet.mainnet2',
+					},
+					{
+						name: 'Zap Wallet',
+						paymentMethods: ['bitcoinLightning'],
+						url: 'https://play.google.com/store/apps/details?id=zapsolutions.zap',
+					},
+					{
+						name: 'Lightning App',
+						paymentMethods: ['bitcoinLightning'],
+						url: 'https://play.google.com/store/apps/details?id=engineering.lightning.LightningMainnet',
 					},
 				],
 				ios: [
 					{
 						name: 'BreadWallet (BRD)',
 						paymentMethods: ['bitcoin'],
-						url: 'https://play.google.com/store/apps/details?id=com.breadwallet',
+						url: 'https://apps.apple.com/us/app/brd-bitcoin-wallet-ethereum/id885251393',
 					},
 					{
 						name: 'Coinomi',
-						paymentMethods: ['bitcoin', 'bitcoinTestnet'],
-						url: 'https://itunes.apple.com/us/app/coinomi-wallet/id1333588809?mt=8',
+						paymentMethods: ['bitcoin', 'bitcoinTestnet', 'litecoin'],
+						url: 'https://apps.apple.com/us/app/coinomi-wallet/id1333588809',
 					},
 					{
 						name: 'LoafWallet',
 						paymentMethods: ['litecoin'],
-						url: 'https://itunes.apple.com/us/app/loafwallet/id1119332592?ls=1&mt=8',
+						url: 'https://apps.apple.com/us/app/loafwallet/id1119332592?ls=1',
+					},
+					{
+						name: 'Zap Wallet',
+						paymentMethods: ['bitcoinLightning'],
+						url: 'https://testflight.apple.com/join/P32C380R',
+					},
+					{
+						name: 'Lightning App',
+						paymentMethods: ['bitcoinLightning'],
+						url: 'https://testflight.apple.com/join/xx23MrBp',
 					},
 				],
 			},
