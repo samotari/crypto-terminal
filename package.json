@@ -25,6 +25,7 @@
     "prepare:android": "./node_modules/.bin/cordova prepare android",
     "pretest": "npm run lint",
     "release:fdroid": "./scripts/fdroid-release.sh",
+    "test:fdroid": "{ git fetch upstream && git checkout fdroid && gradle build --project-dir ./platforms/android; }; git checkout master",
     "test": "npm run test:unit && npm run test:e2e",
     "test:e2e": "npm run build:test && ./node_modules/.bin/mocha test/e2e/ --timeout 5000 --recursive --reporter spec --ui bdd --exit",
     "test:unit": "npm run build:test && ./node_modules/.bin/mocha test/unit/ --timeout 5000 --recursive --reporter spec --ui bdd --exit"
