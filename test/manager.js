@@ -196,8 +196,11 @@ var manager = module.exports = {
 						})();
 						if (evaluateOptions.isAsync) {
 							// Asynchronous execution.
-							var done = function() {
+							var done = function(error) {
 								var args = Array.prototype.slice.call(arguments);
+								if (args[0] instanceof Error) {
+									args[0] = args[0].message
+								}
 								resolve(args);
 							};
 							var args = evaluateOptions.args.concat(done);
@@ -208,7 +211,7 @@ var manager = module.exports = {
 							try {
 								var result = fn.apply(undefined, evaluateOptions.args);
 							} catch (error) {
-								return resolve([error]);
+								return resolve([error.message]);
 							}
 							return resolve([null, result]);
 						}

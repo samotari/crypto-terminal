@@ -13,14 +13,15 @@
         <icon density="xxhdpi" src="images/favicon/favicon-android-xxhdpi.png" />
         <icon density="xxxhdpi" src="images/favicon/favicon-android-xxxhdpi.png" />
     </platform>
-    <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
-    <plugin name="cordova-plugin-file" spec="6.0.1" />
     <plugin name="phonegap-plugin-barcodescanner" spec="7.0.2" />
-    <plugin name="cordova-android-support-gradle-release" spec="1.2.0">
-        <variable name="ANDROID_SUPPORT_VERSION" value="26.+" />
-    </plugin>
-    <plugin name="cordova-plugin-inappbrowser" spec="2.0.2" />
-    <plugin name="cordova-plugin-ionic-keyboard" spec="2.1.3" />
     <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
     <engine name="android" spec="7.1.4" />
+    <plugin name="cordova-plugin-nativeaudio" spec="3.0.9" />
+    <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
+    <plugin name="cordova-plugin-file" spec="6.0.1" />
+    <plugin name="cordova-plugin-inappbrowser" spec="3.0.0" />
+    <plugin name="cordova-plugin-ionic-keyboard" spec="2.1.3" />
+    <plugin name="cordova-android-support-gradle-release" spec="3.0.1">
+        <variable name="ANDROID_SUPPORT_VERSION" value="26.+" />
+    </plugin>
 </widget>
