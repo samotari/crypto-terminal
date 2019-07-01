@@ -80,7 +80,9 @@ git add -f 	$PLATFORMS/android/app \
 			$PLATFORMS/android/build.gradle \
 			$PLATFORMS/android/project.properties \
 			$PLATFORMS/android/settings.gradle \
-			$PLATFORMS/android/wrapper.gradle
+			$PLATFORMS/android/wrapper.gradle \
+			$PLATFORMS/android/phonegap-plugin-barcodescanner/cryptoterminal-barcodescanner.gradle \
+			$PLATFORMS/android/cordova-android-support-gradle-release/cryptoterminal-cordova-android-support-gradle-release.gradle
 
 # commit
 git commit -m "fdroid release $VERSION"
