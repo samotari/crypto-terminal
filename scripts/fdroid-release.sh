@@ -71,18 +71,7 @@ echo "Preparing android platform files..."
 $BIN/cordova prepare android
 
 # add files required by fdroid
-git add -f 	$PLATFORMS/android/app \
-			$PLATFORMS/android/cordova \
-			$PLATFORMS/android/CordovaLib \
-			$PLATFORMS/android/platform_www \
-			$PLATFORMS/android/.gitignore \
-			$PLATFORMS/android/android.json \
-			$PLATFORMS/android/build.gradle \
-			$PLATFORMS/android/project.properties \
-			$PLATFORMS/android/settings.gradle \
-			$PLATFORMS/android/wrapper.gradle \
-			$PLATFORMS/android/phonegap-plugin-barcodescanner/cryptoterminal-barcodescanner.gradle \
-			$PLATFORMS/android/cordova-android-support-gradle-release/cryptoterminal-cordova-android-support-gradle-release.gradle
+git add -f 	$PLATFORMS/android/
 
 # commit
 git commit -m "fdroid release $VERSION"
