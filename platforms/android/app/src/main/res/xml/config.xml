@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.github.samotari.cryptoterminal" version="1.5.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <feature name="BarcodeScanner">
+        <param name="android-package" value="com.phonegap.plugins.barcodescanner.BarcodeScanner" />
+    </feature>
+    <feature name="NativeAudio">
+        <param name="android-package" value="com.rjfun.cordova.plugin.nativeaudio.NativeAudio" />
+    </feature>
+    <feature name="Whitelist">
+        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param name="onload" value="true" />
+    </feature>
+    <feature name="File">
+        <param name="android-package" value="org.apache.cordova.file.FileUtils" />
+        <param name="onload" value="true" />
+    </feature>
+    <allow-navigation href="cdvfile:*" />
+    <feature name="InAppBrowser">
+        <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
+    </feature>
+    <feature name="NfcPlugin">
+        <param name="android-package" value="com.chariotsolutions.nfc.plugin.NfcPlugin" />
+        <param name="onload" value="true" />
+    </feature>
+    <feature name="Keyboard">
+        <param name="android-package" onload="true" value="io.ionic.keyboard.IonicKeyboard" />
+    </feature>
+    <name short="CryptoT">CryptoTerminal</name>
+    <description>An open-source terminal application with which merchants can accept in-person cryptocurrency payments</description>
+    <icon src="images/favicon.png" />
+    <access origin="https://*/*" />
+    <icon density="ldpi" src="images/favicon/favicon-android-ldpi.png" />
+    <icon density="mdpi" src="images/favicon/favicon-android-mdpi.png" />
+    <icon density="hdpi" src="images/favicon/favicon-android-hdpi.png" />
+    <icon density="xhdpi" src="images/favicon/favicon-android-xhdpi.png" />
+    <icon density="xxhdpi" src="images/favicon/favicon-android-xxhdpi.png" />
+    <icon density="xxxhdpi" src="images/favicon/favicon-android-xxxhdpi.png" />
+    <preference name="loglevel" value="DEBUG" />
+    <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
+    <preference name="android-minSdkVersion" value="19" />
+</widget>
