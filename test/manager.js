@@ -6,6 +6,7 @@ var path = require('path');
 var puppeteer = require('puppeteer');
 var Primus = require('primus');
 var serveStatic = require('serve-static');
+var WebSocket = require('ws');
 
 var manager = module.exports = {
 
@@ -30,16 +31,8 @@ var manager = module.exports = {
 		options = _.defaults({}, options || {}, {
 			headless: true,
 			slowMo: 0,
-			timeout: 10000
+			timeout: 10000,
 		});
-
-		/*
-			See:
-			https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-on-travis-ci
-		*/
-		if (process.env.TRAVIS_CI) {
-			options.args = ['--no-sandbox'];
-		}
 
 		puppeteer.launch(options).then(function(browser) {
 			manager.browser = browser;
@@ -74,11 +67,20 @@ var manager = module.exports = {
 		}).catch(done);
 	},
 
-	evaluateInPageContext: function(fn, done) {
+	evaluateInPageContext: function(fn, args, done) {
 
-		manager.page.evaluate(fn).then(function() {
-			var args = Array.prototype.slice.call(arguments);
-			done.apply(undefined, [null].concat(args));
+		if (_.isFunction(args)) {
+			done = args;
+			args = [];
+		}
+
+		manager.page.evaluate.apply(manager.page, [fn].concat(args)).then(function() {
+			try {
+				var args = Array.prototype.slice.call(arguments);
+				done.apply(undefined, [null].concat(args));
+			} catch (error) {
+				console.log(error);
+			}
 		}).catch(done);
 	},
 
@@ -87,7 +89,9 @@ var manager = module.exports = {
 		done = _.once(done);
 		manager.navigate('/', function(error) {
 			if (error) return done(error);
-			manager.page.waitFor('html.loaded').then(function() {
+			manager.page.waitFor(function() {
+				return !!app && !!app.mainView;
+			}).then(function() {
 				done();
 			}).catch(done);
 		});
@@ -131,6 +135,159 @@ var manager = module.exports = {
 				}
 			}
 		};
+	},
+
+	electrumServer: function(port) {
+		var wss = new WebSocket.Server({
+			port: port,
+		});
+		var sockets = [];
+		wss.on('connection', function(socket) {
+			// console.log('CONNECTION');
+			sockets.push(socket);
+			var send = socket.send;
+			socket.send = function(message) {
+				// console.log('SENT', message);
+				send.apply(socket, arguments);
+			};
+			socket.on('message', function(message) {
+				// console.log('RECEIVED', message);
+				try {
+					var data = JSON.parse(message);
+				} catch (error) {
+					console.log(error);
+				}
+				switch (data.method) {
+					case 'server.peers.subscribe':
+						socket.send(JSON.stringify({
+							jsonrpc: '2.0',
+							method: data.method,
+							result: [],
+							id: data.id,
+						}));
+						break;
+					case 'server.ping':
+					case 'blockchain.scripthash.unsubscribe':
+						socket.send(JSON.stringify({
+							jsonrpc: '2.0',
+							method: data.method,
+							result: null,
+							id: data.id,
+						}));
+						break;
+				}
+			});
+		});
+		return {
+			wss: wss,
+			sockets: sockets,
+			waitForClient: function(done) {
+				var socket;
+				async.until(function() {
+					return !!(socket = sockets[0]);
+				}, function(next) {
+					_.delay(next, 5);
+				}, function() {
+					done(null, socket);
+				});
+			},
+			mock: {
+				receiveTx: function(socket, tx, done) {
+					var getHistoryCalls = 0;
+					var cb = _.once(function(error) {
+						socket.off('message', onMessage);
+						if (error) return done(error);
+						done();
+					});
+					var onMessage = function(message) {
+						try {
+							var data = JSON.parse(message);
+						} catch (error) {
+							return cb(error);
+						}
+						if (data.method === 'blockchain.scripthash.subscribe') {
+							// Respond with initial scripthash status.
+							socket.send(JSON.stringify({
+								jsonrpc: '2.0',
+								method: data.method,
+								result: null,
+								id: data.id,
+							}));
+							_.delay(function() {
+								// Send a status change.
+								socket.send(JSON.stringify({
+									jsonrpc: '2.0',
+									method: 'blockchain.scripthash.subscribe',
+									params: [
+										data.params[0],// scripthash
+										'latest-scripthash-status',// latest status
+									],
+								}));
+							}, 10);
+						} else if (data.method === 'blockchain.scripthash.get_history') {
+							getHistoryCalls++;
+							switch (getHistoryCalls) {
+								case 1:
+									socket.send(JSON.stringify({
+										jsonrpc: '2.0',
+										method: data.method,
+										result: [],
+										id: data.id,
+									}));
+									break;
+								default:
+									socket.send(JSON.stringify({
+										jsonrpc: '2.0',
+										method: data.method,
+										result: [tx],
+										id: data.id,
+									}));
+									break;
+							}
+						} else if (data.method === 'blockchain.transaction.get') {
+							socket.send(JSON.stringify({
+								jsonrpc: '2.0',
+								method: data.method,
+								result: tx.hex,
+								id: data.id,
+							}));
+							// This is the last message needed to mock a tx for the client.
+							cb();
+						}
+					};
+					socket.on('message', onMessage);
+				},
+			},
+			close: function(done) {
+				wss.close(done);
+			},
+		};
+	},
+
+	connectElectrumClient: function(name, servers, done) {
+		async.series([
+			function(next) {
+				manager.evaluateInPageContext(function(name, servers) {
+					app.paymentMethods[name].electrum.servers = servers;
+					app.initializeElectrumServices();
+				}, [name, servers], next);
+			},
+			function(next) {
+				manager.page.waitFor(function(name) {
+					return !!app.services.electrum[name];
+				}, {}/* options */, [name]).then(function() {
+					next();
+				}).catch(next);
+			},
+			function(next) {
+				manager.evaluateInPageContext(function(name) {
+					app.services.electrum[name].connectClients(function() {});
+				}, [name], next);
+			},
+		], function(error) {
+			if (error) return done(error);
+			manager.socketServer.waitForClient(done);
+		});
 	},
 
 	screenshot: function(name, done) {

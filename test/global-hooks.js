@@ -1,8 +1,10 @@
 var manager = require('./manager');
 
 before(function(done) {
-	this.timeout(12000);
-	manager.prepareBrowser(done);
+	manager.prepareBrowser(function(error) {
+		if (error) return done(error);
+		done();
+	});
 });
 
 var staticWeb;
@@ -11,21 +13,23 @@ before(function(done) {
 });
 
 after(function(done) {
-	if (!staticWeb) return done();
-	staticWeb.server.close(done);
-});
-
-after(function(done) {
-	if (!manager.page) return done();
-	manager.page.close().then(function() {
-		done();
-	}).catch(done);
-});
-
-after(function(done) {
-	this.timeout(12000);
 	if (!manager.browser) return done();
 	manager.browser.close().then(function() {
 		done();
 	}).catch(done);
+});
+
+after(function(done) {
+	if (!staticWeb) return done();
+	// NOTE:
+	// This will be slow if there are still clients connected to the web server.
+	// Close any active clients first.
+	staticWeb.server.close(done);
+});
+
+process.on('SIGINT', function() {
+	if (manager.browser) {
+		var child = manager.browser.process();
+		child.kill();
+	}
 });

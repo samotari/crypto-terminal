@@ -32,7 +32,7 @@ app.views.NumberPad = (function() {
 			this.model = new Backbone.Model();
 
 			// Set the keys string with an initial value.
-			this.model.set('keys', this.options.initialKeys);
+			this.setKeys(this.options.initialKeys);
 		},
 
 		serializeData: function() {
@@ -116,7 +116,7 @@ app.views.NumberPad = (function() {
 			if (keys.length > 0) {
 				// Remove the last character from the keys string.
 				keys = keys.substr(0, keys.length - 1);
-				this.model.set('keys', keys);
+				this.setKeys(keys);
 			}
 		},
 
@@ -131,7 +131,7 @@ app.views.NumberPad = (function() {
 			if (this.hasDecimal()) return;
 			var keys = this.getKeys();
 			keys += this.getDecimalSeparator();
-			this.model.set('keys', keys);
+			this.setKeys(keys);
 		},
 
 		addKey: function(key) {
@@ -158,6 +158,11 @@ app.views.NumberPad = (function() {
 
 			// Append the key to the end of the keys string.
 			keys += key;
+
+			this.setKeys(keys);
+		},
+
+		setKeys: function(keys) {
 
 			this.model.set('keys', keys);
 		},
@@ -188,7 +193,7 @@ app.views.NumberPad = (function() {
 
 		resetKeys: function() {
 
-			this.model.set('keys', '');
+			this.setKeys('');
 		},
 
 		getKeys: function() {

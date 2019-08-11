@@ -21,6 +21,14 @@ app.settings = (function() {
 	});
 
 	var settings = _.extend({}, {
+		getAcceptedPaymentMethods: function() {
+			return _.chain(app.paymentMethods).filter(function(paymentMethod) {
+				var isAccepted = _.contains(app.settings.getAcceptedCryptoCurrencies(), paymentMethod.ref);
+				return isAccepted;
+			}).map(function(paymentMethod) {
+				return [paymentMethod.ref, paymentMethod];
+			}).object().value();
+		},
 		getAcceptedCryptoCurrencies: function() {
 			var configurableCryptoCurrencies = this.get('configurableCryptoCurrencies') || [];
 			return _.filter(configurableCryptoCurrencies, function(key) {

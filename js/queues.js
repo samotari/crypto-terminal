@@ -7,7 +7,11 @@ app.queues = (function() {
 	var queues = {
 		onDeviceReady: async.queue(function(task, next) {
 			// Synchronous.
-			task.fn();
+			try {
+				task.fn();
+			} catch (error) {
+				app.log(error);
+			}
 			next();
 		}, 1/* concurrency */),
 		onStart: async.queue(function(task, next) {
@@ -16,7 +20,11 @@ app.queues = (function() {
 		}, 1/* concurrency */),
 		onReady: async.queue(function(task, next) {
 			// Synchronous.
-			task.fn();
+			try {
+				task.fn();
+			} catch (error) {
+				app.log(error);
+			}
 			next();
 		}, 1/* concurrency */),
 	};

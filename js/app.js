@@ -33,7 +33,6 @@ var app = app || {};
 	};
 
 	app.cleanUpPendingPaymentRequest = function() {
-
 		app.log('cleanUpPendingPaymentRequest');
 		var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
 		if (paymentRequest && !paymentRequest.isComplete()) {
@@ -43,6 +42,25 @@ var app = app || {};
 				app.paymentRequests.remove(paymentRequest);
 			}
 		}
+	};
+
+	app.initializeElectrumServices = function() {
+		app.services.electrum = app.services.electrum || {};
+		var networks = _.chain(app.settings.getAcceptedPaymentMethods()).filter(function(paymentMethod) {
+			return !!paymentMethod.electrum;
+		}).pluck('ref').value();
+		_.each(networks, function(network) {
+			if (!app.services.electrum[network]) {
+				var service = app.services.electrum[network] = new app.abstracts.ElectrumService(network);
+				service.initialize(function(error) {
+					if (error) {
+						app.log('Failed to initialize ElectrumService', network, error);
+					} else {
+						app.log('ElectrumService initialized!', network);
+					}
+				});
+			}
+		});
 	};
 
 	app.isDeveloperMode = function() {

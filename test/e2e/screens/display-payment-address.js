@@ -4,40 +4,18 @@ var _ = require('underscore');
 var expect = require('chai').expect;
 var helpers = require('../helpers');
 var manager = require('../../manager');
-var querystring = require('querystring');
 require('../global-hooks');
 
 describe('#display-payment-address', function() {
-
-	var socketServer;
-	beforeEach(function() {
-		socketServer = manager.socketServer();
-	})
-
-	beforeEach(function(done) {
-		manager.onAppLoaded(done);
-	});
-
-	beforeEach(function() {
-		socketServer.primus.write({
-			channel: 'exchange-rates',
-			data: {'BTC':1.00000000,'CZK':142155.31,'EUR':5467.50,'LTC':77.85130401,'USD':6389.06,'XMR':49.66476285075738763347},
-		});
-	});
-
-	afterEach(function() {
-		socketServer.close();
-	});
 
 	describe('only one payment method', function() {
 
 		beforeEach(function(done) {
 			manager.evaluateInPageContext(function() {
-				app.setDeveloperMode(true);
 				app.markGettingStartedAsComplete();
 				app.settings.set('configurableCryptoCurrencies', ['bitcoinTestnet']);
-				app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
-				app.settings.set('displayCurrency', 'EUR');
+				app.settings.set('bitcoinTestnet.extendedPublicKey', 'vpub5UG3QqhKbZ8bL7PNw6om29xk7Bhm6BhtCwoYhF8MF5aF1s843gPFjVqQn5kS43dArrzkr8jwKbLCAt3dkpkkjd8VmuRwwmmRK4PMTtTjnNJ');
+				app.settings.set('displayCurrency', 'BTC');
 				app.config.paymentRequests.saveDelay = 0;
 			}, done);
 		});
@@ -47,29 +25,40 @@ describe('#display-payment-address', function() {
 		});
 
 		beforeEach(function(done) {
-			helpers['#pay'].pressNumberPadKey('1').then(function() {
-				manager.page.click('.button.continue').then(function() {
-					var hash = manager.getPageLocationHash();
-					// Should skip the #choose-payment-method screen.
-					expect(hash).to.equal('display-payment-address');
-					done();
-				}).catch(done);
-			}).catch(done);
+			helpers['#pay'].setAmount('0.001', done);
+		});
+
+		beforeEach(function(done) {
+			helpers['#pay'].continue(done);
+		});
+
+		it('skips the #choose-payment-method screen', function() {
+			var hash = manager.getPageLocationHash();
+			// Should skip the #choose-payment-method screen.
+			expect(hash).to.equal('display-payment-address');
 		});
 
 		it('back', function(done) {
 			manager.page.click('.button.back').then(function() {
-				var hash = manager.getPageLocationHash();
-				expect(hash).to.equal('pay');
+				try {
+					var hash = manager.getPageLocationHash();
+					expect(hash).to.equal('pay');
+				} catch (error) {
+					return done(error);
+				}
 				manager.evaluateInPageContext(function() {
 					var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
 					return Promise.resolve(paymentRequest && paymentRequest.toJSON() || null);
 				}, function(error, paymentRequest) {
 					if (error) return done(error);
-					expect(paymentRequest).to.not.equal(null);
-					expect(paymentRequest).to.be.an('object');
-					expect(paymentRequest.amount).to.equal(null);
-					expect(paymentRequest.method).to.equal(null);
+					try {
+						expect(paymentRequest).to.not.equal(null);
+						expect(paymentRequest).to.be.an('object');
+						expect(paymentRequest.amount).to.equal(null);
+						expect(paymentRequest.method).to.equal(null);
+					} catch (error) {
+						return done(error);
+					}
 					done();
 				});
 			}).catch(done);
@@ -80,13 +69,12 @@ describe('#display-payment-address', function() {
 
 		beforeEach(function(done) {
 			manager.evaluateInPageContext(function() {
-				app.setDeveloperMode(true);
 				app.markGettingStartedAsComplete();
 				// Must configure more than one payment method to be able to view the #choose-payment-method screen.
 				app.settings.set('configurableCryptoCurrencies', ['bitcoin', 'bitcoinTestnet']);
 				app.settings.set('bitcoin.extendedPublicKey', 'xpub69V9b3wdTWG6Xjtpz5dX8ULpqLKzci3o7YCb6xQUpHAhf3dzFBNeM4GXTSBff82Zh524oHpSPY4XimQMCbxAsprrh7GmCNpp9GNdrHxxqJo');
-				app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
-				app.settings.set('displayCurrency', 'EUR');
+				app.settings.set('bitcoinTestnet.extendedPublicKey', 'vpub5UG3QqhKbZ8bL7PNw6om29xk7Bhm6BhtCwoYhF8MF5aF1s843gPFjVqQn5kS43dArrzkr8jwKbLCAt3dkpkkjd8VmuRwwmmRK4PMTtTjnNJ');
+				app.settings.set('displayCurrency', 'BTC');
 				app.config.paymentRequests.saveDelay = 0;
 			}, done);
 		});
@@ -96,13 +84,11 @@ describe('#display-payment-address', function() {
 		});
 
 		beforeEach(function(done) {
-			helpers['#pay'].pressNumberPadKey('1').then(function() {
-				manager.page.click('.button.continue').then(function() {
-					var hash = manager.getPageLocationHash();
-					expect(hash).to.equal('choose-payment-method');
-					done();
-				}).catch(done);
-			}).catch(done);
+			helpers['#pay'].setAmount('0.001', done);
+		});
+
+		beforeEach(function(done) {
+			helpers['#pay'].continue(done);
 		});
 
 		beforeEach(function(done) {
@@ -134,8 +120,12 @@ describe('#display-payment-address', function() {
 				manager.page.$eval('.address-qr-code', function(el) {
 					return el.style['background-image'];
 				}).then(function(backgroundImage) {
-					expect(backgroundImage.length > 400).to.equal(true);
-					expect(backgroundImage.indexOf('url("data:image/jpeg;base64,')).to.not.equal(-1);
+					try {
+						expect(backgroundImage.length > 400).to.equal(true);
+						expect(backgroundImage.indexOf('url("data:image/jpeg;base64,')).to.not.equal(-1);
+					} catch (error) {
+						return done(error);
+					}
 					done();
 				}).catch(done);
 			}).catch(done);
@@ -143,17 +133,25 @@ describe('#display-payment-address', function() {
 
 		it('back', function(done) {
 			manager.page.click('.button.back').then(function() {
-				var hash = manager.getPageLocationHash();
-				expect(hash).to.equal('choose-payment-method');
+				try {
+					var hash = manager.getPageLocationHash();
+					expect(hash).to.equal('choose-payment-method');
+				} catch (error) {
+					return done(error);
+				}
 				manager.evaluateInPageContext(function() {
 					var paymentRequest = app.paymentRequests.findWhere({ status: 'pending' });
 					return Promise.resolve(paymentRequest && paymentRequest.toJSON() || null);
 				}, function(error, paymentRequest) {
 					if (error) return done(error);
-					expect(paymentRequest).to.not.equal(null);
-					expect(paymentRequest).to.be.an('object');
-					expect(paymentRequest.amount).to.equal('1');
-					expect(paymentRequest.method).to.equal(null);
+					try {
+						expect(paymentRequest).to.not.equal(null);
+						expect(paymentRequest).to.be.an('object');
+						expect(paymentRequest.amount).to.equal('0.001');
+						expect(paymentRequest.method).to.equal(null);
+					} catch (error) {
+						return done(error);
+					}
 					done();
 				});
 			}).catch(done);
@@ -161,8 +159,12 @@ describe('#display-payment-address', function() {
 
 		it('cancel', function(done) {
 			manager.page.click('.button.cancel').then(function() {
-				var hash = manager.getPageLocationHash();
-				expect(hash).to.equal('pay');
+				try {
+					var hash = manager.getPageLocationHash();
+					expect(hash).to.equal('pay');
+				} catch (error) {
+					return done(error);
+				}
 				manager.evaluateInPageContext(function() {
 					return new Promise(function(resolve, reject) {
 						var paymentRequest;
@@ -178,10 +180,14 @@ describe('#display-payment-address', function() {
 					});
 				}, function(error, paymentRequest) {
 					if (error) return done(error);
-					expect(paymentRequest).to.not.equal(null);
-					expect(paymentRequest).to.be.an('object');
-					expect(paymentRequest.amount).to.equal(null);
-					expect(paymentRequest.method).to.equal(null);
+					try {
+						expect(paymentRequest).to.not.equal(null);
+						expect(paymentRequest).to.be.an('object');
+						expect(paymentRequest.amount).to.equal(null);
+						expect(paymentRequest.method).to.equal(null);
+					} catch (error) {
+						return done(error);
+					}
 					done();
 				});
 			}).catch(done);
@@ -189,36 +195,26 @@ describe('#display-payment-address', function() {
 
 		describe('warning: payment-method-inactive', function() {
 
-			var selector = '.warning-payment-method-inactive';
-			var active = true;
-			var sendStatusInterval;
-			beforeEach(function() {
-				sendStatusInterval = setInterval(function() {
-					socketServer.primus.write({
-						channel: 'status-check?' + querystring.stringify({
-							network: 'bitcoinTestnet',
-						}),
-						data: { bitcoinTestnet: active },
-					});
-				}, 5);
+			describe('connected to electrum server', function() {
+
+				beforeEach(function(done) {
+					manager.connectElectrumClient('bitcoinTestnet', ['127.0.0.1 t51001'], done);
+				});
+
+				it('warning is not visible', function(done) {
+					manager.page.waitFor('.warning-payment-method-inactive', { visible: false }).then(function() {
+						done();
+					}).catch(done);
+				});
 			});
 
-			afterEach(function() {
-				clearInterval(sendStatusInterval);
-			});
+			describe('not connected to electrum server', function() {
 
-			it('not visible when active', function(done) {
-				active = true;
-				manager.page.waitFor(selector, { visible: false }).then(function() {
-					done();
-				}).catch(done);
-			});
-
-			it('visible when inactive', function(done) {
-				active = false;
-				manager.page.waitFor(selector, { visible: true }).then(function() {
-					done();
-				}).catch(done);
+				it('warning is visible', function(done) {
+					manager.page.waitFor('.warning-payment-method-inactive', { visible: true }).then(function() {
+						done();
+					}).catch(done);
+				});
 			});
 		});
 	});

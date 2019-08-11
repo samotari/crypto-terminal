@@ -36,5 +36,10 @@ app.onDeviceReady(function() {
 		}
 	});
 
+	app.onReady(function() {
+		app.settings.on('change:configurableCryptoCurrencies', _.debounce(app.initializeElectrumServices, 50));
+		_.delay(app.initializeElectrumServices, 200);
+	});
+
 	app.queues.onStart.resume();
 });

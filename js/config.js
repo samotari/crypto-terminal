@@ -17,6 +17,9 @@ app.config = (function() {
 			},
 		}, app.config.ctApi),
 		debug: false,
+		jsonRpcTcpSocketClient: {
+			timeout: 10000,
+		},
 		primus: {
 			reconnect: {
 				max: 5000, // Number: The max delay before we try to reconnect.

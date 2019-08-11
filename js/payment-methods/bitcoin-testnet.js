@@ -81,6 +81,25 @@ app.paymentMethods.bitcoinTestnet = (function() {
 			scriptHash: 196,
 			wif: 239,
 		},
+
+		/*
+			Information needed for connecting to ElectrumX servers.
+		*/
+		electrum: {
+			defaultPorts: {
+				tcp: 51001,
+				ssl: 51002,
+			},
+			servers: [
+				'electrumx.paralelnipolis.cz t51001 s51002',
+				'testnet.hsmiths.com t53011 s53012',
+				'hsmithsxurybd7uh.onion t53011 s53012',
+				'testnet.qtornado.com s t',
+				'testnet1.bauerj.eu t50001 s50002',
+				'tn.not.fyi t55001 s55002',
+				'bitcoin.cluelessperson.com s t',
+			],
+		},
 	});
 
 })();
