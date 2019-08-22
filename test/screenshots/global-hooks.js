@@ -14,20 +14,8 @@ beforeEach(function(done) {
 	}).catch(done);
 });
 
-var socketServer;
-beforeEach(function() {
-	socketServer = manager.socketServer();
-});
-
 beforeEach(function(done) {
 	manager.onAppLoaded(done);
-});
-
-beforeEach(function() {
-	socketServer.primus.write({
-		channel: 'exchange-rates',
-		data: {'BTC':1.00000000,'CZK':142155.31,'EUR':5467.50,'LTC':77.85130401,'USD':6389.06,'XMR':49.66476285075738763347},
-	});
 });
 
 beforeEach(function(done) {
@@ -35,7 +23,7 @@ beforeEach(function(done) {
 		app.markGettingStartedAsComplete();
 		app.settings.set('configurableCryptoCurrencies', ['bitcoinTestnet']);
 		app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
-		app.settings.set('displayCurrency', 'EUR');
+		app.settings.set('displayCurrency', 'BTC');
 		app.config.paymentRequests.saveDelay = 0;
 	}, done);
 });

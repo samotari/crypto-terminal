@@ -445,7 +445,7 @@ app.views.Main = (function() {
 					messageText = message;
 				} else if (_.isObject(message) && _.has(message, 'status')) {
 					messageText = app.i18n.t('http-request-failed', {
-						message: app.util.getErrorMessageFromJQueryXHRObject(jqXHR),
+						message: app.util.getErrorMessageFromJQueryXHRObject(message),
 					});
 				} else if (message.message && _.isString(message.message)) {
 					messageText = message.message;

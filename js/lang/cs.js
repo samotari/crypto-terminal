@@ -97,7 +97,6 @@ app.lang['cs'] = (function() {
 		'more-menu.about': 'O této aplikaci',
 		'more-menu.recommended-mobile-wallets': 'Doporučené mobilní aplikace',
 
-		'ct-api.missing-exchange-rates': 'Žádné směnné kurzy',
 		'recommended-mobile-wallets.title': 'Doporučené Mobilní Aplikace',
 		'recommended-mobile-wallets.description': 'Tady je seznam mobilních peněženek, které doporučujeme našim zákazníkům.',
 		'recommended-mobile-wallets.instructions': 'Načtěte QR kód na otevření stránky aplikace',

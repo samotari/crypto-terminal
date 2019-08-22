@@ -97,7 +97,6 @@ app.lang['de'] = (function() {
 		'more-menu.about': 'Über diese App',
 		'more-menu.recommended-mobile-wallets': 'Empfohlene mobile Wallets',
 
-		'ct-api.missing-exchange-rates': 'Fehlende Wechselkurs Daten',
 		'recommended-mobile-wallets.title': 'Empfohlene mobile Wallets',
 		'recommended-mobile-wallets.description': 'Folgende mobilen Wallet Anwendungen möchten wir unseren Kunden empfehlen.',
 		'recommended-mobile-wallets.instructions': 'Scannen Sie einen der QR-Code mit Ihrem mobilen Gerät, um zum App-Store bzw. Play-Store der jeweiligen App zu gelangen.',

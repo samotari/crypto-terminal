@@ -5,9 +5,9 @@
 	<meta http-equiv="x-ua-compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <% if (target === 'dev' || target === 'test') { %>
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss: http: ws:; script-src 'self' 'unsafe-eval' <%= config.ctApi.baseUrl %>/primus/primus.js;">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss: http: ws:; script-src 'self' 'unsafe-eval';">
 <% } else { %>
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss:; script-src 'self' 'unsafe-eval' <%= config.ctApi.baseUrl %>/primus/primus.js;">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: gap: wss:; script-src 'self' 'unsafe-eval';">
 <% } %>
 	<title><%= info.name %></title>
 <% if (target === 'dev' || target === 'test') { %>
@@ -31,9 +31,7 @@
 	</script>
 <% }); %>
 	<script type="text/json" id="json-info"><%= JSON.stringify(info) %></script>
-	<script type="text/json" id="json-config"><%= JSON.stringify(config) %></script>
 	<script src="cordova.js"></script>
-	<script id="primus-library" src="<%= config.ctApi.baseUrl %>/primus/primus.js"></script>
 <% if (target === 'dev' || target === 'test') { %>
 	<script src="js/all.js"></script>
 <% } else { %>

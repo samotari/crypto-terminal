@@ -44,6 +44,7 @@ app.lang['en'] = (function() {
 		'getting-started.skip-incomplete-step-confirm': 'The current step is incomplete, do you want to continue anyway?',
 
 		'settings.display-currency.label': 'Display Currency',
+		'settings.exchange-rates-provider.label': 'Exchange Rates Provider',
 		'settings.date-format.label': 'Date Format',
 		'settings.theme.label': 'Theme',
 		'settings.theme.option.default.label': 'Default',
@@ -119,7 +120,6 @@ app.lang['en'] = (function() {
 		'more-menu.about': 'About this app',
 		'more-menu.recommended-mobile-wallets': 'Recommended mobile wallets',
 
-		'ct-api.missing-exchange-rates': 'Missing exchange rates data',
 		'recommended-mobile-wallets.title': 'Recommended Mobile Wallets',
 		'recommended-mobile-wallets.description': 'The following are the mobile wallet applications that we recommend to our customers.',
 		'recommended-mobile-wallets.instructions': 'Scan a QR code with your mobile device to navigate to that app\'s Play or App store listing.',
@@ -128,6 +128,8 @@ app.lang['en'] = (function() {
 
 		'screen-saver.instructions': '(tap anywhere to activate)',
 		'screen-saver.accepted-here': 'Accepted Here',
+
+		'services.exchange-rates.unsupported-currency-pair': 'Unsupported currency pair: "{{from}}:{{to}}"',
 	};
 
 })();
