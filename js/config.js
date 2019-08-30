@@ -10,12 +10,6 @@ app.config = (function() {
 		cache: {
 			onAppStartClearOlderThan: 86400000,// milliseconds
 		},
-		ctApi: _.extend({
-			primusPath: '/primus',
-			exchangeRates: {
-				timeout: 10000,
-			},
-		}, app.config.ctApi),
 		debug: false,
 		jsonRpcTcpSocketClient: {
 			timeout: 10000,
@@ -142,6 +136,33 @@ app.config = (function() {
 							disabled: !code,
 						};
 					});
+				},
+				validateAsync: function(value, data, cb) {
+					var displayCurrency = value;
+					var provider = app.settings.get('exchangeRatesProvider');
+					validateExchangeRatesDisplayCurrencyWithProvider(displayCurrency, provider, cb);
+				},
+			},
+			{
+				name: 'exchangeRatesProvider',
+				label: function() {
+					return app.i18n.t('settings.exchange-rates-provider.label');
+				},
+				type: 'select',
+				required: true,
+				default: 'coinbase',
+				options: function() {
+					return _.map(app.services.exchangeRates.providers, function(provider, key) {
+						return {
+							key: key,
+							label: provider.label,
+						};
+					});
+				},
+				validateAsync: function(value, data, cb) {
+					var displayCurrency = app.settings.get('displayCurrency');
+					var provider = value;
+					validateExchangeRatesDisplayCurrencyWithProvider(displayCurrency, provider, cb);
 				},
 			},
 			{
@@ -285,6 +306,20 @@ app.config = (function() {
 			config.numberFormats[paymentMethod.code] = paymentMethod.numberFormat;
 		}
 	});
+
+	var validateExchangeRatesDisplayCurrencyWithProvider = function(displayCurrency, provider, done) {
+		var paymentMethods = app.settings.getAcceptedPaymentMethods();
+		async.each(paymentMethods, function(paymentMethod, next) {
+			if (displayCurrency === paymentMethod.code) return next();
+			app.services.exchangeRates.get({
+				currencies: {
+					from: paymentMethod.code,
+					to: displayCurrency,
+				},
+				provider: provider,
+			}, next);
+		}, done);
+	};
 
 	return config;
 

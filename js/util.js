@@ -14,12 +14,14 @@ app.util = (function() {
 
 		getErrorMessageFromJQueryXHRObject: function(jqXHR) {
 
-			if (jqXHR.responseJSON) {
+			if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
 				return jqXHR.responseJSON.error;
-			} else if (jqXHR.responseText) {
-				return jqXHR.responseText;
+			} else if (jqXHR.status) {
+				return jqXHR.statusText;
+			} else if (jqXHR.status === 0) {
+				return 'Most likely your device is offline';
 			}
-			return jqXHR.statusText || '';
+			return 'Unknown';
 		},
 
 		renderQrCode: function($target, data, options, cb) {

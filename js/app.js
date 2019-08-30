@@ -139,11 +139,4 @@ var app = app || {};
 		app.info = {};
 	}
 
-	try {
-		app.config = JSON.parse($('#json-config').html());
-	} catch (error) {
-		app.log(error);
-		app.config = {};
-	}
-
 })();

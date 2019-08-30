@@ -97,7 +97,6 @@ app.lang['es'] = (function() {
 		'more-menu.about': 'Acerca de esta aplicación',
 		'more-menu.recommended-mobile-wallets': 'Monederos móviles recomendados',
 
-		'ct-api.missing-exchange-rates': 'Faltan tasas de cambio',
 		'recommended-mobile-wallets.title': 'Monederos móviles recomendados',
 		'recommended-mobile-wallets.description': 'A continuación puede ver las aplicaciones de monederos móviles que recomendamos a nuestros clientes',
 		'recommended-mobile-wallets.instructions': 'Escanee el código QR con su móvil para navegar a las applicaciones recomendadas',

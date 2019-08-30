@@ -49,16 +49,6 @@ app.abstracts.PaymentMethod = (function() {
 		},
 
 		/*
-			`cb(error, rates)`:
-				`error`	.. An error object if some problem occurs while generating the payment request
-				`rates`	.. An object containing conversion rates for all supported currencies. E.g:
-							{ 'USD': '0.0012', 'EUR': '0.00091' }
-		*/
-		getExchangeRates: function(cb) {
-			app.services.ctApi.getExchangeRates(this.code, cb);
-		},
-
-		/*
 			`paymentRequest` .. A cryptocurrency payment request object
 			`cb(error, wasReceived, paymentData)`:
 				`error` .. An error object or NULL
@@ -71,40 +61,19 @@ app.abstracts.PaymentMethod = (function() {
 			});
 		},
 
-		getExchangeRate: function(fromCurrency, cb) {
+		getExchangeRate: function(toCurrency, done) {
 
-			if (!_.isString(fromCurrency)) {
-				return cb(new Error('Invalid "fromCurrency". String expected.'));
+			if (!_.isString(toCurrency)) {
+				return done(new Error('Invalid "toCurrency". String expected.'));
 			}
-
-			fromCurrency = fromCurrency.toUpperCase();
-
-			var toCurrency = this.code;
-			var paymentMethod = _.findWhere(app.paymentMethods, { code: fromCurrency });
-			var getExchangeRates;
-
-			if (paymentMethod) {
-				getExchangeRates = _.bind(paymentMethod.getExchangeRates, paymentMethod);
-			} else {
-				getExchangeRates = _.bind(this.getExchangeRates, this);
-			}
-
-			getExchangeRates(function(error, rates) {
-
-				if (error) {
-					return cb(error);
-				}
-
-				var rate;
-
-				if (paymentMethod) {
-					rate = (new BigNumber(1)).dividedBy(rates[toCurrency]);
-				} else {
-					rate = rates[fromCurrency];
-				}
-
-				cb(null, rate);
-			});
+			toCurrency = toCurrency.toUpperCase();
+			app.services.exchangeRates.get({
+				currencies: {
+					from: this.code,
+					to: toCurrency,
+				},
+				provider: app.settings.get('exchangeRatesProvider'),
+			}, done);
 		},
 
 		listenForPayment: function(paymentRequest, cb) {

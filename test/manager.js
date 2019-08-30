@@ -4,7 +4,6 @@ var express = require('express');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var puppeteer = require('puppeteer');
-var Primus = require('primus');
 var serveStatic = require('serve-static');
 var WebSocket = require('ws');
 
@@ -29,6 +28,10 @@ var manager = module.exports = {
 		}
 
 		options = _.defaults({}, options || {}, {
+			args: [
+				// To prevent CORS errors:
+				'--disable-web-security',
+			],
 			headless: true,
 			slowMo: 0,
 			timeout: 10000,
@@ -106,35 +109,6 @@ var manager = module.exports = {
 		var pageUrl = manager.page.url();
 		var parts = pageUrl.indexOf('#') !== -1 ? pageUrl.split('#') : [];
 		return parts[1] || '';
-	},
-
-	socketServer: function(serverConfig) {
-
-		serverConfig = _.defaults(serverConfig || {}, {
-			port: 3600,
-			pathname: '/primus',
-			transformer: 'websockets',
-			pingInterval: 5000,
-		});
-
-		var tmpApp = express();
-		tmpApp.server = tmpApp.listen(serverConfig.port, 'localhost');
-		var primus = new Primus(tmpApp.server, serverConfig);
-
-		return {
-			tmpApp: tmpApp,
-			primus: primus,
-			close: function() {
-				if (primus) {
-					primus.destroy();
-					primus = null;
-				}
-				if (tmpApp) {
-					tmpApp.server.close();
-					tmpApp = null;
-				}
-			}
-		};
 	},
 
 	electrumServer: function(port) {
@@ -357,6 +331,14 @@ var manager = module.exports = {
 								var args = Array.prototype.slice.call(arguments);
 								if (args[0] instanceof Error) {
 									args[0] = args[0].message
+								} else if (_.isObject(args[0])) {
+									if (args[0].responseJSON && args[0].responseJSON.error) {
+										args[0] = args[0].responseJSON.error;
+									} else if (args[0].status) {
+										args[0] = args[0].statusText;
+									} else if (args[0].status === 0) {
+										args[0] = 'FAILED_HTTP_REQUEST';
+									}
 								}
 								resolve(args);
 							};
@@ -379,6 +361,9 @@ var manager = module.exports = {
 			});
 		}, options)
 			.then(function(args) {
+				if (args[0]) {
+					args[0] = new Error(args[0]);
+				}
 				cb.apply(undefined, args);
 			})
 			.catch(cb);
