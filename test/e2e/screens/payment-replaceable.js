@@ -2,7 +2,6 @@
 
 var _ = require('underscore');
 var async = require('async');
-var querystring = require('querystring');
 
 var helpers = require('../helpers');
 var manager = require('../../manager');
@@ -10,30 +9,28 @@ require('../global-hooks');
 
 describe('#payment-replaceable [bitcoin]', function() {
 
-	var socketServer;
-	beforeEach(function() {
-		socketServer = manager.socketServer();
-	})
-
 	beforeEach(function(done) {
-		manager.onAppLoaded(done);
+		manager.evaluateInPageContext(function() {
+			app.markGettingStartedAsComplete();
+			// Must configure more than one payment method to be able to view the #choose-payment-method screen.
+			app.settings.set('configurableCryptoCurrencies', ['bitcoinTestnet']);
+			app.settings.set('bitcoinTestnet.extendedPublicKey', 'vpub5UG3QqhKbZ8bL7PNw6om29xk7Bhm6BhtCwoYhF8MF5aF1s843gPFjVqQn5kS43dArrzkr8jwKbLCAt3dkpkkjd8VmuRwwmmRK4PMTtTjnNJ');
+			app.settings.set('displayCurrency', 'BTC');
+		}, done);
 	});
 
-	beforeEach(function() {
-		socketServer.primus.write({
-			channel: 'exchange-rates',
-			data: {'BTC':1.00000000,'CZK':142155.31,'EUR':5467.50,'LTC':77.85130401,'USD':6389.06,'XMR':49.66476285075738763347},
+	var client;
+	beforeEach(function(done) {
+		manager.connectElectrumClient('bitcoinTestnet', ['127.0.0.1 t51001'], function(error, socket) {
+			if (error) return done(error);
+			client = socket;
+			done();
 		});
 	});
 
 	beforeEach(function(done) {
 		manager.evaluateInPageContext(function() {
-			app.markGettingStartedAsComplete();
-			// Must configure more than one payment method to be able to view the #choose-payment-method screen.
-			app.settings.set('configurableCryptoCurrencies', ['bitcoin', 'bitcoinTestnet']);
-			app.settings.set('bitcoin.extendedPublicKey', 'xpub69V9b3wdTWG6Xjtpz5dX8ULpqLKzci3o7YCb6xQUpHAhf3dzFBNeM4GXTSBff82Zh524oHpSPY4XimQMCbxAsprrh7GmCNpp9GNdrHxxqJo');
-			app.settings.set('bitcoinTestnet.extendedPublicKey', 'tpubDD8itYXaDtaTuuouxqdvxfYthFvs8xNbheGxwEcGXJyxrzuyMAxv4xbsw96kz4wKLjSyn3Dd8gbB7kF1bdJdphz1ZA9Wf1Vbgrm3tTZVqSs');
-			app.settings.set('displayCurrency', 'EUR');
+			// Reset the address index so that the same address is used for each test.
 			app.settings.set('bitcoinTestnet.addressIndex', '0');
 		}, done);
 	});
@@ -43,117 +40,51 @@ describe('#payment-replaceable [bitcoin]', function() {
 	});
 
 	beforeEach(function(done) {
-		var pressNumberPadKey = helpers['#pay'].pressNumberPadKey;
-		pressNumberPadKey('1').then(function() {
-			manager.page.click('.button.continue').then(function() {
-				manager.page.waitFor('.view.choose-payment-method .button.payment-method.bitcoinTestnet').then(function() {
-					helpers['#choose-payment-method'].selectPaymentMethod('bitcoinTestnet').then(function() {
+		helpers['#pay'].setAmount('0.001', done);
+	});
+
+	beforeEach(function(done) {
+		this.timeout(500000);
+		// var address = 'tb1qv6ftlj0u9tcpjuq3jtfsj7wl9swp83kkhm7yp5';
+		var tx = {
+			fees: 1250,
+			height: 1519412,
+			hex: '0200000000010132584a671d6626887bc84a0bfb25d1ee14cb3cd5cb86fbf0fc6969021e84a9130100000000f7ffffff015e3d0f00000000001600146692bfc9fc2af019701192d30979df2c1c13c6d6024730440220363b1bf683e0403c571349fb59be8eca6e64f3c82ced52b794209bf937bc70320220015660dee93fb4a4033cc4f684f37b3ee225c7533ee90fac615c3efb4d009818012103cea1427b46ae703eb27d08b8cc81df44e179b446a2a2c78452b515d3ef52997500000000',
+			tx_hash: 'd878f302147331a4764bdda133163b4a84fada11e0671695bc36232f7757a78f',
+		};
+		manager.socketServer.mock.receiveTx(client, tx, done);
+		helpers['#pay'].continue(function(error) {
+			if (error) return done(error);
+		});
+	});
+
+	it('shows warning', function(done) {
+		manager.page.waitFor('.view.payment-replaceable').then(function() {
+			manager.page.waitFor('.result-indicator').then(function() {
+				done();
+			}).catch(done);
+		}).catch(done);
+	});
+
+	it('shows payment success after clicking accept button', function(done) {
+		manager.page.waitFor('.view.payment-replaceable').then(function() {
+			manager.page.click('.button.accept').then(function() {
+				manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
+					manager.page.waitFor('.result-indicator').then(function() {
 						done();
-					})
+					}).catch(done);
 				}).catch(done);
 			}).catch(done);
 		}).catch(done);
 	});
 
-	afterEach(function() {
-		socketServer.close();
-	});
-
-	describe('accepting replaceable transaction', function() {
-
-		it('should show success screen', function(done) {
-			var address = 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY';
-			var channel = 'v1/new-txs?' + querystring.stringify({
-				address: address,
-				network: 'bitcoinTestnet',
-			});
-			manager.page.waitFor('.address-qr-code').then(function() {
-				manager.page.waitFor(function(channel) {
-					return new Promise(function(resolve, reject) {
-						try {
-							async.until(function() {
-								return app.services.ctApi.isSubscribed(channel);
-							}, function(next) {
-								_.delay(next, 5);
-							}, function() {
-								resolve(true);
-							});
-						} catch (error) {
-							return reject(error);
-						}
-					});
-				}, {}/* options */, channel).then(function() {
-					socketServer.primus.write({
-						channel: channel,
-						data: {
-							address: address,
-							amount: 100000000,
-							txid: 'this-is-a-testing-transaction-id',
-							isReplaceable: true
-						}
-					});
-					manager.page.waitFor('.view.payment-replaceable').then(function() {
-						manager.page.waitFor('.result-indicator').then(function() {
-							manager.page.click('.button.accept').then(function() {
-								manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
-									manager.page.waitFor('.result-indicator').then(function() {
-										done();
-									}).catch(done);
-								}).catch(done);
-							})
-						}).catch(done);
-					}).catch(done);
+	it('shows payment screen again after clicking reject button', function(done) {
+		manager.page.waitFor('.view.payment-replaceable').then(function() {
+			manager.page.click('.button.reject').then(function() {
+				manager.page.waitFor('.address-qr-code').then(function() {
+					done();
 				}).catch(done);
 			}).catch(done);
-		});
+		}).catch(done);
 	});
-
-	describe('rejecting replaceable transaction', function() {
-
-		it('should show display payment address screen', function(done) {
-			var address = 'mocgFTsFarDc6ACyso8xhAbKjtfGYW42UY';
-			var channel = 'v1/new-txs?' + querystring.stringify({
-				address: address,
-				network: 'bitcoinTestnet',
-			});
-			manager.page.waitFor('.address-qr-code').then(function() {
-				manager.page.waitFor(function(channel) {
-					return new Promise(function(resolve, reject) {
-						try {
-							async.until(function() {
-								return app.services.ctApi.isSubscribed(channel);
-							}, function(next) {
-								_.delay(next, 5);
-							}, function() {
-								resolve(true);
-							});
-						} catch (error) {
-							return reject(error);
-						}
-					});
-				}, {}/* options */, channel).then(function() {
-					socketServer.primus.write({
-						channel: channel,
-						data: {
-							address: address,
-							amount: 100000000,
-							txid: 'this-is-a-testing-transaction-id',
-							isReplaceable: true
-						}
-					});
-					manager.page.waitFor('.view.payment-replaceable').then(function() {
-						manager.page.waitFor('.result-indicator').then(function() {
-							manager.page.click('.button.reject').then(function() {
-								manager.page.waitFor('.address-qr-code').then(function() {
-									done();
-								})
-							})
-						}).catch(done);
-					}).catch(done);
-				}).catch(done);
-			}).catch(done);
-		});
-	});
-
-
 });

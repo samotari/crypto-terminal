@@ -65,6 +65,13 @@ app.views.Pay = (function() {
 			this.$continueButton.toggleClass('disabled', !this.isValidAmount());
 		},
 
+		setAmount: function(amount) {
+
+			var decimalSeparator = this.numberPadView.getDecimalSeparator();
+			var keys = amount.toString().replace(new RegExp(/,\./), decimalSeparator);
+			this.numberPadView.setKeys(keys);
+		},
+
 		closeNumberPadView: function() {
 
 			if (this.numberPadView) {

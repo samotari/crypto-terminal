@@ -5,6 +5,16 @@ var manager = require('../manager');
 
 module.exports = {
 	'#pay': {
+		setAmount: function(amount, done) {
+			manager.evaluateInPageContext(function(amount) {
+				app.mainView.currentView.view.setAmount(amount);
+			}, [amount], done);
+		},
+		continue: function(done) {
+			manager.page.click('.button.continue').then(function() {
+				done();
+			}).catch(done);
+		},
 		pressNumberPadKey: function(key) {
 			var selector;
 			if (key === 'backspace') {
@@ -38,7 +48,5 @@ module.exports = {
 			var selector = '.view.choose-payment-method .button.payment-method.' + name;
 			return manager.page.click(selector);
 		},
-	},
-	'#display-payment-address': {
 	},
 };

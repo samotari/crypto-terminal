@@ -24,4 +24,5 @@
     <plugin name="cordova-android-support-gradle-release" spec="3.0.1">
         <variable name="ANDROID_SUPPORT_VERSION" value="26.+" />
     </plugin>
+    <plugin name="cz.blocshop.socketsforcordova" spec="https://github.com/chill117/sockets-for-cordova.git" />
 </widget>

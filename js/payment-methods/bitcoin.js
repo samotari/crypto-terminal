@@ -216,7 +216,31 @@ app.paymentMethods.bitcoin = (function() {
 			wif: 128,
 		},
 
+		/*
+			Information needed for connecting to ElectrumX servers.
+		*/
+		electrum: {
+			defaultPorts: {
+				tcp: 50001,
+				ssl: 50002,
+			},
+			servers: [
+				'electrumx.paralelnipolis.cz s t',
+				'btc.smsys.me s995',
+				'E-X.not.fyi s t',
+				'electrum.vom-stausee.de s t',
+				'electrum.hsmiths.com s t',
+				'helicarrier.bauerj.eu s t',
+				'hsmiths4fyqlw5xw.onion s t',
+				'ozahtqwp25chjdjd.onion s t',
+				'node.arihanc.com s t',
+				'arihancckjge66iv.onion s t',
+			],
+		},
+
 		addressTypes: ['p2pkh', 'p2wpkh-p2sh', 'p2wpkh'],
+
+		addressStatusSubscriptions: {},
 
 		createVerificationView: function(cb) {
 
@@ -373,40 +397,45 @@ app.paymentMethods.bitcoin = (function() {
 					var keyPair = bitcoin.bip32.fromBase58(extendedPublicKey, constants);
 					var path = this.getPath(derivationScheme, addressIndex);
 					var child = keyPair.derivePath(path, keyPair.network);
-					var address;
-					switch (type) {
-						case 'p2wpkh':
-							var p2wpkh = bitcoin.payments.p2wpkh({
-								network: child.network,
-								pubkey: child.publicKey,
-							});
-							address = p2wpkh.address;
-							break;
-						case 'p2wpkh-p2sh':
-							var p2sh = bitcoin.payments.p2sh({
-								network: child.network,
-								redeem: bitcoin.payments.p2wpkh({
-									network: child.network,
-									pubkey: child.publicKey,
-								}),
-							});
-							address = p2sh.address;
-							break;
-						case 'p2pkh':
-							var p2pkh = bitcoin.payments.p2pkh({
-								network: child.network,
-								pubkey: child.publicKey,
-							});
-							address = p2pkh.address;
-							break;
-						default:
-							throw new Error(app.i18n.t(this.ref + '.address-type-not-supported', { type: type }));
-					}
+					var address = this.publicKeyToAddress(child.publicKey, type, keyPair.network);
 				} catch (error) {
 					return cb(error);
 				}
 				cb(null, address);
 			}, this));
+		},
+
+		publicKeyToAddress: function(publicKey, type, constants) {
+
+			if (_.isString(publicKey)) {
+				publicKey = bitcoin.ECPair.fromPublicKey(Buffer.from(publicKey, 'hex')).publicKey;
+			}
+
+			switch (type) {
+				case 'p2wpkh':
+					var p2wpkh = bitcoin.payments.p2wpkh({
+						network: constants,
+						pubkey: publicKey,
+					});
+					return p2wpkh.address;
+				case 'p2wpkh-p2sh':
+					var p2sh = bitcoin.payments.p2sh({
+						network: constants,
+						redeem: bitcoin.payments.p2wpkh({
+							network: constants,
+							pubkey: publicKey,
+						}),
+					});
+					return p2sh.address;
+				case 'p2pkh':
+					var p2pkh = bitcoin.payments.p2pkh({
+						network: constants,
+						pubkey: publicKey,
+					});
+					return p2pkh.address;
+				default:
+					throw new Error(app.i18n.t(this.ref + '.address-type-not-supported', { type: type }));
+			}
 		},
 
 		// Prepare object of network constants (for bitcoinjs-lib).
@@ -470,52 +499,6 @@ app.paymentMethods.bitcoin = (function() {
 			var decimals = this.numberFormat.decimals;
 			var cryptoAmount = app.models.PaymentRequest.prototype.convertToCryptoAmount(amount, rate, decimals);
 			return this.toBaseUnit(cryptoAmount);
-		},
-
-		listenForPayment: function(paymentRequest, cb) {
-
-			var address = paymentRequest.data && paymentRequest.data.address;
-			// NOTE: The amount in the payment request is denominated in the display currency.
-			var expectedValue = this.convertAmount(
-				paymentRequest.amount,
-				paymentRequest.rate
-			);
-			var incrementAddressIndex = _.bind(this.incrementAddressIndex, this);
-			var stopListeningForPayment = _.bind(this.stopListeningForPayment, this);
-
-			var done = _.once(function(error, tx) {
-
-				stopListeningForPayment();
-
-				if (error) {
-					// Don't increment the address index in case of an error.
-					return cb(error);
-				}
-
-				// A payment was received, so increment the address index.
-				incrementAddressIndex(function() {
-					cb(null, tx);
-				});
-			});
-
-			var channel = 'v1/new-txs?' + querystring.stringify({
-				address: address,
-				network: this.ref,
-			});
-
-			var listener = function(tx) {
-
-				if (tx.amount >= expectedValue) {
-					// Passing transaction data so it can be stored.
-					var txData = _.pick(tx, 'txid', 'isReplaceable');
-					return done(null, txData);
-				}
-
-				// Continue listening..
-			};
-
-			app.services.ctApi.subscribe(channel, listener);
-			this.listening = { channel: channel, listener: listener };
 		},
 
 		buildTx: function(receivingAddress, value, source, feeRate) {
@@ -616,78 +599,278 @@ app.paymentMethods.bitcoin = (function() {
 				var publicKey = Buffer.from(keyPair.publicKey).toString('hex');
 				var buildTx = _.bind(this.buildTx, this);
 				var broadcastRawTx = _.bind(this.broadcastRawTx, this);
+				var getAddressWithFundsGreaterThanOrEqualTo = _.bind(this.getAddressWithFundsGreaterThanOrEqualTo, this);
+				var getFeeRate = _.bind(this.getFeeRate, this);
 				var ref = this.ref;
-			} catch (error) {
-				return cb(error);
-			}
 
-			var getAddressWithFundsGreaterThanOrEqualTo = _.bind(this.getAddressWithFundsGreaterThanOrEqualTo, this);
-
-			async.parallel({
-				source: function(next) {
-					getAddressWithFundsGreaterThanOrEqualTo(publicKey, value, next);
-				},
-				feeRate: function(next) {
-					app.services.ctApi.getFeeRate(ref, next);
-				},
-			}, function(error, results) {
-
-				if (error) {
-					return cb(error);
-				}
-
-				var source = results.source;
-
-				if (!source) {
-					return cb(new Error(app.i18n.t(ref + '.insufficient-funds-to-make-payment')));
-				}
-
-				try {
-					source.keyPair = keyPair;
-					var feeRate = results.feeRate;
-					var rawTx = buildTx(receivingAddress, value, source, feeRate);
-				} catch (error) {
-					return cb(error);
-				}
-
-				broadcastRawTx(rawTx, function(error, result) {
+				async.parallel({
+					source: function(next) {
+						getAddressWithFundsGreaterThanOrEqualTo(publicKey, value, next);
+					},
+					feeRate: function(next) {
+						var targetNumberOfBlocks = 72;// !!! TODO !!! Make this configurable?
+						getFeeRate(targetNumberOfBlocks, next);
+					},
+				}, function(error, results) {
 
 					if (error) {
 						return cb(error);
 					}
 
-					if (result && result.txid) {
-						var txData = _.pick(result, 'txid');
-						return cb(null, txData);
+					var source = results.source;
+
+					if (!source) {
+						return cb(new Error(app.i18n.t(ref + '.insufficient-funds-to-make-payment')));
 					}
 
-					cb();
+					try {
+						source.keyPair = keyPair;
+						var feeRate = results.feeRate;
+						var rawTx = buildTx(receivingAddress, value, source, feeRate);
+					} catch (error) {
+						return cb(error);
+					}
+
+					broadcastRawTx(rawTx, function(error, result) {
+
+						if (error) {
+							return cb(error);
+						}
+
+						if (result && result.txid) {
+							var txData = _.pick(result, 'txid');
+							return cb(null, txData);
+						}
+
+						cb();
+					});
 				});
+			} catch (error) {
+				return cb(error);
+			}
+		},
+
+		listenForPayment: function(paymentRequest, cb) {
+
+			var address = paymentRequest.data && paymentRequest.data.address;
+			// NOTE: The amount in the payment request is denominated in the display currency.
+			var expectedValue = this.convertAmount(
+				paymentRequest.amount,
+				paymentRequest.rate
+			);
+			this.listening = { address: address };
+
+			var done = _.once(_.bind(function(error, txData) {
+
+				this.stopListeningForPayment();
+
+				if (error) {
+					// Don't increment the address index in case of an error.
+					return cb(error);
+				}
+
+				// A payment was received, so increment the address index.
+				this.incrementAddressIndex(function() {
+					cb(null, txData);
+				});
+
+			}, this));
+
+			var isReplaceableTx = _.bind(this.isReplaceableTx, this);
+			var constants = this.getNetworkConstants();
+			var receivedAmount = 0;
+			var onNewTx = function(tx) {
+				if (tx) {
+					// Sum the value of outputs for the receiving address.
+					var amount = _.chain(tx.outs).map(function(out) {
+						try {
+							var outputAddress = bitcoin.address.fromOutputScript(out.script, constants);
+						} catch (error) {
+							app.log(error);
+							return null;
+						}
+						if (outputAddress === address) {
+							return out.value;
+						}
+						return null;
+					}).compact().reduce(function(memo, value) {
+						return memo + value;
+					}, 0/* memo */).value();
+					receivedAmount += amount;
+					if (receivedAmount >= expectedValue) {
+						// Passing transaction data so it can be stored.
+						var txData = {
+							txid: tx.hash,
+							isReplaceable: isReplaceableTx(tx),
+						};
+						return done(null, txData);
+					}
+				}
+			};
+
+			async.until(_.bind(function() {
+				return this.isActive();
+			}, this), function(next) {
+				_.delay(next, 10);
+			}, _.bind(function() {
+				this.getAddressTxHistory(address, _.bind(function(error, previousHistory) {
+					if (error) return done(error);
+					var lastStatus;
+					this.subscribeToAddressStatus(address, done, _.bind(function(status) {
+						if (status && status !== lastStatus) {
+							lastStatus = status;
+							this.getAddressTxHistory(address, _.bind(function(error, latestHistory) {
+								if (!error && latestHistory) {
+									var newTxHashes = _.chain(latestHistory).reject(function(tx) {
+										return _.some(previousHistory, function(prevTx) {
+											return prevTx.tx_hash === tx.tx_hash;
+										});
+									}).pluck('tx_hash').value();
+									previousHistory = latestHistory;
+									async.map(newTxHashes, _.bind(this.getTx, this), function(error, newTxes) {
+										_.each(newTxes, onNewTx);
+									});
+								}
+							}, this));
+						}
+					}, this));
+				}, this));
+			}, this));
+		},
+
+		isReplaceableTx: function(tx) {
+
+			// The minimum value is 0 and the maximum value is (2^32 - 1)
+			// Any value of sequence that is less than the maximum, can be replaced.
+			// NOTE: 2^32 - 2 is also considered non-RBF.
+			// This is the max sequence value used by Electrum.
+			var maxSequence = BigNumber('2').pow('32').minus('2');
+			return _.some(tx.ins, function(input) {
+				var sequence = new BigNumber(input.sequence);
+				return sequence.lt(maxSequence);
+			});
+		},
+
+		subscribeToAddressStatus: function(address, onError, onStatus) {
+
+			if (this.addressStatusSubscriptions[address]) {
+				throw new Error('Already subscribed to address status: ' + address);
+			}
+			var electrumService = _.result(this, 'electrumService');
+			var constants = this.getNetworkConstants();
+			var outputScriptHash = this.getOutputScriptHash(address, constants);
+			electrumService.cmd('blockchain.scripthash.subscribe', [outputScriptHash], function(error, status) {
+				if (error) {
+					if (error.message === 'unknown method "blockchain.scripthash.subscribe"') {
+						return electrumService.cmd('blockchain.address.subscribe', [address], function(error, status) {
+							if (error) return onError(cb);
+							onStatus(status);
+						});
+					}
+					return onError(error);
+				} else {
+					onStatus(status);
+				}
+			});
+			var clients = electrumService.getConnectedClients();
+			var onData = function(data) {
+				if (data.method === 'blockchain.scripthash.subscribe' && data.params[0] === outputScriptHash) {
+					onStatus(data.params[1]);
+				}
+			};
+			_.invoke(clients, 'on', 'data', onData);
+			this.addressStatusSubscriptions[address] = onData;
+		},
+
+		unsubscribeToAddressStatus: function(address, cb) {
+
+			var electrumService = _.result(this, 'electrumService');
+			var constants = this.getNetworkConstants();
+			var outputScriptHash = this.getOutputScriptHash(address, constants);
+			electrumService.cmd('blockchain.scripthash.unsubscribe', [outputScriptHash], function(error, result) {
+				if (error && error.message === 'unknown method "blockchain.scripthash.unsubscribe"') {
+					return electrumService.cmd('blockchain.address.unsubscribe', [address], cb);
+				}
+				cb(error, result);
+			});
+			if (this.addressStatusSubscriptions[address]) {
+				var clients = electrumService.getConnectedClients();
+				var onData = this.addressStatusSubscriptions[address];
+				_.invoke(clients, 'off', 'data', onData);
+				this.addressStatusSubscriptions[address] = null;
+			}
+		},
+
+		getTx: function(txHash, cb) {
+
+			var electrumService = _.result(this, 'electrumService');
+			electrumService.cmd('blockchain.transaction.get', [txHash], function(error, rawTx) {
+				if (error) return cb(error);
+				try {
+					var tx = bitcoin.Transaction.fromHex(rawTx);
+					tx.hash = txHash;
+				} catch (error) {
+					return cb(error);
+				}
+				cb(null, tx);
+			});
+		},
+
+		getFeeRate: function(targetNumberOfBlocks, cb) {
+
+			var toBaseUnit = _.bind(this.toBaseUnit, this);
+			var electrumService = _.result(this, 'electrumService');
+			electrumService.cmd('blockchain.estimatefee', [targetNumberOfBlocks], function(error, result) {
+				if (error) return cb(error);
+				// satoshis/kilobyte
+				var feeRate = toBaseUnit(result);
+				cb(null, feeRate);
 			});
 		},
 
 		getUnspentTxOutputs: function(publicKey, cb) {
 
-			var addressToType = _.chain(this.addressTypes).map(function(type) {
-				return [this[type](publicKey), type];
-			}, this).object().value();
-			var addresses = _.keys(addressToType);
+			try {
+				var electrumService = _.result(this, 'electrumService');
+				var constants = this.getNetworkConstants();
+				var tasks = _.map(this.addressTypes, function(type) {
+					var address = this.publicKeyToAddress(publicKey, type, constants);
+					var outputScriptHash = this.getOutputScriptHash(address, constants);
+					return function(next) {
+						var cb = function(error, result) {
+							if (error) return next(error);
+							next(null, {
+								address: address,
+								type: type,
+								utxo: result,
+							});
+						};
+						electrumService.cmd('blockchain.scripthash.listunspent', [outputScriptHash], function(error, result) {
+							if (error && error.message === 'unknown method "blockchain.scripthash.listunspent"') {
+								return electrumService.cmd('blockchain.address.listunspent', [address], cb);
+							}
+							cb(error, result);
+						});
+					};
+				}, this);
+				async.parallel(tasks, cb);
+			} catch (error) {
+				return cb(error);
+			}
+		},
 
-			app.services.ctApi.getUnspentTxOutputs(this.ref, addresses, function(error, results) {
-				if (error) return cb(error);
-				results = _.map(results, function(result) {
-					result.type = addressToType[result.address];
-					return result;
-				});
-				cb(null, results);
-			});
+		getAddressTxHistory: function(address, cb) {
+
+			var electrumService = _.result(this, 'electrumService');
+			var constants = this.getNetworkConstants();
+			var outputScriptHash = this.getOutputScriptHash(address, constants);
+			electrumService.cmd('blockchain.scripthash.get_history', [outputScriptHash], cb);
 		},
 
 		getAddressWithFundsGreaterThanOrEqualTo: function(publicKey, value, cb) {
 
 			var getUnspentTxOutputs = _.bind(this.getUnspentTxOutputs, this, publicKey);
 			var pickAddress = _.bind(this.pickAddressWithFundsGreaterThanOrEqualTo, this);
-
 			async.seq(
 				getUnspentTxOutputs,
 				function(addresses, next) {
@@ -714,19 +897,42 @@ app.paymentMethods.bitcoin = (function() {
 			}).first().value();
 		},
 
+		electrumService: function() {
+
+			return app.services.electrum[this.ref];
+		},
+
+		isActive: function() {
+
+			var electrumService = _.result(this, 'electrumService');
+			return !!electrumService && electrumService.isActive();
+		},
+
 		broadcastRawTx: function(rawTx, cb) {
 
-			app.services.ctApi.broadcastRawTx(this.ref, rawTx, cb);
+			var electrumService = _.result(this, 'electrumService');
+			electrumService.cmd('blockchain.transaction.broadcast', [rawTx], function(error, result) {
+				if (error) return cb(error);
+				// Success.
+				var txid = result[1];
+				cb(null, txid);
+			});
 		},
 
 		stopListeningForPayment: function() {
 
 			if (this.listening) {
-				var channel = this.listening.channel;
-				var listener = this.listening.listener;
-				app.services.ctApi.unsubscribe(channel, listener);
+				var address = this.listening.address;
+				this.unsubscribeToAddressStatus(address, _.noop);
 				this.listening = null;
 			}
+		},
+
+		getOutputScriptHash: function(address, constants) {
+
+			var outputScript = bitcoin.address.toOutputScript(address, constants);
+			var hash = bitcoin.crypto.sha256(outputScript);
+			return Buffer.from(hash.reverse()).toString('hex');
 		},
 
 	});

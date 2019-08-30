@@ -18,11 +18,10 @@ app.views.DisplayPaymentAddress = (function() {
 		},
 
 		timers: {
-			listener: null,
 			savePaymentRequest: null,
+			updateStatus: null,
 		},
 
-		ctApiListeners: {},
 		payingFromPaperWallet: false,
 
 		initialize: function() {
@@ -41,6 +40,7 @@ app.views.DisplayPaymentAddress = (function() {
 			);
 			var method = this.model.get('method');
 			this.paymentMethod = app.paymentMethods[method];
+			this.payFromPaperWallet = _.debounce(this.payFromPaperWallet, 200);
 			this.listenTo(this.model, 'change:amount change:rate', this.generatePaymentRequest);
 			this.listenTo(this.model, 'change:amount change:rate', this.renderCryptoAmount);
 			this.listenTo(this.model, 'change:uri', this.renderQrCode);
@@ -194,8 +194,6 @@ app.views.DisplayPaymentAddress = (function() {
 
 		startListeningForPayment: function() {
 
-			this.stopListeningForPayment();
-
 			if (!this.model.get('uri')) return;
 
 			var paymentRequest = this.model.toJSON();
@@ -237,9 +235,9 @@ app.views.DisplayPaymentAddress = (function() {
 			var checkElapsedTime = _.bind(function() {
 				clearTimeout(this.timers.paymentRequestTimeout);
 				var elapsedTime = Date.now() - startTime;
-				var timedOut = elapsedTime > app.config.paymentRequests.timeout;
+				var timedOut = elapsedTime >= app.config.paymentRequests.timeout;
 				if (!timedOut) {
-					this.timers.paymentRequestTimeout = _.delay(checkElapsedTime, 20);
+					this.timers.paymentRequestTimeout = _.delay(checkElapsedTime, 10);
 				} else {
 					app.router.navigate('payment-status/timed-out', { trigger: true });
 				}
@@ -247,33 +245,31 @@ app.views.DisplayPaymentAddress = (function() {
 			checkElapsedTime();
 		},
 
+		updateStatus: function() {
+
+			$('.view.display-payment-address').toggleClass('payment-method-inactive', !this.paymentMethod.isActive());
+		},
+
 		startListeningForStatus: function() {
 
-			var method = this.model.get('method');
-			var channel = 'status-check?' + querystring.stringify({
-				network: method,
-			});
-			var listener = function(status) {
-				var isActive = status[method] || false;
-				$('.view.display-payment-address').toggleClass('payment-method-inactive', !isActive);
-			};
-			this.ctApiListeners.status = {
-				channel: channel,
-				listener: listener,
-			};
-			app.services.ctApi.subscribe(channel, listener);
+			var updateStatus = _.bind(this.updateStatus, this);
+			var startTimer = _.bind(function() {
+				this.timers.updateStatus = _.delay(function() {
+					updateStatus();
+					startTimer();
+				}, 50/* milliseconds between checks */);
+			}, this);
+			updateStatus();
+			startTimer();
 		},
 
 		payFromPaperWallet: function(walletData) {
 
-			// Only pay from paper wallet one at a time.
-			if (this.payingFromPaperWallet) return;
-			this.payingFromPaperWallet = true;
-			app.busy(true);
+			var savePaymentData = _.bind(this.savePaymentData, this);
+			var paymentRequest = this.model.toJSON();
 
-			var done = _.bind(function(error, paymentData) {
+			this.paymentMethod.payRequestFromPaperWallet(paymentRequest, walletData, function(error, paymentData) {
 
-				this.payingFromPaperWallet = false;
 				app.busy(false);
 
 				if (error) {
@@ -281,12 +277,10 @@ app.views.DisplayPaymentAddress = (function() {
 				}
 
 				// Payment successful.
-				this.savePaymentData(paymentData);
+				savePaymentData(paymentData);
+			});
 
-			}, this);
-
-			var paymentRequest = this.model.toJSON();
-			this.paymentMethod.payRequestFromPaperWallet(paymentRequest, walletData, done);
+			app.busy(true);
 		},
 
 		scanAndPayFromPaperWallet: function() {
@@ -384,10 +378,7 @@ app.views.DisplayPaymentAddress = (function() {
 				evt.preventDefault();
 			}
 
-			this.stopListening();
-
 			var acceptedCryptoCurrencies = app.settings.getAcceptedCryptoCurrencies();
-
 			if (acceptedCryptoCurrencies.length > 1) {
 				// Navigate back to the choose payment method screen.
 				app.router.navigate('choose-payment-method', { trigger: true });
@@ -395,7 +386,6 @@ app.views.DisplayPaymentAddress = (function() {
 				// Skip the #choose-payment-method screen.
 				app.router.navigate('pay', { trigger: true });
 			}
-
 		},
 
 		stopTimers: function() {
@@ -403,14 +393,6 @@ app.views.DisplayPaymentAddress = (function() {
 			_.each(this.timers, function(timer) {
 				clearTimeout(timer);
 			});
-		},
-
-		unsubscribeAllCtApiListeners: function() {
-
-			_.chain(this.ctApiListeners).compact().each(function(listener) {
-				app.services.ctApi.unsubscribe(listener.channel, listener.listener);
-			});
-			this.ctApiListeners = {};
 		},
 
 		onResize: function() {
@@ -421,9 +403,9 @@ app.views.DisplayPaymentAddress = (function() {
 		onClose: function() {
 
 			this.stopTimers();
+			this.stopListeningForPayment();
 			app.nfc.stopReading();
 			app.nfc.off('read', this.payFromPaperWallet);
-			this.unsubscribeAllCtApiListeners();
 
 			if (this.nfcStartReading && this.nfcStartReading.cancel) {
 				this.nfcStartReading.cancel();

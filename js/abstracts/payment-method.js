@@ -155,6 +155,12 @@ app.abstracts.PaymentMethod = (function() {
 			});
 		},
 
+		isActive: function() {
+
+			// Override this method with your own custom logic.
+			return false;
+		},
+
 		createVerificationView: null,
 
 		hasVerificationView: function() {

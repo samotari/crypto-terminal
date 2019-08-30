@@ -22,8 +22,11 @@ app.cache = (function() {
 			maxAge = maxAge || 0;
 			var now = Date.now();
 			var attributes = _.chain(this.model.toJSON()).map(function(item, key) {
-				var keep = !!item && (!_.isObject(item) || !item.timestamp || (now - item.timestamp) <= maxAge);
-				return keep ? [key, item] : null;
+				if (!item || !_.isObject(item)) return null;
+				var canExpire = item.expires !== false;
+				var expired = maxAge && canExpire && now - item.timestamp > maxAge;
+				if (expired) return null;
+				return [key, item];
 			}).compact().object().value();
 			this.model.attributes = attributes;
 			this.model.save();
@@ -32,17 +35,22 @@ app.cache = (function() {
 			var data;
 			var item = this.model.get(key);
 			if (item) {
-				var expired = maxAge && Date.now() - item.timestamp > maxAge;
+				var canExpire = item.expires !== false;
+				var expired = maxAge && canExpire && Date.now() - item.timestamp > maxAge;
 				if (!expired) {
 					data = item.data;
 				}
 			}
 			return data || null;
 		},
-		set: function(key, data) {
+		set: function(key, data, options) {
+			options = _.defaults(options || {}, {
+				expires: true,
+			});
 			this.model.set(key, {
 				timestamp: Date.now(),
 				data: data,
+				expires: options.expires,
 			}).save();
 		}
 	};
