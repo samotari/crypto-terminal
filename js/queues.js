@@ -27,6 +27,15 @@ app.queues = (function() {
 			}
 			next();
 		}, 1/* concurrency */),
+		whenOnline: async.queue(function(task, next) {
+			// Synchronous.
+			try {
+				task.fn();
+			} catch (error) {
+				app.log(error);
+			}
+			next();
+		}, 1/* concurrency */),
 	};
 
 	// Pause all queues.
@@ -45,21 +54,40 @@ app.queues = (function() {
 		app.log(error);
 	};
 
-	_.each(_.keys(queues), function(key) {
-		app[key] = function(fn) {
-			app.queues[key].push({ fn: fn });
-		};
-	});
-
 	$(function() {
 		if (!app.isCordova()) {
-			app.queues.onDeviceReady.resume();
+			queues.onDeviceReady.resume();
 		}
 	});
 
 	// The "deviceready" event fires after cordova has finished loading and the device is ready.
 	document.addEventListener('deviceready', function() {
-		app.queues.onDeviceReady.resume();
+		queues.onDeviceReady.resume();
+	});
+
+	// Prepare shortcuts.
+	_.each(_.keys(queues), function(key) {
+		app[key] = function(fn) {
+			queues[key].push({ fn: fn });
+		};
+	});
+
+	app.onDeviceReady(function() {
+		// Online/offline.
+		async.forever(function(next) {
+			if (app.isOnline()) {
+				if (queues.whenOnline.paused) {
+					app.log('CONNECTION: online');
+					queues.whenOnline.resume();
+				}
+			} else if (app.isOffline()) {
+				if (!queues.whenOnline.paused) {
+					app.log('CONNECTION: offline');
+					queues.whenOnline.pause();
+				}
+			}
+			_.delay(next, 50);
+		});
 	});
 
 	return queues;

@@ -10,11 +10,6 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 			throw new Error('Platform must support either native or web sockets');
 		}
 
-		_.bindAll(this,
-			'isConnected',
-			'tryReconnect'
-		);
-
 		this.options = _.defaults(options || {}, {
 			id: _.uniqueId('json-rpc-tcp-socket-client'),
 			timeout: app.config.jsonRpcTcpSocketClient.timeout,
@@ -24,7 +19,7 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 		this.incompleteMessageBuffer = '';
 
 		if (options.autoReconnect) {
-			this.on('close', this.tryReconnect);
+			this.on('close', _.bind(this.reconnect, this, _.noop));
 		}
 	};
 
@@ -37,7 +32,22 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 		pass: null,
 		encrypted: false,
 		version: '2.0',
+		open: {
+			retry: {
+				interval: 3000,
+				times: 10,
+			},
+		},
 		autoReconnect: true,
+		reconnect: {
+			retry: {
+				interval: 3000,
+				times: 10,
+			},
+		},
+		cmd: {
+			timeout: 3000,
+		},
 	};
 
 	JsonRpcTcpSocketClient.prototype.supportsNativeSocket = function() {
@@ -65,16 +75,81 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 		return [this.options.hostname, this.options.port].join(':');
 	};
 
-	JsonRpcTcpSocketClient.prototype.open = function(cb) {
-		app.log('json-rpc-tcp-socket-client.open', this.options);
-		var options = this.options;
-		var parseData = _.bind(this.parseData, this);
+	JsonRpcTcpSocketClient.prototype.open = function(done) {
+		app.log('JsonRpcTcpSocketClient.open', this.options);
+		var tryConnect = _.bind(this.tryConnect, this);
+		async.retry(this.options.open.retry, function(next) {
+			app.whenOnline(function() {
+				tryConnect(next);
+			});
+		}, function(error) {
+			if (error) {
+				app.log('JsonRpcTcpSocketClient: Failed to open socket', error);
+				done(error);
+			} else {
+				app.log('JsonRpcTcpSocketClient: Successfully opened socket');
+				done();
+			}
+		});
+	};
+
+	JsonRpcTcpSocketClient.prototype.reconnect = function(done) {
+		app.log('JsonRpcTcpSocketClient.reconnect', this.options);
+		done = done || _.noop;
 		var trigger = _.bind(this.trigger, this);
-		var done = _.once(cb);
-		var socket;
+		var tryConnect = _.bind(this.tryConnect, this);
+		async.retry(this.options.reconnect.retry, function(next) {
+			app.whenOnline(function() {
+				tryConnect(next);
+			});
+		}, function(error) {
+			if (error) {
+				app.log('JsonRpcTcpSocketClient: Failed to reconnect', error);
+				done(error);
+			} else {
+				app.log('JsonRpcTcpSocketClient: Successfully reconnected');
+				trigger('reconnect');
+				done();
+			}
+		});
+	};
+
+	JsonRpcTcpSocketClient.prototype.tryConnect = function(done) {
+		app.log('JsonRpcTcpSocketClient.tryConnect');
 		if (this.supportsNativeSocket()) {
 			// Native Socket
-			socket = this.socket = new Socket();
+			if (!this.socket) {
+				// Only create the socket instance once.
+				this.socket = this.createSocket();
+			}
+			this.socket.open(this.options.hostname, this.options.port, this.options.timeout,
+				function onSuccess() {
+					done();
+				},
+				function onError(error) {
+					done(error);
+				}
+			);
+		} else {
+			// WebSocket
+			// Always recreate the socket instance.
+			this.socket = this.createSocket();
+			this.socket.onopen = function() {
+				done();
+			};
+			this.socket.onerror = function(error) {
+				done(error);
+			};
+		}
+	};
+
+	JsonRpcTcpSocketClient.prototype.createSocket = function() {
+		var socket;
+		var parseData = _.bind(this.parseData, this);
+		var trigger = _.bind(this.trigger, this);
+		if (this.supportsNativeSocket()) {
+			// Native Socket
+			socket = new Socket();
 			socket.onData = function(dataByteArray) {
 				_.each(parseData(dataByteArray), function(data) {
 					if (data.id) {
@@ -84,26 +159,14 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 				});
 			};
 			socket.onClose = function(hasError) {
-				app.log('json-rpc-tcp-socket-client.onClose', options, { hasError: hasError });
+				app.log('JsonRpcTcpSocketClient: Socket connection closed', { hasError: hasError });
 				trigger('close', { hasError: hasError });
 			};
-			socket.open(options.hostname, options.port, options.timeout,
-				function onOpenSuccess() {
-					app.log('json-rpc-tcp-socket-client.onOpenSuccess', options);
-					done();
-				},
-				function onOpenError(error) {
-					app.log('json-rpc-tcp-socket-client.onOpenError', options, error);
-					done(error);
-				}
-			);
 		} else {
 			// WebSocket
-			socket = this.socket = (function() {
-				var protocol = options.encrypted ? 'wss://' : 'ws://';
-				var url = protocol + options.hostname + ':' + options.port;
-				return new WebSocket(url);
-			})();
+			var protocol = this.options.encrypted ? 'wss://' : 'ws://';
+			var uri = protocol + this.options.hostname + ':' + this.options.port;
+			socket = new WebSocket(uri);
 			socket.onmessage = function(evt) {
 				_.each(parseData(evt.data), function(data) {
 					if (data.id) {
@@ -113,47 +176,11 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 				});
 			};
 			socket.onclose = function() {
-				app.log('json-rpc-tcp-socket-client.onClose', options);
+				app.log('JsonRpcTcpSocketClient: Socket connection closed');
 				trigger('close');
-			};
-			socket.onopen = function() {
-				app.log('json-rpc-tcp-socket-client.onOpenSuccess', options);
-				done();
-			};
-			socket.onerror = function(error) {
-				app.log('json-rpc-tcp-socket-client.onOpenError', options, error);
-				done(error);
 			};
 		}
 		return socket;
-	};
-
-	JsonRpcTcpSocketClient.prototype.tryReconnect = function() {
-		app.log('json-rpc-tcp-socket-client.tryReconnect');
-		var options = this.options;
-		var trigger = _.bind(this.trigger, this);
-		if (this.supportsNativeSocket()) {
-			// Native Socket
-			this.socket.open(options.hostname, options.port, options.timeout,
-				function onReconnectSuccess() {
-					app.log('json-rpc-tcp-socket-client.onReconnectSuccess', options);
-					trigger('reconnect');
-				},
-				function onReconnectError(error) {
-					app.log('json-rpc-tcp-socket-client.onReconnectError', options, error);
-				}
-			);
-		} else {
-			// WebSocket
-			this.open(function(error) {
-				if (error) {
-					app.log('json-rpc-tcp-socket-client.onReconnectError', options, error);
-				} else {
-					app.log('json-rpc-tcp-socket-client.onReconnectSuccess', options);
-					trigger('reconnect');
-				}
-			});
-		}
 	};
 
 	JsonRpcTcpSocketClient.prototype.cmd = function(method, params, cb) {
@@ -171,9 +198,9 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 			id: _.uniqueId(),
 		};
 		var dataString = JSON.stringify(data) + '\n';
-		app.log('json-rpc-tcp-socket-client.cmd:', data);
+		app.log('JsonRpcTcpSocketClient.cmd:', data);
 		this.once('data:' + data.id, function(result) {
-			app.log('json-rpc-tcp-socket-client.cmd (result):', result);
+			app.log('JsonRpcTcpSocketClient.cmd (result):', result);
 			if (result.error) {
 				var error = new Error(result.error.message);
 				error.code = result.error.code;
@@ -181,7 +208,11 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 			}
 			done(null, result.result);
 		});
+		var timeout = _.delay(function() {
+			done(new Error('Timed-out while waiting for response'));
+		}, this.options.cmd.timeout);
 		var done = _.once(_.bind(function() {
+			clearTimeout(timeout);
 			this.off('data:' + data.id);
 			cb.apply(undefined, arguments);
 		}, this));
@@ -190,9 +221,9 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 				// Native Socket
 				var dataByteArray = this.toByteArray(dataString);
 				this.socket.write(dataByteArray, function onWriteSuccess() {
-					app.log('json-rpc-tcp-socket-client.onWriteSuccess', arguments);
+					app.log('JsonRpcTcpSocketClient.onWriteSuccess', arguments);
 				}, function onWriteError(error) {
-					app.log('json-rpc-tcp-socket-client.onWriteError', arguments);
+					app.log('JsonRpcTcpSocketClient.onWriteError', arguments);
 					done(error);
 				});
 			} else {
@@ -205,12 +236,12 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 	};
 
 	JsonRpcTcpSocketClient.prototype.destroy = function(cb) {
-		app.log('json-rpc-tcp-socket-client.destroy');
+		app.log('JsonRpcTcpSocketClient.destroy');
 		cb = cb || _.noop;
 		// Remove all listeners on the socket client.
 		this.off();
 		if (this.isConnected()) {
-			app.log('json-rpc-tcp-socket-client.destroy.isConnected: true');
+			app.log('JsonRpcTcpSocketClient.destroy.isConnected: true');
 			this.once('close', function() {
 				cb();
 			});
@@ -223,7 +254,7 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 				this.socket.close();
 			}
 		} else {
-			app.log('json-rpc-tcp-socket-client.destroy.isConnected: false');
+			app.log('JsonRpcTcpSocketClient.destroy.isConnected: false');
 			_.defer(cb);
 		}
 	};
@@ -252,16 +283,16 @@ app.abstracts.JsonRpcTcpSocketClient = (function() {
 				try {
 					var result = JSON.parse(message);
 				} catch (error) {
-					app.log('json-rpc-tcp-socket-client.invalid-json', message);
+					app.log('JsonRpcTcpSocketClient.invalid-json', message);
 					return null;
 				}
 				return result;
 			}).compact().value();
 		} catch (error) {
-			app.log('json-rpc-tcp-socket-client.parseData.failed', rawData, dataString, error);
+			app.log('JsonRpcTcpSocketClient.parseData.failed', rawData, dataString, error);
 			return [];
 		}
-		app.log('json-rpc-tcp-socket-client.parseData.success', data);
+		app.log('JsonRpcTcpSocketClient.parseData.success', data);
 		return data;
 	};
 

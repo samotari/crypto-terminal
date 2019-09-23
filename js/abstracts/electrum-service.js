@@ -10,6 +10,7 @@ app.abstracts.ElectrumService = (function() {
 
 		this.options = _.defaults(options || {}, {
 			cachePrefix: _.uniqueId('services.electrum.' + network + '.') + '.',
+			servers: [],
 		}, this.defaultOptions);
 
 		this.initialized = false;
@@ -18,6 +19,7 @@ app.abstracts.ElectrumService = (function() {
 		_.bindAll(this,
 			'cleanBadPeers',
 			'connectClients',
+			'fetchPeers',
 			'onClientClose',
 			'onClientReconnect',
 			'ping',
@@ -25,6 +27,7 @@ app.abstracts.ElectrumService = (function() {
 			'toggleCmdQueueState',
 			'startCheckingConnectedClients',
 			'startCleaningBadPeers',
+			'startFetchingPeers',
 			'startPinging'
 		);
 
@@ -49,19 +52,27 @@ app.abstracts.ElectrumService = (function() {
 		this.once('initialized', this.startPinging);
 		this.once('initialized', this.startCheckingConnectedClients);
 		this.once('initialized', this.startCleaningBadPeers);
+		this.once('initialized', this.startFetchingPeers);
 		this.cleanBadPeers();
 	};
 
 	ElectrumService.prototype.defaultOptions = {
-		// Time between checking number of connected clients (milliseconds):
-		checkConnectedClientsDelay: 10000,
+		connect: {
+			// How often to attempt connecting to potential peers; milliseconds:
+			frequency: 10000,
+			// Minimum number of clients with which to maintain connections:
+			minimum: 3,
+			// Maximum simultaneous number of peers with which to attempt opening a connection:
+			concurrency: 5,
+		},
 		saveBadPeers: true,
 		cleanBadPeers: {
-			frequency: 5 * 60 * 1000,
-			maxAge: 30 * 60 * 1000,
+			frequency: 20 * 1000,
+			maxAge: 3 * 60 * 1000,
 		},
-		// Number of connected clients to maintain:
-		targetConnectedClients: 7,
+		fetchPeers: {
+			frequency: 10 * 60 * 1000,
+		},
 		// Time between pings (milliseconds):
 		pingDelay: 30000,
 		cmd: {
@@ -86,7 +97,7 @@ app.abstracts.ElectrumService = (function() {
 			options = null;
 		}
 		options = options || {};
-		app.log('ElectrumService:', 'Queueing command', method, params, options);
+		this.log('ElectrumService:', 'Queueing command', method, params, options);
 		if (!_.isString(method)) {
 			throw new Error('Invalid argument ("method"): String expected');
 		}
@@ -108,66 +119,58 @@ app.abstracts.ElectrumService = (function() {
 	};
 
 	ElectrumService.prototype.runCmdTask = function(task, next) {
-		app.log('ElectrumService:', 'Running command', task.method, task.params, task.options);
-		this.doCmd(task.method, task.params, task.options, function(error, result) {
+		this.log('ElectrumService:', 'Running command', task.method, task.params, task.options);
+		this.doCmd(task.method, task.params, task.options, _.bind(function(error, result) {
 			try {
 				task.done.call(undefined, error, result);
 			} catch (error) {
-				app.log(error);
+				this.log(error);
 			}
 			next();
-		});
+		}, this));
 	};
 
 	ElectrumService.prototype.doCmd = function(method, params, options, done) {
-		app.log('ElectrumService:', 'Sending command', method, params, options);
+		this.log('ElectrumService:', 'Sending command', method, params, options);
 		var clients = this.getConnectedClients();
 		options = _.defaults(options || {}, this.options.cmd);
-		var numResponded = 0;
-		var tasks = _.map(clients, function(client) {
-			return function(next) {
-				var timeout;
-				var cb = _.once(function(error, results) {
-					clearTimeout(timeout);
-					if (error) return next(error);
-					next(null, results);
-				});
-				if (options.timeout) {
-					timeout = _.delay(function() {
-						cb(null, {
-							error: new Error('Timed-out while waiting for response'),
-						});
-					}, options.timeout);
+		var results = [];
+		_.map(clients, function(client) {
+			client.cmd(method, params, function(error, result) {
+				if (error) {
+					results.push({ error: error });
+				} else {
+					results.push({ result: result });
 				}
-				client.cmd(method, params, function(error, result) {
-					numResponded++;
-					if (error) {
-						// Some async methods will behavior differently on errors.
-						switch (options.asyncMethod) {
-							case 'race':
-								// Ignore errors unless this is the last client and all have errored.
-								if (numResponded >= clients.length) {
-									return cb(null, { error: error });
-								}
-								break;
-							default:
-								cb(null, { error: error });
-								break;
-						}
-					} else {
-						cb(null, result);
-					}
-				});
-			};
+			});
 		});
-		async[options.asyncMethod](tasks, function(error, results) {
-			if (error) {
-				app.log('ElectrumService:', 'Command failed', method, params, options, error);
-				return done(error);
+		async.until(function() {
+			var haveAllResults = results.length === clients.length;
+			if (options.asyncMethod === 'parallel') {
+				return haveAllResults;
+			} else {
+				var haveAtLeastOneNonErrorResult = _.reject(results, function(result) {
+					return _.has(result.error);
+				}).length > 0;
+				return haveAtLeastOneNonErrorResult || haveAllResults;
 			}
-			app.log('ElectrumService:', 'Command completed', method, params, options, results);
-			done(null, results);
-		});
+		}, function(next) {
+			_.delay(next, 50);
+		}, _.bind(function() {
+			this.log('ElectrumService:', 'Command completed', method, params, options, results);
+			if (options.asyncMethod === 'parallel') {
+				return done(null, results);
+			} else {
+				var successfulResult = _.find(results, function(result) {
+					return !result.error;
+				});
+				if (successfulResult) {
+					return done(null, successfulResult.result);
+				}
+				var errorResult = _.first(results);
+				done(new Error(errorResult.error));
+			}
+		}, this));
 	};
 
 	ElectrumService.prototype.onClientClose = function() {
@@ -214,7 +217,7 @@ app.abstracts.ElectrumService = (function() {
 		var peers = this.getPeers();
 		peers = _.union(hosts, peers);
 		var cacheKey = this.getCacheKey('peers');
-		app.cache.set(cacheKey, peers, { expires: false });
+		this.setCache(cacheKey, peers);
 	};
 
 	ElectrumService.prototype.removePeer = function(host) {
@@ -225,12 +228,23 @@ app.abstracts.ElectrumService = (function() {
 		var peers = this.getPeers();
 		peers = _.without.apply(_, [peers].concat(hosts));
 		var cacheKey = this.getCacheKey('peers');
-		app.cache.set(cacheKey, peers, { expires: false });
+		this.setCache(cacheKey, peers);
 	};
 
 	ElectrumService.prototype.getPeers = function() {
 		var cacheKey = this.getCacheKey('peers');
-		return app.cache.get(cacheKey) || [];
+		return this.getCache(cacheKey) || [];
+	};
+
+	ElectrumService.prototype.getCache = function(key) {
+		var value = localStorage.getItem(key);
+		if (!_.isNull(value)) {
+			return JSON.parse(value);
+		}
+	};
+
+	ElectrumService.prototype.setCache = function(key, value) {
+		localStorage.setItem(key, JSON.stringify(value));
 	};
 
 	ElectrumService.prototype.getElectrumServers = function(options) {
@@ -239,15 +253,8 @@ app.abstracts.ElectrumService = (function() {
 			// For now only use "tcp" because the cordova sockets plugin doesn't support secure sockets.
 			protocol: 'tcp',// 'ssl' or 'tcp'
 		});
-		var paymentMethod = app.paymentMethods[this.network];
-		if (!paymentMethod) {
-			throw new Error('Missing payment method');
-		}
-		var electrumConfig = paymentMethod.electrum;
-		if (!electrumConfig) {
-			throw new Error('Missing electrum config');
-		}
-		return _.chain(electrumConfig.servers).map(function(server) {
+		var defaultPorts = this.options.defaultPorts;
+		return _.chain(this.options.servers).map(function(server) {
 			var parts = server.split(' ');
 			var hostname = parts[0];
 			var port = _.chain(parts).rest(1).find(function(protocol) {
@@ -263,7 +270,7 @@ app.abstracts.ElectrumService = (function() {
 				if (port.length > 1) {
 					port = port.substr(1);
 				} else {
-					port = electrumConfig.defaultPorts[options.protocol];
+					port = defaultPorts[options.protocol];
 				}
 				return hostname + ':' + port;
 			}
@@ -279,7 +286,7 @@ app.abstracts.ElectrumService = (function() {
 	};
 
 	ElectrumService.prototype.cleanBadPeers = function() {
-		app.log('ElectrumService:', 'Cleaning bad peers');
+		this.log('ElectrumService:', 'Cleaning bad peers');
 		var now = Date.now();
 		var maxAge = this.options.cleanBadPeers.maxAge;
 		var badPeers = _.chain(this.getBadPeers()).map(function(timestamp, host) {
@@ -288,7 +295,7 @@ app.abstracts.ElectrumService = (function() {
 			return [host, timestamp];
 		}).compact().object().value();
 		var cacheKey = this.getCacheKey('badPeers');
-		app.cache.set(cacheKey, badPeers, { expires: false });
+		this.setCache(cacheKey, badPeers);
 	};
 
 	ElectrumService.prototype.removeBadPeer = function(host) {
@@ -297,7 +304,7 @@ app.abstracts.ElectrumService = (function() {
 			badPeers[host] = null;
 		}
 		var cacheKey = this.getCacheKey('badPeers');
-		app.cache.set(cacheKey, badPeers, { expires: false });
+		this.setCache(cacheKey, badPeers);
 	};
 
 	ElectrumService.prototype.saveBadPeer = function(host) {
@@ -305,13 +312,13 @@ app.abstracts.ElectrumService = (function() {
 			var badPeers = this.getBadPeers();
 			badPeers[host] = Date.now();
 			var cacheKey = this.getCacheKey('badPeers');
-			app.cache.set(cacheKey, badPeers, { expires: false });
+			this.setCache(cacheKey, badPeers);
 		}
 	};
 
 	ElectrumService.prototype.getBadPeers = function() {
 		var cacheKey = this.getCacheKey('badPeers');
-		return app.cache.get(cacheKey) || {};
+		return this.getCache(cacheKey) || {};
 	};
 
 	ElectrumService.prototype.startPinging = function() {
@@ -322,21 +329,21 @@ app.abstracts.ElectrumService = (function() {
 	};
 
 	ElectrumService.prototype.ping = function(done) {
-		app.log('ElectrumService:', 'Pinging connected clients');
+		this.log('ElectrumService:', 'Pinging connected clients');
 		this.cmd('server.ping', [], { asyncMethod: 'parallel' }, _.noop);
 	};
 
 	ElectrumService.prototype.startCheckingConnectedClients = function() {
 		this.startLoop('connectClients', this.connectClients, {
-			delay: this.options.checkConnectedClientsDelay,
+			delay: this.options.connect.frequency,
 			immediate: false,
 		});
 	};
 
 	ElectrumService.prototype.initialize = function(done) {
-		app.log('ElectrumService:', 'Initializing');
+		this.log('ElectrumService:', 'Initializing');
 		this.connectClients(_.bind(function() {
-			app.log('ElectrumService:', 'Initialized!');
+			this.log('ElectrumService:', 'Initialized!');
 			this.initialized = true;
 			this.trigger('initialized');
 			done.apply(undefined, arguments);
@@ -347,8 +354,8 @@ app.abstracts.ElectrumService = (function() {
 		return this.initialized === true;
 	};
 
-	ElectrumService.prototype.getNextUnconnectedPeer = function() {
-		return _.find(this.getKnownPeers(), function(host) {
+	ElectrumService.prototype.getUnconnectedPeers = function() {
+		return _.filter(this.getKnownPeers(), function(host) {
 			return !this.isBadPeer(host) && !this.isConnectedToPeer(host);
 		}, this);
 	};
@@ -366,55 +373,114 @@ app.abstracts.ElectrumService = (function() {
 	};
 
 	ElectrumService.prototype.connectClients = function(done) {
-		var test = _.bind(function() {
-			return !this.getNextUnconnectedPeer() || this.getConnectedClients().length >= this.options.targetConnectedClients;
-		}, this);
-		var iteratee = _.bind(function(next) {
-			var host = this.getNextUnconnectedPeer();
-			this.connect(host, _.bind(function(error, client) {
+		done = done || _.noop;
+		var queue = async.queue(_.bind(function(task, next) {
+			var host = task.host;
+			this.connect(host, function(error, client) {
 				if (error) {
-					this.removePeer(host);
-					this.saveBadPeer(host);
-					return next();
+					log('ElectrumService: Failed to connect to peer', error);
+					onBadHost(host)
+				} else {
+					onGoodClient(client);
 				}
-				this.clients.push(client);
-				this.savePeer(host);
-				this.removeBadPeer(host);
-				this.toggleCmdQueueState();
-				client.cmd('server.peers.subscribe', [], _.bind(function(error, results) {
-					try {
-						if (!error && results) {
-							var newHosts = _.chain(results).filter(function(result) {
-								return !!result[2] && !!result[2][2];
-							}, this).map(function(result) {
-								var ipAddress = result[0];
-								if (!result[2] || !result[2][2]) return;
-								var tcpPort = result[2][2].substr(1);
-								return [ipAddress, tcpPort].join(':');
-							}).value();
-							if (newHosts.length > 0) {
-								this.savePeers(newHosts);
-							}
-						}
-					} catch (error) {
-						app.log('ElectrumService:', 'Error while parsing peers from server response', error);
-					}
-					next();
-				}, this));
-			}, this));
+				next();
+			});
+		}, this), this.options.connect.concurrency);
+		queue.pause();
+		var log = _.bind(this.log, this);
+		var onBadHost = _.bind(function(host) {
+			this.removePeer(host);
+			this.saveBadPeer(host);
 		}, this);
-		async.until(test, iteratee, done);
+		var onGoodClient = _.bind(function(client) {
+			var host = client.getHost();
+			this.clients.push(client);
+			this.savePeer(host);
+			this.removeBadPeer(host);
+			this.toggleCmdQueueState();
+			this.fetchPeersFromClient(client, function(error, hosts) {
+				if (!error && hosts && queue) {
+					_.each(hosts, function(host) {
+						queue.push({ host: host });
+					});
+				}
+			});
+		}, this);
+		_.each(this.getUnconnectedPeers(), function(host) {
+			queue.push({ host: host });
+		}, this);
+		async.until(_.bind(function() {
+			return (queue && queue.length() === 0) || this.getConnectedClients().length >= this.options.connect.minimum;
+		}, this), function(next) {
+			if (queue) {
+				if (queue.paused && app.isOnline()) {
+					queue.resume();
+				} else if (!queue.paused && app.isOffline()) {
+					queue.pause();
+				}
+			}
+			_.delay(next, 50);
+		}, function(error) {
+			queue.kill();
+			queue = null;
+			if (error) return done(error);
+			done();
+		});
+	};
+
+	ElectrumService.prototype.startFetchingPeers = function() {
+		this.startLoop('fetchPeers', this.fetchPeers, {
+			delay: this.options.fetchPeers.frequency,
+			immediate: false,
+		});
+	};
+
+	ElectrumService.prototype.fetchPeers = function(done) {
+		var fetchPeersFromClient = _.bind(this.fetchPeersFromClient, this);
+		async.each(this.getConnectedClients(), function(client, next) {
+			fetchPeersFromClient(client, function() {
+				next();
+			});
+		}, done);
+	};
+
+	ElectrumService.prototype.fetchPeersFromClient = function(client, done) {
+		var log = _.bind(this.log, this);
+		var savePeers = _.bind(this.savePeers, this);
+		client.cmd('server.peers.subscribe', [], function(error, results) {
+			if (error) return done(error);
+			if (results) {
+				try {
+					var newHosts = _.chain(results).filter(function(result) {
+						return !!result[2] && !!result[2][2];
+					}, this).map(function(result) {
+						var ipAddress = result[0];
+						if (!result[2] || !result[2][2]) return;
+						var tcpPort = result[2][2].substr(1);
+						return [ipAddress, tcpPort].join(':');
+					}).value();
+					if (newHosts.length > 0) {
+						savePeers(newHosts);
+						return done(null, newHosts);
+					}
+				} catch (error) {
+					log('ElectrumService:', 'Error while parsing peers from server response', error);
+					return done(error);
+				}
+			}
+			done();
+		});
 	};
 
 	ElectrumService.prototype.connect = function(host, done) {
-		app.log('ElectrumService: Connecting to server at ' + host);
+		this.log('ElectrumService: Connecting to server at ' + host);
 		var client = this.createClient(host);
 		client.open(_.bind(function(error) {
 			if (error) {
-				app.log('ElectrumService: Failed to connect to server at ' + host, error);
+				this.log('ElectrumService: Failed to connect to server at ' + host, error);
 				return done(error);
 			}
-			app.log('ElectrumService: Successfully connected to server at ' + host);
+			this.log('ElectrumService: Successfully connected to server at ' + host);
 			done(null, client);
 		}, this));
 		client.on('close', this.onClientClose);
@@ -436,7 +502,7 @@ app.abstracts.ElectrumService = (function() {
 	};
 
 	ElectrumService.prototype.startLoop = function(name, fn, options) {
-		app.log('ElectrumService:', 'Starting loop', name, options);
+		this.log('ElectrumService:', 'Starting loop', name, options);
 		options = _.defaults(options || {}, {
 			delay: 30000,// Delay between execution of fn (milliseconds)
 			immediate: false,// Whether or not to immediately execute fn
@@ -455,6 +521,12 @@ app.abstracts.ElectrumService = (function() {
 
 	ElectrumService.prototype.getCacheKey = function(key) {
 		return this.options.cachePrefix + key;
+	};
+
+	ElectrumService.prototype.log = function() {
+		if (this.options.debug) {
+			console.log.apply(console, arguments);
+		}
 	};
 
 	_.extend(ElectrumService.prototype, Backbone.Events);

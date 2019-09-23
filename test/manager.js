@@ -32,7 +32,7 @@ var manager = module.exports = {
 				// To prevent CORS errors:
 				'--disable-web-security',
 			],
-			headless: true,
+			headless: false,
 			slowMo: 0,
 			timeout: 10000,
 		});
@@ -117,15 +117,12 @@ var manager = module.exports = {
 		});
 		var sockets = [];
 		wss.on('connection', function(socket) {
-			// console.log('CONNECTION');
 			sockets.push(socket);
 			var send = socket.send;
 			socket.send = function(message) {
-				// console.log('SENT', message);
 				send.apply(socket, arguments);
 			};
 			socket.on('message', function(message) {
-				// console.log('RECEIVED', message);
 				try {
 					var data = JSON.parse(message);
 				} catch (error) {
@@ -158,7 +155,8 @@ var manager = module.exports = {
 			waitForClient: function(done) {
 				var socket;
 				async.until(function() {
-					return !!(socket = sockets[0]);
+					socket = _.last(sockets);
+					return !!socket;
 				}, function(next) {
 					_.delay(next, 5);
 				}, function() {
@@ -239,11 +237,14 @@ var manager = module.exports = {
 	},
 
 	connectElectrumClient: function(name, servers, done) {
+		manager.socketServer.sockets = [];
 		async.series([
 			function(next) {
 				manager.evaluateInPageContext(function(name, servers) {
 					app.paymentMethods[name].electrum.servers = servers;
-					app.initializeElectrumServices();
+					app.initializeElectrumServices({
+						force: true,
+					});
 				}, [name, servers], next);
 			},
 			function(next) {

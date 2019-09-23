@@ -44,14 +44,24 @@ var app = app || {};
 		}
 	};
 
-	app.initializeElectrumServices = function() {
+	app.initializeElectrumServices = function(options) {
+		options = _.defaults(options || {}, {
+			force: false,
+		});
 		app.services.electrum = app.services.electrum || {};
 		var networks = _.chain(app.settings.getAcceptedPaymentMethods()).filter(function(paymentMethod) {
 			return !!paymentMethod.electrum;
-		}).pluck('ref').value();
-		_.each(networks, function(network) {
-			if (!app.services.electrum[network]) {
-				var service = app.services.electrum[network] = new app.abstracts.ElectrumService(network);
+		}).map(function(paymentMethod) {
+			return [paymentMethod.ref, paymentMethod.electrum];
+		}).object().value();
+		_.each(networks, function(electrumConfig, network) {
+			if (!app.services.electrum[network] || options.force) {
+				options = _.extend({}, options, {
+					servers: electrumConfig.servers,
+					defaultPorts: electrumConfig.defaultPorts,
+					debug: app.debugging(),
+				});
+				var service = app.services.electrum[network] = new app.abstracts.ElectrumService(network, options);
 				service.initialize(function(error) {
 					if (error) {
 						app.log('Failed to initialize ElectrumService', network, error);
@@ -122,8 +132,16 @@ var app = app || {};
 		app.settings.set('settingsPin', null);
 	};
 
+	app.isOnline = function() {
+		return app.device.offline !== true;
+	};
+
+	app.isOffline = function() {
+		return app.device.offline === true;
+	};
+
 	app.debugging = function() {
-		return app.config.debug === true || app.settings && app.settings.get('debug') === true;
+		return app.config.debug === true;
 	};
 
 	app.log = function() {

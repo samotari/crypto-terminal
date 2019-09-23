@@ -80,6 +80,7 @@ app.paymentMethods.litecoin = (function() {
 				ssl: 50002,
 			},
 			servers: [
+				'electrumx.paralelnipolis.cz t50101 s50102',
 				'ex.lug.gs s444',
 				'electrum-ltc.bysh.me s t',
 				'electrum-ltc.ddns.net s t',

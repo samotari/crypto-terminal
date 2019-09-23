@@ -45,7 +45,6 @@ describe('services.exchangeRates', function() {
 	describe('providers', function() {
 		_.each(tests, function(test) {
 			it(test.provider, function(done) {
-				this.timeout(500000);
 				var fn = 'app.services.exchangeRates.get';
 				var isAsync = true;
 				var evaluateOptions = {

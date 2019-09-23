@@ -6,6 +6,8 @@ app.device = (function() {
 
 	var device = _.extend({}, {
 
+		offline: false,
+
 		initialize: function() {
 
 			_.bindAll(this,
@@ -94,6 +96,22 @@ app.device = (function() {
 		},
 
 	}, Backbone.Events);
+
+	document.addEventListener('offline', function() {
+		device.offline = true;
+	}, false);
+
+	document.addEventListener('online', function() {
+		device.offline = false;
+	}, false);
+
+	app.onDeviceReady(function() {
+		if (app.isCordova()) {
+			// Detect initial offline state.
+			var state = navigator && navigator.connection && navigator.connection.type || null;
+			device.offline = !state || state === Connection.UNKNOWN || state === Connection.NONE;
+		}
+	});
 
 	return device;
 

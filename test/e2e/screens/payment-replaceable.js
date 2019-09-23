@@ -44,7 +44,6 @@ describe('#payment-replaceable [bitcoin]', function() {
 	});
 
 	beforeEach(function(done) {
-		this.timeout(500000);
 		// var address = 'tb1qv6ftlj0u9tcpjuq3jtfsj7wl9swp83kkhm7yp5';
 		var tx = {
 			fees: 1250,
@@ -55,36 +54,31 @@ describe('#payment-replaceable [bitcoin]', function() {
 		manager.socketServer.mock.receiveTx(client, tx, done);
 		helpers['#pay'].continue(function(error) {
 			if (error) return done(error);
+			// Do nothing.
+			// Let the mock receive tx method finish.
 		});
 	});
 
-	it('shows warning', function(done) {
+	beforeEach(function(done) {
 		manager.page.waitFor('.view.payment-replaceable').then(function() {
-			manager.page.waitFor('.result-indicator').then(function() {
+			done();
+		}).catch(done);
+	});
+
+	describe('after clicking accept', function() {
+
+		beforeEach(function(done) {
+			manager.page.click('.button.accept').then(function() {
 				done();
 			}).catch(done);
-		}).catch(done);
-	});
+		});
 
-	it('shows payment success after clicking accept button', function(done) {
-		manager.page.waitFor('.view.payment-replaceable').then(function() {
-			manager.page.click('.button.accept').then(function() {
-				manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
-					manager.page.waitFor('.result-indicator').then(function() {
-						done();
-					}).catch(done);
-				}).catch(done);
-			}).catch(done);
-		}).catch(done);
-	});
-
-	it('shows payment screen again after clicking reject button', function(done) {
-		manager.page.waitFor('.view.payment-replaceable').then(function() {
-			manager.page.click('.button.reject').then(function() {
-				manager.page.waitFor('.address-qr-code').then(function() {
+		it('shows payment success', function(done) {
+			manager.page.waitFor('.view.payment-status.unconfirmed').then(function() {
+				manager.page.waitFor('.result-indicator').then(function() {
 					done();
 				}).catch(done);
 			}).catch(done);
-		}).catch(done);
+		});
 	});
 });

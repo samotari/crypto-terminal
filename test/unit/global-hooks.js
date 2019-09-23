@@ -22,7 +22,7 @@ before(function(done) {
 			}
 		});
 		app.setDeveloperMode(true);
-		app.settings.set('debug', true);
+		app.config.debug = true;
 		app.initializeElectrumServices();
 	}, done);
 });
