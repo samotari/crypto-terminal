@@ -1,5 +1,11 @@
 # Changelog
 
+* v1.6.0:
+  * Communicate directly with ElectrumX servers via TCP to:
+    * get transaction history for an address
+    * subscribe to receive new transactions for an address
+    * broadcast raw transactions
+  * Get exchange rates directly from provider API with ability to choose from several providers
 * v1.5.0:
   * Screen saver now shows accepted payment methods
   * Landscape UI improvements
