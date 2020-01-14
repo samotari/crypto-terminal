@@ -23,6 +23,7 @@
     "build:test": "NODE_ENV=test make clean-light dev",
     "build:screenshots": "npm run build:test && ./node_modules/.bin/mocha test/screenshots/ --timeout 5000 --recursive --reporter spec --ui bdd --exit",
     "dev:android": "npm run build:dev && npm run build:apk:debug && npm run android:install",
+    "prod:android": "npm run build:prod && npm run build:apk:debug && npm run android:install",
     "lint": "./node_modules/.bin/eslint --config .eslintrc.js exports/*.js js/**/*.js scripts/*.js test/**/*.js *.js",
     "lnd-proxy": "node ./scripts/lnd-proxy.js",
     "prepare:android": "./node_modules/.bin/cordova prepare android",
