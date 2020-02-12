@@ -32,7 +32,7 @@ var manager = module.exports = {
 				// To prevent CORS errors:
 				'--disable-web-security',
 			],
-			headless: false,
+			headless: true,
 			slowMo: 0,
 			timeout: 10000,
 		});
@@ -182,7 +182,7 @@ var manager = module.exports = {
 							socket.send(JSON.stringify({
 								jsonrpc: '2.0',
 								method: data.method,
-								result: null,
+								params: [],
 								id: data.id,
 							}));
 							_.delay(function() {
@@ -194,6 +194,7 @@ var manager = module.exports = {
 										data.params[0],// scripthash
 										'latest-scripthash-status',// latest status
 									],
+									id: data.id,
 								}));
 							}, 10);
 						} else if (data.method === 'blockchain.scripthash.get_history') {
